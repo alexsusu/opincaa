@@ -129,15 +129,16 @@ public int getLineNumber() {
 }
 
 public boolean isCall(){
-    return operands[0].readAsOpcode() == Opcodes.call;
+    //return operands[0].readAsOpcode() == Opcodes.call;
+    return false;
 }
 
 //------------------------------------------------------------------------------
 private void buildOperands(String[] _elements) {
     operands = new OperandType[_elements.length];
     String[] _format = Opcodes.getFormatByName(_elements[0].trim());
-    absolute = (Opcodes.getOpcodeByName(_elements[0]) == Opcodes.vload) ||
-            (Opcodes.getOpcodeByName(_elements[0]) == Opcodes.vlload);
+    absolute = true;/*(Opcodes.getOpcodeByName(_elements[0]) == Opcodes.vload) ||
+            (Opcodes.getOpcodeByName(_elements[0]) == Opcodes.vlload);*/
     if(_format.length != operands.length){
         throw new RuntimeException("Invalid number of arguments for opcode `" + _elements[0] + "`. "+
                 (_format.length - 1) + " expected, " + (operands.length - 1) + " found.");
@@ -159,26 +160,6 @@ public void setLabelAddress(int _address) {
     }
 
     throw new RuntimeException("Can't find label operand.");
-}
-
-//------------------------------------------------------------------------------
-public void setBooleanInstruction(String[] _booleanInstructionElements) {
-    if(getOpcode() > 0x100){
-        throw new RuntimeException("Unable to pair boolean instruction with value instruction '" + getOpcodeSemantic() + "' (" + Integer.toHexString(getOpcode()) + ")" );
-    }
-
-    if((Opcodes.getBooleanOpcodeByName(_booleanInstructionElements[0]) >= 0x10 && _booleanInstructionElements.length != 2) ||
-            (Opcodes.getBooleanOpcodeByName(_booleanInstructionElements[0]) < 0x10 && _booleanInstructionElements.length != 1)){
-        throw new RuntimeException("Invalid number of arguments for '" + _booleanInstructionElements[0] + "' boolean instruction." );
-    }
-
-    OperandType[] _newOperands = new OperandType[operands.length + _booleanInstructionElements.length];
-    System.arraycopy(operands, 0, _newOperands, 0, operands.length);
-    _newOperands[_newOperands.length - _booleanInstructionElements.length] = new OperandType(_booleanInstructionElements[0], "[8]booleanOpcode->[15,8]", entityIndex);
-    if(_booleanInstructionElements.length > 1){
-      _newOperands[_newOperands.length - _booleanInstructionElements.length + 1] = new OperandType(_booleanInstructionElements[1], "[4]value->[15,4]", entityIndex);
-    }
-    operands = _newOperands;
 }
 
 void setOpcode(short _replacement) {

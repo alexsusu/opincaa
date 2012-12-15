@@ -14,12 +14,12 @@
 package ro.pub.arh.beam.assembler;
 
 //------------------------------------------------------------------------------
-import ro.pub.arh.beam.assembler.structs.*;
 import java.io.*;
 import java.util.Vector;
+import ro.pub.arh.beam.assembler.structs.*;
+import ro.pub.arh.beam.common.HexConverter;
 import ro.pub.arh.beam.structs.*;
 import ubiCORE.jroot.common.utils.ErrorCode;
-import ro.pub.arh.beam.common.HexConverter;
 //------------------------------------------------------------------------------
 public class Assembler{
 
@@ -83,10 +83,13 @@ boolean _atLeastOneError = false;
         }
         _line = trimWhiteSpaces(_line);
         try{
-            _instructions = null;
             _instructions = processLine(_line);
 
             if(_instructions != null){
+                if(function == null){
+                    System.out.println("WARNING! No .globl tag found. Creating default function \"main\"!");
+                    function = new Function("main", currentAddress);
+                }
                 function.addAll(_instructions);
                 currentAddress += Instruction.INSTRUCTION_LOCATION_COUNT;
             }
@@ -298,10 +301,7 @@ Vector _words = new Vector<Instruction>();
     _lineElements = _instructionPair[0].trim().split(OPERAND_SEPARATOR);
 
     _instruction = new Instruction(_lineElements, currentAddress, currentLine, entityIndex);
-    if(_instructionPair.length == 2){
-        String[] _booleanInstructionElements = _instructionPair[1].trim().split(" ");
-        _instruction.setBooleanInstruction(_booleanInstructionElements);
-    }else if(_instructionPair.length != 1){
+    if(_instructionPair.length != 1){
         throw new RuntimeException("Only 2 instructions per pair accepted.");
     }
 
@@ -341,8 +341,8 @@ int _value;
 
 //------------------------------------------------------------------------------
 private void replaceJumpLabels(){
-int _address = 0;
-Instruction _instruction = null;
+int _address;
+Instruction _instruction;
 //--
     for(int i=0; i<program.size(); i++){
         Function _function = program.elementAt(i);

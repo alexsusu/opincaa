@@ -110,7 +110,6 @@ public class OperandType {
                         label = testforLocal(_operandCode);
                         return 0;
 
-            case booleanOpcode: return Opcodes.getBooleanOpcodeByName(_operandCode);
             default: throw new RuntimeException("Invalid data type.");
         }
     }
@@ -150,8 +149,7 @@ public class OperandType {
         rID,
         value,
         lvalue,
-        label,
-        booleanOpcode
+        label
     };
 
     private static String[] operandRegex;
@@ -176,7 +174,6 @@ public class OperandType {
             case value: return "-?[0-9]+|0x[0-9a-fA-F]+";
             case lvalue: return "(-?[0-9]+|0x[0-9a-fA-F]+)|([\\w_]+(\\([\\w_\\.]+([\\+\\-][0-9]+)?\\))?)";
             case label: return "[\\w_]+(\\([\\w_]+\\))?";
-            case booleanOpcode: return "\\w+";
         }
 
         throw new RuntimeException();

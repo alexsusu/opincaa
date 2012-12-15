@@ -153,7 +153,7 @@ public class ThreadPanel extends javax.swing.JPanel {
     public void updateInstruction(Instruction _instruction, int _programCounter){
         jTable2.getModel().setValueAt(Integer.toHexString(_instruction.word), 1, 1);
         jTable2.getModel().setValueAt(Opcodes.getNameByOpcode(_instruction.opCode), 2, 1);
-        jTable2.getModel().setValueAt(Opcodes.getNameByBooleanOpcode(_instruction.booleanOpCode), 3, 1);
+        //jTable2.getModel().setValueAt(Opcodes.getNameByBooleanOpcode(_instruction.booleanOpCode), 3, 1);
         jTable2.getModel().setValueAt(Integer.toHexString(_programCounter), 4, 1);
     }
 	

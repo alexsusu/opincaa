@@ -214,6 +214,7 @@ public class AssemblerGui extends javax.swing.JFrame {
         jMenuItem18 = new javax.swing.JMenuItem();
         jCheckBoxMenuItem2 = new javax.swing.JCheckBoxMenuItem();
         jMenu7 = new javax.swing.JMenu();
+        jMenuItem35 = new javax.swing.JMenuItem();
         jMenuItem29 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
         jMenuItem20 = new javax.swing.JMenuItem();
@@ -1102,8 +1103,17 @@ public class AssemblerGui extends javax.swing.JFrame {
         jMenu7.setText("Run");
         jMenu7.setEnabled(false);
 
+        jMenuItem35.setText("Assemble");
+        jMenuItem35.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem35ActionPerformed(evt);
+            }
+        });
+        jMenu7.add(jMenuItem35);
+
         jMenuItem29.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F9, 0));
         jMenuItem29.setText("Compile");
+        jMenuItem29.setEnabled(false);
         jMenuItem29.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem29ActionPerformed(evt);
@@ -1112,6 +1122,7 @@ public class AssemblerGui extends javax.swing.JFrame {
         jMenu7.add(jMenuItem29);
 
         jMenuItem8.setText("Generate Files");
+        jMenuItem8.setEnabled(false);
         jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem8ActionPerformed(evt);
@@ -1120,6 +1131,7 @@ public class AssemblerGui extends javax.swing.JFrame {
         jMenu7.add(jMenuItem8);
 
         jMenuItem20.setText("Emulate");
+        jMenuItem20.setEnabled(false);
         jMenuItem20.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem20ActionPerformed(evt);
@@ -1128,6 +1140,7 @@ public class AssemblerGui extends javax.swing.JFrame {
         jMenu7.add(jMenuItem20);
 
         jMenuItem11.setText("Simulate");
+        jMenuItem11.setEnabled(false);
         jMenuItem11.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem11ActionPerformed(evt);
@@ -1136,6 +1149,7 @@ public class AssemblerGui extends javax.swing.JFrame {
         jMenu7.add(jMenuItem11);
 
         jMenuItem34.setText("Decode PNG");
+        jMenuItem34.setEnabled(false);
         jMenuItem34.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem34ActionPerformed(evt);
@@ -2015,6 +2029,23 @@ public class AssemblerGui extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem34ActionPerformed
 
+    private void jMenuItem35ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem35ActionPerformed
+        try{
+            String _filename = ((CodePanel)jTabbedPane1.getSelectedComponent()).saveFile();
+            
+            if(_filename != null){
+                String _outputName = _filename.lastIndexOf('.') == -1 ? _filename : _filename.substring(0, _filename.lastIndexOf('.'));
+                Assembler _assembler = new Assembler(_filename);
+                _assembler.run();
+                _assembler.writeBinFile(_outputName + ".bin");
+                _assembler.writeMemFile(_outputName + ".mem");
+            }
+        }catch(Exception _e){
+            JOptionPane.showMessageDialog(this, "Unable to assemble: " + _e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        
+    }//GEN-LAST:event_jMenuItem35ActionPerformed
+
     public void updateTabName(CodePanel _panel, String _tabName, boolean _modified){
         if(jTabbedPane1.indexOfComponent(_panel) < 0){
             return;
@@ -2143,6 +2174,7 @@ public class AssemblerGui extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem32;
     private javax.swing.JMenuItem jMenuItem33;
     private javax.swing.JMenuItem jMenuItem34;
+    private javax.swing.JMenuItem jMenuItem35;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;

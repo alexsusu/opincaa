@@ -107,7 +107,7 @@ private void removeThread() {
 }
 
 public void executeInstruction() {
-
+/*
 int _threadId;
 int _programCounter;
 Instruction _instruction = null;
@@ -930,7 +930,7 @@ Line _flag0 = arrayCore.getFlag(ArrayCore.FLAG_0);
     updateInstructions();
     activeThread = ThreadStatus.getNextThread(activeThread.getThreadId());
     ExecutionGui.lastGui.updateThreadsStatus(threads);
-
+*/
 }
 
 public int[][] getRegisterFile(){
@@ -947,18 +947,6 @@ public Statistics[] getStatistics() {
 
 public int getPcForThread(int _threadId) {
     return threads[_threadId].getProgramCounter();
-}
-
-private void executeBooleanInstruction(Instruction _instruction) {
-    switch(_instruction.booleanOpCode){
-        case Opcodes.bnop: break;
-        case Opcodes.rst: arrayCore.booleanReset(); break;
-        case Opcodes.endwhere: arrayCore.endwhere(); break;
-        case Opcodes.elsew: arrayCore.elsewhere(); break;
-        case Opcodes.wherenz: arrayCore.wherenz(_instruction.booleanOperand); break;
-        case Opcodes.wherez: arrayCore.wherez(_instruction.booleanOperand); break;
-        default: throw new RuntimeException("Instruction " + Opcodes.getNameByBooleanOpcode(_instruction.booleanOpCode) + " not yet implemented");
-    }
 }
 
 private boolean isControllerRegister(byte _register) {
