@@ -6,6 +6,10 @@
 
 using namespace std;
 
+int vector::dwBatch[][1000];
+int vector::dwInBatchCounter[];
+int vector::dwBatchIndex;
+
 FILE *pipe_read_32, *pipe_write_32;
 
 void Initialize()
