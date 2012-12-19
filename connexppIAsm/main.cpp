@@ -1,104 +1,96 @@
 #include <iostream>
-#include "include\vector.h"
 
-#include <stdio.h>
-#include <stdlib.h>
+#include "include\vector.h"
+#include "include\vector_registers.h"
 
 using namespace std;
 
-int vector::dwBatch[][1000];
-int vector::dwInBatchCounter[];
-int vector::dwBatchIndex;
+STATIC_VECTOR_DEFINITIONS;
 
-FILE *pipe_read_32, *pipe_write_32;
+// Make sure that batches do not ovelap !
+// BNR = Batch NumBer
 
-void Initialize()
+enum BatchNumbers
 {
-    if ((pipe_read_32 = fopen ("/dev/xillybus_read_mem2arm_32","rb")) == NULL)
-        perror("Failed to open the read pipe");
+    RADU_BNR = 0,
+    REDUCE_BNR = 1,
+    MAX_BNR = 99
+};
 
-    if ((pipe_write_32 = fopen ("/dev/xillybus_write_arm2mem_32","wb")) == NULL)
-        perror("Failed to open the write pipe");
+void InitKernel_Radu()
+{
+    BEGIN_BATCH(RADU_BNR);
+        NOP;
+        //LOCAL_STORE(100) = R4;
+        //R10 = LOCAL_STORE(0x32);
+        R0 = 0x140;
+        REDUCE(R3);
+        //MULT_RESULT = R1 * R2;
+        NOP;//CELL SHR R2 R3
+        NOP;//CELL SHL R3 R5
+        //LOCAL_STORE(R1) = R7;
+        SET_ACTIVE(WHERE_CARRY);
+        SET_ACTIVE(WHERE_EQ);
+        SET_ACTIVE(WHERE_LT);
+        SET_ACTIVE(ALL);
+        R1 = INDEX;
+        //R3 = LOCAL_STORE(R6);
+        //R3 = MULT_RESULT(LO);
+        R15 = SHIFT_REG;
+        //R31 = MULT_RESULT(HI);
+        R29 = R31 << R29;
+        //R20 = ISHL(R14, 8);
+        R2 = R1 + R2;
+        R5 = (R3 == R4); // collision with VLOAD !!
+        //R1 = !R3;
+        R3 = R1 >> R2;
+        //R5 = ISHR(R3,5);
+        R3 = R3 - R3;
+        R5 = R3 < R4;
+        R1 = R1 || R1;
+        //R3 = SHRA(R3, R3);
+        //R3 = ISHRA(R4, 9);
+        R4 = ADDC(R1, R2);
+        //R2 = ULT(R4, R3);
+        R10 = R6 && R5;
+        //R4 = SUBC(R4, R4);
+        R1 = R1 ^ R1;
+
+    END_BATCH(RADU_BNR);
 }
 
-vector R0(0,0),   R1(0,1),   R2(0,2),   R3(0,3),   R4(0,4),   R5(0,5),   R6(0,6),   R7(0,7);
-vector R8(0,8),   R9(0,9),   R10(0,10), R11(0,11), R12(0,12), R13(0,13), R14(0,14), R15(0,15);
-vector R16(0,16), R17(0,17), R18(0,18), R19(0,19), R20(0,20), R21(0,21), R22(0,22), R23(0,23);
-vector R24(0,24), R25(0,25), R26(0,26), R27(0,27), R28(0,28), R29(0,29), R30(0,30), R31(0,31);
 
-#define BEGIN_BATCH(x)  vector::setBatchIndex(x)
-#define END_BATCH(x)
-#define BATCH(x) x
-#define REDUCE(x)       vector::reduce(x)
-#define ADDC(x,y)       vector::addc(x,y)
-
-void InitKernel_0()
+void InitKernel_Reduce()
 {
-    BEGIN_BATCH(0);
-
-        R0 = R1 + R2;
-        R1 = 10;
-        /* ... */
-
-    END_BATCH(0);
-}
-
-void InitKernel_1()
-{
-    BEGIN_BATCH(1);
-
-        R0 = R1 - R2;
-        R1 = 13; //vload
-        R2 = ADDC(R1, R0);
-        /* ... */
-
-    END_BATCH(1);
-}
-
-void InitKernel_2()
-{
-    BEGIN_BATCH(1);
+    BEGIN_BATCH(REDUCE_BNR);
 
         R0 = R1 + R2;
         R1 = 13;
         /* ... */
         REDUCE(R0);
 
-    END_BATCH(2);
+    END_BATCH(REDUCE_BNR);
 }
 
-inline void ExecuteKernel(int batch_number)
+enum errorCodes
 {
-    fwrite(vector::dwBatch[batch_number], 1, 4*vector::dwInBatchCounter[vector::dwBatchIndex], pipe_write_32);
-}
-
-int ExecuteKernelRed(int batch_number)
-{
-    int data_read;
-    ExecuteKernel(batch_number);
-    if (fread(&data_read, 1, 4, pipe_read_32) == 4) return data_read;
-    else
-    {
-        perror("Failed to read from pipe !");
-        return 0;
-    }
-}
-
+    INIT_FAILED
+};
 int main()
 {
     int result;
     cout << "Initializing ... "<< endl;
-    Initialize();
+
+    //if (INIT() != PASS) return INIT_FAILED;
 
     cout << "Precacheing ... "<< endl; // Equivalent to assembling. Done once per program execution, at runtime.
-    InitKernel_0();
-    InitKernel_1();
-    InitKernel_2();
+    InitKernel_Radu();
+    VERIFY_KERNEL(RADU_BNR);
+    //InitKernel_Reduce();
 
     cout << "Starting computation ... "<< endl;
-    ExecuteKernel(0);
-    ExecuteKernel(1);
-    result = ExecuteKernelRed(2);
+    EXECUTE_KERNEL(RADU_BNR);
+    result = EXECUTE_KERNEL_RED(REDUCE_BNR);
     /* ... */
     return 0;
 }
