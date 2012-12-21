@@ -1,0 +1,39 @@
+# depslib dependency file v1.0
+1355711190 source:m:\doctorat\connexasm\connexppasm\connexppasm\main.cpp
+	<iostream>
+	"include\vector.h"
+	<stdio.h>
+	<stdlib.h>
+
+1355711210 m:\doctorat\connexasm\connexppasm\connexppasm\include\vector.h
+
+1355708469 source:m:\doctorat\connexasm\connexppasm\connexppasm\src\vector.cpp
+	"..\include\vector.h"
+
+1356082033 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\src\vector.cpp
+	"../include/vector.h"
+	"../include/opcodes.h"
+
+1356080517 m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\include\vector.h
+	<stdlib.h>
+	<stdio.h>
+
+1356080090 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\main.cpp
+	<iostream>
+	"include/vector_registers.h"
+
+1356038526 m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\include\vector_registers.h
+	"vector.h"
+
+1356081898 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\src\de_asm.cpp
+	"../include/vector.h"
+	"../include/opcodes.h"
+
+1356082029 m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\include\opcodes.h
+
+1356045983 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\src\simple_tests.cpp
+	"../include/vector_registers.h"
+
+1356034534 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\src\vector_registers.cpp
+	"../include/vector.h"
+

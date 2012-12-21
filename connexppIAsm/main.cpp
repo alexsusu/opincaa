@@ -1,12 +1,18 @@
 #include <iostream>
 
-#include "include\vector.h"
-#include "include\vector_registers.h"
+//#include "include/vector.h"
+#include "include/vector_registers.h"
 
 using namespace std;
 
-STATIC_VECTOR_DEFINITIONS;
+/*
 
+OPode INjection for Connex+Arm Architecture ;)
+O.P.I.N.C.A.A
+
+*/
+
+STATIC_VECTOR_DEFINITIONS;
 // Make sure that batches do not ovelap !
 // BNR = Batch NumBer
 
@@ -42,18 +48,18 @@ void InitKernel_Radu()
         //R20 = ISHL(R14, 8);
         R2 = R1 + R2;
         R5 = (R3 == R4); // collision with VLOAD !!
-        //R1 = !R3;
+        R1 = ~R3;
         R3 = R1 >> R2;
-        //R5 = ISHR(R3,5);
+        R5 = R3 >> 5;
         R3 = R3 - R3;
         R5 = R3 < R4;
-        R1 = R1 || R1;
-        //R3 = SHRA(R3, R3);
-        //R3 = ISHRA(R4, 9);
+        R1 = R1 | R1;
+        R3 = SHRA(R3, R3);
+        R3 = ISHRA(R4, 9);
         R4 = ADDC(R1, R2);
-        //R2 = ULT(R4, R3);
-        R10 = R6 && R5;
-        //R4 = SUBC(R4, R4);
+        R2 = ULT(R4, R3);
+        R10 = R6 & R5;
+        R4 = SUBC(R4, R4);
         R1 = R1 ^ R1;
 
     END_BATCH(RADU_BNR);
@@ -76,9 +82,15 @@ enum errorCodes
 {
     INIT_FAILED
 };
+
+extern int test_Simple_All();
 int main()
 {
     int result;
+    InitKernel_Radu();
+    vector::deasmKernel(RADU_BNR);
+    //test_Simple_All();
+    /*
     cout << "Initializing ... "<< endl;
 
     //if (INIT() != PASS) return INIT_FAILED;
@@ -91,6 +103,8 @@ int main()
     cout << "Starting computation ... "<< endl;
     EXECUTE_KERNEL(RADU_BNR);
     result = EXECUTE_KERNEL_RED(REDUCE_BNR);
+    */
+
     /* ... */
     return 0;
 }
