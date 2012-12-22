@@ -5,35 +5,85 @@
 	<stdio.h>
 	<stdlib.h>
 
+1356080517 
+
 1355711210 m:\doctorat\connexasm\connexppasm\connexppasm\include\vector.h
 
 1355708469 source:m:\doctorat\connexasm\connexppasm\connexppasm\src\vector.cpp
 	"..\include\vector.h"
 
-1356082033 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\src\vector.cpp
+1355708469 e\vector.h"
+
+1356216430 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\src\vector.cpp
 	"../include/vector.h"
+	"../include/vector_errors.h"
 	"../include/opcodes.h"
 
-1356080517 m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\include\vector.h
+1356081898 e/opcodes.h"
+
+1356218247 m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\include\vector.h
 	<stdlib.h>
 	<stdio.h>
 
-1356080090 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\main.cpp
+1356217301 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\main.cpp
 	<iostream>
 	"include/vector_registers.h"
 
-1356038526 m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\include\vector_registers.h
+1356080090 ector_registers.h"
+
+1356216963 m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\include\vector_registers.h
 	"vector.h"
 
-1356081898 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\src\de_asm.cpp
+1356217062 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\src\de_asm.cpp
 	"../include/vector.h"
 	"../include/opcodes.h"
 
-1356082029 m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\include\opcodes.h
+1356216518 m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\include\opcodes.h
 
-1356045983 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\src\simple_tests.cpp
+1356216229 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\src\simple_tests.cpp
 	"../include/vector_registers.h"
 
-1356034534 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\src\vector_registers.cpp
+1356045983 e/vector_registers.h"
+
+1356216939 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\src\vector_registers.cpp
+	"../include/vector.h"
+
+1356034534 e/vector.h"
+
+1356080090 source:/media/calin/Mare/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/main.cpp
+	<iostream>
+	"include/vector_registers.h"
+
+1356038526 /media/calin/Mare/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/include/vector_registers.h
+	"vector.h"
+
+1356080517 /media/calin/Mare/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/include/vector.h
+	<stdlib.h>
+	<stdio.h>
+
+1356081898 source:/media/calin/Mare/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/src/de_asm.cpp
+	"../include/vector.h"
+	"../include/opcodes.h"
+
+1356082029 /media/calin/Mare/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/include/opcodes.h
+
+1356045983 source:/media/calin/Mare/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/src/simple_tests.cpp
+	"../include/vector_registers.h"
+
+1356082033 source:/media/calin/Mare/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/src/vector.cpp
+	"../include/vector.h"
+	"../include/opcodes.h"
+
+1356034534 source:/media/calin/Mare/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/src/vector_registers.cpp
+	"../include/vector.h"
+
+1356088488 source:/media/calin/Mare/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/src/stubs.c
+	<sys/types.h>
+	<stdlib.h>
+
+1356216834 m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\include\vector_errors.h
+	"../include/vector.h"
+
+1356216812 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\connexppiasm\src\vector_errors.cpp
 	"../include/vector.h"
 

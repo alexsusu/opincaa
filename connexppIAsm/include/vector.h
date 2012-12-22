@@ -1,3 +1,11 @@
+/*
+ * File:   vector.h
+ *
+ * Counterpart for vector.c
+ * Contains class definition and some very useful macros.
+ *
+ */
+
 #ifndef VECTOR_H
 #define VECTOR_H
 
@@ -14,6 +22,12 @@
 #define ULT(x,y)        vector::ult(x,y)
 #define SHRA(x,y)       vector::shra(x,y)
 #define ISHRA(x,y)      vector::ishra(x,y)
+#define CELL_SHL(x,y)   vector::cellshl(x,y)
+#define CELL_SHR(x,y)   vector::cellshr(x,y)
+
+#define _LO(x)       vector::multlo(x)
+#define _HI(x)       vector::multhi(x)
+
 #define INIT()          vector::initialize()
 
 #define NOP             vector::nop()
@@ -27,6 +41,8 @@
 #define EXECUTE_KERNEL_RED(Batch)    vector::executeKernelRed(Batch)
 #define VERIFY_KERNEL(Batch)         vector::verifyKernel(Batch)
 #define DEASM_KERNEL(Batch)          vector::deasmKernel(Batch)
+#define FOUND_ERROR()                vector::foundError()
+#define GET_NUM_ERRORS()             vector::getNumErrors()
 
 #define UINT32 unsigned int
 #define UINT_INSTRUCTION UINT32
@@ -46,6 +62,7 @@
      belong to the class, not to a class's instantiation (object)
 
 */
+
 #define NUMBER_OF_BATCHES 10
 #define NUMBER_OF_INSTRUCTIONS_PER_BATCH 40
 
@@ -54,15 +71,20 @@
         extern UINT16 vector::dwInBatchCounter[NUMBER_OF_BATCHES];\
         extern UINT16 vector::dwBatchIndex;\
         extern FILE* vector::pipe_read_32;\
-        extern FILE* vector::pipe_write_32;
+        extern FILE* vector::pipe_write_32;\
+        extern int vector::dwErrorCounter
 
 #define PASS 0
 #define FAIL -1
 
-// There is no instruction with FF, so there is no chance to mistake the INDEX_MARKER
-// There is no instruction with FF, so there is no chance to mistake the SHIFTREG_MARKER
-#define INDEX_MARKER 0xFFFFFFFF
-#define SHIFTREG_MARKER 0xFFFFFFFE
+// There is no instruction opcode starting with FF, so there is no chance to mistake the INDEX_MARKER
+// There is no instruction opcode starting with FF, so there is no chance to mistake the SHIFTREG_MARKER
+// There is no instruction opcode starting with FF, so there is no chance to mistake the LOCALSTORE_MARKER
+// There is no instruction opcode starting with FF, so there is no chance to mistake the MULTIPLICATION_MARKER
+#define INDEX_MARKER    0xFFFFFFFF
+#define SHIFTREG_MARKER     0xFFFFFFFE
+#define LOCALSTORE_MARKER   0xFFFFFFFD
+#define MULTIPLICATION_MARKER 0xFFFFFFFC
 
 class vector
 {
@@ -71,8 +93,8 @@ class vector
         static UINT_INSTRUCTION dwBatch[NUMBER_OF_BATCHES][NUMBER_OF_INSTRUCTIONS_PER_BATCH];
         static UINT16 dwInBatchCounter[NUMBER_OF_BATCHES];
         static UINT16 dwBatchIndex;
-
         static FILE *pipe_read_32, *pipe_write_32;
+        static int dwErrorCounter;
 
         //methods: static
 
@@ -81,7 +103,12 @@ class vector
         static vector shra(vector other_left, vector other_right);
         static vector ishra(vector other_left, UINT_PARAM right);
 
-        static vector iwr(UINT_PARAM val);
+        static vector multhi(vector mult);
+        static vector multlo(vector mult);
+
+        static void cellshl(vector other_left, vector other_right);
+        static void cellshr(vector other_left, vector other_right);
+
         static void reduce(vector other_left);
         static vector ult(vector other_left, vector other_right);
         static void onlyOpcode(UINT_INSTRUCTION opcode);
@@ -91,6 +118,10 @@ class vector
         static void WhereEq();
         static void WhereLt();
         static void EndWhere();
+
+        static void vectorError(char*);
+        static int foundError();
+        static int getNumErrors();
 
         static void setBatchIndex(UINT16 BI);
         static int initialize();
@@ -102,14 +133,20 @@ class vector
 
         // methods: non-static
         vector(UINT_INSTRUCTION MainValue, UINT_INSTRUCTION IntermediateValue);
-        vector(UINT_INSTRUCTION MainValue, UINT_INSTRUCTION IntermediateValuem, UINT_INSTRUCTION OpCode);
+        vector(UINT_INSTRUCTION MainValue, UINT_INSTRUCTION IntermediateValue, UINT_INSTRUCTION OpCode);
+        vector(UINT_INSTRUCTION MainValue, UINT_INSTRUCTION IntermediateValue, UINT16 ImmVal, UINT_INSTRUCTION OpCode);
         virtual ~vector();
 
         // methods: non-static : overloaded operators
         vector operator+(vector);
+        //vector operator+=(vector);
         vector operator-(vector);
-        vector operator=(vector);
-        vector operator=(UINT_PARAM);
+        //vector operator-=(vector);
+
+        vector operator*(vector);
+
+        void operator=(vector);
+        void operator=(UINT_PARAM);
 
         vector operator~(void);
         vector operator|(vector);
@@ -119,11 +156,14 @@ class vector
         vector operator^(vector);
         vector operator>(vector);
 
+        vector operator[](vector);
+        vector operator[](UINT_PARAM);
+
         vector operator<<(vector);//shl
-        vector operator<<(UINT_PARAM val);//ishl
+        vector operator<<(UINT_PARAM);//ishl
 
         vector operator>>(vector);//shr
-        vector operator>>(UINT_PARAM val);//ishr
+        vector operator>>(UINT_PARAM);//ishr
 
     protected:
     private:

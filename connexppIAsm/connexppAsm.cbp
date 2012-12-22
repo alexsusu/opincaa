@@ -6,7 +6,7 @@
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Debug_x86">
+			<Target title="winDebug_x86">
 				<Option output="bin/Debug/connexppAsm" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
@@ -15,7 +15,7 @@
 					<Add option="-g" />
 				</Compiler>
 			</Target>
-			<Target title="Release_x86">
+			<Target title="winRelease_x86">
 				<Option output="bin/Release/connexppAsm" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Release/" />
 				<Option type="1" />
@@ -27,6 +27,27 @@
 					<Add option="-s" />
 				</Linker>
 			</Target>
+			<Target title="winDebug_ARM">
+				<Option output="bin/Debug/connexppAsm" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="armelfgcc" />
+			</Target>
+			<Target title="linDebug_x86">
+				<Option output="bin/Debug/connexppAsm" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="linDebug_ARM">
+				<Option output="bin/Debug/connexppAsm" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="armelfgcc" />
+			</Target>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
@@ -34,11 +55,13 @@
 		</Compiler>
 		<Unit filename="include/opcodes.h" />
 		<Unit filename="include/vector.h" />
+		<Unit filename="include/vector_errors.h" />
 		<Unit filename="include/vector_registers.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/de_asm.cpp" />
 		<Unit filename="src/simple_tests.cpp" />
 		<Unit filename="src/vector.cpp" />
+		<Unit filename="src/vector_errors.cpp" />
 		<Unit filename="src/vector_registers.cpp" />
 		<Extensions>
 			<code_completion />

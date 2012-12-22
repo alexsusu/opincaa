@@ -1,4 +1,12 @@
 
+/*
+ * File:   de_asm.h
+ *
+ * Contains methods for disassembling the assembled instructions.
+ * This is very useful to see whether an instruction has the correct format.
+ *
+ */
+
 #include "../include/vector.h"
 #include "../include/opcodes.h"
 
@@ -34,12 +42,12 @@ OpCodeDeAsm OpCodeDeAsms[] =
     {_CELL_SHR,"CELL_SHR"},
     {_READ,"READ"},
     {_WRITE,"WRITE"},
-    {_MULT,"MULT"},
-    {_MULTL,"MULTL"},
-    {_MULTH,"MULTH"},
+    {_MULT,"*"},
+    {_MULT_LO,"_LO (MULT)"},
+    {_MULT_HI,"_HI (MULT)"},
     {_VLOAD,"VLOAD"},
-    {_IRD,"IRD"},
-    {_IWR,"IWR"},
+    {_IREAD,"IREAD"},
+    {_IWRITE,"IWRITE"},
     {_WHERE_CRY,"SET_ACTIVE(WHERE_CARRY)"},
     {_WHERE_EQ,"SET_ACTIVE(WHERE_EQUAL)"},
     {_WHERE_LT,"SET_ACTIVE(WHERE_LESS_THAN)"},
@@ -51,9 +59,9 @@ OpCodeDeAsm OpCodeDeAsms[] =
 int vector::verifyKernelInstruction(UINT_INSTRUCTION CurrentInstruction)
 {
     int index;
-    if  ( (GET_OPCODE_9BITS(CurrentInstruction) == _VLOAD) ||
-          (GET_OPCODE_9BITS(CurrentInstruction) == _IRD) ||
-          (GET_OPCODE_9BITS(CurrentInstruction) == _IWR)
+    if  ( (GET_OPCODE_6BITS(CurrentInstruction) == _VLOAD) ||
+          (GET_OPCODE_6BITS(CurrentInstruction) == _IREAD) ||
+          (GET_OPCODE_6BITS(CurrentInstruction) == _IWRITE)
          )
         return PASS;
 
@@ -88,8 +96,8 @@ char* getOpCodeName(int instruction)
 }
 
 void printVLOAD(UINT_INSTRUCTION instr) {    printf("R%u = %u (zis si 0x%x)\n", GET_DEST(instr), GET_IMM(instr), GET_IMM(instr));}
-void printIRD(UINT_INSTRUCTION instr) {    printf("R%d = LS[%d]\n", GET_DEST(instr), GET_IMM(instr));}
-void printIWR(UINT_INSTRUCTION instr) {    printf("LS[%d] = R%d\n", GET_IMM(instr), GET_LEFT(instr));}
+void printIREAD(UINT_INSTRUCTION instr) {    printf("R%d = LS [%d]\n", GET_DEST(instr), GET_IMM(instr));}
+void printIWRITE(UINT_INSTRUCTION instr) {    printf("LS [%d] = R%d\n", GET_IMM(instr), GET_LEFT(instr));}
 
 /* LRD = Left Right Destination
     P = paranthesis
@@ -108,10 +116,10 @@ void printRED(UINT_INSTRUCTION instr){   printf("REDUCE(%d)\n", GET_LEFT(instr))
 void printNOT(UINT_INSTRUCTION instr){   printf("R%d = %sR%d\n", GET_DEST(instr),getOpCodeName(instr),GET_LEFT(instr));}
 
 void printCELL_SHLR(UINT_INSTRUCTION instr){   printf("SHIFT_REG = R%d then %s by R%d positions \n", GET_LEFT(instr),getOpCodeName(instr),GET_RIGHT(instr));}
-void printREAD(UINT_INSTRUCTION instr){   printf("R%d = LS[R%d]\n", GET_DEST(instr),GET_RIGHT(instr));}
-void printWRITE(UINT_INSTRUCTION instr){   printf("LS[R%d] = R%d\n", GET_RIGHT(instr),GET_LEFT(instr));}
+void printREAD(UINT_INSTRUCTION instr){   printf("R%d = LS [R%d]\n", GET_DEST(instr),GET_RIGHT(instr));}
+void printWRITE(UINT_INSTRUCTION instr){   printf("LS [R%d] = R%d\n", GET_RIGHT(instr),GET_LEFT(instr));}
 
-void printMULT(UINT_INSTRUCTION instr){   printf("R%d %s R%d\n", GET_LEFT(instr), getOpCodeName(instr), GET_RIGHT(instr));}
+void printMULT(UINT_INSTRUCTION instr){   printf("MULT = R%d %s R%d\n", GET_LEFT(instr), getOpCodeName(instr), GET_RIGHT(instr));}
 void printMULTLH(UINT_INSTRUCTION instr){   printf("R%d = %s\n", GET_DEST(instr), getOpCodeName(instr));}
 
 int vector::deasmKernel(UINT16 dwBatchNumber)
@@ -130,8 +138,8 @@ int vector::deasmKernel(UINT16 dwBatchNumber)
         switch (((*CurrentInstruction) >> OPCODE_6BITS_POS) & ((1 << OPCODE_6BITS_SIZE)-1))
             {
                 case _VLOAD: {printVLOAD(*CurrentInstruction);continue;}
-                case _IRD: {printIRD(*CurrentInstruction);continue;}
-                case _IWR: {printIWR(*CurrentInstruction);continue;}
+                case _IREAD: {printIREAD(*CurrentInstruction);continue;}
+                case _IWRITE: {printIWRITE(*CurrentInstruction);continue;}
             }
 
         switch (((*CurrentInstruction) >> OPCODE_9BITS_POS) & ((1 << OPCODE_9BITS_SIZE)-1))
@@ -170,8 +178,8 @@ int vector::deasmKernel(UINT16 dwBatchNumber)
 
                 case _MULT:  printMULT(*CurrentInstruction);continue;
 
-                case _MULTH:
-                case _MULTL: printMULTLH(*CurrentInstruction);continue;
+                case _MULT_HI:
+                case _MULT_LO: printMULTLH(*CurrentInstruction);continue;
 
                 case _WHERE_CRY:
                 case _WHERE_EQ:

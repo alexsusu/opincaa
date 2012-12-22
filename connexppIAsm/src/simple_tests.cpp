@@ -1,4 +1,11 @@
-//#include "../include/vector.h"
+/*
+ *
+ * File: simple_tests.cpp
+ *
+ * Simple tests for all instructions on connex machine.
+ * Each instruction is tested via one bacth that uses reduction for checking the result
+ *
+ */
 #include "../include/vector_registers.h"
 
 using namespace std;

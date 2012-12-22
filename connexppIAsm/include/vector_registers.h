@@ -1,3 +1,10 @@
+/*
+ * File:   vector_registers.h
+ *
+ * Contains the declaration of the only allowed vector objects.
+ *
+ */
+
 #ifndef VECTOR_REGISTERS_H
 #define VECTOR_REGISTERS_H
 
@@ -12,5 +19,7 @@ extern vector R24,  R25,  R26,  R27,  R28,  R29,  R30,  R31;
 
 extern vector INDEX;
 extern vector SHIFT_REG;
+extern vector LS;
+extern vector MULT;
 
 #endif // VECTOR_H

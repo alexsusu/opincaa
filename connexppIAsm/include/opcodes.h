@@ -1,3 +1,11 @@
+/*
+ * File:   opcodes.h
+ *
+ * Contains connex-opcodes and opcode-manipulation macros for instruction composition
+ *
+ *
+ */
+
 #ifndef OPCODES_H
 #define OPCODES_H
 
@@ -26,6 +34,13 @@
     #define GET_OPCODE_6BITS(x) ((x >> OPCODE_6BITS_POS) & ((1 << OPCODE_6BITS_SIZE)-1))
     #define GET_OPCODE_9BITS(x) ((x >> OPCODE_9BITS_POS) & ((1 << OPCODE_9BITS_SIZE)-1))
 
+    /* 9-bit invalid opcodes (to cause error on verify)
+        This is used to mark invalid parameres */
+    // cannot use this: problem is in subscript operator: in case of write it does not return a value !
+    //#define _INVALID_PARAM          0b111000000
+    //#define _INVALID_DESTINATION    0b111000001
+    //#define _INVALID_SOURCE         0b111000010
+
     /* 9-bit opcodes (instruction will NOT have immediate value) */
     #define _ADD     0b101000100
     #define _ADDC    0b101100100
@@ -50,11 +65,13 @@
     #define _LDSH    0b100110000
     #define _CELL_SHL 0b100010010
     #define _CELL_SHR 0b100010001
+
     #define _READ    0b100100100
     #define _WRITE   0b100010100
+
     #define _MULT    0b100001000
-    #define _MULTL   0b100101000
-    #define _MULTH   0b100111000
+    #define _MULT_LO   0b100101000
+    #define _MULT_HI   0b100111000
 
     #define _WHERE_CRY 0b100011100
     #define _WHERE_EQ  0b100011101
@@ -64,9 +81,9 @@
     #define _NOP       0b000000000
 
     /* 6-bit opcodes (instruction will have immediate value) */
-    #define _VLOAD   0b110101
-    #define _IRD     0b110100
-    #define _IWR     0b110010
+    #define _VLOAD     0b110101
+    #define _IREAD     0b110100
+    #define _IWRITE    0b110010
 
 
 #endif // OPCODES_H
