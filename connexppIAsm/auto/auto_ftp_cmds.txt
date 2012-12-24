@@ -1,0 +1,21 @@
+cd connexppIAsm
+
+mkdir src
+cd src
+mput src\*.*
+cd ..
+
+mkdir include
+cd include
+mput include\*.*
+cd ..
+
+mkdir auto
+cd auto
+mput auto\*.*
+cd ..
+
+mput *.*
+
+cd ..
+bye

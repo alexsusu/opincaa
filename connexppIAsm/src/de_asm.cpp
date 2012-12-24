@@ -14,7 +14,7 @@
 struct OpCodeDeAsm
 {
     UINT_INSTRUCTION opcode;
-    char* opcodeName;
+    const char* opcodeName;
 };
 
 OpCodeDeAsm OpCodeDeAsms[] =
@@ -58,7 +58,7 @@ OpCodeDeAsm OpCodeDeAsms[] =
 
 int vector::verifyKernelInstruction(UINT_INSTRUCTION CurrentInstruction)
 {
-    int index;
+    UINT16 index;
     if  ( (GET_OPCODE_6BITS(CurrentInstruction) == _VLOAD) ||
           (GET_OPCODE_6BITS(CurrentInstruction) == _IREAD) ||
           (GET_OPCODE_6BITS(CurrentInstruction) == _IWRITE)
@@ -84,9 +84,9 @@ int vector::verifyKernel(UINT16 dwBatchNumber)
     return PASS;
 }
 
-char* getOpCodeName(int instruction)
+const char* getOpCodeName(UINT_INSTRUCTION instruction)
 {
-    int index;
+    UINT16 index;
     instruction = GET_OPCODE_9BITS(instruction);
 
     for (index = 0; index < sizeof(OpCodeDeAsms) / sizeof (OpCodeDeAsm); index++)
@@ -111,7 +111,7 @@ void printLDIX(UINT_INSTRUCTION instr){   printf("R%d = INDEX\n", GET_DEST(instr
 void printLDSH(UINT_INSTRUCTION instr){   printf("R%d = SHIFT_REG\n", GET_DEST(instr));}
 
 void printWN(UINT_INSTRUCTION instr){   printf("%s\n", getOpCodeName(instr));}
-void printRED(UINT_INSTRUCTION instr){   printf("REDUCE(%d)\n", GET_LEFT(instr));}
+void printRED(UINT_INSTRUCTION instr){   printf("REDUCE(R%d)\n", GET_LEFT(instr));}
 
 void printNOT(UINT_INSTRUCTION instr){   printf("R%d = %sR%d\n", GET_DEST(instr),getOpCodeName(instr),GET_LEFT(instr));}
 

@@ -15,6 +15,10 @@
 #include "../include/vector.h"
 #include "../include/vector_errors.h"
 #include "../include/opcodes.h"
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
 vector::vector(UINT_INSTRUCTION main_val, UINT_INSTRUCTION intermediate_val)
 {
@@ -212,18 +216,39 @@ void vector::EndWhere() {onlyOpcode(_END_WHERE);}
 
 int vector::initialize()
 {
-    if ((pipe_read_32 = fopen ("/dev/xillybus_read_mem2arm_32","rb")) == NULL)
+    int result = PASS;
+    if ((pipe_read_32 = open ("/dev/xillybus_read_array2arm_32",O_RDONLY)) == -1)
     {
         perror("Failed to open the read pipe");
-        return -1;
+        result = FAIL;
     }
 
 
-    if ((pipe_write_32 = fopen ("/dev/xillybus_write_arm2mem_32","wb")) == NULL)
+    if ((pipe_write_32 = open ("/dev/xillybus_write_arm2array_32",O_WRONLY)) == -1)
     {
         perror("Failed to open the write pipe");
-        return -1;
+        result = FAIL;
     }
+
+    return result;
+}
+
+int vector::deinitialize()
+{
+    int result = PASS;
+    if (close(pipe_read_32)  == -1)
+    {
+        perror("Failed to open the read pipe");
+        result = FAIL;
+    }
+
+    if (close(pipe_write_32) == -1)
+    {
+        perror("Failed to open the write pipe");
+        result = FAIL;
+    }
+
+    return result;
 }
 
 void vector::setBatchIndex(UINT16 BI)
@@ -234,14 +259,15 @@ void vector::setBatchIndex(UINT16 BI)
 
 void vector::executeKernel(UINT16 dwBatchNumber)
 {
-    fwrite(dwBatch[dwBatchNumber], 1, 4*dwInBatchCounter[dwBatchNumber], pipe_write_32);
+    write(pipe_write_32, dwBatch[dwBatchNumber], 4*dwInBatchCounter[dwBatchNumber]);
+
 }
 
 int vector::executeKernelRed(UINT16 dwBatchNumber)
 {
     int data_read;
     executeKernel(dwBatchNumber);
-    if (fread(&data_read, 1, 4, pipe_read_32) == 4) return data_read;
+    if (read(pipe_read_32,&data_read, 4 ) == 4) return data_read;
     else
     {
         perror("Failed to read from pipe !");

@@ -6,7 +6,7 @@
  * O.P.I.N.C.A.A
  * OPINCA is an kind of asm for connex-arm system, but with c-like compiler interface.
  *
- * Kernel = just like in CUDA, kernel is the function that runs in paralle on connex vector-machine.
+ * Kernel = just like in CUDA, kernel is the function that runs in parallel on connex vector-machine.
  * Batch = a sequence of (logically) grouped instructions, that contain no more than one REDUCTION instruction
  *
  * Concept is:
@@ -28,6 +28,7 @@
  */
 
 #include <iostream>
+#include <limits>
 
 #include "include/vector_registers.h"
 using namespace std;
@@ -46,7 +47,7 @@ enum BatchNumbers
 void InitKernel_Radu()
 {
     BEGIN_BATCH(RADU_BNR);
-
+        SET_ACTIVE(ALL);
         NOP;
         LS[100] = R4;
         R10 = LS[0x32];
@@ -99,21 +100,26 @@ void InitKernel_Reduce()
     END_BATCH(REDUCE_BNR);
 }
 
-/*
 enum errorCodes
 {
     INIT_FAILED
 };
-*/
 
 extern int test_Simple_All();
 int main()
 {
-    int result;
-    InitKernel_Radu();
-    DEASM_KERNEL(RADU_BNR);
-    if (FOUND_ERROR()) cout<<GET_NUM_ERRORS()<<" error(s) found ! \n";
-    //test_Simple_All();
+    //int result;
+    //InitKernel_Radu();
+    //DEASM_KERNEL(RADU_BNR);
+    //if (FOUND_ERROR()) cout<<GET_NUM_ERRORS()<<" error(s) found ! \n";
+
+    //if (INIT() != PASS) return INIT_FAILED;
+    INIT();
+    test_Simple_All();
+    DEINIT();
+    std::cout << "Press ENTER to continue...";
+    std::cin.ignore( std::numeric_limits <std::streamsize> ::max(), '\n' );
+
     /*
     cout << "Initializing ... "<< endl;
 

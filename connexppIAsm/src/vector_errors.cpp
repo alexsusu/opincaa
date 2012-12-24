@@ -7,7 +7,7 @@
 
 #include "../include/vector.h"
 
-void vector::vectorError(char *Msg)
+void vector::vectorError(const char *Msg)
 {
     printf("Error: %s \n", Msg);
     dwErrorCounter++;

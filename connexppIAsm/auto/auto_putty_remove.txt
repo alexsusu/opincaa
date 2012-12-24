@@ -1,0 +1,6 @@
+cd Desktop 
+
+rm -rf connexppIAsm 
+mkdir connexppIAsm
+chmod 777 connexppIAsm/
+exit

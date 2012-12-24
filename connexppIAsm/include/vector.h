@@ -9,7 +9,7 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#include <stdlib.h>
+//#include <stdlib.h>
 #include <stdio.h>
 
 #define BEGIN_BATCH(x)  vector::setBatchIndex(x)
@@ -29,6 +29,7 @@
 #define _HI(x)       vector::multhi(x)
 
 #define INIT()          vector::initialize()
+#define DEINIT()        vector::deinitialize()
 
 #define NOP             vector::nop()
 #define SET_ACTIVE(x)   x
@@ -44,10 +45,13 @@
 #define FOUND_ERROR()                vector::foundError()
 #define GET_NUM_ERRORS()             vector::getNumErrors()
 
+#define UINT16 unsigned short int
 #define UINT32 unsigned int
+#define UINT64 unsigned long long int
+#define INT64  long long int
+
 #define UINT_INSTRUCTION UINT32
 #define UINT_PARAM UINT32
-#define UINT16 unsigned short int
 
 /* Unfortunately, static is a great example of how NOT to design a language:
     If you have a class (with regular class.h, and class.c) static fields must
@@ -70,8 +74,8 @@
         extern UINT_INSTRUCTION vector::dwBatch[NUMBER_OF_BATCHES][NUMBER_OF_INSTRUCTIONS_PER_BATCH];\
         extern UINT16 vector::dwInBatchCounter[NUMBER_OF_BATCHES];\
         extern UINT16 vector::dwBatchIndex;\
-        extern FILE* vector::pipe_read_32;\
-        extern FILE* vector::pipe_write_32;\
+        extern int vector::pipe_read_32;\
+        extern int vector::pipe_write_32;\
         extern int vector::dwErrorCounter
 
 #define PASS 0
@@ -93,7 +97,7 @@ class vector
         static UINT_INSTRUCTION dwBatch[NUMBER_OF_BATCHES][NUMBER_OF_INSTRUCTIONS_PER_BATCH];
         static UINT16 dwInBatchCounter[NUMBER_OF_BATCHES];
         static UINT16 dwBatchIndex;
-        static FILE *pipe_read_32, *pipe_write_32;
+        static int pipe_read_32, pipe_write_32;
         static int dwErrorCounter;
 
         //methods: static
@@ -119,12 +123,13 @@ class vector
         static void WhereLt();
         static void EndWhere();
 
-        static void vectorError(char*);
+        static void vectorError(const char*);
         static int foundError();
         static int getNumErrors();
 
         static void setBatchIndex(UINT16 BI);
         static int initialize();
+        static int deinitialize();
         static void executeKernel(UINT16 dwBatchNumber);
         static int executeKernelRed(UINT16 dwBatchNumber);
         static int verifyKernel(UINT16 dwBatchNumber);
