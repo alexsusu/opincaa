@@ -44,7 +44,6 @@
 			</Target>
 			<Target title="linDeployArm">
 				<Option output=".exe" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="" />
 				<Option object_output="M:/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/.objs" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -58,12 +57,17 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="include/io_unit.h" />
 		<Unit filename="include/opcodes.h" />
 		<Unit filename="include/vector.h" />
 		<Unit filename="include/vector_errors.h" />
 		<Unit filename="include/vector_registers.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/de_asm.cpp" />
+		<Unit filename="src/io_system.cpp">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="src/io_unit.cpp" />
 		<Unit filename="src/simple_tests.cpp" />
 		<Unit filename="src/vector.cpp" />
 		<Unit filename="src/vector_errors.cpp" />

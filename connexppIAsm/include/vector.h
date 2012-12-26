@@ -11,6 +11,7 @@
 
 //#include <stdlib.h>
 #include <stdio.h>
+#include "types.h"
 
 #define BEGIN_BATCH(x)  vector::setBatchIndex(x)
 #define END_BATCH(x)
@@ -45,11 +46,6 @@
 #define FOUND_ERROR()                vector::foundError()
 #define GET_NUM_ERRORS()             vector::getNumErrors()
 
-#define UINT16 unsigned short int
-#define UINT32 unsigned int
-#define UINT64 unsigned long long int
-#define INT64  long long int
-
 #define UINT_INSTRUCTION UINT32
 #define UINT_PARAM UINT32
 
@@ -77,9 +73,6 @@
         extern int vector::pipe_read_32;\
         extern int vector::pipe_write_32;\
         extern int vector::dwErrorCounter
-
-#define PASS 0
-#define FAIL -1
 
 // There is no instruction opcode starting with FF, so there is no chance to mistake the INDEX_MARKER
 // There is no instruction opcode starting with FF, so there is no chance to mistake the SHIFTREG_MARKER

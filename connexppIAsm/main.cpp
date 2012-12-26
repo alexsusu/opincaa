@@ -19,6 +19,7 @@
  *   v0.1 - proof of concept: two instructions and the two main functions:
  *   v0.2 - added more instructions and de-asm module for checkup
  *   v0.3 - "final draft" implementation: has all instructions; added error checks and functions
+ *   v0.4 - added io_unit module (for transfers via IO). UNTESTED.
  *
  *   TODO: add parameters in kernel-init functions.
  *
