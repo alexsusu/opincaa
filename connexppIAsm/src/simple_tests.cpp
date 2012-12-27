@@ -70,7 +70,7 @@ void InitKernel_Subc(int BatchNumber,INT64 Param1, INT64 Param2)
 
         R1 = Param1;
         R2 = Param2;
-        R3 = R1 - R2;
+        R3 = SUBC(R1,R2);
         REDUCE(R3);
     END_BATCH(BatchNumber);
 }
