@@ -159,7 +159,8 @@ void InitKernel_Shl(int BatchNumber,INT64 Param1, INT64 Param2)
     BEGIN_BATCH(BatchNumber);
         SET_ACTIVE(ALL);
         R1 = Param1;
-        R3 = (R1 << Param2 );
+        R2 = Param2;
+        R3 = (R1 << R2);
         REDUCE(R3);
     END_BATCH(BatchNumber);
 }
@@ -169,7 +170,8 @@ void InitKernel_Shr(int BatchNumber,INT64 Param1, INT64 Param2)
     BEGIN_BATCH(BatchNumber);
         SET_ACTIVE(ALL);
         R1 = Param1;
-        R3 = (R1 >> Param2 );
+        R2 = Param2;
+        R3 = (R1 >> R2 );
         REDUCE(R3);
     END_BATCH(BatchNumber);
 }
