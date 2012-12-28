@@ -4,7 +4,7 @@
  *
  * OPode INjection for Connex+Arm Architecture ;)
  * O.P.I.N.C.A.A
- * OPINCA is an kind of asm for connex-arm system, but with c-like compiler interface.
+ * OPINCAA is an kind of asm for connex-arm system, but with c-like compiler interface.
  *
  * Kernel = just like in CUDA, kernel is the function that runs in parallel on connex vector-machine.
  * Batch = a sequence of (logically) grouped instructions, that contain no more than one REDUCTION instruction
@@ -20,6 +20,10 @@
  *   v0.2 - added more instructions and de-asm module for checkup
  *   v0.3 - "final draft" implementation: has all instructions; added error checks and functions
  *   v0.4 - added io_unit module (for transfers via IO). UNTESTED.
+ *   v0.4.1 - Lucian: fixed subc test
+ *   v0.4.2 - Radu & Lucian: fixed simpletests.
+ *   v0.5   - Radu: added verilog-simulation mode
+ *   v0.5.1 - code clean-up
  *
  *   TODO: add parameters in kernel-init functions.
  *
@@ -112,31 +116,24 @@ extern int test_Simple_All();
 int main(int argc, char *argv[])
 {
     int i;
-    int simulation;
-    FILE * file;
-    
+    int run_mode = REAL_HARDWARE_MODE;
     //look for simulation option in arguments
     for(i=0;i<argc;i++){
         if(strcmp(argv[i],"--simulation") == 0){
             std::cout << "Running in simulation mode" << endl;
-            //open and close files to make sure they exist
-            file = fopen("program.data","w");
-            fclose(file);
-            file = fopen("reduction.data","w");
-            fclose(file);
             //set simulation flag
-            simulation = 1;
+            run_mode = VERILOG_SIMULATION_MODE;
             break;
         }
     }
-    
+
     //int result;
     //InitKernel_Radu();
     //DEASM_KERNEL(RADU_BNR);
     //if (FOUND_ERROR()) cout<<GET_NUM_ERRORS()<<" error(s) found ! \n";
 
     //if (INIT() != PASS) return INIT_FAILED;
-    INIT(simulation);
+    INIT(run_mode);
     test_Simple_All();
     DEINIT();
     std::cout << "Press ENTER to continue...";

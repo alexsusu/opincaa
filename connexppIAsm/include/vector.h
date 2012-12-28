@@ -63,7 +63,7 @@
 
 */
 
-#define NUMBER_OF_BATCHES 20
+#define NUMBER_OF_BATCHES 100
 #define NUMBER_OF_INSTRUCTIONS_PER_BATCH 40
 
 #define STATIC_VECTOR_DEFINITIONS\
@@ -94,6 +94,7 @@ class vector
         static int dwErrorCounter;
 
         //methods: static
+        static void appendInstruction(UINT_INSTRUCTION instr);
 
         static vector addc(vector other_left, vector other_right);
         static vector subc(vector other_left, vector other_right);
@@ -121,7 +122,7 @@ class vector
         static int getNumErrors();
 
         static void setBatchIndex(UINT16 BI);
-        static int initialize(int);
+        static int initialize(UINT8 RunningMode);
         static int deinitialize();
         static void executeKernel(UINT16 dwBatchNumber);
         static int executeKernelRed(UINT16 dwBatchNumber);

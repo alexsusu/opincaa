@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+
 vector::vector(UINT_INSTRUCTION main_val, UINT_INSTRUCTION intermediate_val)
 {
     mval = main_val;
@@ -49,9 +50,17 @@ vector::~vector()
     //dtor
 }
 
+void vector::appendInstruction(UINT_INSTRUCTION instr)
+{
+    dwBatch[dwBatchIndex][dwInBatchCounter[dwBatchIndex]++] = instr;
+}
+
+
 /****************************************************************************************************************************\
  *********************************************          OPERATORS           *************************************************
  \***************************************************************************************************************************/
+
+
 
 /* BINM = binary operators: for use with binary operators that use two operands but not self */
 /* These functions will be static, to highlight non-use of self */
@@ -147,12 +156,12 @@ vector vector::subc(vector other_left, vector other_right) {RETURN_NEW_OBJ_BIN(_
 
 void vector::cellshl(vector other_left, vector other_right)
 {
-    dwBatch[dwBatchIndex][dwInBatchCounter[dwBatchIndex]++] = (_CELL_SHL << OPCODE_9BITS_POS) + (other_left.mval << LEFT_POS) + (other_right.mval << RIGHT_POS);
+    appendInstruction((_CELL_SHL << OPCODE_9BITS_POS) + (other_left.mval << LEFT_POS) + (other_right.mval << RIGHT_POS));
 };
 
 void vector::cellshr(vector other_left, vector other_right)
 {
-    dwBatch[dwBatchIndex][dwInBatchCounter[dwBatchIndex]++] = (_CELL_SHR << OPCODE_9BITS_POS) + (other_left.mval << LEFT_POS) + (other_right.mval << RIGHT_POS);
+    appendInstruction((_CELL_SHR << OPCODE_9BITS_POS) + (other_left.mval << LEFT_POS) + (other_right.mval << RIGHT_POS));
 };
 
 // ldix, ldsh, any other op
@@ -160,33 +169,33 @@ void vector::operator=(vector other)
 {
     if ((other.mval == INDEX_MARKER) && (other.ival == INDEX_MARKER)) //ldix
     {
-        dwBatch[dwBatchIndex][dwInBatchCounter[dwBatchIndex]++] = (_LDIX << OPCODE_9BITS_POS) + mval;
+        appendInstruction((_LDIX << OPCODE_9BITS_POS) + mval);
     }
     else if ((other.mval == SHIFTREG_MARKER) && (other.ival == SHIFTREG_MARKER)) //ldsh
     {
-        dwBatch[dwBatchIndex][dwInBatchCounter[dwBatchIndex]++] = (_LDSH << OPCODE_9BITS_POS) + mval;
+        appendInstruction((_LDSH << OPCODE_9BITS_POS) + mval);
     }
     else if (other.mval == LOCALSTORE_MARKER) //read from local sstore. "other" is vector_localstore[vector rX] !
     {
         if (other.imval == 0) // LS[REG], non immediate
-            dwBatch[dwBatchIndex][dwInBatchCounter[dwBatchIndex]++] = (_READ << OPCODE_9BITS_POS) + other.ival + mval;
+            appendInstruction((_READ << OPCODE_9BITS_POS) + other.ival + mval);
         else // LS[value], immediate
-            dwBatch[dwBatchIndex][dwInBatchCounter[dwBatchIndex]++] = (_IREAD << OPCODE_6BITS_POS) + other.ival + mval;
+            appendInstruction((_IREAD << OPCODE_6BITS_POS) + other.ival + mval);
     }
     else if (mval == LOCALSTORE_MARKER) //write in local sstore. "other" a vector rX !
     {
         if (imval == 0) // LS[REG], non immediate
-            dwBatch[dwBatchIndex][dwInBatchCounter[dwBatchIndex]++] = (_WRITE << OPCODE_9BITS_POS) + ival + (other.mval << LEFT_POS);
+            appendInstruction((_WRITE << OPCODE_9BITS_POS) + ival + (other.mval << LEFT_POS));
         else
-            dwBatch[dwBatchIndex][dwInBatchCounter[dwBatchIndex]++] = (_IWRITE << OPCODE_6BITS_POS) + ival + (other.mval << LEFT_POS);
+            appendInstruction((_IWRITE << OPCODE_6BITS_POS) + ival + (other.mval << LEFT_POS));
     }
     else if (mval == MULTIPLICATION_MARKER) // MULT = Rx * Ry
     {
-        dwBatch[dwBatchIndex][dwInBatchCounter[dwBatchIndex]++] = (_MULT << OPCODE_9BITS_POS) + (other.ival);
+        appendInstruction((_MULT << OPCODE_9BITS_POS) + (other.ival));
     }
     else // including MULT_LO / HI
     {
-        dwBatch[dwBatchIndex][dwInBatchCounter[dwBatchIndex]++] = (other.opcode << OPCODE_9BITS_POS) + (other.ival + mval);
+        appendInstruction((other.opcode << OPCODE_9BITS_POS) + (other.ival + mval));
         opcode = _NOP;
     }
 }
@@ -195,17 +204,17 @@ void vector::operator=(vector other)
 void vector::operator=(UINT_PARAM imm_val)
 {
     if (imm_val > IMM_VAL_MAX) vectorError(ERR_IMM_VALUE_OUT_OF_RANGE);
-    dwBatch[dwBatchIndex][dwInBatchCounter[dwBatchIndex]++]  = (_VLOAD << OPCODE_6BITS_POS) + ((imm_val << IMMEDIATE_VALUE_POS)  + mval); // vload
+    appendInstruction((_VLOAD << OPCODE_6BITS_POS) + ((imm_val << IMMEDIATE_VALUE_POS)  + mval)); // vload
 }
 
 void vector::reduce(vector other_left)
 {
-    dwBatch[dwBatchIndex][dwInBatchCounter[dwBatchIndex]++] = (_REDUCE << OPCODE_9BITS_POS) + (other_left.mval << LEFT_POS);
+    appendInstruction((_REDUCE << OPCODE_9BITS_POS) + (other_left.mval << LEFT_POS));
 }
 
 void vector::onlyOpcode(UINT_INSTRUCTION opcode)
 {
-    dwBatch[dwBatchIndex][dwInBatchCounter[dwBatchIndex]++] = (opcode << OPCODE_9BITS_POS);
+    appendInstruction((opcode << OPCODE_9BITS_POS));
 }
 
 void vector::nop() {vector::onlyOpcode(_NOP);}
@@ -214,19 +223,34 @@ void vector::WhereEq() {onlyOpcode(_WHERE_EQ);}
 void vector::WhereLt() {onlyOpcode(_WHERE_LT);}
 void vector::EndWhere() {onlyOpcode(_END_WHERE);}
 
-int vector::initialize(int simulation)
+int vector::initialize(UINT8 RunningMode)
 {
     int result = PASS;
-    
-    if(simulation){
+
+    if(RunningMode == VERILOG_SIMULATION_MODE)
+    {
+        //open and close files to make sure they exist
+        FILE * file;
+        file = fopen("program.data","w");
+        fclose(file);
+        file = fopen("reduction.data","w");
+        fclose(file);
+
         pipe_read_32 = open ("reduction.data",O_RDONLY);
         pipe_write_32 = open ("program.data",O_WRONLY);
-    } else {
+    }
+    else if (RunningMode == REAL_HARDWARE_MODE)
+    {
         pipe_read_32 = open ("/dev/xillybus_read_array2arm_32",O_RDONLY);
         pipe_write_32 = open ("/dev/xillybus_write_arm2array_32",O_WRONLY);
     }
-    
-        
+    else
+    {
+        perror("No running mode selected !");
+        result = FAIL;
+    }
+
+
     if (pipe_read_32 == -1)
     {
         perror("Failed to open the read pipe");
@@ -263,6 +287,12 @@ int vector::deinitialize()
 
 void vector::setBatchIndex(UINT16 BI)
 {
+    if (BI >= NUMBER_OF_BATCHES)
+    {
+        vectorError(ERR_TOO_MANY_BATCHES);
+        return;
+    }
+
     dwBatchIndex = BI;
     dwInBatchCounter[BI] = 0;
 }

@@ -215,8 +215,7 @@ static enum
     SHR_BNR     = 12,
     SHRA_BNR    = 13,
     ISHRA_BNR   = 14,
-
-    MAX_BNR = 99
+    MAX_BNR = NUMBER_OF_BATCHES
 } BatchNumbers;
 
 
