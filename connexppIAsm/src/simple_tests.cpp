@@ -7,6 +7,7 @@
  *
  */
 #include "../include/vector_registers.h"
+#include "../include/vector.h"
 #include <iostream>
 using namespace std;
 
@@ -227,13 +228,9 @@ TestFunction TestFunctionTable[] =
 {
     {ADD_BNR,"ADD",0xff,0xf1,InitKernel_Add,(0xff + 0xf1)*NUMBER_OF_MACHINES},
     {ADDC_BNR,"ADDC",0xf0,0x1,InitKernel_Addc,(0xf0 + 1 + 1)*NUMBER_OF_MACHINES}, // ???
-
     {SUB_BNR,"SUB",0xffff,0xff8f,InitKernel_Sub, (0xffff - 0xff8f)*NUMBER_OF_MACHINES},
-
     {SUBC_BNR,"SUBC",0xffff,0xff8f,InitKernel_Subc,(0xffff - 0xff8f -1)*NUMBER_OF_MACHINES}, // ???
-    {NOT_BNR,"NOT",0xfff0,0x00,InitKernel_Not,
-    (0xf)*NUMBER_OF_MACHINES},
-
+    {NOT_BNR,"NOT",0xfff0,0x00,InitKernel_Not,(0xf)*NUMBER_OF_MACHINES},
     {OR_BNR,"OR",0x10,0x01,InitKernel_Or,(0x10 | 0x01)*NUMBER_OF_MACHINES},
     {AND_BNR,"AND",0xfffe,0x11,InitKernel_And,(0xfffe & 0x11)*NUMBER_OF_MACHINES},
     {XOR_BNR,"XOR",0x01,0x10,InitKernel_Xor,(0x01 ^ 0x10)*NUMBER_OF_MACHINES},
@@ -242,9 +239,8 @@ TestFunction TestFunctionTable[] =
     //{ULT_BNR,"ULT",0xabcd,0xabcc,InitKernel_Ult,(0xabcd > 0xabcc)*NUMBER_OF_MACHINES}, // ??? in the sense ffff ffff > ffff fffe (pos numbers)
     {SHL_BNR,"SHL",0xcd,3,InitKernel_Shl,(0xcd << 3)*NUMBER_OF_MACHINES},
     {SHR_BNR,"SHR",0xabcd,3,InitKernel_Shr,(0xabcd >> 3)*NUMBER_OF_MACHINES},
-    {SHRA_BNR,"SHRA",0x01cd,4,InitKernel_Shra,
-    (0x01c)*NUMBER_OF_MACHINES},//will fail: 128*big
-    {ISHRA_BNR,"ISHRA",0x01cdabcd,4,InitKernel_Shra,(0x01bcdabcUL)*NUMBER_OF_MACHINES},
+    {SHRA_BNR,"SHRA",0x01cd,4,InitKernel_Shra,(0x01c)*NUMBER_OF_MACHINES},//will fail: 128*big
+    {ISHRA_BNR,"ISHRA",0xabcd,4,InitKernel_Shra,(0xfabcUL)*NUMBER_OF_MACHINES},
 
 };
 
