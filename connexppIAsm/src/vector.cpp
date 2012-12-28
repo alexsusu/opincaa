@@ -214,17 +214,27 @@ void vector::WhereEq() {onlyOpcode(_WHERE_EQ);}
 void vector::WhereLt() {onlyOpcode(_WHERE_LT);}
 void vector::EndWhere() {onlyOpcode(_END_WHERE);}
 
-int vector::initialize()
+int vector::initialize(int simulation)
 {
     int result = PASS;
-    if ((pipe_read_32 = open ("/dev/xillybus_read_array2arm_32",O_RDONLY)) == -1)
+    
+    if(simulation){
+        pipe_read_32 = open ("reduction.data",O_RDONLY);
+        pipe_write_32 = open ("program.data",O_WRONLY);
+    } else {
+        pipe_read_32 = open ("/dev/xillybus_read_array2arm_32",O_RDONLY);
+        pipe_write_32 = open ("/dev/xillybus_write_arm2array_32",O_WRONLY);
+    }
+    
+        
+    if (pipe_read_32 == -1)
     {
         perror("Failed to open the read pipe");
         result = FAIL;
     }
 
 
-    if ((pipe_write_32 = open ("/dev/xillybus_write_arm2array_32",O_WRONLY)) == -1)
+    if (pipe_write_32 == -1)
     {
         perror("Failed to open the write pipe");
         result = FAIL;

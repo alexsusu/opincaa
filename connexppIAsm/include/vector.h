@@ -29,7 +29,7 @@
 #define _LO(x)       vector::multlo(x)
 #define _HI(x)       vector::multhi(x)
 
-#define INIT()          vector::initialize()
+#define INIT(x)         vector::initialize(x)
 #define DEINIT()        vector::deinitialize()
 
 #define NOP             vector::nop()
@@ -121,7 +121,7 @@ class vector
         static int getNumErrors();
 
         static void setBatchIndex(UINT16 BI);
-        static int initialize();
+        static int initialize(int);
         static int deinitialize();
         static void executeKernel(UINT16 dwBatchNumber);
         static int executeKernelRed(UINT16 dwBatchNumber);

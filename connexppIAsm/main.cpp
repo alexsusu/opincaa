@@ -30,6 +30,7 @@
 
 #include <iostream>
 #include <limits>
+#include <string.h>
 
 #include "include/vector_registers.h"
 using namespace std;
@@ -107,15 +108,35 @@ enum errorCodes
 };
 
 extern int test_Simple_All();
-int main()
+
+int main(int argc, char *argv[])
 {
+    int i;
+    int simulation;
+    FILE * file;
+    
+    //look for simulation option in arguments
+    for(i=0;i<argc;i++){
+        if(strcmp(argv[i],"--simulation") == 0){
+            std::cout << "Running in simulation mode" << endl;
+            //open and close files to make sure they exist
+            file = fopen("program.data","w");
+            fclose(file);
+            file = fopen("reduction.data","w");
+            fclose(file);
+            //set simulation flag
+            simulation = 1;
+            break;
+        }
+    }
+    
     //int result;
     //InitKernel_Radu();
     //DEASM_KERNEL(RADU_BNR);
     //if (FOUND_ERROR()) cout<<GET_NUM_ERRORS()<<" error(s) found ! \n";
 
     //if (INIT() != PASS) return INIT_FAILED;
-    INIT();
+    INIT(simulation);
     test_Simple_All();
     DEINIT();
     std::cout << "Press ENTER to continue...";
