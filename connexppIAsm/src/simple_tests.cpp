@@ -198,7 +198,7 @@ void InitKernel_Ishra(int BatchNumber,INT64 Param1, INT64 Param2)
     END_BATCH(BatchNumber);
 }
 
-static enum
+typedef enum BatchNumbers
 {
     ADD_BNR     = 0,
     SUB_BNR     = 1,
@@ -216,7 +216,7 @@ static enum
     SHRA_BNR    = 13,
     ISHRA_BNR   = 14,
     MAX_BNR = NUMBER_OF_BATCHES
-} BatchNumbers;
+} ;
 
 
 // TODO with random numbers.

@@ -19,4 +19,5 @@
 #define ERR_NOT_LOCALSTORE "Operation is not performed in local store !"
 #define ERR_IMM_VALUE_OUT_OF_RANGE "Immediate value too large !"
 #define ERR_TOO_MANY_BATCHES    "Too many batches. Please increase NUMBER_OF_BATCHES"
+#define ERR_NOT_ENOUGH_MEMORY "Not enough memory to make the allocation"
 #endif

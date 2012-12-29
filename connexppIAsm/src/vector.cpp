@@ -52,7 +52,9 @@ vector::~vector()
 
 void vector::appendInstruction(UINT_INSTRUCTION instr)
 {
-    dwBatch[dwBatchIndex][dwInBatchCounter[dwBatchIndex]++] = instr;
+    if (bEstimationMode == 0)
+        dwBatch[dwBatchIndex][dwInBatchCounter[dwBatchIndex]++] = instr;
+    else dwInBatchCounter[dwBatchIndex]++;
 }
 
 
@@ -226,6 +228,9 @@ void vector::EndWhere() {onlyOpcode(_END_WHERE);}
 int vector::initialize(UINT8 RunningMode)
 {
     int result = PASS;
+    int BatchIndex;
+    for (BatchIndex = 0; BatchIndex < NUMBER_OF_BATCHES; BatchIndex++)
+                                dwBatch[BatchIndex] = NULL;
 
     if(RunningMode == VERILOG_SIMULATION_MODE)
     {

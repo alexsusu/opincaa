@@ -24,7 +24,7 @@
  *   v0.4.2 - Radu & Lucian: fixed simpletests.
  *   v0.5   - Radu: added verilog-simulation mode
  *   v0.5.1 - code clean-up
- *
+ *   v0.5.2 - added "estimation mode" for BatchInit functions. See BEGIN_BATCH and END_BATCH.
  *   TODO: add parameters in kernel-init functions.
  *
  *
@@ -53,6 +53,7 @@ enum BatchNumbers
 void InitKernel_Radu()
 {
     BEGIN_BATCH(RADU_BNR);
+
         SET_ACTIVE(ALL);
         NOP;
         LS[100] = R4;
@@ -75,7 +76,7 @@ void InitKernel_Radu()
         R29 = R31 << R29;
         R20 = R14 << 8;
         R2 = R1 + R2;
-        R5 = (R3 == R4); // collision with VLOAD !!
+        R5 = (R3 == R4);
         R1 = ~R3;
         R3 = R1 >> R2;
         R5 = R3 >> 5;
@@ -118,8 +119,10 @@ int main(int argc, char *argv[])
     int i;
     int run_mode = REAL_HARDWARE_MODE;
     //look for simulation option in arguments
-    for(i=0;i<argc;i++){
-        if(strcmp(argv[i],"--simulation") == 0){
+    for(i=0;i<argc;i++)
+    {
+        if(strcmp(argv[i],"--simulation") == 0)
+        {
             std::cout << "Running in simulation mode" << endl;
             //set simulation flag
             run_mode = VERILOG_SIMULATION_MODE;
@@ -135,6 +138,9 @@ int main(int argc, char *argv[])
     //if (INIT() != PASS) return INIT_FAILED;
     INIT(run_mode);
     test_Simple_All();
+    //InitKernel_Radu();
+    //VERIFY_KERNEL(RADU_BNR);
+    //DEASM_KERNEL(RADU_BNR);
     DEINIT();
     std::cout << "Press ENTER to continue...";
     std::cin.ignore( std::numeric_limits <std::streamsize> ::max(), '\n' );

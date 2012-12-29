@@ -12,9 +12,40 @@
 //#include <stdlib.h>
 #include <stdio.h>
 #include "types.h"
+#include <stdlib.h>
+#include "vector_errors.h"
 
-#define BEGIN_BATCH(x)  vector::setBatchIndex(x)
-#define END_BATCH(x)
+/*
+ The idea of "estimation mode" in a batch is:
+  Pass once for counting how many slots we need in a particular slot, then pass again and fill it with instructions.
+  see implementation of function appendInstruction(...)
+
+*/
+
+#define BEGIN_BATCH(x)  unsigned char BatchLoopTimes = 2;\
+                        while (BatchLoopTimes-- > 0)\
+                        {\
+                            if (BatchLoopTimes == 1)\
+                            {\
+                                vector::bEstimationMode = 1;\
+                                vector::setBatchIndex(x);\
+                            }\
+                            else \
+                            {\
+                                vector::bEstimationMode = 0;\
+                                if (vector::dwBatch[vector::dwBatchIndex] != NULL)\
+                                    free((UINT_INSTRUCTION*)vector::dwBatch[vector::dwBatchIndex]);\
+                                printf("Alloc mem for batch size of %d slots \n", vector::dwInBatchCounter[vector::dwBatchIndex]);\
+                                vector::dwBatch[vector::dwBatchIndex] = (UINT_INSTRUCTION*)malloc(sizeof(UINT_INSTRUCTION) \
+                                                                        * vector::dwInBatchCounter[vector::dwBatchIndex]);\
+                                if (vector::dwBatch[vector::dwBatchIndex] == NULL)\
+                                    vector::vectorError(ERR_NOT_ENOUGH_MEMORY);\
+                                    \
+                                vector::dwInBatchCounter[vector::dwBatchIndex] = 0;\
+                            }
+
+#define END_BATCH(x)    }
+
 //#define BATCH(x) x
 
 #define REDUCE(x)       vector::reduce(x)
@@ -64,15 +95,16 @@
 */
 
 #define NUMBER_OF_BATCHES 100
-#define NUMBER_OF_INSTRUCTIONS_PER_BATCH 40
+//#define NUMBER_OF_INSTRUCTIONS_PER_BATCH 40
 
 #define STATIC_VECTOR_DEFINITIONS\
-        extern UINT_INSTRUCTION vector::dwBatch[NUMBER_OF_BATCHES][NUMBER_OF_INSTRUCTIONS_PER_BATCH];\
+        extern UINT_INSTRUCTION* vector::dwBatch[NUMBER_OF_BATCHES];\
         extern UINT16 vector::dwInBatchCounter[NUMBER_OF_BATCHES];\
         extern UINT16 vector::dwBatchIndex;\
         extern int vector::pipe_read_32;\
         extern int vector::pipe_write_32;\
-        extern int vector::dwErrorCounter
+        extern int vector::dwErrorCounter;\
+        extern unsigned char vector::bEstimationMode;
 
 // There is no instruction opcode starting with FF, so there is no chance to mistake the INDEX_MARKER
 // There is no instruction opcode starting with FF, so there is no chance to mistake the SHIFTREG_MARKER
@@ -87,9 +119,11 @@ class vector
 {
     public:
         //vars
-        static UINT_INSTRUCTION dwBatch[NUMBER_OF_BATCHES][NUMBER_OF_INSTRUCTIONS_PER_BATCH];
+        //static UINT_INSTRUCTION dwBatch[NUMBER_OF_BATCHES][NUMBER_OF_INSTRUCTIONS_PER_BATCH];
+        static UINT_INSTRUCTION *dwBatch[NUMBER_OF_BATCHES];
         static UINT16 dwInBatchCounter[NUMBER_OF_BATCHES];
         static UINT16 dwBatchIndex;
+        static UINT8 bEstimationMode;
         static int pipe_read_32, pipe_write_32;
         static int dwErrorCounter;
 
