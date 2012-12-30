@@ -57,18 +57,19 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="include/c_simu/c_simulator.h" />
 		<Unit filename="include/io_unit.h" />
 		<Unit filename="include/opcodes.h" />
+		<Unit filename="include/utils.h" />
 		<Unit filename="include/vector.h" />
 		<Unit filename="include/vector_errors.h" />
 		<Unit filename="include/vector_registers.h" />
 		<Unit filename="main.cpp" />
-		<Unit filename="src/de_asm.cpp" />
-		<Unit filename="src/io_system.cpp">
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
+		<Unit filename="src/c_simu/c_simulator.cpp" />
+		<Unit filename="src/c_simu/de_asm.cpp" />
 		<Unit filename="src/io_unit.cpp" />
 		<Unit filename="src/simple_tests.cpp" />
+		<Unit filename="src/utils.cpp" />
 		<Unit filename="src/vector.cpp" />
 		<Unit filename="src/vector_errors.cpp" />
 		<Unit filename="src/vector_registers.cpp" />

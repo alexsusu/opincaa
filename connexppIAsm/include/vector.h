@@ -11,7 +11,7 @@
 
 //#include <stdlib.h>
 #include <stdio.h>
-#include "types.h"
+#include "utils.h"
 #include <stdlib.h>
 #include "vector_errors.h"
 
@@ -35,7 +35,7 @@
                                 vector::bEstimationMode = 0;\
                                 if (vector::dwBatch[vector::dwBatchIndex] != NULL)\
                                     free((UINT_INSTRUCTION*)vector::dwBatch[vector::dwBatchIndex]);\
-                                printf("Alloc mem for batch size of %d slots \n", vector::dwInBatchCounter[vector::dwBatchIndex]);\
+                                /*printf("Alloc mem for batch size of %d slots \n", vector::dwInBatchCounter[vector::dwBatchIndex]);*/\
                                 vector::dwBatch[vector::dwBatchIndex] = (UINT_INSTRUCTION*)malloc(sizeof(UINT_INSTRUCTION) \
                                                                         * vector::dwInBatchCounter[vector::dwBatchIndex]);\
                                 if (vector::dwBatch[vector::dwBatchIndex] == NULL)\
@@ -60,9 +60,6 @@
 #define _LO(x)       vector::multlo(x)
 #define _HI(x)       vector::multhi(x)
 
-#define INIT(x)         vector::initialize(x)
-#define DEINIT()        vector::deinitialize()
-
 #define NOP             vector::nop()
 #define SET_ACTIVE(x)   x
 #define WHERE_CARRY     vector::WhereCry();
@@ -70,14 +67,13 @@
 #define WHERE_LT        vector::WhereLt();
 #define ALL             vector::EndWhere();
 
-#define EXECUTE_KERNEL(Batch)        vector::executeKernel(Batch)
-#define EXECUTE_KERNEL_RED(Batch)    vector::executeKernelRed(Batch)
-#define VERIFY_KERNEL(Batch)         vector::verifyKernel(Batch)
-#define DEASM_KERNEL(Batch)          vector::deasmKernel(Batch)
+//#define EXECUTE_KERNEL(Batch)        vector::executeKernel(Batch)
+//#define EXECUTE_KERNEL_RED(Batch)    vector::executeKernelRed(Batch)
+//#define VERIFY_KERNEL(Batch)         vector::verifyKernel(Batch)
+//#define DEASM_KERNEL(Batch)          vector::deasmKernel(Batch)
 #define FOUND_ERROR()                vector::foundError()
 #define GET_NUM_ERRORS()             vector::getNumErrors()
 
-#define UINT_INSTRUCTION UINT32
 #define UINT_PARAM UINT32
 
 /* Unfortunately, static is a great example of how NOT to design a language:
@@ -156,9 +152,9 @@ class vector
         static int getNumErrors();
 
         static void setBatchIndex(UINT16 BI);
-        static int initialize(UINT8 RunningMode);
+        static int initialize();
         static int deinitialize();
-        static void executeKernel(UINT16 dwBatchNumber);
+        static int executeKernel(UINT16 dwBatchNumber);
         static int executeKernelRed(UINT16 dwBatchNumber);
         static int verifyKernel(UINT16 dwBatchNumber);
         static int verifyKernelInstruction(UINT_INSTRUCTION Instruction);
@@ -200,7 +196,8 @@ class vector
 
     protected:
     private:
-        UINT_INSTRUCTION mval; /* 0 for R0, .. 15 for R15 */
+        //UINT_INSTRUCTION mval; /* 0 for R0, .. 15 for R15 */
+        UINT_INSTRUCTION mval;
         UINT_INSTRUCTION ival; /* intermediate assembly of instruction, usually R[RIGHT] concatenated with R[LEFT] */
         UINT_INSTRUCTION imval; /* immediate value: will make distinction between 6 and 9 bits-opcode */;
         UINT_INSTRUCTION opcode;

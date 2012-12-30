@@ -25,6 +25,7 @@
  *   v0.5   - Radu: added verilog-simulation mode
  *   v0.5.1 - code clean-up
  *   v0.5.2 - added "estimation mode" for BatchInit functions. See BEGIN_BATCH and END_BATCH.
+ *   v0.6   - added c-simulator. Incomplete (CELL_SHL/SHR. Nothing with IO yet)
  *   TODO: add parameters in kernel-init functions.
  *
  *
@@ -37,10 +38,12 @@
 #include <string.h>
 
 #include "include/vector_registers.h"
+#include "include/utils.h"
+
 using namespace std;
 
 STATIC_VECTOR_DEFINITIONS;
-// Make sure that batches do not ovelap !
+// Make sure that batches do not overlap !
 // BNR = Batch NumBer
 
 enum BatchNumbers
@@ -128,28 +131,29 @@ int main(int argc, char *argv[])
             run_mode = VERILOG_SIMULATION_MODE;
             break;
         }
+
+        if(strcmp(argv[i],"--csimulation") == 0)
+        {
+            std::cout << "Running in c-simulation mode" << endl;
+            //set simulation flag
+            run_mode = C_SIMULATION_MODE;
+            break;
+        }
     }
 
-    //int result;
-    //InitKernel_Radu();
-    //DEASM_KERNEL(RADU_BNR);
-    //if (FOUND_ERROR()) cout<<GET_NUM_ERRORS()<<" error(s) found ! \n";
-
-    //if (INIT() != PASS) return INIT_FAILED;
     INIT(run_mode);
+    //INIT(C_SIMULATION_MODE);
     test_Simple_All();
     //InitKernel_Radu();
     //VERIFY_KERNEL(RADU_BNR);
     //DEASM_KERNEL(RADU_BNR);
+    //if (FOUND_ERROR()) cout<<GET_NUM_ERRORS()<<" error(s) found ! \n";
     DEINIT();
     std::cout << "Press ENTER to continue...";
     std::cin.ignore( std::numeric_limits <std::streamsize> ::max(), '\n' );
 
     /*
     cout << "Initializing ... "<< endl;
-
-    //if (INIT() != PASS) return INIT_FAILED;
-
     cout << "Precacheing ... "<< endl; // Equivalent to assembling. Done once per program execution, at runtime.
     InitKernel_Radu();
     VERIFY_KERNEL(RADU_BNR);

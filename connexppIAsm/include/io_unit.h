@@ -1,7 +1,7 @@
 #ifndef IO_UNIT_H
 #define IO_UNIT_H
 
-#include "types.h"
+#include "utils.h"
 /*
 Transfers occur in the following sequence of events:
 1)	Host pushes descriptor into the inbound FIFO, lowest-index first

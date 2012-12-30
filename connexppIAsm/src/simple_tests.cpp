@@ -8,11 +8,12 @@
  */
 #include "../include/vector_registers.h"
 #include "../include/vector.h"
+#include "../include/utils.h"
 #include <iostream>
+#include <iomanip>
 using namespace std;
-
-#define NUMBER_OF_MACHINES 128LL
 //STATIC_VECTOR_DEFINITIONS;
+
 
 
 struct TestFunction
@@ -24,6 +25,50 @@ struct TestFunction
    void (*initKernel)(int BatchNumber,INT64 Param1,INT64 Param2);
    INT64 ExpectedResult;
 };
+
+void InitKernel_Nop(int BatchNumber,INT64 Param1, INT64 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        SET_ACTIVE(ALL);
+        R1 = Param1;
+        R2 = Param2;
+        R3 = 1;
+        REDUCE(R3);
+    END_BATCH(BatchNumber);
+}
+
+void InitKernel_Iwrite(int BatchNumber,INT64 Param1, INT64 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        SET_ACTIVE(ALL);
+        R0 = INDEX;
+        LS[Param1] = R0;
+        R1 = LS[Param1];
+        REDUCE(R1);
+    END_BATCH(BatchNumber);
+}
+
+void InitKernel_Iread(int BatchNumber,INT64 Param1, INT64 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        SET_ACTIVE(ALL);
+        R0 = INDEX;
+        LS[Param1] = R0;
+        R1 = LS[Param1];
+        REDUCE(R1);
+    END_BATCH(BatchNumber);
+}
+
+void InitKernel_Vload(int BatchNumber,INT64 Param1, INT64 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        SET_ACTIVE(ALL);
+        R0 = Param1;
+        R1 = Param2;
+        R2 = R0 + R1;
+        REDUCE(R2);
+    END_BATCH(BatchNumber);
+}
 
 void InitKernel_Add(int BatchNumber,INT64 Param1, INT64 Param2)
 {
@@ -67,7 +112,7 @@ void InitKernel_Subc(int BatchNumber,INT64 Param1, INT64 Param2)
         SET_ACTIVE(ALL);
         R1 = 0xff;
         R2 = 0xffff;
-        R3 = R1 + R2;
+        R3 = R1 - R2;
 
         R1 = Param1;
         R2 = Param2;
@@ -198,25 +243,46 @@ void InitKernel_Ishra(int BatchNumber,INT64 Param1, INT64 Param2)
     END_BATCH(BatchNumber);
 }
 
-typedef enum BatchNumbers
+enum BatchNumbers
 {
-    ADD_BNR     = 0,
-    SUB_BNR     = 1,
-    ADDC_BNR    = 2,
-    SUBC_BNR    = 3,
-    NOT_BNR     = 4,
-    OR_BNR      = 5,
-    AND_BNR     = 6,
-    XOR_BNR     = 7,
-    EQ_BNR      = 8,
-    LT_BNR      = 9,
-    ULT_BNR     = 10,
-    SHL_BNR     = 11,
-    SHR_BNR     = 12,
-    SHRA_BNR    = 13,
-    ISHRA_BNR   = 14,
+    NOP_BNR     = 0,
+    IWRITE_BNR  = 1,
+    IREAD_BNR   = 2,
+    VLOAD_BNR   = 3,
+    RED_BNR     = 4,
+    MULT_BNR    = 5,
+    CELL_SHL_BNR= 6,
+    CELL_SHR_BNR= 7,
+    WRITE_BNR   = 8,
+    WHERE_CARRY_BNR = 9,
+    WHERE_EQ_BNR= 10,
+    WHERE_LT_BNR= 11,
+    ENDWHERE_BNR= 12,
+    LDIX_BNR    = 13,
+    READ_BNR    = 14,
+    MULTLO_BNR  = 15,
+    LDSH_BNR    = 16,
+    MULTHI_BNR  = 17,
+    SHL_BNR     = 18,
+    ISHL_BNR    = 19,
+    ADD_BNR     = 20,
+    EQ_BNR      = 21,
+    NOT_BNR     = 22,
+    SHR_BNR     = 23,
+    ISHR_BNR    = 24,
+    SUB_BNR     = 25,
+    LT_BNR      = 26,
+    OR_BNR      = 27,
+    SHRA_BNR    = 28,
+    ISHRA_BNR   = 29,
+    ADDC_BNR    = 30,
+    ULT_BNR     = 31,
+    AND_BNR     = 32,
+    SUBC_BNR    = 33,
+    XOR_BNR     = 34,
+
     MAX_BNR = NUMBER_OF_BATCHES
-} ;
+};
 
 
 // TODO with random numbers.
@@ -225,6 +291,11 @@ typedef enum BatchNumbers
 #define REGISTER_SIZE_MASK 0xffff
 TestFunction TestFunctionTable[] =
 {
+    {NOP_BNR,"NOP",0x00,0x00,InitKernel_Nop,NUMBER_OF_MACHINES},
+    {IWRITE_BNR,"IWRITE",0x01,0x02,InitKernel_Iwrite,127*NUMBER_OF_MACHINES/2},
+    {IREAD_BNR,"IREAD",0x01,0x02,InitKernel_Iread,127*NUMBER_OF_MACHINES/2},
+    {VLOAD_BNR,"VLOAD",0x01,0x02,InitKernel_Vload,3*NUMBER_OF_MACHINES},
+
     {ADD_BNR,"ADD",0xff,0xf1,InitKernel_Add,(0xff + 0xf1)*NUMBER_OF_MACHINES},
     {ADDC_BNR,"ADDC",0xf0,0x1,InitKernel_Addc,(0xf0 + 1 + 1)*NUMBER_OF_MACHINES}, // ???
     {SUB_BNR,"SUB",0xffff,0xff8f,InitKernel_Sub, (0xffff - 0xff8f)*NUMBER_OF_MACHINES},
@@ -235,7 +306,7 @@ TestFunction TestFunctionTable[] =
     {XOR_BNR,"XOR",0x01,0x10,InitKernel_Xor,(0x01 ^ 0x10)*NUMBER_OF_MACHINES},
     {EQ_BNR,"EQ",0xff3f,0xff3f,InitKernel_Eq,(0xff3f == 0xff3f)*NUMBER_OF_MACHINES},
     {LT_BNR,"LT",0xabcd,0xabcc,InitKernel_Lt,(0xabcd <  0xabcc)*NUMBER_OF_MACHINES},  // ??? in the sense ffff ffff < ffff fffe (neg numbers)
-    //{ULT_BNR,"ULT",0xabcd,0xabcc,InitKernel_Ult,(0xabcd > 0xabcc)*NUMBER_OF_MACHINES}, // ??? in the sense ffff ffff > ffff fffe (pos numbers)
+    {ULT_BNR,"ULT",0xabcd,0xabcc,InitKernel_Ult,(0xabcd > 0xabcc)*NUMBER_OF_MACHINES}, // ??? in the sense ffff ffff > ffff fffe (pos numbers)
     {SHL_BNR,"SHL",0xcd,3,InitKernel_Shl,(0xcd << 3)*NUMBER_OF_MACHINES},
     {SHR_BNR,"SHR",0xabcd,3,InitKernel_Shr,(0xabcd >> 3)*NUMBER_OF_MACHINES},
     {SHRA_BNR,"SHRA",0x01cd,4,InitKernel_Shra,(0x01c)*NUMBER_OF_MACHINES},//will fail: 128*big
@@ -255,12 +326,13 @@ int test_Simple_All()
         result = EXECUTE_KERNEL_RED(TestFunctionTable[i].BatchNumber);
         if (result != TestFunctionTable[i].ExpectedResult)
         {
-           cout<< "Test "<<TestFunctionTable[i].OperationName<<"  FAILED with result "
+           cout<< "Test "<< setw(8) << left << TestFunctionTable[i].OperationName <<" FAILED with result "
            <<result << " (expected " <<TestFunctionTable[i].ExpectedResult<<" ) !"<<endl;
            testFails++;
         }
         else
-            printf("Test %s     passed ! \n", TestFunctionTable[i].OperationName);
+            //printf("Test %s     passed ! \n", TestFunctionTable[i].OperationName);
+            cout<< "Test "<< setw(8) << left << TestFunctionTable[i].OperationName << " passed. " <<endl;
     }
 
     //DEASM_KERNEL(OR_BNR);

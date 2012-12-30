@@ -225,50 +225,12 @@ void vector::WhereEq() {onlyOpcode(_WHERE_EQ);}
 void vector::WhereLt() {onlyOpcode(_WHERE_LT);}
 void vector::EndWhere() {onlyOpcode(_END_WHERE);}
 
-int vector::initialize(UINT8 RunningMode)
+int vector::initialize()
 {
     int result = PASS;
     int BatchIndex;
     for (BatchIndex = 0; BatchIndex < NUMBER_OF_BATCHES; BatchIndex++)
                                 dwBatch[BatchIndex] = NULL;
-
-    if(RunningMode == VERILOG_SIMULATION_MODE)
-    {
-        //open and close files to make sure they exist
-        FILE * file;
-        file = fopen("program.data","w");
-        fclose(file);
-        file = fopen("reduction.data","w");
-        fclose(file);
-
-        pipe_read_32 = open ("reduction.data",O_RDONLY);
-        pipe_write_32 = open ("program.data",O_WRONLY);
-    }
-    else if (RunningMode == REAL_HARDWARE_MODE)
-    {
-        pipe_read_32 = open ("/dev/xillybus_read_array2arm_32",O_RDONLY);
-        pipe_write_32 = open ("/dev/xillybus_write_arm2array_32",O_WRONLY);
-    }
-    else
-    {
-        perror("No running mode selected !");
-        result = FAIL;
-    }
-
-
-    if (pipe_read_32 == -1)
-    {
-        perror("Failed to open the read pipe");
-        result = FAIL;
-    }
-
-
-    if (pipe_write_32 == -1)
-    {
-        perror("Failed to open the write pipe");
-        result = FAIL;
-    }
-
     return result;
 }
 
@@ -302,10 +264,10 @@ void vector::setBatchIndex(UINT16 BI)
     dwInBatchCounter[BI] = 0;
 }
 
-void vector::executeKernel(UINT16 dwBatchNumber)
+int vector::executeKernel(UINT16 dwBatchNumber)
 {
     write(pipe_write_32, dwBatch[dwBatchNumber], 4*dwInBatchCounter[dwBatchNumber]);
-
+    return PASS;//compatibility with c_simulator function
 }
 
 int vector::executeKernelRed(UINT16 dwBatchNumber)

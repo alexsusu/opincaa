@@ -45,7 +45,7 @@ void io_unit::prewriteVectors(UINT16 destAddress, UINT16 *srcAddress, UINT16 num
 
 int io_unit::vwrite()
 {
-    if (Size == write(vpipe_write_32, &Iou,Size))
+    if ((int)Size == write(vpipe_write_32, &Iou,Size))
         return PASS;
     else return FAIL;
 }
@@ -59,7 +59,7 @@ int io_unit::vread()
 {
     if (DESCRIPTOR_SIZE == write(vpipe_write_32, &Iou.Descriptor, DESCRIPTOR_SIZE))
     {
-        if (Size == read(vpipe_read_32, Iou.Content, Size))
+        if ((int)Size == read(vpipe_read_32, Iou.Content, Size))
             return PASS;
     }
 
