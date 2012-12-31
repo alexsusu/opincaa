@@ -237,18 +237,6 @@ int vector::initialize()
 int vector::deinitialize()
 {
     int result = PASS;
-    if (close(pipe_read_32)  == -1)
-    {
-        perror("Failed to open the read pipe");
-        result = FAIL;
-    }
-
-    if (close(pipe_write_32) == -1)
-    {
-        perror("Failed to open the write pipe");
-        result = FAIL;
-    }
-
     return result;
 }
 

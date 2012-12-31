@@ -331,14 +331,63 @@ int c_simulator::executeDeasmKernel(UINT16 dwBatchNumber)
 // any contraints regarding ACTIVE ?
 // any constraints regarding
 
-                case _CELL_SHL: continue;
-                case _CELL_SHR: continue;
+                case _CELL_SHL: {
+                                    //step 1: load shift reg with R[LEFT].
+                                    bool rotation_existed;
+                                    {FOR_ALL_MACHINES( C_SIMU_SH[MACHINE] = C_SIMU_REGS[MACHINE][GET_LEFT(*CI)] % NUMBER_OF_MACHINES;);}
+
+                                    //step 2: copy number of positions to rotate
+                                    {FOR_ALL_MACHINES( C_SIMU_ROTATION_MAGNITUDE[MACHINE] = C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)];);}
+
+                                    //step 3: rotate one position at a time
+                                    do
+                                    {
+                                        rotation_existed = false;
+                                        FOR_ALL_MACHINES(
+                                                        if ( C_SIMU_ROTATION_MAGNITUDE[MACHINE] > 0)
+                                                        {
+                                                            INT_REGVALUE man;
+                                                            rotation_existed = true;
+
+                                                            if (MACHINE == 0) man = C_SIMU_SH[NUMBER_OF_MACHINES -1];
+                                                            C_SIMU_SH[(MACHINE + NUMBER_OF_MACHINES -1)% NUMBER_OF_MACHINES] = C_SIMU_SH[MACHINE];
+                                                            if (MACHINE == NUMBER_OF_MACHINES - 1) C_SIMU_SH[NUMBER_OF_MACHINES - 2] = man;
+
+                                                            C_SIMU_ROTATION_MAGNITUDE[MACHINE]--;
+                                                        });
+                                    } while (rotation_existed == true);
+                                    continue;}
+
+                case _CELL_SHR: {
+                                    //step 1: load shift reg with R[LEFT].
+                                    bool rotation_existed;
+                                    {FOR_ALL_MACHINES( C_SIMU_SH[MACHINE] = C_SIMU_REGS[MACHINE][GET_LEFT(*CI)];);}
+
+                                    //step 2: copy number of positions to rotate
+                                    {FOR_ALL_MACHINES( C_SIMU_ROTATION_MAGNITUDE[MACHINE] = C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)] % NUMBER_OF_MACHINES;);}
+
+                                    //step 3: rotate one position at a time
+                                    do
+                                    {
+                                        rotation_existed = false;
+                                        FOR_ALL_MACHINES(
+                                                        if ( C_SIMU_ROTATION_MAGNITUDE[MACHINE] > 0)
+                                                        {
+                                                            INT_REGVALUE man;
+                                                            rotation_existed = true;
+
+                                                            if (MACHINE == NUMBER_OF_MACHINES -2) man = C_SIMU_SH[NUMBER_OF_MACHINES-1];
+                                                            C_SIMU_SH[(NUMBER_OF_MACHINES - MACHINE)% NUMBER_OF_MACHINES] = C_SIMU_SH[NUMBER_OF_MACHINES - MACHINE -1];
+                                                            if (MACHINE == NUMBER_OF_MACHINES - 1) C_SIMU_SH[0] = man;
+
+                                                            C_SIMU_ROTATION_MAGNITUDE[MACHINE]--;
+                                                        });
+                                    } while (rotation_existed == true);
+                                    continue;}
 
                 case _READ:  {FOR_ALL_ACTIVE_MACHINES(C_SIMU_REGS[MACHINE][GET_DEST(*CI)] = C_SIMU_LS[MACHINE][GET_RIGHT(*CI)]);continue;}
                 case _WRITE: {FOR_ALL_ACTIVE_MACHINES(C_SIMU_LS[MACHINE][GET_RIGHT(*CI)] = C_SIMU_REGS[MACHINE][GET_LEFT(*CI)]);continue;}
 
-//void printMULT(UINT_INSTRUCTION instr){   printf("MULT = R%d %s R%d\n", GET_LEFT(instr), getOpCodeName(instr), GET_RIGHT(instr));}
-//void printMULTLH(UINT_INSTRUCTION instr){   printf("R%d = %s\n", GET_DEST(instr), getOpCodeName(instr));}
                 case _MULT:  {FOR_ALL_ACTIVE_MACHINES(C_SIMU_MULTREGS[MACHINE] = C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)] * C_SIMU_REGS[MACHINE][GET_LEFT(*CI)]);continue;}
                 case _MULT_HI:{FOR_ALL_ACTIVE_MACHINES(C_SIMU_REGS[MACHINE][GET_DEST(*CI)] = C_SIMU_MULTREGS[MACHINE] >> 16);continue;}
                 case _MULT_LO:{FOR_ALL_ACTIVE_MACHINES(C_SIMU_REGS[MACHINE][GET_DEST(*CI)] = C_SIMU_MULTREGS[MACHINE] & 0xFFFF);continue;}

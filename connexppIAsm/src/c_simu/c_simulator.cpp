@@ -16,9 +16,11 @@
 //#include "../include/vector_errors.h"
 //#include "../include/opcodes.h"
 //#include <fcntl.h>
-//#include <stdio.h>
+#include <iostream>
 //#include <stdlib.h>
 //#include <unistd.h>
+
+using namespace std;
 
 #include "../../include/c_simu/c_simulator.h"
 
@@ -39,7 +41,13 @@ int c_simulator::initialize()
                      C_SIMU_EQ[MACHINE] = 0;
                      C_SIMU_LT[MACHINE] = 0;
                      C_SIMU_SH[MACHINE] = 0;
+                     C_SIMU_ROTATION_MAGNITUDE[MACHINE] = 0;// keeps the magnitude of the rotation
                      C_SIMU_MULTREGS[MACHINE] = 0;
                 );
     return PASS;
+}
+
+void c_simulator::printSHIFT_REGS()
+{
+    FOR_ALL_MACHINES( cout << " Machine "<<MACHINE<<": " << " SHIFT_REG = "<<  C_SIMU_SH[MACHINE] << endl; );
 }

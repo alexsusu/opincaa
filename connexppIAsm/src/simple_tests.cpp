@@ -8,6 +8,7 @@
  */
 #include "../include/vector_registers.h"
 #include "../include/vector.h"
+#include "../include/c_simu/c_simulator.h"
 #include "../include/utils.h"
 #include <iostream>
 #include <iomanip>
@@ -243,6 +244,28 @@ void InitKernel_Ishra(int BatchNumber,INT64 Param1, INT64 Param2)
     END_BATCH(BatchNumber);
 }
 
+void InitKernel_Cellshl(int BatchNumber)
+{
+    BEGIN_BATCH(BatchNumber);
+        SET_ACTIVE(ALL);
+        R1 = INDEX;
+        R2 = 2;
+        CELL_SHL(R1,R2);
+        //REDUCE(R3);
+    END_BATCH(BatchNumber);
+}
+
+void InitKernel_Cellshr(int BatchNumber)
+{
+    BEGIN_BATCH(BatchNumber);
+        SET_ACTIVE(ALL);
+        R1 = INDEX;
+        R2 = 129;
+        CELL_SHR(R1,R2);
+        //REDUCE(R3);
+    END_BATCH(BatchNumber);
+}
+
 enum BatchNumbers
 {
     NOP_BNR     = 0,
@@ -340,3 +363,18 @@ int test_Simple_All()
 
     return testFails;
 }
+
+int test_SimpleCellShl()
+{
+    InitKernel_Cellshl(CELL_SHL_BNR);
+    EXECUTE_KERNEL_RED(CELL_SHL_BNR);
+    PRINT_SHIFT_REGS();
+}
+
+int test_SimpleCellShr()
+{
+    InitKernel_Cellshr(CELL_SHR_BNR);
+    EXECUTE_KERNEL_RED(CELL_SHR_BNR);
+    PRINT_SHIFT_REGS();
+}
+

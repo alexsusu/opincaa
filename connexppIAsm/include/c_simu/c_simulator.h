@@ -22,6 +22,7 @@
 
 #define VERIFY_KERNEL(Batch)         c_simulator::verifyKernel(Batch)
 #define DEASM_KERNEL(Batch)          c_simulator::printDeasmKernel(Batch)
+#define PRINT_SHIFT_REGS()           c_simulator::printSHIFT_REGS()
 //#define FOUND_ERROR()                c_simulator::foundError()
 //#define GET_NUM_ERRORS()             c_simulator::getNumErrors()
 
@@ -36,6 +37,7 @@
         extern UINT8 c_simulator::C_SIMU_LT[NUMBER_OF_MACHINES];\
         extern UINT8 c_simulator::C_SIMU_INDEX[NUMBER_OF_MACHINES];\
         extern UINT_REGVALUE c_simulator::C_SIMU_SH[NUMBER_OF_MACHINES];\
+        extern UINT_REGVALUE c_simulator::C_SIMU_ROTATION_MAGNITUDE[NUMBER_OF_MACHINES];\
         extern UINT_MULTVALUE c_simulator::C_SIMU_MULTREGS[NUMBER_OF_MACHINES];\
 
 #define FOR_ALL_ACTIVE_MACHINES(x) int MACHINE;\
@@ -54,6 +56,7 @@ class c_simulator
         static int verifyKernelInstruction(UINT_INSTRUCTION Instruction);
         static int printDeasmKernel(UINT16 dwBatchNumber);
         static int executeDeasmKernel(UINT16 dwBatchNumber);
+        static void printSHIFT_REGS();
 
         virtual ~c_simulator();
 
@@ -67,6 +70,7 @@ class c_simulator
         static UINT8 C_SIMU_LT[NUMBER_OF_MACHINES];
         static UINT8 C_SIMU_INDEX[NUMBER_OF_MACHINES];
         static UINT_REGVALUE C_SIMU_SH[NUMBER_OF_MACHINES];
+        static UINT_REGVALUE C_SIMU_ROTATION_MAGNITUDE[NUMBER_OF_MACHINES];
         static UINT_MULTVALUE C_SIMU_MULTREGS[NUMBER_OF_MACHINES];
 };
 

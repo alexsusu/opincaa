@@ -26,6 +26,7 @@
  *   v0.5.1 - code clean-up
  *   v0.5.2 - added "estimation mode" for BatchInit functions. See BEGIN_BATCH and END_BATCH.
  *   v0.6   - added c-simulator. Incomplete (CELL_SHL/SHR. Nothing with IO yet)
+ *   v0.61  - added c-simulator CELL_SHL and SHR. Still nothing with IO yet.
  *   TODO: add parameters in kernel-init functions.
  *
  *
@@ -39,6 +40,7 @@
 
 #include "include/vector_registers.h"
 #include "include/utils.h"
+#include "include/simple_tests.h"
 
 using namespace std;
 
@@ -115,8 +117,6 @@ enum errorCodes
     INIT_FAILED
 };
 
-extern int test_Simple_All();
-
 int main(int argc, char *argv[])
 {
     int i;
@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
     {
         if(strcmp(argv[i],"--simulation") == 0)
         {
-            std::cout << "Running in simulation mode" << endl;
+            cout << "Running in simulation mode" << endl;
             //set simulation flag
             run_mode = VERILOG_SIMULATION_MODE;
             break;
@@ -134,25 +134,35 @@ int main(int argc, char *argv[])
 
         if(strcmp(argv[i],"--csimulation") == 0)
         {
-            std::cout << "Running in c-simulation mode" << endl;
+            cout << "Running in c-simulation mode" << endl;
             //set simulation flag
             run_mode = C_SIMULATION_MODE;
             break;
         }
     }
 
-    INIT(run_mode);
-    //INIT(C_SIMULATION_MODE);
+
+    // TEST simulator:
+    INIT(C_SIMULATION_MODE);
     test_Simple_All();
+    test_SimpleCellShl();
+    test_SimpleCellShr();
+    DEINIT();
+
+/*
+    INIT(run_mode);
+    test_Simple_All();
+    DEINIT();
+    cout << "Press ENTER to continue...";
+    cin.ignore( numeric_limits <streamsize> ::max(), '\n' );
+*/
+    /*
+    Unused code:
     //InitKernel_Radu();
     //VERIFY_KERNEL(RADU_BNR);
     //DEASM_KERNEL(RADU_BNR);
     //if (FOUND_ERROR()) cout<<GET_NUM_ERRORS()<<" error(s) found ! \n";
-    DEINIT();
-    std::cout << "Press ENTER to continue...";
-    std::cin.ignore( std::numeric_limits <std::streamsize> ::max(), '\n' );
 
-    /*
     cout << "Initializing ... "<< endl;
     cout << "Precacheing ... "<< endl; // Equivalent to assembling. Done once per program execution, at runtime.
     InitKernel_Radu();
