@@ -18,69 +18,69 @@ LIBDIR =
 LIB = 
 LDFLAGS = 
 
-INC_LINDEBUG_X86 =  $(INC)
-CFLAGS_LINDEBUG_X86 =  $(CFLAGS) -g
-RESINC_LINDEBUG_X86 =  $(RESINC)
-RCFLAGS_LINDEBUG_X86 =  $(RCFLAGS)
-LIBDIR_LINDEBUG_X86 =  $(LIBDIR)
-LIB_LINDEBUG_X86 = $(LIB)
-LDFLAGS_LINDEBUG_X86 =  $(LDFLAGS)
-OBJDIR_LINDEBUG_X86 = obj/Debug
-DEP_LINDEBUG_X86 = 
-OUT_LINDEBUG_X86 = bin/Debug/connexppAsm
+INC_DEBUG =  $(INC)
+CFLAGS_DEBUG =  $(CFLAGS) -g
+RESINC_DEBUG =  $(RESINC)
+RCFLAGS_DEBUG =  $(RCFLAGS)
+LIBDIR_DEBUG =  $(LIBDIR)
+LIB_DEBUG = $(LIB)
+LDFLAGS_DEBUG =  $(LDFLAGS)
+OBJDIR_DEBUG = obj/Debug
+DEP_DEBUG = 
+OUT_DEBUG = bin/Debug/connexppAsm
 
-OBJ_LINDEBUG_X86 = $(OBJDIR_LINDEBUG_X86)/src/vector_registers.o $(OBJDIR_LINDEBUG_X86)/src/vector_errors.o $(OBJDIR_LINDEBUG_X86)/src/vector.o $(OBJDIR_LINDEBUG_X86)/src/utils.o $(OBJDIR_LINDEBUG_X86)/src/simple_tests.o $(OBJDIR_LINDEBUG_X86)/src/io_unit.o $(OBJDIR_LINDEBUG_X86)/src/c_simu/de_asm.o $(OBJDIR_LINDEBUG_X86)/src/c_simu/c_simulator.o $(OBJDIR_LINDEBUG_X86)/main.o
+OBJ_DEBUG = $(OBJDIR_DEBUG)/src/vector_registers.o $(OBJDIR_DEBUG)/src/vector_errors.o $(OBJDIR_DEBUG)/src/vector.o $(OBJDIR_DEBUG)/src/utils.o $(OBJDIR_DEBUG)/src/simple_tests.o $(OBJDIR_DEBUG)/src/io_unit.o $(OBJDIR_DEBUG)/src/c_simu/de_asm.o $(OBJDIR_DEBUG)/src/c_simu/c_simulator.o $(OBJDIR_DEBUG)/main.o
 
-all: lindebug_x86
+all: debug
 
-clean: clean_lindebug_x86
+clean: clean_debug
 
-before_lindebug_x86: 
+before_debug: 
 	test -d bin/Debug || mkdir -p bin/Debug
-	test -d $(OBJDIR_LINDEBUG_X86)/src || mkdir -p $(OBJDIR_LINDEBUG_X86)/src
-	test -d $(OBJDIR_LINDEBUG_X86)/src/c_simu || mkdir -p $(OBJDIR_LINDEBUG_X86)/src/c_simu
-	test -d $(OBJDIR_LINDEBUG_X86) || mkdir -p $(OBJDIR_LINDEBUG_X86)
+	test -d $(OBJDIR_DEBUG)/src || mkdir -p $(OBJDIR_DEBUG)/src
+	test -d $(OBJDIR_DEBUG)/src/c_simu || mkdir -p $(OBJDIR_DEBUG)/src/c_simu
+	test -d $(OBJDIR_DEBUG) || mkdir -p $(OBJDIR_DEBUG)
 
-after_lindebug_x86: 
+after_debug: 
 
-lindebug_x86: before_lindebug_x86 out_lindebug_x86 after_lindebug_x86
+debug: before_debug out_debug after_debug
 
-out_lindebug_x86: $(OBJ_LINDEBUG_X86) $(DEP_LINDEBUG_X86)
-	$(LD) $(LDFLAGS_LINDEBUG_X86) $(LIBDIR_LINDEBUG_X86) $(OBJ_LINDEBUG_X86) $(LIB_LINDEBUG_X86) -o $(OUT_LINDEBUG_X86)
+out_debug: $(OBJ_DEBUG) $(DEP_DEBUG)
+	$(LD) $(LDFLAGS_DEBUG) $(LIBDIR_DEBUG) $(OBJ_DEBUG) $(LIB_DEBUG) -o $(OUT_DEBUG)
 
-$(OBJDIR_LINDEBUG_X86)/src/vector_registers.o: src/vector_registers.cpp
-	$(CXX) $(CFLAGS_LINDEBUG_X86) $(INC_LINDEBUG_X86) -c src/vector_registers.cpp -o $(OBJDIR_LINDEBUG_X86)/src/vector_registers.o
+$(OBJDIR_DEBUG)/src/vector_registers.o: src/vector_registers.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/vector_registers.cpp -o $(OBJDIR_DEBUG)/src/vector_registers.o
 
-$(OBJDIR_LINDEBUG_X86)/src/vector_errors.o: src/vector_errors.cpp
-	$(CXX) $(CFLAGS_LINDEBUG_X86) $(INC_LINDEBUG_X86) -c src/vector_errors.cpp -o $(OBJDIR_LINDEBUG_X86)/src/vector_errors.o
+$(OBJDIR_DEBUG)/src/vector_errors.o: src/vector_errors.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/vector_errors.cpp -o $(OBJDIR_DEBUG)/src/vector_errors.o
 
-$(OBJDIR_LINDEBUG_X86)/src/vector.o: src/vector.cpp
-	$(CXX) $(CFLAGS_LINDEBUG_X86) $(INC_LINDEBUG_X86) -c src/vector.cpp -o $(OBJDIR_LINDEBUG_X86)/src/vector.o
+$(OBJDIR_DEBUG)/src/vector.o: src/vector.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/vector.cpp -o $(OBJDIR_DEBUG)/src/vector.o
 
-$(OBJDIR_LINDEBUG_X86)/src/utils.o: src/utils.cpp
-	$(CXX) $(CFLAGS_LINDEBUG_X86) $(INC_LINDEBUG_X86) -c src/utils.cpp -o $(OBJDIR_LINDEBUG_X86)/src/utils.o
+$(OBJDIR_DEBUG)/src/utils.o: src/utils.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/utils.cpp -o $(OBJDIR_DEBUG)/src/utils.o
 
-$(OBJDIR_LINDEBUG_X86)/src/simple_tests.o: src/simple_tests.cpp
-	$(CXX) $(CFLAGS_LINDEBUG_X86) $(INC_LINDEBUG_X86) -c src/simple_tests.cpp -o $(OBJDIR_LINDEBUG_X86)/src/simple_tests.o
+$(OBJDIR_DEBUG)/src/simple_tests.o: src/simple_tests.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/simple_tests.cpp -o $(OBJDIR_DEBUG)/src/simple_tests.o
 
-$(OBJDIR_LINDEBUG_X86)/src/io_unit.o: src/io_unit.cpp
-	$(CXX) $(CFLAGS_LINDEBUG_X86) $(INC_LINDEBUG_X86) -c src/io_unit.cpp -o $(OBJDIR_LINDEBUG_X86)/src/io_unit.o
+$(OBJDIR_DEBUG)/src/io_unit.o: src/io_unit.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/io_unit.cpp -o $(OBJDIR_DEBUG)/src/io_unit.o
 
-$(OBJDIR_LINDEBUG_X86)/src/c_simu/de_asm.o: src/c_simu/de_asm.cpp
-	$(CXX) $(CFLAGS_LINDEBUG_X86) $(INC_LINDEBUG_X86) -c src/c_simu/de_asm.cpp -o $(OBJDIR_LINDEBUG_X86)/src/c_simu/de_asm.o
+$(OBJDIR_DEBUG)/src/c_simu/de_asm.o: src/c_simu/de_asm.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/c_simu/de_asm.cpp -o $(OBJDIR_DEBUG)/src/c_simu/de_asm.o
 
-$(OBJDIR_LINDEBUG_X86)/src/c_simu/c_simulator.o: src/c_simu/c_simulator.cpp
-	$(CXX) $(CFLAGS_LINDEBUG_X86) $(INC_LINDEBUG_X86) -c src/c_simu/c_simulator.cpp -o $(OBJDIR_LINDEBUG_X86)/src/c_simu/c_simulator.o
+$(OBJDIR_DEBUG)/src/c_simu/c_simulator.o: src/c_simu/c_simulator.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/c_simu/c_simulator.cpp -o $(OBJDIR_DEBUG)/src/c_simu/c_simulator.o
 
-$(OBJDIR_LINDEBUG_X86)/main.o: main.cpp
-	$(CXX) $(CFLAGS_LINDEBUG_X86) $(INC_LINDEBUG_X86) -c main.cpp -o $(OBJDIR_LINDEBUG_X86)/main.o
+$(OBJDIR_DEBUG)/main.o: main.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c main.cpp -o $(OBJDIR_DEBUG)/main.o
 
-clean_lindebug_x86: 
-	rm -f $(OBJ_LINDEBUG_X86) $(OUT_LINDEBUG_X86)
+clean_debug: 
+	rm -f $(OBJ_DEBUG) $(OUT_DEBUG)
 	rm -rf bin/Debug
-	rm -rf $(OBJDIR_LINDEBUG_X86)/src
-	rm -rf $(OBJDIR_LINDEBUG_X86)/src/c_simu
-	rm -rf $(OBJDIR_LINDEBUG_X86)
+	rm -rf $(OBJDIR_DEBUG)/src
+	rm -rf $(OBJDIR_DEBUG)/src/c_simu
+	rm -rf $(OBJDIR_DEBUG)
 
-.PHONY: before_lindebug_x86 after_lindebug_x86 clean_lindebug_x86
+.PHONY: before_debug after_debug clean_debug
 
