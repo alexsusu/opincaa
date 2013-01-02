@@ -143,19 +143,26 @@ int main(int argc, char *argv[])
 
 
     // TEST simulator:
+    /*
     INIT(C_SIMULATION_MODE);
     test_Simple_All();
     test_SimpleCellShl();
     test_SimpleCellShr();
     DEINIT();
+   */
 
-/*
     INIT(run_mode);
     test_Simple_All();
     DEINIT();
     cout << "Press ENTER to continue...";
     cin.ignore( numeric_limits <streamsize> ::max(), '\n' );
-*/
+
+    return 0;
+}
+
+
+
+
     /*
     Unused code:
     //InitKernel_Radu();
@@ -175,5 +182,3 @@ int main(int argc, char *argv[])
     */
 
     /* ... */
-    return 0;
-}
