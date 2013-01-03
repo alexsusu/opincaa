@@ -142,52 +142,10 @@ int main(int argc, char *argv[])
         }
     }
 
-
-    // TEST simulator with connex (no IO):
-    /*
-    INIT(C_SIMULATION_MODE);
-    test_Simple_All();
-    test_SimpleCellShl();
-    test_SimpleCellShr();
-    DEINIT();
-   */
-
-    // TEST simulator with connex (IO):
-    /*
-    INIT(C_SIMULATION_MODE);
-    testIOwrite();
-    DEINIT();
-   */
-
     INIT(run_mode);
-    //INIT(VERILOG_SIMULATION_MODE);
     test_Simple_All();
     DEINIT();
-    cout << "Press ENTER to continue...";
-    cin.ignore( numeric_limits <streamsize> ::max(), '\n' );
 
     return 0;
 }
 
-
-
-
-    /*
-    Unused code:
-    //InitKernel_Radu();
-    //VERIFY_KERNEL(RADU_BNR);
-    //DEASM_KERNEL(RADU_BNR);
-    //if (FOUND_ERROR()) cout<<GET_NUM_ERRORS()<<" error(s) found ! \n";
-
-    cout << "Initializing ... "<< endl;
-    cout << "Precacheing ... "<< endl; // Equivalent to assembling. Done once per program execution, at runtime.
-    InitKernel_Radu();
-    VERIFY_KERNEL(RADU_BNR);
-    //InitKernel_Reduce();
-
-    cout << "Starting computation ... "<< endl;
-    EXECUTE_KERNEL(RADU_BNR);
-    result = EXECUTE_KERNEL_RED(REDUCE_BNR);
-    */
-
-    /* ... */

@@ -47,14 +47,8 @@ int initialize(UINT8 RunningMode)
     if(RunningMode == VERILOG_SIMULATION_MODE)
     {
         //open and close files to make sure they exist
-        FILE * file;
-        file = fopen("program.data","w");
-        fclose(file);
-        file = fopen("reduction.data","w");
-        fclose(file);
-
-        vector::pipe_read_32 = open ("reduction.data",O_RDONLY);
-        vector::pipe_write_32 = open ("program.data",O_WRONLY);
+        vector::pipe_read_32 = open ("reduction_fifo_device",O_RDONLY);
+        vector::pipe_write_32 = open ("program_fifo_device",O_WRONLY);
         EXECUTE_KERNEL = vector::executeKernel;
         EXECUTE_KERNEL_RED = vector::executeKernelRed;
         IO_WRITE_NOW = io_unit::vwrite;
@@ -102,18 +96,3 @@ int initialize(UINT8 RunningMode)
     return result;
 }
 
-/*
-
-    if (close(pipe_read_32)  == -1)
-    {
-        perror("Failed to open the read pipe");
-        result = FAIL;
-    }
-
-    if (close(pipe_write_32) == -1)
-    {
-        perror("Failed to open the write pipe");
-        result = FAIL;
-    }
-
-*/

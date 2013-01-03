@@ -260,13 +260,14 @@ int vector::executeKernel(UINT16 dwBatchNumber)
 
 int vector::executeKernelRed(UINT16 dwBatchNumber)
 {
-    int data_read;
+    unsigned char data_read[4];
     executeKernel(dwBatchNumber);
-    if (read(pipe_read_32,&data_read, 4 ) == 4) return data_read;
-    else
-    {
-        perror("Failed to read from pipe !");
-        return 0;
-    }
+
+    read(pipe_read_32,data_read,1);
+    read(pipe_read_32,data_read+1,1);
+    read(pipe_read_32,data_read+2,1);
+    read(pipe_read_32,data_read+3,1);
+
+    return *((int *)data_read);
 }
 
