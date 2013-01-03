@@ -12,9 +12,9 @@
  *
  */
 
-#include "../include/vector.h"
-#include "../include/vector_errors.h"
-#include "../include/opcodes.h"
+#include "../../include/core/vector.h"
+#include "../../include/core/vector_errors.h"
+#include "../../include/core/opcodes.h"
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>

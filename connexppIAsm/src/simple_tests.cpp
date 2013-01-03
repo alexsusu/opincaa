@@ -6,8 +6,9 @@
  * Each instruction is tested via one bacth that uses reduction for checking the result
  *
  */
-#include "../include/vector_registers.h"
-#include "../include/vector.h"
+#include "../include/core/vector_registers.h"
+#include "../include/core/vector.h"
+#include "../include/core/io_unit.h"
 #include "../include/c_simu/c_simulator.h"
 #include "../include/utils.h"
 #include <iostream>
@@ -311,7 +312,6 @@ enum BatchNumbers
 // TODO with random numbers.
 // Remember to handle truncation properly !
 // eg: 128* 0xff ff ff ff = ???
-#define REGISTER_SIZE_MASK 0xffff
 TestFunction TestFunctionTable[] =
 {
     {NOP_BNR,"NOP",0x00,0x00,InitKernel_Nop,NUMBER_OF_MACHINES},
@@ -369,6 +369,7 @@ int test_SimpleCellShl()
     InitKernel_Cellshl(CELL_SHL_BNR);
     EXECUTE_KERNEL_RED(CELL_SHL_BNR);
     PRINT_SHIFT_REGS();
+    return PASS;
 }
 
 int test_SimpleCellShr()
@@ -376,5 +377,20 @@ int test_SimpleCellShr()
     InitKernel_Cellshr(CELL_SHR_BNR);
     EXECUTE_KERNEL_RED(CELL_SHR_BNR);
     PRINT_SHIFT_REGS();
+    return PASS;
 }
 
+int testIOwrite()
+{
+    UINT16 data[NUMBER_OF_MACHINES];
+    UINT16 num_vectors = 1;
+    UINT16 destAddr = 0;
+    UINT16 cnt;
+    io_unit IOU;
+    for (cnt = 0; cnt < NUMBER_OF_MACHINES*num_vectors; cnt++)
+        data[cnt] = cnt;
+    IOU.prewriteVectors(destAddr,data,num_vectors);
+    IO_WRITE_NOW(&IOU);
+    c_simulator::printLS(destAddr);
+    return PASS;
+}

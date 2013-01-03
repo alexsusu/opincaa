@@ -1,14 +1,17 @@
-#ifndef TYPES_H
-#define TYPES_H
+#ifndef UTILS_H
+#define UTILS_H
 
 #define UINT8 unsigned char
 #define UINT16 unsigned short int
 #define INT16 short int
 #define UINT32 unsigned int
+#define INT32  int
 #define UINT64 unsigned long long int
 #define INT64  long long int
 #define UINT_INSTRUCTION UINT32
 #define NUMBER_OF_MACHINES 128LL
+#define REGISTER_SIZE_MASK 0xffff
+#define REGISTER_SIZE       16  //bits
 
 #define PASS 0
 #define FAIL -1
@@ -24,5 +27,7 @@ int initialize(UINT8);
 int deinitialize();
 extern int (*EXECUTE_KERNEL)(UINT16 dwBatchNumber);
 extern int (*EXECUTE_KERNEL_RED)(UINT16 dwBatchNumber);
+extern int (*IO_WRITE_NOW)(void*);
+extern int (*IO_READ_NOW)(void*);
 
 #endif // TYPES_H

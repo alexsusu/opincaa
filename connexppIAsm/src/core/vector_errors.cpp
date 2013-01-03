@@ -5,7 +5,7 @@
  *
  */
 
-#include "../include/vector.h"
+#include "../../include/core/vector.h"
 
 void vector::vectorError(const char *Msg)
 {

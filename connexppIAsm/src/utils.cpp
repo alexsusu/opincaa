@@ -1,5 +1,5 @@
 #include "../include/utils.h"
-#include "../include/vector.h"
+#include "../include/core/vector.h"
 #include "../include/c_simu/c_simulator.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -8,6 +8,9 @@
 
 int (*EXECUTE_KERNEL)(UINT16 dwBatchNumber);
 int (*EXECUTE_KERNEL_RED)(UINT16 dwBatchNumber);
+
+int (*IO_WRITE_NOW)(void*);
+int (*IO_READ_NOW)(void*);
 
 static UINT8 RunMode = REAL_HARDWARE_MODE;
 int deinitialize()
@@ -52,6 +55,10 @@ int initialize(UINT8 RunningMode)
 
         vector::pipe_read_32 = open ("reduction.data",O_RDONLY);
         vector::pipe_write_32 = open ("program.data",O_WRONLY);
+        EXECUTE_KERNEL = vector::executeKernel;
+        EXECUTE_KERNEL_RED = vector::executeKernelRed;
+        IO_WRITE_NOW = io_unit::vwrite;
+        IO_READ_NOW = io_unit::vread;
     }
     else if (RunningMode == REAL_HARDWARE_MODE)
     {
@@ -59,11 +66,15 @@ int initialize(UINT8 RunningMode)
         vector::pipe_write_32 = open ("/dev/xillybus_write_arm2array_32",O_WRONLY);
         EXECUTE_KERNEL = vector::executeKernel;
         EXECUTE_KERNEL_RED = vector::executeKernelRed;
+        IO_WRITE_NOW = io_unit::vwrite;
+        IO_READ_NOW = io_unit::vread;
     }
     else if (RunningMode == C_SIMULATION_MODE)
     {
         EXECUTE_KERNEL = c_simulator::executeDeasmKernel;
         EXECUTE_KERNEL_RED = c_simulator::executeDeasmKernel;
+        IO_WRITE_NOW = c_simulator::vwrite;
+        IO_READ_NOW = c_simulator::vread;
         c_simulator::initialize();
     }
     else

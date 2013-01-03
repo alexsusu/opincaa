@@ -26,7 +26,8 @@
  *   v0.5.1 - code clean-up
  *   v0.5.2 - added "estimation mode" for BatchInit functions. See BEGIN_BATCH and END_BATCH.
  *   v0.6   - added c-simulator. Incomplete (CELL_SHL/SHR. Nothing with IO yet)
- *   v0.61  - added c-simulator CELL_SHL and SHR. Still nothing with IO yet.
+ *   v0.6.1  - added c-simulator CELL_SHL and SHR. Still nothing with IO yet.
+ *   v0.6.2  - added c-simulator IO capabilities. Seems to work for write.
  *   TODO: add parameters in kernel-init functions.
  *
  *
@@ -38,7 +39,7 @@
 #include <limits>
 #include <string.h>
 
-#include "include/vector_registers.h"
+#include "include/core/vector_registers.h"
 #include "include/utils.h"
 #include "include/simple_tests.h"
 
@@ -142,7 +143,7 @@ int main(int argc, char *argv[])
     }
 
 
-    // TEST simulator:
+    // TEST simulator with connex (no IO):
     /*
     INIT(C_SIMULATION_MODE);
     test_Simple_All();
@@ -151,7 +152,15 @@ int main(int argc, char *argv[])
     DEINIT();
    */
 
+    // TEST simulator with connex (IO):
+    /*
+    INIT(C_SIMULATION_MODE);
+    testIOwrite();
+    DEINIT();
+   */
+
     INIT(run_mode);
+    //INIT(VERILOG_SIMULATION_MODE);
     test_Simple_All();
     DEINIT();
     cout << "Press ENTER to continue...";

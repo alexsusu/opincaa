@@ -5,10 +5,10 @@
  * INDEX is a special vector-register that is used for ldix instruction
  * SHIFT_REG is a special vector-register that is used for ldsh instruction
  * LS marks the local store
- * MULT marks the extended multiplicaion result. Use onlu _LO and _HI macros to read it !
+ * MULT marks the extended multiplicaion result. Use only _LO and _HI macros to read it !
  */
 
-#include "../include/vector.h"
+#include "../../include/core/vector.h"
 
 // define 32 objects of type vector so that we can write operations like R1 = R2 + R3
 

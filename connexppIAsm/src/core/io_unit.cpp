@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include "../include/io_unit.h"
+#include "../../include/core/io_unit.h"
 
 #define WRITE_MODE 1
 #define ADDR_FIELD_MASK ((1 << 11) -1)
@@ -26,9 +26,9 @@ io_unit::~io_unit()
 
 void io_unit::setIOParams(int mode, int LsAddress, int NumOfVectors)
 {
-    Iou.Descriptor.Mode = mode;
-    Iou.Descriptor.LsAddress = LsAddress;
-    Iou.Descriptor.NumOfVectors = NumOfVectors;
+    Iouc.Descriptor.Mode = mode;
+    Iouc.Descriptor.LsAddress = LsAddress;
+    Iouc.Descriptor.NumOfVectors = NumOfVectors;
 
     Size = NumOfVectors * 2;
     if (mode == WRITE_MODE) Size += DESCRIPTOR_SIZE;
@@ -37,15 +37,17 @@ void io_unit::setIOParams(int mode, int LsAddress, int NumOfVectors)
 void io_unit::prewriteVectors(UINT16 destAddress, UINT16 *srcAddress, UINT16 numVectors)
 {
     setIOParams(WRITE_MODE, destAddress,numVectors);
-    UINT32 *buff = Iou.Content;
+    UINT32 *buff = Iouc.Content;
+    UINT32 *dwsrcAddress = (UINT32*)srcAddress;
     UINT32 *buffstop = buff + numVectors*VECTOR_SIZE_IN_DWORDS;
     while (buff < buffstop)
-        *buff++ = *srcAddress++;
+        *buff++ = *dwsrcAddress++;
 }
 
-int io_unit::vwrite()
+int io_unit::vwrite(void *_iou)
 {
-    if ((int)Size == write(vpipe_write_32, &Iou,Size))
+    io_unit *iou = (io_unit*)_iou;
+    if (iou->getSize() == write(vpipe_write_32,iou->getIO_UNIT_CORE(),iou->getSize()))
         return PASS;
     else return FAIL;
 }
@@ -55,11 +57,12 @@ void io_unit::prepReadVectors(UINT16 srcAddress,UINT16 numVectors)
     setIOParams(READ_MODE, srcAddress,numVectors);
 }
 
-int io_unit::vread()
+int io_unit::vread(void *_iou)
 {
-    if (DESCRIPTOR_SIZE == write(vpipe_write_32, &Iou.Descriptor, DESCRIPTOR_SIZE))
+    io_unit *iou = (io_unit*)_iou;
+    if (DESCRIPTOR_SIZE == write(vpipe_write_32, &(iou->getIO_UNIT_CORE())->Descriptor, DESCRIPTOR_SIZE))
     {
-        if ((int)Size == read(vpipe_read_32, Iou.Content, Size))
+        if (iou->getSize() == read(vpipe_read_32, &(iou->getIO_UNIT_CORE())->Content, iou->getSize()))
             return PASS;
     }
 
@@ -102,6 +105,15 @@ int io_unit::deinitialize()
     return result;
 }
 
+IO_UNIT_CORE* io_unit::getIO_UNIT_CORE()
+{
+    return &Iouc;
+}
+
+INT32 io_unit::getSize()
+{
+    return Size;
+}
 
 #endif // IO_SYSTEM_H
 

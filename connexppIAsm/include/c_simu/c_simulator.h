@@ -12,6 +12,7 @@
 //#include <stdlib.h>
 //#include <stdio.h>
 #include "../utils.h"
+#include "../core/io_unit.h"
 //#include <stdlib.h>
 //#include "vector_errors.h"
 
@@ -57,6 +58,11 @@ class c_simulator
         static int printDeasmKernel(UINT16 dwBatchNumber);
         static int executeDeasmKernel(UINT16 dwBatchNumber);
         static void printSHIFT_REGS();
+        static void printLS(int address);
+        static int vwrite();
+        static int vread();
+        static int vwrite(void* Iou);
+        static int vread(void* Iou);
 
         virtual ~c_simulator();
 

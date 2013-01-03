@@ -11,7 +11,7 @@
 
 //#include <stdlib.h>
 #include <stdio.h>
-#include "utils.h"
+#include "../utils.h"
 #include <stdlib.h>
 #include "vector_errors.h"
 

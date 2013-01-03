@@ -10,3 +10,4 @@
 int test_Simple_All();
 int test_SimpleCellShl();
 int test_SimpleCellShr();
+int testIOwrite();

@@ -8,7 +8,7 @@
 #ifndef VECTOR_ERRORS_H
 #define VECTOR_ERRORS_H
 
-#include "../include/vector.h"
+#include "vector.h"
 
 #define IMM_VAL_MAX 0xFFFF
 #define IMM_SHIFT_VAL_MAX 0x1F

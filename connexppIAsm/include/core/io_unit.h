@@ -1,13 +1,15 @@
 #ifndef IO_UNIT_H
 #define IO_UNIT_H
 
-#include "utils.h"
+#include "../utils.h"
 /*
 Transfers occur in the following sequence of events:
 1)	Host pushes descriptor into the inbound FIFO, lowest-index first
 2)	If transfer is write, host pushes write data into the inbound FIFO
 3)	If transfer is read, host pops read data from the outbound FIFO
 */
+
+
         #define MODE_READ 0
         #define MODE_WRITE 1
 
@@ -36,7 +38,7 @@ struct IO_UNIT_DESCRIPTOR
     UINT32 NumOfVectors;
 };
 
-struct IO_UNIT
+struct IO_UNIT_CORE
 {
     IO_UNIT_DESCRIPTOR Descriptor;
     UINT32 Content[IO_UNIT_MAX_SIZE];
@@ -50,19 +52,24 @@ class io_unit
 
         UINT16* getVector(int VectorNumber);
         void setIOParams(int mode, int LsAddress, int NumOfVectors);
+
         void prewriteVectors(UINT16 destAddress, UINT16 *srcAddress, UINT16 numVectors);
-        int vwrite();
         void prepReadVectors(UINT16 srcAddress,UINT16 numVectors);
-        int vread();
-        int initialize();
-        int deinitialize();
+
+        IO_UNIT_CORE* getIO_UNIT_CORE();
+        INT32 getSize();
+
+        static int initialize();
+        static int deinitialize();
+        static int vwrite(void*);
+        static int vread(void*);
 
     protected:
     private:
         static int vpipe_read_32;
         static int vpipe_write_32;
-        IO_UNIT Iou;
-        UINT32 Size;
+        IO_UNIT_CORE Iouc;
+        INT32 Size;
 };
 
 #endif // IO_SYSTEM_H

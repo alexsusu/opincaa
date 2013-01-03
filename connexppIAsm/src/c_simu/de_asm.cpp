@@ -7,8 +7,8 @@
  *
  */
 
-#include "../../include/vector.h"
-#include "../../include/opcodes.h"
+#include "../../include/core/vector.h"
+#include "../../include/core/opcodes.h"
 #include "../../include/c_simu/c_simulator.h"
 
 DECLARE_STATIC_C_SIMU_VARS;
@@ -403,3 +403,5 @@ int c_simulator::executeDeasmKernel(UINT16 dwBatchNumber)
     }
     return result;
 }
+
+
