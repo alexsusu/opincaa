@@ -44,6 +44,7 @@ void InitKernel_Iwrite(int BatchNumber,INT64 Param1, INT64 Param2)
     BEGIN_BATCH(BatchNumber);
         SET_ACTIVE(ALL);
         R0 = INDEX;
+        NOP;
         LS[Param1] = R0;
         R1 = LS[Param1];
         REDUCE(R1);
@@ -55,6 +56,7 @@ void InitKernel_Iread(int BatchNumber,INT64 Param1, INT64 Param2)
     BEGIN_BATCH(BatchNumber);
         SET_ACTIVE(ALL);
         R0 = INDEX;
+        NOP;
         LS[Param1] = R0;
         R1 = LS[Param1];
         REDUCE(R1);
@@ -329,7 +331,7 @@ TestFunction TestFunctionTable[] =
     {XOR_BNR,"XOR",0x01,0x10,InitKernel_Xor,(0x01 ^ 0x10)*NUMBER_OF_MACHINES},
     {EQ_BNR,"EQ",0xff3f,0xff3f,InitKernel_Eq,(0xff3f == 0xff3f)*NUMBER_OF_MACHINES},
     {LT_BNR,"LT",0xabcd,0xabcc,InitKernel_Lt,(0xabcd <  0xabcc)*NUMBER_OF_MACHINES},  // ??? in the sense ffff ffff < ffff fffe (neg numbers)
-    {ULT_BNR,"ULT",0xabcd,0xabcc,InitKernel_Ult,(0xabcd > 0xabcc)*NUMBER_OF_MACHINES}, // ??? in the sense ffff ffff > ffff fffe (pos numbers)
+    {ULT_BNR,"ULT",0xabcd,0xabcc,InitKernel_Ult,(0xabcdUL < 0xabccUL)*NUMBER_OF_MACHINES}, // ??? in the sense ffff ffff > ffff fffe (pos numbers)
     {SHL_BNR,"SHL",0xcd,3,InitKernel_Shl,(0xcd << 3)*NUMBER_OF_MACHINES},
     {SHR_BNR,"SHR",0xabcd,3,InitKernel_Shr,(0xabcd >> 3)*NUMBER_OF_MACHINES},
     {SHRA_BNR,"SHRA",0x01cd,4,InitKernel_Shra,(0x01c)*NUMBER_OF_MACHINES},//will fail: 128*big
