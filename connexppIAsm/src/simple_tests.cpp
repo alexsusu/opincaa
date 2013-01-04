@@ -293,6 +293,52 @@ void InitKernel_Multhi(int BatchNumber, INT64 Param1, INT64 Param2)
     END_BATCH(BatchNumber);
 }
 
+void InitKernel_Whereq(int BatchNumber, INT64 Param1, INT64 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+	SET_ACTIVE(ALL);
+	R0 = INDEX;
+	R1 = Param1;
+	R4 = 0;
+	R3 = (R0 == R1);
+	WHERE_EQ;
+	    R4 = Param2;
+	ALL;
+	REDUCE(R4);
+    END_BATCH(BatchNumber);
+}
+
+void InitKernel_Wherelt(int BatchNumber, INT64 Param1, INT64 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+	SET_ACTIVE(ALL);
+	R0 = INDEX;
+	R1 = Param1;
+	R2 = Param2;
+	R4 = 0;
+	R3 = (R0 < R1);
+	WHERE_LT;
+	    R4 = R2;
+	ALL;
+	REDUCE(R4);
+    END_BATCH(BatchNumber);
+}
+
+void InitKernel_Wherecry(int BatchNumber, INT64 Param1, INT64 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+	SET_ACTIVE(ALL);
+	R0 = INDEX;
+	R1 = Param2;
+	R4 = 0;
+	R3 = (R0 + R1);
+	WHERE_LT;
+	    R4 = Param2;
+	ALL;
+	REDUCE(R4);
+    END_BATCH(BatchNumber);
+}
+
 enum BatchNumbers
 {
     NOP_BNR     = 0,
@@ -361,7 +407,10 @@ TestFunction TestFunctionTable[] =
     {SHRA_BNR,"SHRA",0x01cd,4,InitKernel_Shra,(0x01c)*NUMBER_OF_MACHINES},//will fail: 128*big
     {ISHRA_BNR,"ISHRA",0xabcd,4,InitKernel_Shra,(0xfabcUL)*NUMBER_OF_MACHINES},
     {MULTLO_BNR,"MULTLO",0x2,0x3,InitKernel_Multlo,(0x2UL * 0x3UL)*NUMBER_OF_MACHINES},
-    {MULTHI_BNR,"MULTHI",0x8000,0x2,InitKernel_Multhi,((0x8000UL * 0x2UL) >> 16)*NUMBER_OF_MACHINES}
+    {MULTHI_BNR,"MULTHI",0x8000,0x2,InitKernel_Multhi,((0x8000UL * 0x2UL) >> 16)*NUMBER_OF_MACHINES},
+    {WHERE_EQ_BNR,"WHEREQ",27,50,InitKernel_Whereq,50},
+    {WHERE_LT_BNR,"WHERELT",27,50,InitKernel_Wherelt,27*50},
+    {WHERE_CARRY_BNR,"WHERECRY",(0x10000UL-10),50,InitKernel_Wherelt,118*50}
 
 };
 
