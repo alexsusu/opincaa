@@ -299,8 +299,8 @@ void InitKernel_Whereq(int BatchNumber, INT64 Param1, INT64 Param2)
 	SET_ACTIVE(ALL);
 	R0 = INDEX;
 	R1 = Param1;
-	R4 = 0;
 	R3 = (R0 == R1);
+	R4 = 0;
 	WHERE_EQ;
 	    R4 = Param2;
 	ALL;
@@ -314,11 +314,10 @@ void InitKernel_Wherelt(int BatchNumber, INT64 Param1, INT64 Param2)
 	SET_ACTIVE(ALL);
 	R0 = INDEX;
 	R1 = Param1;
-	R2 = Param2;
-	R4 = 0;
 	R3 = (R0 < R1);
+	R4 = 0;
 	WHERE_LT;
-	    R4 = R2;
+	    R4 = Param2;
 	ALL;
 	REDUCE(R4);
     END_BATCH(BatchNumber);
@@ -330,9 +329,9 @@ void InitKernel_Wherecry(int BatchNumber, INT64 Param1, INT64 Param2)
 	SET_ACTIVE(ALL);
 	R0 = INDEX;
 	R1 = Param2;
+	R3 = R0 + R1;
 	R4 = 0;
-	R3 = (R0 + R1);
-	WHERE_LT;
+	WHERE_CARRY;
 	    R4 = Param2;
 	ALL;
 	REDUCE(R4);
