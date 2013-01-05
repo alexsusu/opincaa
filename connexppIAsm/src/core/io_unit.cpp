@@ -34,7 +34,7 @@ void io_unit::setIOParams(int mode, int LsAddress, int NumOfVectors)
     if (mode == WRITE_MODE) Size += DESCRIPTOR_SIZE;
 }
 
-void io_unit::prewriteVectors(UINT16 destAddress, UINT16 *srcAddress, UINT16 numVectors)
+void io_unit::preWriteVectors(UINT16 destAddress, UINT16 *srcAddress, UINT16 numVectors)
 {
     setIOParams(WRITE_MODE, destAddress,numVectors);
     UINT32 *buff = Iouc.Content;
@@ -52,7 +52,7 @@ int io_unit::vwrite(void *_iou)
     else return FAIL;
 }
 
-void io_unit::prepReadVectors(UINT16 srcAddress,UINT16 numVectors)
+void io_unit::preReadVectors(UINT16 srcAddress,UINT16 numVectors)
 {
     setIOParams(READ_MODE, srcAddress,numVectors);
 }

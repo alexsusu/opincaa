@@ -303,7 +303,7 @@ void InitKernel_Whereq(int BatchNumber, INT64 Param1, INT64 Param2)
 	R4 = 0;
 	WHERE_EQ;
 	    R4 = Param2;
-	ALL;
+	SET_ACTIVE(ALL);
 	REDUCE(R4);
     END_BATCH(BatchNumber);
 }
@@ -399,8 +399,8 @@ TestFunction TestFunctionTable[] =
     {AND_BNR,"AND",0xfffe,0x11,InitKernel_And,(0xfffe & 0x11)*NUMBER_OF_MACHINES},
     {XOR_BNR,"XOR",0x01,0x10,InitKernel_Xor,(0x01 ^ 0x10)*NUMBER_OF_MACHINES},
     {EQ_BNR,"EQ",0xff3f,0xff3f,InitKernel_Eq,(0xff3f == 0xff3f)*NUMBER_OF_MACHINES},
-    {LT_BNR,"LT",0xabcd,0xabcc,InitKernel_Lt,(0xabcd <  0xabcc)*NUMBER_OF_MACHINES},  // ??? in the sense ffff ffff < ffff fffe (neg numbers)
-    {ULT_BNR,"ULT",0xabcd,0xabcc,InitKernel_Ult,(0xabcdUL < 0xabccUL)*NUMBER_OF_MACHINES}, // ??? in the sense ffff ffff > ffff fffe (pos numbers)
+    {LT_BNR,"LT",0xabcd,0xabcc,InitKernel_Lt,(0xabcd <  0xabcc)*NUMBER_OF_MACHINES},  // ??? in the sense  ffff <  fffe (neg numbers)
+    {ULT_BNR,"ULT",0xabcd,0xabcc,InitKernel_Ult,(0xabcdUL < 0xabccUL)*NUMBER_OF_MACHINES}, // ??? in the sense  ffff >  fffe (pos numbers)
     {SHL_BNR,"SHL",0xcd,3,InitKernel_Shl,(0xcd << 3)*NUMBER_OF_MACHINES},
     {SHR_BNR,"SHR",0xabcd,3,InitKernel_Shr,(0xabcd >> 3)*NUMBER_OF_MACHINES},
     {SHRA_BNR,"SHRA",0x01cd,4,InitKernel_Shra,(0x01c)*NUMBER_OF_MACHINES},//will fail: 128*big
@@ -409,7 +409,7 @@ TestFunction TestFunctionTable[] =
     {MULTHI_BNR,"MULTHI",0x8000,0x2,InitKernel_Multhi,((0x8000UL * 0x2UL) >> 16)*NUMBER_OF_MACHINES},
     {WHERE_EQ_BNR,"WHEREQ",27,50,InitKernel_Whereq,50},
     {WHERE_LT_BNR,"WHERELT",27,50,InitKernel_Wherelt,27*50},
-    {WHERE_CARRY_BNR,"WHERECRY",(0x10000UL-10),50,InitKernel_Wherelt,118*50}
+    {WHERE_CARRY_BNR,"WHERECRY",(0x10000UL-10),50,InitKernel_Wherecry,118*50}
 
 };
 
@@ -434,8 +434,8 @@ int test_Simple_All()
             cout<< "Test "<< setw(8) << left << TestFunctionTable[i].OperationName << " passed. " <<endl;
     }
 
-    //DEASM_KERNEL(OR_BNR);
-    //DEASM_KERNEL(ADDC_BNR);
+//    DEASM_KERNEL(WHERE_LT_BNR);
+//    DEASM_KERNEL(WHERE_CARRY_BNR);
 
     return testFails;
 }
@@ -462,11 +462,33 @@ int testIOwrite()
     UINT16 num_vectors = 1;
     UINT16 destAddr = 0;
     UINT16 cnt;
-    io_unit IOU;
     for (cnt = 0; cnt < NUMBER_OF_MACHINES*num_vectors; cnt++)
         data[cnt] = cnt;
-    IOU.prewriteVectors(destAddr,data,num_vectors);
-    IO_WRITE_NOW(&IOU);
+
+    {
+        io_unit IOU;
+        IOU.preWriteVectors(destAddr,data,num_vectors);
+        IO_WRITE_NOW(&IOU);
+    }
+
+    c_simulator::printLS(destAddr);
+    return PASS;
+}
+
+int testIOread()
+{
+    UINT16 data[NUMBER_OF_MACHINES];
+    UINT16 num_vectors = 1;
+    UINT16 destAddr = 0;
+    UINT16 cnt;
+    for (cnt = 0; cnt < NUMBER_OF_MACHINES*num_vectors; cnt++)
+        data[cnt] = ~cnt;
+    {
+        io_unit IOU;
+        //IOU.preReadVectors(destAddr,data,num_vectors);
+        IO_READ_NOW(&IOU);
+    }
+
     c_simulator::printLS(destAddr);
     return PASS;
 }

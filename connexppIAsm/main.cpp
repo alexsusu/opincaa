@@ -118,6 +118,24 @@ enum errorCodes
     INIT_FAILED
 };
 
+void testCSimulator()
+{
+    INIT(C_SIMULATION_MODE);
+    test_Simple_All();
+    test_SimpleCellShl();
+    test_SimpleCellShr();
+    DEINIT();
+}
+
+void testIOCSimulator()
+{
+     // TEST simulator with connex (IO):
+
+    INIT(C_SIMULATION_MODE);
+    testIOwrite();
+    DEINIT();
+}
+
 int main(int argc, char *argv[])
 {
     int i;
@@ -143,8 +161,12 @@ int main(int argc, char *argv[])
     }
 
     INIT(run_mode);
+    //INIT(VERILOG_SIMULATION_MODE);
     test_Simple_All();
     DEINIT();
+
+    cout << "Press ENTER to continue...";
+    cin.ignore( numeric_limits <streamsize> ::max(), '\n' );
 
     return 0;
 }

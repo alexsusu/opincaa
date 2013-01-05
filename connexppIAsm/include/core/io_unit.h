@@ -9,7 +9,6 @@ Transfers occur in the following sequence of events:
 3)	If transfer is read, host pops read data from the outbound FIFO
 */
 
-
         #define MODE_READ 0
         #define MODE_WRITE 1
 
@@ -53,8 +52,8 @@ class io_unit
         UINT16* getVector(int VectorNumber);
         void setIOParams(int mode, int LsAddress, int NumOfVectors);
 
-        void prewriteVectors(UINT16 destAddress, UINT16 *srcAddress, UINT16 numVectors);
-        void prepReadVectors(UINT16 srcAddress,UINT16 numVectors);
+        void preWriteVectors(UINT16 destAddress, UINT16 *srcAddress, UINT16 numVectors);
+        void preReadVectors(UINT16 srcAddress,UINT16 numVectors);
 
         IO_UNIT_CORE* getIO_UNIT_CORE();
         INT32 getSize();
