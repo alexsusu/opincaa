@@ -328,7 +328,7 @@ void InitKernel_Wherecry(int BatchNumber, INT64 Param1, INT64 Param2)
     BEGIN_BATCH(BatchNumber);
 	SET_ACTIVE(ALL);
 	R0 = INDEX;
-	R1 = Param2;
+	R1 = Param1;
 	R3 = R0 + R1;
 	R4 = 0;
 	WHERE_CARRY;
