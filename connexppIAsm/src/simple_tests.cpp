@@ -247,25 +247,43 @@ void InitKernel_Ishra(int BatchNumber,INT64 Param1, INT64 Param2)
     END_BATCH(BatchNumber);
 }
 
-void InitKernel_Cellshl(int BatchNumber)
+void InitKernel_Cellshl(int BatchNumber, INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
         SET_ACTIVE(ALL);
         R1 = INDEX;
-        R2 = 2;
+        R2 = Param1;
         CELL_SHL(R1,R2);
-        //REDUCE(R3);
+        R3 = 0;
+        R5 = Param2;
+        NOP;
+        R4 = SHIFT_REG;
+        R6 = (R5 == R4);
+        NOP;
+        SET_ACTIVE(WHERE_EQ);
+            R3 = INDEX; 
+        SET_ACTIVE(ALL);
+        REDUCE(R3);
     END_BATCH(BatchNumber);
 }
 
-void InitKernel_Cellshr(int BatchNumber)
+void InitKernel_Cellshr(int BatchNumber, INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
         SET_ACTIVE(ALL);
         R1 = INDEX;
-        R2 = 129;
+        R2 = Param1;
         CELL_SHR(R1,R2);
-        //REDUCE(R3);
+        R3 = 0;
+        R5 = Param2;
+        NOP;
+        R4 = SHIFT_REG;
+        R6 = (R5 == R4);
+        NOP;
+        SET_ACTIVE(WHERE_EQ);
+            R3 = INDEX; 
+        SET_ACTIVE(ALL);
+        REDUCE(R3);
     END_BATCH(BatchNumber);
 }
 
@@ -273,68 +291,68 @@ void InitKernel_Multlo(int BatchNumber, INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
         SET_ACTIVE(ALL);
-	R0 = Param1;
-	R1 = Param2;
-	MULT = R1*R0;
-	R2 = _LO(MULT);
-	REDUCE(R2);
+        R0 = Param1;
+        R1 = Param2;
+        MULT = R1*R0;
+        R2 = _LO(MULT);
+        REDUCE(R2);
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Multhi(int BatchNumber, INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-	SET_ACTIVE(ALL);
-	R0 = Param1;
-	R1 = Param2;
-	MULT = R1*R0;
-	R2 = _HI(MULT);
-	REDUCE(R2);
+        SET_ACTIVE(ALL);
+        R0 = Param1;
+        R1 = Param2;
+        MULT = R1*R0;
+        R2 = _HI(MULT);
+        REDUCE(R2);
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Whereq(int BatchNumber, INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-	SET_ACTIVE(ALL);
-	R0 = INDEX;
-	R1 = Param1;
-	R3 = (R0 == R1);
-	R4 = 0;
-	WHERE_EQ;
-	    R4 = Param2;
-	SET_ACTIVE(ALL);
-	REDUCE(R4);
+        SET_ACTIVE(ALL);
+        R0 = INDEX;
+        R1 = Param1;
+        R3 = (R0 == R1);
+        R4 = 0;
+        SET_ACTIVE(WHERE_EQ);
+            R4 = Param2;
+        SET_ACTIVE(ALL);
+        REDUCE(R4);
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Wherelt(int BatchNumber, INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-	SET_ACTIVE(ALL);
-	R0 = INDEX;
-	R1 = Param1;
-	R3 = (R0 < R1);
-	R4 = 0;
-	WHERE_LT;
-	    R4 = Param2;
-	ALL;
-	REDUCE(R4);
+        SET_ACTIVE(ALL);
+        R0 = INDEX;
+        R1 = Param1;
+        R3 = (R0 < R1);
+        R4 = 0;
+        SET_ACTIVE(WHERE_LT);
+            R4 = Param2;
+        SET_ACTIVE(ALL);
+        REDUCE(R4);
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Wherecry(int BatchNumber, INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-	SET_ACTIVE(ALL);
-	R0 = INDEX;
-	R1 = Param1;
-	R3 = R0 + R1;
-	R4 = 0;
-	WHERE_CARRY;
-	    R4 = Param2;
-	ALL;
-	REDUCE(R4);
+        SET_ACTIVE(ALL);
+        R0 = INDEX;
+        R1 = Param1;
+        R3 = R0 + R1;
+        R4 = 0;
+        SET_ACTIVE(WHERE_CARRY);
+            R4 = Param2;
+        SET_ACTIVE(ALL);
+        REDUCE(R4);
     END_BATCH(BatchNumber);
 }
 
@@ -409,8 +427,9 @@ TestFunction TestFunctionTable[] =
     {MULTHI_BNR,"MULTHI",0x8000,0x2,InitKernel_Multhi,((0x8000UL * 0x2UL) >> 16)*NUMBER_OF_MACHINES},
     {WHERE_EQ_BNR,"WHEREQ",27,50,InitKernel_Whereq,50},
     {WHERE_LT_BNR,"WHERELT",27,50,InitKernel_Wherelt,27*50},
-    {WHERE_CARRY_BNR,"WHERECRY",(0x10000UL-10),50,InitKernel_Wherecry,118*50}
-
+    {WHERE_CARRY_BNR,"WHERECRY",(0x10000UL-10),50,InitKernel_Wherecry,118*50},
+    {CELL_SHL_BNR,"CELLSHL",2,5,InitKernel_Cellshl,5-2},
+    {CELL_SHR_BNR,"CELLSHR",2,5,InitKernel_Cellshr,5+2}
 };
 
 int test_Simple_All()
@@ -442,7 +461,7 @@ int test_Simple_All()
 
 int test_SimpleCellShl()
 {
-    InitKernel_Cellshl(CELL_SHL_BNR);
+    InitKernel_Cellshl(CELL_SHL_BNR,2,3);
     EXECUTE_KERNEL_RED(CELL_SHL_BNR);
     PRINT_SHIFT_REGS();
     return PASS;
@@ -450,7 +469,7 @@ int test_SimpleCellShl()
 
 int test_SimpleCellShr()
 {
-    InitKernel_Cellshr(CELL_SHR_BNR);
+    InitKernel_Cellshr(CELL_SHR_BNR,2,3);
     EXECUTE_KERNEL_RED(CELL_SHR_BNR);
     PRINT_SHIFT_REGS();
     return PASS;
