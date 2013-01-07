@@ -307,7 +307,7 @@ void InitKernel_Cellshl(int BatchNumber, INT64 Param1, INT64 Param2)
         R6 = (R5 == R4);
         NOP;
         SET_ACTIVE(WHERE_EQ);
-            R3 = INDEX; 
+            R3 = INDEX;
         SET_ACTIVE(ALL);
         REDUCE(R3);
     END_BATCH(BatchNumber);
@@ -327,7 +327,7 @@ void InitKernel_Cellshr(int BatchNumber, INT64 Param1, INT64 Param2)
         R6 = (R5 == R4);
         NOP;
         SET_ACTIVE(WHERE_EQ);
-            R3 = INDEX; 
+            R3 = INDEX;
         SET_ACTIVE(ALL);
         REDUCE(R3);
     END_BATCH(BatchNumber);
@@ -390,7 +390,7 @@ void InitKernel_Wherelt(int BatchNumber, INT64 Param1, INT64 Param2)
 void InitKernel_Wherecry(int BatchNumber, INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
+	   SET_ACTIVE(ALL);
         R0 = INDEX;
         R1 = Param1;
         R3 = R0 + R1;
@@ -400,6 +400,113 @@ void InitKernel_Wherecry(int BatchNumber, INT64 Param1, INT64 Param2)
         SET_ACTIVE(ALL);
         REDUCE(R4);
     END_BATCH(BatchNumber);
+}
+
+/**
+    Computes sum of first "numbers" consecutive nubers starting with start.
+    Numbers are forced to UINT16.
+    Sum is forced to UINT16.
+
+    Eg.
+    Sum16ofFirstXnumbers(1, 145) = 145
+    Sum16ofFirstXnumbers(2, 14) = 14 + 15 = 29
+    Sum16ofFirstXnumbers(1, 5) = 1+2+3+4+5 = 15
+
+*/
+UINT16 Sum16ofFirstXnumbers(UINT64 numbers, UINT64 start)
+{
+    UINT32 x;
+    UINT16 sum = 0;
+    for (x = start; x < start + numbers; x++ ) sum += (UINT16)x;
+    return sum;
+}
+
+/**
+    Param 1: Number of vectors to be written.
+    Param 2: Location in Local Store.
+    Warning: Test assumes that InitKernel is called right before Iowrite test is executed
+    ( io write occurs twice during the InitKernel evaluation, then Iowrite batch is ran)
+*/
+void InitKernel_Iowrite(int BatchNumber,INT64 Param1, INT64 Param2)
+{
+    UINT16 destAddr = 0;
+    UINT32 cnt;
+    const int num_vectors = Param1;
+    UINT16 data[NUMBER_OF_MACHINES*num_vectors];
+
+    for (cnt = 0; cnt < NUMBER_OF_MACHINES*num_vectors; cnt++) data[cnt] = cnt;
+
+
+    {
+        io_unit IOU;
+        IOU.preWriteVectors(destAddr,data,num_vectors);
+        IO_WRITE_NOW(&IOU);
+        //c_simulator::printLS(destAddr);
+    }
+    BEGIN_BATCH(BatchNumber);
+        SET_ACTIVE(ALL);
+        R1 = LS[Param2];
+        REDUCE(R1);
+    END_BATCH(BatchNumber);
+}
+
+/**
+
+Param1 = Number of vectors to be read.
+Param2 = Location in local store where we read from.
+
+*/
+void InitKernel_Ioread(int BatchNumber,INT64 Param1, INT64 Param2)
+{
+    UINT16 destAddr = 0;
+    UINT32 cnt;
+    const int num_vectors = Param1;
+    UINT16 data[NUMBER_OF_MACHINES*num_vectors];
+    UINT16 testResult = PASS;
+
+    // fill buffer with data to be written
+    for (cnt = 0; cnt < NUMBER_OF_MACHINES*num_vectors; cnt++) data[cnt] = cnt;
+
+    // write data to local store
+    {
+        io_unit IOU;
+        IOU.preWriteVectors(destAddr,data,num_vectors);
+        IO_WRITE_NOW(&IOU);
+        //c_simulator::printLS(destAddr);
+    }
+
+    // read data from local store
+    {
+        io_unit IOU;
+        IOU.preReadVectors(destAddr,num_vectors);
+        IO_READ_NOW(&IOU);
+        //c_simulator::printLS(destAddr);
+
+        UINT16* Content = (UINT16*)(IOU.getIO_UNIT_CORE())->Content;
+        for (cnt = 0; cnt < NUMBER_OF_MACHINES*num_vectors; cnt++)
+            if (data[cnt] != Content[cnt])
+            {
+                /* Fail */
+                BEGIN_BATCH(BatchNumber);
+                SET_ACTIVE(ALL);
+                R2 = 0;
+                REDUCE(R2);
+                END_BATCH(BatchNumber);
+                testResult = FAIL;
+            }
+
+        if (testResult == PASS)
+            {
+                /* Pass */
+                BEGIN_BATCH(BatchNumber);
+                SET_ACTIVE(ALL);
+                R2 = 1;
+                REDUCE(R2);
+                END_BATCH(BatchNumber);
+                testResult = FAIL;
+            }
+    }
+
 }
 
 enum BatchNumbers
@@ -439,6 +546,8 @@ enum BatchNumbers
     AND_BNR     = 32,
     SUBC_BNR    = 33,
     XOR_BNR     = 34,
+    IO_WRITE_BNR = 35,
+    IO_READ_BNR = 36,
 
     MAX_BNR = NUMBER_OF_BATCHES
 };
@@ -467,19 +576,23 @@ TestFunction TestFunctionTable[] =
     {EQ_BNR,"EQ",0xff3f,0xff3f,InitKernel_Eq,(0xff3f == 0xff3f)*NUMBER_OF_MACHINES},
     {LT_BNR,"LT",0xabcd,0xabcc,InitKernel_Lt,(0xabcd <  0xabcc)*NUMBER_OF_MACHINES},  // ??? in the sense  ffff <  fffe (neg numbers)
     {ULT_BNR,"ULT",0xabcd,0xabcc,InitKernel_Ult,(0xabcdUL < 0xabccUL)*NUMBER_OF_MACHINES}, // ??? in the sense  ffff >  fffe (pos numbers)
-    {SHL_BNR,"SHL",0xcd,3,InitKernel_Shl,(0xcd << 3)*NUMBER_OF_MACHINES},
-    {SHR_BNR,"SHR",0xabcd,3,InitKernel_Shr,(0xabcd >> 3)*NUMBER_OF_MACHINES},
+    {SHL_BNR,"SHL",0xcd,3,InitKernel_Shl,(UINT16)((0xcd << 3)*NUMBER_OF_MACHINES)},
+    {SHR_BNR,"SHR",0xabcd,3,InitKernel_Shr,(UINT16)((0xabcd >> 3)*NUMBER_OF_MACHINES)},
     {SHRA_BNR,"SHRA",0x01cd,4,InitKernel_Shra,(0x01c)*NUMBER_OF_MACHINES},//will fail: 128*big
-    {ISHL_BNR,"ISHL",0xabcd,4,InitKernel_Ishl,(0xbcd0UL)*NUMBER_OF_MACHINES},
-    {ISHR_BNR,"ISHR",0xabcd,4,InitKernel_Ishr,(0x0abcUL)*NUMBER_OF_MACHINES},
-    {ISHRA_BNR,"ISHRA",0xabcd,4,InitKernel_Ishra,(0xfabcUL)*NUMBER_OF_MACHINES},
+    {ISHL_BNR,"ISHL",0xabcd,4,InitKernel_Ishl,(UINT16)((0xbcd0UL)*NUMBER_OF_MACHINES)},
+    {ISHR_BNR,"ISHR",0xabcd,4,InitKernel_Ishr,(UINT16)((0x0abcUL)*NUMBER_OF_MACHINES)},
+    {ISHRA_BNR,"ISHRA",0xabcd,4,InitKernel_Ishra,(UINT16)((0xfabcUL)*NUMBER_OF_MACHINES)},
     {MULTLO_BNR,"MULTLO",0x2,0x3,InitKernel_Multlo,(0x2UL * 0x3UL)*NUMBER_OF_MACHINES},
     {MULTHI_BNR,"MULTHI",0x8000,0x2,InitKernel_Multhi,((0x8000UL * 0x2UL) >> 16)*NUMBER_OF_MACHINES},
     {WHERE_EQ_BNR,"WHEREQ",27,50,InitKernel_Whereq,50},
     {WHERE_LT_BNR,"WHERELT",27,50,InitKernel_Wherelt,27*50},
     {WHERE_CARRY_BNR,"WHERECRY",(0x10000UL-10),50,InitKernel_Wherecry,118*50},
-    {CELL_SHL_BNR,"CELLSHL",2,5,InitKernel_Cellshl,5-2},
-    {CELL_SHR_BNR,"CELLSHR",2,5,InitKernel_Cellshr,5+2}
+	{CELL_SHL_BNR,"CELLSHL",2,5,InitKernel_Cellshl,5-2},
+    {CELL_SHR_BNR,"CELLSHR",2,5,InitKernel_Cellshr,5+2},
+	{IO_WRITE_BNR,"IO_WRITE1",1024,0,InitKernel_Iowrite,Sum16ofFirstXnumbers(NUMBER_OF_MACHINES,0)},
+    {IO_WRITE_BNR,"IO_WRITE2",1024,1,InitKernel_Iowrite,Sum16ofFirstXnumbers(NUMBER_OF_MACHINES,NUMBER_OF_MACHINES)},
+    {IO_WRITE_BNR,"IO_WRITE3",1024,1023,InitKernel_Iowrite,Sum16ofFirstXnumbers(NUMBER_OF_MACHINES,NUMBER_OF_MACHINES*1023)},
+    {IO_READ_BNR,"IO_READ",1024,0,InitKernel_Ioread, NUMBER_OF_MACHINES}
 };
 
 int test_Simple_All()
@@ -509,55 +622,3 @@ int test_Simple_All()
     return testFails;
 }
 
-int test_SimpleCellShl()
-{
-    InitKernel_Cellshl(CELL_SHL_BNR,2,3);
-    EXECUTE_KERNEL_RED(CELL_SHL_BNR);
-    PRINT_SHIFT_REGS();
-    return PASS;
-}
-
-int test_SimpleCellShr()
-{
-    InitKernel_Cellshr(CELL_SHR_BNR,2,3);
-    EXECUTE_KERNEL_RED(CELL_SHR_BNR);
-    PRINT_SHIFT_REGS();
-    return PASS;
-}
-
-int testIOwrite()
-{
-    UINT16 data[NUMBER_OF_MACHINES];
-    UINT16 num_vectors = 1;
-    UINT16 destAddr = 0;
-    UINT16 cnt;
-    for (cnt = 0; cnt < NUMBER_OF_MACHINES*num_vectors; cnt++)
-        data[cnt] = cnt;
-
-    {
-        io_unit IOU;
-        IOU.preWriteVectors(destAddr,data,num_vectors);
-        IO_WRITE_NOW(&IOU);
-    }
-
-    c_simulator::printLS(destAddr);
-    return PASS;
-}
-
-int testIOread()
-{
-    UINT16 data[NUMBER_OF_MACHINES];
-    UINT16 num_vectors = 1;
-    UINT16 destAddr = 0;
-    UINT16 cnt;
-    for (cnt = 0; cnt < NUMBER_OF_MACHINES*num_vectors; cnt++)
-        data[cnt] = ~cnt;
-    {
-        io_unit IOU;
-        //IOU.preReadVectors(destAddr,data,num_vectors);
-        IO_READ_NOW(&IOU);
-    }
-
-    c_simulator::printLS(destAddr);
-    return PASS;
-}

@@ -28,6 +28,8 @@
  *   v0.6   - added c-simulator. Incomplete (CELL_SHL/SHR. Nothing with IO yet)
  *   v0.6.1  - added c-simulator CELL_SHL and SHR. Still nothing with IO yet.
  *   v0.6.2  - added c-simulator IO capabilities. Seems to work for write.
+ *   v0.6.3  - Lucian: added more simple tests
+ *   v0.6.4  - added IO tests.
  *   TODO: add parameters in kernel-init functions.
  *
  *
@@ -118,6 +120,7 @@ enum errorCodes
     INIT_FAILED
 };
 
+/*
 void testCSimulator()
 {
     INIT(C_SIMULATION_MODE);
@@ -135,6 +138,7 @@ void testIOCSimulator()
     testIOwrite();
     DEINIT();
 }
+*/
 
 int main(int argc, char *argv[])
 {
@@ -162,6 +166,7 @@ int main(int argc, char *argv[])
 
     INIT(run_mode);
     //INIT(VERILOG_SIMULATION_MODE);
+    //INIT(C_SIMULATION_MODE);
     test_Simple_All();
     DEINIT();
 
