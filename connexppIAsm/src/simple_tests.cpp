@@ -63,6 +63,32 @@ void InitKernel_Iread(int BatchNumber,INT64 Param1, INT64 Param2)
     END_BATCH(BatchNumber);
 }
 
+void InitKernel_Write(int BatchNumber,INT64 Param1, INT64 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        SET_ACTIVE(ALL);
+        R0 = INDEX;
+        R1 = Param1;
+        NOP;
+        LS[R1] = R0;
+        R2 = LS[R1];
+        REDUCE(R2);
+    END_BATCH(BatchNumber);
+}
+
+void InitKernel_Read(int BatchNumber,INT64 Param1, INT64 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        SET_ACTIVE(ALL);
+        R0 = INDEX;
+        R1 = Param1;
+        NOP;
+        LS[R1] = R0;
+        R2 = LS[R1];
+        REDUCE(R2);
+    END_BATCH(BatchNumber);
+}
+
 void InitKernel_Vload(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
@@ -237,6 +263,26 @@ void InitKernel_Shra(int BatchNumber,INT64 Param1, INT64 Param2)
     END_BATCH(BatchNumber);
 }
 
+void InitKernel_Ishl(int BatchNumber,INT64 Param1, INT64 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        SET_ACTIVE(ALL);
+        R1 = Param1;
+        R3 = (R1 << Param2);
+        REDUCE(R3);
+    END_BATCH(BatchNumber);
+}
+
+void InitKernel_Ishr(int BatchNumber,INT64 Param1, INT64 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        SET_ACTIVE(ALL);
+        R1 = Param1;
+        R3 = (R1 >> Param2);
+        REDUCE(R3);
+    END_BATCH(BatchNumber);
+}
+
 void InitKernel_Ishra(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
@@ -406,6 +452,8 @@ TestFunction TestFunctionTable[] =
     {NOP_BNR,"NOP",0x00,0x00,InitKernel_Nop,NUMBER_OF_MACHINES},
     {IWRITE_BNR,"IWRITE",0x01,0x02,InitKernel_Iwrite,127*NUMBER_OF_MACHINES/2},
     {IREAD_BNR,"IREAD",0x01,0x02,InitKernel_Iread,127*NUMBER_OF_MACHINES/2},
+    {WRITE_BNR,"WRITE",0x01,0x02,InitKernel_Write,127*NUMBER_OF_MACHINES/2},
+    {READ_BNR,"READ",0x01,0x02,InitKernel_Read,127*NUMBER_OF_MACHINES/2},
     {VLOAD_BNR,"VLOAD",0x01,0x02,InitKernel_Vload,3*NUMBER_OF_MACHINES},
 
     {ADD_BNR,"ADD",0xff,0xf1,InitKernel_Add,(0xff + 0xf1)*NUMBER_OF_MACHINES},
@@ -422,7 +470,9 @@ TestFunction TestFunctionTable[] =
     {SHL_BNR,"SHL",0xcd,3,InitKernel_Shl,(0xcd << 3)*NUMBER_OF_MACHINES},
     {SHR_BNR,"SHR",0xabcd,3,InitKernel_Shr,(0xabcd >> 3)*NUMBER_OF_MACHINES},
     {SHRA_BNR,"SHRA",0x01cd,4,InitKernel_Shra,(0x01c)*NUMBER_OF_MACHINES},//will fail: 128*big
-    {ISHRA_BNR,"ISHRA",0xabcd,4,InitKernel_Shra,(0xfabcUL)*NUMBER_OF_MACHINES},
+    {ISHL_BNR,"ISHL",0xabcd,4,InitKernel_Ishl,(0xbcd0UL)*NUMBER_OF_MACHINES},
+    {ISHR_BNR,"ISHR",0xabcd,4,InitKernel_Ishr,(0x0abcUL)*NUMBER_OF_MACHINES},
+    {ISHRA_BNR,"ISHRA",0xabcd,4,InitKernel_Ishra,(0xfabcUL)*NUMBER_OF_MACHINES},
     {MULTLO_BNR,"MULTLO",0x2,0x3,InitKernel_Multlo,(0x2UL * 0x3UL)*NUMBER_OF_MACHINES},
     {MULTHI_BNR,"MULTHI",0x8000,0x2,InitKernel_Multhi,((0x8000UL * 0x2UL) >> 16)*NUMBER_OF_MACHINES},
     {WHERE_EQ_BNR,"WHEREQ",27,50,InitKernel_Whereq,50},
