@@ -249,14 +249,13 @@ void InitKernel_Lt(int BatchNumber,INT64 Param1, INT64 Param2)
     END_BATCH(BatchNumber);
 }
 
-// same as Lt for the moment
 void InitKernel_Ult(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
                         R2 = Param2; //avoid compiler warning
-                        R3 = (R1 < R2);
+                        R3 = ULT(R1,R2);
                         REDUCE(R3);
                         )
 
@@ -618,14 +617,14 @@ TestFunction TestFunctionTable[] =
     {AND_BNR,"AND",0xfffe,0x11,InitKernel_And,(0xfffe & 0x11)*NUMBER_OF_MACHINES},
     {XOR_BNR,"XOR",0x01,0x10,InitKernel_Xor,(0x01 ^ 0x10)*NUMBER_OF_MACHINES},
     {EQ_BNR,"EQ",0xff3f,0xff3f,InitKernel_Eq,(0xff3f == 0xff3f)*NUMBER_OF_MACHINES},
-    {LT_BNR,"LT",0xabcd,0xabcc,InitKernel_Lt,(0xabcd <  0xabcc)*NUMBER_OF_MACHINES},  // ??? in the sense  ffff <  fffe (neg numbers)
+    {LT_BNR,"LT",0xfffd,0xfffe,InitKernel_Lt,(-3 < -2)*NUMBER_OF_MACHINES},  // ??? in the sense  ffff <  fffe (neg numbers)
     {ULT_BNR,"ULT",0xabcd,0xabcc,InitKernel_Ult,(0xabcdUL < 0xabccUL)*NUMBER_OF_MACHINES}, // ??? in the sense  ffff >  fffe (pos numbers)
-    {SHL_BNR,"SHL",0xcd,3,InitKernel_Shl,(UINT16)((0xcd << 3)*NUMBER_OF_MACHINES)},
-    {SHR_BNR,"SHR",0xabcd,3,InitKernel_Shr,(UINT16)((0xabcd >> 3)*NUMBER_OF_MACHINES)},
+    {SHL_BNR,"SHL",0xcd,3,InitKernel_Shl,((0xcd << 3)*NUMBER_OF_MACHINES)},
+    {SHR_BNR,"SHR",0xabcd,3,InitKernel_Shr,((0xabcd >> 3)*NUMBER_OF_MACHINES)},
     {SHRA_BNR,"SHRA",0x01cd,4,InitKernel_Shra,(0x01c)*NUMBER_OF_MACHINES},//will fail: 128*big
-    {ISHL_BNR,"ISHL",0xabcd,4,InitKernel_Ishl,(UINT16)((0xbcd0UL)*NUMBER_OF_MACHINES)},
-    {ISHR_BNR,"ISHR",0xabcd,4,InitKernel_Ishr,(UINT16)((0x0abcUL)*NUMBER_OF_MACHINES)},
-    {ISHRA_BNR,"ISHRA",0xabcd,4,InitKernel_Ishra,(UINT16)((0xfabcUL)*NUMBER_OF_MACHINES)},
+    {ISHL_BNR,"ISHL",0xabcd,4,InitKernel_Ishl,((0xbcd0UL)*NUMBER_OF_MACHINES)},
+    {ISHR_BNR,"ISHR",0xabcd,4,InitKernel_Ishr,((0x0abcUL)*NUMBER_OF_MACHINES)},
+    {ISHRA_BNR,"ISHRA",0xabcd,4,InitKernel_Ishra,((0xfabcUL)*NUMBER_OF_MACHINES)},
     {MULTLO_BNR,"MULTLO",0x2,0x3,InitKernel_Multlo,(0x2UL * 0x3UL)*NUMBER_OF_MACHINES},
     {MULTHI_BNR,"MULTHI",0x8000,0x2,InitKernel_Multhi,((0x8000UL * 0x2UL) >> 16)*NUMBER_OF_MACHINES},
     {WHERE_EQ_BNR,"WHEREQ",27,50,InitKernel_Whereq,50},
