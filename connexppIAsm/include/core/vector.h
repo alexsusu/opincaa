@@ -61,16 +61,12 @@
 #define _HI(x)       vector::multhi(x)
 
 #define NOP             vector::nop()
-#define SET_ACTIVE(x)   x
-#define WHERE_CARRY     vector::WhereCry();
-#define WHERE_EQ        vector::WhereEq();
-#define WHERE_LT        vector::WhereLt();
-#define ALL             vector::EndWhere();
 
-//#define EXECUTE_KERNEL(Batch)        vector::executeKernel(Batch)
-//#define EXECUTE_KERNEL_RED(Batch)    vector::executeKernelRed(Batch)
-//#define VERIFY_KERNEL(Batch)         vector::verifyKernel(Batch)
-//#define DEASM_KERNEL(Batch)          vector::deasmKernel(Batch)
+#define EXECUTE_IN_ALL(x)         vector::EndWhere();x;
+#define EXECUTE_WHERE_CARRY(x)    vector::WhereCry();x;
+#define EXECUTE_WHERE_EQ(x)        vector::WhereEq();x;
+#define EXECUTE_WHERE_LT(x)        vector::WhereLt();x;
+
 #define FOUND_ERROR()                vector::foundError()
 #define GET_NUM_ERRORS()             vector::getNumErrors()
 

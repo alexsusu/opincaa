@@ -7,7 +7,6 @@
 #include <fcntl.h>
 #include "../../include/core/io_unit.h"
 
-#define WRITE_MODE 1
 #define ADDR_FIELD_MASK ((1 << 11) -1)
 #define COUNT_FIELD_MASK (1 << 12) -1)
 

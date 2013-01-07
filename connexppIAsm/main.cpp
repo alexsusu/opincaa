@@ -30,6 +30,7 @@
  *   v0.6.2  - added c-simulator IO capabilities. Seems to work for write.
  *   v0.6.3  - Lucian: added more simple tests
  *   v0.6.4  - added IO tests.
+ *   v0.6.5  - changed macros for *where*. Now they are EXECUTE_IN_ALL(), EXECUTE_WHERE_*()
  *   TODO: add parameters in kernel-init functions.
  *
  *
@@ -62,43 +63,43 @@ void InitKernel_Radu()
 {
     BEGIN_BATCH(RADU_BNR);
 
-        SET_ACTIVE(ALL);
-        NOP;
-        LS[100] = R4;
-        R10 = LS[0x32];
-        R0 = 0x140;
-        REDUCE(R3);
-        MULT = R1 * R2;
-        CELL_SHR(R2,R3);
-        CELL_SHL(R3,R5);
-        LS[R1] = R7;
-        SET_ACTIVE(WHERE_CARRY);
-        SET_ACTIVE(WHERE_EQ);
-        SET_ACTIVE(WHERE_LT);
-        SET_ACTIVE(ALL);
-        R1 = INDEX;
-        R3 = LS[R6];
-        R3 = _LO(MULT);
-        R15 = SHIFT_REG;
-        R31 = _HI(MULT);
-        R29 = R31 << R29;
-        R20 = R14 << 8;
-        R2 = R1 + R2;
-        R5 = (R3 == R4);
-        R1 = ~R3;
-        R3 = R1 >> R2;
-        R5 = R3 >> 5;
-        R3 = R3 - R3;
-        R5 = R3 < R4;
-        R1 = R1 | R1;
-        R3 = SHRA(R3, R3);
-        R3 = ISHRA(R4, 9);
-        R4 = ADDC(R1, R2);
-        R2 = ULT(R4, R3);
-        R10 = R6 & R5;
-        R4 = SUBC(R4, R4);
-        R1 = R1 ^ R1;
-
+        EXECUTE_IN_ALL(
+                        NOP;
+                        LS[100] = R4;
+                        R10 = LS[0x32];
+                        R0 = 0x140;
+                        REDUCE(R3);
+                        MULT = R1 * R2;
+                        CELL_SHR(R2,R3);
+                        CELL_SHL(R3,R5);
+                        LS[R1] = R7;)
+        EXECUTE_WHERE_CARRY();
+        EXECUTE_WHERE_EQ();
+        EXECUTE_WHERE_LT();
+        EXECUTE_IN_ALL(
+                        R1 = INDEX;
+                        R3 = LS[R6];
+                        R3 = _LO(MULT);
+                        R15 = SHIFT_REG;
+                        R31 = _HI(MULT);
+                        R29 = R31 << R29;
+                        R20 = R14 << 8;
+                        R2 = R1 + R2;
+                        R5 = (R3 == R4);
+                        R1 = ~R3;
+                        R3 = R1 >> R2;
+                        R5 = R3 >> 5;
+                        R3 = R3 - R3;
+                        R5 = R3 < R4;
+                        R1 = R1 | R1;
+                        R3 = SHRA(R3, R3);
+                        R3 = ISHRA(R4, 9);
+                        R4 = ADDC(R1, R2);
+                        R2 = ULT(R4, R3);
+                        R10 = R6 & R5;
+                        R4 = SUBC(R4, R4);
+                        R1 = R1 ^ R1;
+                        )
     END_BATCH(RADU_BNR);
 }
 
@@ -120,25 +121,6 @@ enum errorCodes
     INIT_FAILED
 };
 
-/*
-void testCSimulator()
-{
-    INIT(C_SIMULATION_MODE);
-    test_Simple_All();
-    test_SimpleCellShl();
-    test_SimpleCellShr();
-    DEINIT();
-}
-
-void testIOCSimulator()
-{
-     // TEST simulator with connex (IO):
-
-    INIT(C_SIMULATION_MODE);
-    testIOwrite();
-    DEINIT();
-}
-*/
 
 int main(int argc, char *argv[])
 {
@@ -165,8 +147,6 @@ int main(int argc, char *argv[])
     }
 
     INIT(run_mode);
-    //INIT(VERILOG_SIMULATION_MODE);
-    //INIT(C_SIMULATION_MODE);
     test_Simple_All();
     DEINIT();
 

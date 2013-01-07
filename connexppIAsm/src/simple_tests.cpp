@@ -31,189 +31,221 @@ struct TestFunction
 void InitKernel_Nop(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R1 = Param1;
-        R2 = Param2;
-        R3 = 1;
-        REDUCE(R3);
+        EXECUTE_IN_ALL(
+                        R1 = Param1;
+                        R2 = Param2;
+                        R3 = 1;
+                        REDUCE(R3);
+                    )
+
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Iwrite(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R0 = INDEX;
-        NOP;
-        LS[Param1] = R0;
-        R1 = LS[Param1];
-        REDUCE(R1);
+        EXECUTE_IN_ALL(
+                        R0 = INDEX;
+                        NOP;
+                        LS[Param1] = R0;
+                        R1 = LS[Param1];
+                        REDUCE(R1);
+                      )
+
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Iread(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R0 = INDEX;
-        NOP;
-        LS[Param1] = R0;
-        R1 = LS[Param1];
-        REDUCE(R1);
+        EXECUTE_IN_ALL(
+                        R0 = INDEX;
+                        NOP;
+                        LS[Param1] = R0;
+                        R1 = LS[Param1];
+                        REDUCE(R1);
+                        )
+
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Write(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R0 = INDEX;
-        R1 = Param1;
-        NOP;
-        LS[R1] = R0;
-        R2 = LS[R1];
-        REDUCE(R2);
+        EXECUTE_IN_ALL(
+                        R0 = INDEX;
+                        R1 = Param1;
+                        NOP;
+                        LS[R1] = R0;
+                        R2 = LS[R1];
+                        REDUCE(R2);
+                        )
+
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Read(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R0 = INDEX;
-        R1 = Param1;
-        NOP;
-        LS[R1] = R0;
-        R2 = LS[R1];
-        REDUCE(R2);
+        EXECUTE_IN_ALL(
+                        R0 = INDEX;
+                        R1 = Param1;
+                        NOP;
+                        LS[R1] = R0;
+                        R2 = LS[R1];
+                        REDUCE(R2);
+                        )
+
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Vload(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R0 = Param1;
-        R1 = Param2;
-        R2 = R0 + R1;
-        REDUCE(R2);
+        EXECUTE_IN_ALL(
+                        R0 = Param1;
+                        R1 = Param2;
+                        R2 = R0 + R1;
+                        REDUCE(R2);
+                    )
+
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Add(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R1 = Param1;
-        R2 = Param2;
-        R3 = R1 + R2;
-        REDUCE(R3);
+        EXECUTE_IN_ALL(
+                        R1 = Param1;
+                        R2 = Param2;
+                        R3 = R1 + R2;
+                        REDUCE(R3);
+                     )
+
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Addc(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R4 = 0xFF;
-        R5 = 0xFFFF;
-        R6 = R4 + R5;
-        R1 = Param1;
-        R2 = Param2;
-        R3 = ADDC(R1, R2);
-        REDUCE(R3);
+        EXECUTE_IN_ALL(
+                        R4 = 0xFF;
+                        R5 = 0xFFFF;
+                        R6 = R4 + R5;
+                        R1 = Param1;
+                        R2 = Param2;
+                        R3 = ADDC(R1, R2);
+                        REDUCE(R3);
+                    )
+
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Sub(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R1 = Param1;
-        R2 = Param2;
-        R3 = R1 - R2;
-        REDUCE(R3);
+        EXECUTE_IN_ALL(
+                        R1 = Param1;
+                        R2 = Param2;
+                        R3 = R1 - R2;
+                        REDUCE(R3);
+                        )
+
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Subc(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R1 = 0xff;
-        R2 = 0xffff;
-        R3 = R1 - R2;
+        EXECUTE_IN_ALL(
+                        R1 = 0xff;
+                        R2 = 0xffff;
+                        R3 = R1 - R2;
 
-        R1 = Param1;
-        R2 = Param2;
-        R3 = SUBC(R1,R2);
-        REDUCE(R3);
+                        R1 = Param1;
+                        R2 = Param2;
+                        R3 = SUBC(R1,R2);
+                        REDUCE(R3);
+                        )
+
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Not(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R1 = Param1;
-        R2 = Param2; //avoid compiler warning
-        R3 = ~R1;
-        REDUCE(R3);
+        EXECUTE_IN_ALL(
+                        R1 = Param1;
+                        R2 = Param2; //avoid compiler warning
+                        R3 = ~R1;
+                        REDUCE(R3);
+                        )
+
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Or(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R1 = Param1;
-        R2 = Param2; //avoid compiler warning
-        R3 = R1 | R2;
-        REDUCE(R3);
+        EXECUTE_IN_ALL(
+                        R1 = Param1;
+                        R2 = Param2;
+                        R3 = R1 | R2;
+                        REDUCE(R3);
+                    )
+
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_And(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R1 = Param1;
-        R2 = Param2; //avoid compiler warning
-        R3 = R1 & R2;
-        REDUCE(R3);
+        EXECUTE_IN_ALL(
+                        R1 = Param1;
+                        R2 = Param2;
+                        R3 = R1 & R2;
+                        REDUCE(R3);
+                        )
+
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Xor(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R1 = Param1;
-        R2 = Param2; //avoid compiler warning
-        R3 = R1 ^ R2;
-        REDUCE(R3);
+        EXECUTE_IN_ALL(
+                        R1 = Param1;
+                        R2 = Param2;
+                        R3 = R1 ^ R2;
+                        REDUCE(R3);
+                    )
+
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Eq(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R1 = Param1;
-        R2 = Param2; //avoid compiler warning
-        R3 = (R1 == R2);
-        REDUCE(R3);
+        EXECUTE_IN_ALL(
+                        R1 = Param1;
+                        R2 = Param2;
+                        R3 = (R1 == R2);
+                        REDUCE(R3);
+                        )
+
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Lt(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R1 = Param1;
-        R2 = Param2; //avoid compiler warning
-        R3 = (R1 < R2);
-        REDUCE(R3);
+        EXECUTE_IN_ALL(
+                        R1 = Param1;
+                        R2 = Param2; //avoid compiler warning
+                        R3 = (R1 < R2);
+                        REDUCE(R3);
+                        )
+
     END_BATCH(BatchNumber);
 }
 
@@ -221,11 +253,13 @@ void InitKernel_Lt(int BatchNumber,INT64 Param1, INT64 Param2)
 void InitKernel_Ult(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R1 = Param1;
-        R2 = Param2; //avoid compiler warning
-        R3 = (R1 < R2);
-        REDUCE(R3);
+        EXECUTE_IN_ALL(
+                        R1 = Param1;
+                        R2 = Param2; //avoid compiler warning
+                        R3 = (R1 < R2);
+                        REDUCE(R3);
+                        )
+
     END_BATCH(BatchNumber);
 }
 
@@ -233,172 +267,179 @@ void InitKernel_Ult(int BatchNumber,INT64 Param1, INT64 Param2)
 void InitKernel_Shl(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R1 = Param1;
-        R2 = Param2;
-        R3 = (R1 << R2);
-        REDUCE(R3);
+        EXECUTE_IN_ALL(
+                        R1 = Param1;
+                        R2 = Param2;
+                        R3 = (R1 << R2);
+                        REDUCE(R3);
+                        )
+
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Shr(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R1 = Param1;
-        R2 = Param2;
-        R3 = (R1 >> R2 );
-        REDUCE(R3);
+        EXECUTE_IN_ALL(
+                        R1 = Param1;
+                        R2 = Param2;
+                        R3 = (R1 >> R2 );
+                        REDUCE(R3);
+                        )
+
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Shra(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R1 = Param1;
-        R2 = Param2;
-        R3 = SHRA(R1, R2);
-        REDUCE(R3);
+        EXECUTE_IN_ALL(
+                        R1 = Param1;
+                        R2 = Param2;
+                        R3 = SHRA(R1, R2);
+                        REDUCE(R3);
+                        )
+
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Ishl(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R1 = Param1;
-        R3 = (R1 << Param2);
-        REDUCE(R3);
+        EXECUTE_IN_ALL(
+                        R1 = Param1;
+                        R3 = (R1 << Param2);
+                        REDUCE(R3);
+                        )
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Ishr(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R1 = Param1;
-        R3 = (R1 >> Param2);
-        REDUCE(R3);
+        EXECUTE_IN_ALL(
+                        R1 = Param1;
+                        R3 = (R1 >> Param2);
+                        REDUCE(R3);
+                      )
+
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Ishra(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R1 = Param1;
-        R3 = ISHRA(R1, Param2);
-        REDUCE(R3);
+        EXECUTE_IN_ALL(
+                        R1 = Param1;
+                        R3 = ISHRA(R1, Param2);
+                        REDUCE(R3);
+                      )
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Cellshl(int BatchNumber, INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R1 = INDEX;
-        R2 = Param1;
-        CELL_SHL(R1,R2);
-        R3 = 0;
-        R5 = Param2;
-        NOP;
-        R4 = SHIFT_REG;
-        R6 = (R5 == R4);
-        NOP;
-        SET_ACTIVE(WHERE_EQ);
-            R3 = INDEX;
-        SET_ACTIVE(ALL);
-        REDUCE(R3);
+        EXECUTE_IN_ALL(
+                        R1 = INDEX;
+                        R2 = Param1;
+                        CELL_SHL(R1,R2);
+                        R3 = 0;
+                        R5 = Param2;
+                        NOP;
+                        R4 = SHIFT_REG;
+                        R6 = (R5 == R4);
+                        NOP;
+                      )
+        EXECUTE_WHERE_EQ    (R3 = INDEX; )
+        EXECUTE_IN_ALL      (REDUCE(R3););
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Cellshr(int BatchNumber, INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R1 = INDEX;
-        R2 = Param1;
-        CELL_SHR(R1,R2);
-        R3 = 0;
-        R5 = Param2;
-        NOP;
-        R4 = SHIFT_REG;
-        R6 = (R5 == R4);
-        NOP;
-        SET_ACTIVE(WHERE_EQ);
-            R3 = INDEX;
-        SET_ACTIVE(ALL);
-        REDUCE(R3);
+        EXECUTE_IN_ALL(
+                        R1 = INDEX;
+                        R2 = Param1;
+                        CELL_SHR(R1,R2);
+                        R3 = 0;
+                        R5 = Param2;
+                        NOP;
+                        R4 = SHIFT_REG;
+                        R6 = (R5 == R4);
+                        NOP;
+                        )
+        EXECUTE_WHERE_EQ( R3 = INDEX;)
+        EXECUTE_IN_ALL( REDUCE(R3);)
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Multlo(int BatchNumber, INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R0 = Param1;
-        R1 = Param2;
-        MULT = R1*R0;
-        R2 = _LO(MULT);
-        REDUCE(R2);
+        EXECUTE_IN_ALL(
+                        R0 = Param1;
+                        R1 = Param2;
+                        MULT = R1*R0;
+                        R2 = _LO(MULT);
+                        REDUCE(R2);
+                    )
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Multhi(int BatchNumber, INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R0 = Param1;
-        R1 = Param2;
-        MULT = R1*R0;
-        R2 = _HI(MULT);
-        REDUCE(R2);
+        EXECUTE_IN_ALL(
+                        R0 = Param1;
+                        R1 = Param2;
+                        MULT = R1*R0;
+                        R2 = _HI(MULT);
+                        REDUCE(R2);
+                        )
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Whereq(int BatchNumber, INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R0 = INDEX;
-        R1 = Param1;
-        R3 = (R0 == R1);
-        R4 = 0;
-        SET_ACTIVE(WHERE_EQ);
-            R4 = Param2;
-        SET_ACTIVE(ALL);
-        REDUCE(R4);
+        EXECUTE_IN_ALL(
+                        R0 = INDEX;
+                        R1 = Param1;
+                        R3 = (R0 == R1);
+                        R4 = 0;
+                    )
+        EXECUTE_WHERE_EQ( R4 = Param2;)
+        EXECUTE_IN_ALL( REDUCE(R4); )
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Wherelt(int BatchNumber, INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R0 = INDEX;
-        R1 = Param1;
-        R3 = (R0 < R1);
-        R4 = 0;
-        SET_ACTIVE(WHERE_LT);
-            R4 = Param2;
-        SET_ACTIVE(ALL);
-        REDUCE(R4);
+        EXECUTE_IN_ALL(
+                        R0 = INDEX;
+                        R1 = Param1;
+                        R3 = (R0 < R1);
+                        R4 = 0;
+                      )
+        EXECUTE_WHERE_LT( R4 = Param2;)
+        EXECUTE_IN_ALL( REDUCE(R4);)
     END_BATCH(BatchNumber);
 }
 
 void InitKernel_Wherecry(int BatchNumber, INT64 Param1, INT64 Param2)
 {
     BEGIN_BATCH(BatchNumber);
-	   SET_ACTIVE(ALL);
-        R0 = INDEX;
-        R1 = Param1;
-        R3 = R0 + R1;
-        R4 = 0;
-        SET_ACTIVE(WHERE_CARRY);
-            R4 = Param2;
-        SET_ACTIVE(ALL);
-        REDUCE(R4);
+	   EXECUTE_IN_ALL(
+                        R0 = INDEX;
+                        R1 = Param1;
+                        R3 = R0 + R1;
+                        R4 = 0;
+                    )
+        EXECUTE_WHERE_CARRY( R4 = Param2; )
+        EXECUTE_IN_ALL( REDUCE(R4);)
     END_BATCH(BatchNumber);
 }
 
@@ -444,9 +485,10 @@ void InitKernel_Iowrite(int BatchNumber,INT64 Param1, INT64 Param2)
         //c_simulator::printLS(destAddr);
     }
     BEGIN_BATCH(BatchNumber);
-        SET_ACTIVE(ALL);
-        R1 = LS[Param2];
-        REDUCE(R1);
+        EXECUTE_IN_ALL(
+                        R1 = LS[Param2];
+                        REDUCE(R1);
+                      )
     END_BATCH(BatchNumber);
 }
 
@@ -488,9 +530,10 @@ void InitKernel_Ioread(int BatchNumber,INT64 Param1, INT64 Param2)
             {
                 /* Fail */
                 BEGIN_BATCH(BatchNumber);
-                SET_ACTIVE(ALL);
-                R2 = 0;
-                REDUCE(R2);
+                EXECUTE_IN_ALL(
+                                R2 = 0;
+                                REDUCE(R2);
+                               )
                 END_BATCH(BatchNumber);
                 testResult = FAIL;
             }
@@ -499,9 +542,10 @@ void InitKernel_Ioread(int BatchNumber,INT64 Param1, INT64 Param2)
             {
                 /* Pass */
                 BEGIN_BATCH(BatchNumber);
-                SET_ACTIVE(ALL);
-                R2 = 1;
-                REDUCE(R2);
+                EXECUTE_IN_ALL(
+                                R2 = 1;
+                                REDUCE(R2);
+                              )
                 END_BATCH(BatchNumber);
                 testResult = FAIL;
             }
