@@ -445,20 +445,20 @@ void InitKernel_Wherecry(int BatchNumber, INT64 Param1, INT64 Param2)
 /**
     Computes sum of first "numbers" consecutive nubers starting with start.
     Numbers are forced to UINT16.
-    Sum is forced to UINT16.
+    Sum is forced to UINT16 + log2(NUMBER_OF_MACHINES)
 
     Eg.
-    Sum16ofFirstXnumbers(1, 145) = 145
-    Sum16ofFirstXnumbers(2, 14) = 14 + 15 = 29
-    Sum16ofFirstXnumbers(1, 5) = 1+2+3+4+5 = 15
+    SumRedofFirstXnumbers(1, 145) = 145
+    SumRedofFirstXnumbers(2, 14) = 14 + 15 = 29
+    SumRedofFirstXnumbers(1, 5) = 1+2+3+4+5 = 15
 
 */
-UINT16 Sum16ofFirstXnumbers(UINT64 numbers, UINT64 start)
+INT64 SumRedofFirstXnumbers(UINT64 numbers, UINT64 start)
 {
     UINT32 x;
-    UINT16 sum = 0;
-    for (x = start; x < start + numbers; x++ ) sum += (UINT16)x;
-    return sum;
+    UINT64 sum = 0;
+    for (x = start; x < start + numbers; x++ ) sum += x;
+    return sum & REDUCTION_SIZE_MASK;
 }
 
 /**
@@ -632,9 +632,9 @@ TestFunction TestFunctionTable[] =
     {WHERE_CARRY_BNR,"WHERECRY",(0x10000UL-10),50,InitKernel_Wherecry,118*50},
 	{CELL_SHL_BNR,"CELLSHL",2,5,InitKernel_Cellshl,5-2},
     {CELL_SHR_BNR,"CELLSHR",2,5,InitKernel_Cellshr,5+2},
-	{IO_WRITE_BNR,"IO_WRITE1",1024,0,InitKernel_Iowrite,Sum16ofFirstXnumbers(NUMBER_OF_MACHINES,0)},
-    {IO_WRITE_BNR,"IO_WRITE2",1024,1,InitKernel_Iowrite,Sum16ofFirstXnumbers(NUMBER_OF_MACHINES,NUMBER_OF_MACHINES)},
-    {IO_WRITE_BNR,"IO_WRITE3",1024,1023,InitKernel_Iowrite,Sum16ofFirstXnumbers(NUMBER_OF_MACHINES,NUMBER_OF_MACHINES*1023)},
+	{IO_WRITE_BNR,"IO_WRITE1",1024,0,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,0)},
+    {IO_WRITE_BNR,"IO_WRITE2",1024,1,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,NUMBER_OF_MACHINES)},
+    {IO_WRITE_BNR,"IO_WRITE3",1024,1023,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,NUMBER_OF_MACHINES*1023)},
     {IO_READ_BNR,"IO_READ",1024,0,InitKernel_Ioread, NUMBER_OF_MACHINES}
 };
 

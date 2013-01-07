@@ -63,10 +63,11 @@ class io_unit
         static int vwrite(void*);
         static int vread(void*);
 
-    protected:
-    private:
         static int vpipe_read_32;
         static int vpipe_write_32;
+
+    protected:
+    private:
         IO_UNIT_CORE Iouc;
         INT32 Size;
 };

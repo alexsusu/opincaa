@@ -22,12 +22,16 @@ int deinitialize()
             {
                 close(vector::pipe_read_32);
                 close(vector::pipe_write_32);
+                close(io_unit::vpipe_read_32);
+                close(io_unit::vpipe_write_32);
                 break;
             }
         case REAL_HARDWARE_MODE:
             {
                 close(vector::pipe_read_32);
                 close(vector::pipe_write_32);
+                close(io_unit::vpipe_read_32);
+                close(io_unit::vpipe_write_32);
                 break;
             }
         case C_SIMULATION_MODE:
@@ -37,6 +41,7 @@ int deinitialize()
             }
     }
     vector::deinitialize();
+    io_unit::deinitialize();
     return result;
 }
 int initialize(UINT8 RunningMode)
@@ -49,6 +54,10 @@ int initialize(UINT8 RunningMode)
         //open and close files to make sure they exist
         vector::pipe_read_32 = open ("reduction_fifo_device",O_RDONLY);
         vector::pipe_write_32 = open ("program_fifo_device",O_WRONLY);
+
+        io_unit::vpipe_read_32 = open ("io_inbound_fifo_device",O_RDONLY);
+        io_unit::vpipe_write_32 = open ("io_outbound_fifo_device",O_RDONLY);
+
         EXECUTE_KERNEL = vector::executeKernel;
         EXECUTE_KERNEL_RED = vector::executeKernelRed;
         IO_WRITE_NOW = io_unit::vwrite;
@@ -58,6 +67,10 @@ int initialize(UINT8 RunningMode)
     {
         vector::pipe_read_32 = open ("/dev/xillybus_read_array2arm_32",O_RDONLY);
         vector::pipe_write_32 = open ("/dev/xillybus_write_arm2array_32",O_WRONLY);
+
+        io_unit::vpipe_read_32 = open ("/dev/xillybus_read_mem2arm_32",O_RDONLY);
+        io_unit::vpipe_write_32 = open ("/dev/xillybus_write_arm2mem_32",O_RDONLY);
+
         EXECUTE_KERNEL = vector::executeKernel;
         EXECUTE_KERNEL_RED = vector::executeKernelRed;
         IO_WRITE_NOW = io_unit::vwrite;
@@ -81,18 +94,32 @@ int initialize(UINT8 RunningMode)
     {
         if (vector::pipe_read_32 == -1)
         {
-            perror("Failed to open the read pipe");
+            perror("Failed to open the vector::read pipe");
             result = FAIL;
         }
 
 
         if (vector::pipe_write_32 == -1)
         {
-            perror("Failed to open the write pipe");
+            perror("Failed to open the vector::write pipe");
+            result = FAIL;
+        }
+
+        if (io_unit::vpipe_read_32 == -1)
+        {
+            perror("Failed to open the io_unit::read pipe");
+            result = FAIL;
+        }
+
+
+        if (io_unit::vpipe_write_32 == -1)
+        {
+            perror("Failed to open the io_unit::write pipe");
             result = FAIL;
         }
     }
     vector::initialize();
+    io_unit::initialize();
     return result;
 }
 

@@ -31,6 +31,8 @@
  *   v0.6.3  - Lucian: added more simple tests
  *   v0.6.4  - added IO tests.
  *   v0.6.5  - changed macros for *where*. Now they are EXECUTE_IN_ALL(), EXECUTE_WHERE_*()
+ *   v0.6.6  - added utils.cpp support for IO under vsimulation
+ *			 - bugfix: reduction is on log2(NUMBER_OF_MACHINES) + REGISTER_SIZE ( 23 bits for 128 UINT16 machines )
  *   TODO: add parameters in kernel-init functions.
  *
  *
@@ -129,9 +131,9 @@ int main(int argc, char *argv[])
     //look for simulation option in arguments
     for(i=0;i<argc;i++)
     {
-        if(strcmp(argv[i],"--simulation") == 0)
+        if(strcmp(argv[i],"--vsimulation") == 0)
         {
-            cout << "Running in simulation mode" << endl;
+            cout << "Running in verilog simulation mode" << endl;
             //set simulation flag
             run_mode = VERILOG_SIMULATION_MODE;
             break;

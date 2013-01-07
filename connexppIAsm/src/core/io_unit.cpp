@@ -71,36 +71,12 @@ int io_unit::vread(void *_iou)
 int io_unit::initialize()
 {
     int result = PASS;
-    if ((vpipe_read_32 = open ("/dev/xillybus_read_mem2arm_32",O_RDONLY)) == -1)
-    {
-        perror("Failed to open the read pipe");
-        result = FAIL;
-    }
-
-
-    if ((vpipe_write_32 = open ("/dev/xillybus_write_arm2mem_32",O_WRONLY)) == -1)
-    {
-        perror("Failed to open the write pipe");
-        result = FAIL;
-    }
-
     return result;
 }
 
 int io_unit::deinitialize()
 {
     int result = PASS;
-    if (close(vpipe_read_32)  == -1)
-    {
-        perror("Failed to open the read pipe");
-        result = FAIL;
-    }
-
-    if (close(vpipe_write_32) == -1)
-    {
-        perror("Failed to open the write pipe");
-        result = FAIL;
-    }
     return result;
 }
 

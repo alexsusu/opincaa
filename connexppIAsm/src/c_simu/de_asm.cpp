@@ -399,7 +399,7 @@ int c_simulator::executeDeasmKernel(UINT16 dwBatchNumber)
                 case _WHERE_LT:{FOR_ALL_MACHINES(if (C_SIMU_LT[MACHINE]==1) C_SIMU_ACTIVE[MACHINE]= _ACTIVE;else C_SIMU_ACTIVE[MACHINE]=_INACTIVE);continue;}
                 case _END_WHERE:{FOR_ALL_MACHINES(C_SIMU_ACTIVE[MACHINE]= _ACTIVE);continue;}
                 case _NOP:      continue;
-                case _REDUCE:   {UINT16 sum = 0; FOR_ALL_ACTIVE_MACHINES(sum += C_SIMU_REGS[MACHINE][GET_LEFT(*CI)]);result = sum; continue;}
+                case _REDUCE:   {UINT32 sum = 0; FOR_ALL_ACTIVE_MACHINES(sum += C_SIMU_REGS[MACHINE][GET_LEFT(*CI)]);result = sum & REDUCTION_SIZE_MASK; continue;}
                 default: result= FAIL; break;
             }
     }

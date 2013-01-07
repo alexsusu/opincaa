@@ -9,9 +9,13 @@
 #define UINT64 unsigned long long int
 #define INT64  long long int
 #define UINT_INSTRUCTION UINT32
+
 #define NUMBER_OF_MACHINES 128LL
-#define REGISTER_SIZE_MASK 0xffff
+#define REDUCTION_SIZE      (7 + REGISTER_SIZE) // 7 = log2(NUMBER_OF_MACHINES)
+#define REDUCTION_SIZE_MASK ((1 << REDUCTION_SIZE) -1)
+
 #define REGISTER_SIZE       16  //bits
+#define REGISTER_SIZE_MASK ((1 << REGISTER_SIZE) -1)
 
 #define PASS 0
 #define FAIL -1
