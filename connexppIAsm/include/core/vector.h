@@ -35,7 +35,7 @@
                                 vector::bEstimationMode = 0;\
                                 if (vector::dwBatch[vector::dwBatchIndex] != NULL)\
                                     free((UINT_INSTRUCTION*)vector::dwBatch[vector::dwBatchIndex]);\
-                                /*printf("Alloc mem for batch size of %d slots \n", vector::dwInBatchCounter[vector::dwBatchIndex]);*/\
+                                /*printf("Alloc mem for batch size of %ld slots \n", vector::dwInBatchCounter[vector::dwBatchIndex]);*/\
                                 vector::dwBatch[vector::dwBatchIndex] = (UINT_INSTRUCTION*)malloc(sizeof(UINT_INSTRUCTION) \
                                                                         * vector::dwInBatchCounter[vector::dwBatchIndex]);\
                                 if (vector::dwBatch[vector::dwBatchIndex] == NULL)\
@@ -91,7 +91,7 @@
 
 #define STATIC_VECTOR_DEFINITIONS\
         extern UINT_INSTRUCTION* vector::dwBatch[NUMBER_OF_BATCHES];\
-        extern UINT16 vector::dwInBatchCounter[NUMBER_OF_BATCHES];\
+        extern UINT32 vector::dwInBatchCounter[NUMBER_OF_BATCHES];\
         extern UINT16 vector::dwBatchIndex;\
         extern int vector::pipe_read_32;\
         extern int vector::pipe_write_32;\
@@ -113,7 +113,7 @@ class vector
         //vars
         //static UINT_INSTRUCTION dwBatch[NUMBER_OF_BATCHES][NUMBER_OF_INSTRUCTIONS_PER_BATCH];
         static UINT_INSTRUCTION *dwBatch[NUMBER_OF_BATCHES];
-        static UINT16 dwInBatchCounter[NUMBER_OF_BATCHES];
+        static UINT32 dwInBatchCounter[NUMBER_OF_BATCHES];
         static UINT16 dwBatchIndex;
         static UINT8 bEstimationMode;
         static int pipe_read_32, pipe_write_32;

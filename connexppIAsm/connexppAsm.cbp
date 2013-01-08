@@ -11,7 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="--vsimulation" />
+				<Option parameters="--csimulation" />
 				<Compiler>
 					<Add option="-g" />
 				</Compiler>
@@ -50,6 +50,7 @@
 		<Unit filename="src/core/vector_errors.cpp" />
 		<Unit filename="src/core/vector_registers.cpp" />
 		<Unit filename="src/simple_tests.cpp" />
+		<Unit filename="src/speed_tests.cpp" />
 		<Unit filename="src/utils.cpp" />
 		<Extensions>
 			<code_completion />

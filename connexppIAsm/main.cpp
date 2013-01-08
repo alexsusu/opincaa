@@ -33,6 +33,8 @@
  *   v0.6.5  - changed macros for *where*. Now they are EXECUTE_IN_ALL(), EXECUTE_WHERE_*()
  *   v0.6.6  - added utils.cpp support for IO under vsimulation
  *			 - bugfix: reduction is on log2(NUMBER_OF_MACHINES) + REGISTER_SIZE ( 23 bits for 128 UINT16 machines )
+ *   v0.6.7  - added some speed tests. Tested on csimulator.
+ *
  *   TODO: add parameters in kernel-init functions.
  *
  *
@@ -47,6 +49,7 @@
 #include "include/core/vector_registers.h"
 #include "include/utils.h"
 #include "include/simple_tests.h"
+#include "include/speed_tests.h"
 
 using namespace std;
 
@@ -150,6 +153,7 @@ int main(int argc, char *argv[])
 
     INIT(run_mode);
     test_Simple_All();
+    test_Speed_All();
     DEINIT();
 
     cout << "Press ENTER to continue...";

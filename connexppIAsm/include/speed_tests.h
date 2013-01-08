@@ -7,4 +7,4 @@
  *
  */
 
-int test_Simple_All();
+int test_Speed_All();
