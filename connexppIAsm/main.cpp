@@ -34,6 +34,7 @@
  *   v0.6.6  - added utils.cpp support for IO under vsimulation
  *			 - bugfix: reduction is on log2(NUMBER_OF_MACHINES) + REGISTER_SIZE ( 23 bits for 128 UINT16 machines )
  *   v0.6.7  - added some speed tests. Tested on csimulator.
+ *   v0.6.8  - speed tests were downsized to run in a reasonable time on arm
  *
  *   TODO: add parameters in kernel-init functions.
  *

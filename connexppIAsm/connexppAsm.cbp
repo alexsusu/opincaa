@@ -41,6 +41,7 @@
 		<Unit filename="include/core/vector_errors.h" />
 		<Unit filename="include/core/vector_registers.h" />
 		<Unit filename="include/simple_tests.h" />
+		<Unit filename="include/speed_tests.h" />
 		<Unit filename="include/utils.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="src/c_simu/c_simulator.cpp" />
