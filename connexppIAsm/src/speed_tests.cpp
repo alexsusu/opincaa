@@ -37,7 +37,6 @@ Param1 = Number of vectors to be read.
 Param2 = Location in local store where we read from.
 
 */
-#define IORW_SPEED_CYCLES 100
 int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     UINT16 destAddr = 0;
@@ -64,7 +63,7 @@ int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
         printf ("Elasped time for write precache is %ld ms.\n", tend-tstart );
 
         tstart = clock();
-        for (cycles = 0; cycles < IORW_SPEED_CYCLES; cycles++)
+        for (cycles = 0; cycles < Param2; cycles++)
             IO_WRITE_NOW(&IOU);
         tend = clock();
     }
@@ -72,7 +71,7 @@ int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
     printf ("Elasped write time is %ld ms.\n", tend-tstart );
 
     if (tend != tstart)
-        printf ("Approx datarate is %ld KB/s\n", (long int)((NUMBER_OF_MACHINES * 1024 * 4) * IORW_SPEED_CYCLES/ (tend-tstart))); // ~4 Bytes per IO entry
+        printf ("Approx datarate is %ld KB/s\n", (long int)((NUMBER_OF_MACHINES * 1024 * 4) * Param2/ (tend-tstart))); // ~4 Bytes per IO entry
     else
         printf ("Way too fast to perform measurement \n");
 
@@ -85,14 +84,14 @@ int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
         printf ("Elasped time for read precache is %ld ms.\n", tend-tstart );
 
         tstart = clock();
-        for (cycles = 0; cycles < IORW_SPEED_CYCLES; cycles++)
+        for (cycles = 0; cycles < Param2; cycles++)
             IO_READ_NOW(&IOU);
         tend = clock();
 
         printf ("Elasped read time is %ld ms.\n", tend-tstart );
 
         if (tend != tstart)
-            printf ("Approx datarate is %ld KB/s\n", (long int)((NUMBER_OF_MACHINES * 1024 * 4) * IORW_SPEED_CYCLES/ (tend-tstart))); // ~4 Bytes per IO entry
+            printf ("Approx datarate is %ld KB/s\n", (long int)((NUMBER_OF_MACHINES * 1024 * 4) * Param2/ (tend-tstart))); // ~4 Bytes per IO entry
         else
             printf ("Way too fast to perform measurement \n");
 
@@ -103,6 +102,7 @@ int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
             if (data[cnt] != Content[cnt])
             {
                 testResult = FAIL;
+                printf ("ERROR*: Last readout did not match the IO data written !\n");
                 break;
             }
         return testResult;
@@ -132,7 +132,7 @@ int BenchmarkNOPspeed(int BatchNumber,INT64 Param1, INT64 Param2)
     tend = clock();
 
     if (tend != tstart)
-        printf ("Approx performance is %ld MIPS\n", NOP_SPEED_CYCLES /1000 / (tend-tstart));
+        printf ("Approx performance is %ld KIPS\n", NOP_SPEED_CYCLES / (tend-tstart));
     else printf ("Way too fast to perform measurement \n");
     return PASS;
 }
@@ -207,10 +207,12 @@ int BenchmarkMLTspeed(int BatchNumber,INT64 Param1, INT64 Param2)
 
 enum BatchNumbers
 {
-    IO_RW_SPEED_BNR = 0,
-    NOP_SPEED_BNR = 1,
-    ADD_SPEED_BNR = 2,
-    MLT_SPEED_BNR = 3,
+    NOP_SPEED_BNR = 0,
+    ADD_SPEED_BNR = 1,
+    MLT_SPEED_BNR = 2,
+    IO_RW_1_SPEED_BNR = 3,
+    IO_RW_2_SPEED_BNR = 4,
+    IO_RW_100_SPEED_BNR = 5,
 
     MAX_BNR = NUMBER_OF_BATCHES
 };
@@ -224,7 +226,9 @@ SpeedTestFunction SpeedTestFunctionTable[] =
     {NOP_SPEED_BNR,"NOP_SPEED",0,0,InitBatchNop,BenchmarkNOPspeed,PASS},
     {ADD_SPEED_BNR,"ADD_SPEED",0,0,InitBatchAdd,BenchmarkADDspeed,PASS},
     {MLT_SPEED_BNR,"MLT_SPEED",0,0,InitBatchMlt,BenchmarkMLTspeed,PASS},
-    {IO_RW_SPEED_BNR,"IO_RW_SPEED",1024,0,dummy,BenchmarkIoRWspeed,PASS},
+    {IO_RW_1_SPEED_BNR,"IO_RW_1_SPEED",1024,1,dummy,BenchmarkIoRWspeed,PASS},
+    {IO_RW_2_SPEED_BNR,"IO_RW_2_SPEED",1024,1,dummy,BenchmarkIoRWspeed,PASS},
+    {IO_RW_100_SPEED_BNR,"IO_RW_100_SPEED",1024,100,dummy,BenchmarkIoRWspeed,PASS}
 
 };
 
