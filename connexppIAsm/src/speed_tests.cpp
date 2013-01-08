@@ -103,6 +103,13 @@ int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
             {
                 testResult = FAIL;
                 printf ("ERROR*: Last readout did not match the IO data written !\n");
+                printf ("ERROR is at index %d \n", cnt);
+                printf ("ERROR Expected data is %d \n", data[cnt]);
+                printf ("ERROR Read data is %d \n", Content[cnt]);
+                if (cnt>0)
+                    printf ("ERROR Left neighbour is at index %d and has value of %d (expected %d)\n", cnt-1, Content[cnt-1], data[cnt-1]);
+                if (cnt != NUMBER_OF_MACHINES*num_vectors-1)
+                    printf ("ERROR Right neighbour is at index %d and has value of %d (expected %d)\n", cnt+1, Content[cnt+1], data[cnt+1]);
                 break;
             }
         return testResult;
@@ -227,7 +234,7 @@ SpeedTestFunction SpeedTestFunctionTable[] =
     {ADD_SPEED_BNR,"ADD_SPEED",0,0,InitBatchAdd,BenchmarkADDspeed,PASS},
     {MLT_SPEED_BNR,"MLT_SPEED",0,0,InitBatchMlt,BenchmarkMLTspeed,PASS},
     {IO_RW_1_SPEED_BNR,"IO_RW_1_SPEED",1024,1,dummy,BenchmarkIoRWspeed,PASS},
-    {IO_RW_2_SPEED_BNR,"IO_RW_2_SPEED",1024,1,dummy,BenchmarkIoRWspeed,PASS},
+    {IO_RW_2_SPEED_BNR,"IO_RW_2_SPEED",1024,2,dummy,BenchmarkIoRWspeed,PASS},
     {IO_RW_100_SPEED_BNR,"IO_RW_100_SPEED",1024,100,dummy,BenchmarkIoRWspeed,PASS}
 
 };
