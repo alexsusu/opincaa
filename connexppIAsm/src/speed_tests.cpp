@@ -47,7 +47,7 @@ int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
     UINT16 testResult = PASS;
 
     clock_t tstart,tend;
-    double dif;
+    //double dif;
     UINT32 cycles;
 
 
@@ -70,7 +70,11 @@ int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
     }
 
     printf ("Elasped write time is %ld ms.\n", tend-tstart );
-    printf ("Approx datarate is %ld KB/s\n", (long int)((NUMBER_OF_MACHINES * 1024 * 4) * IORW_SPEED_CYCLES/ (tend-tstart))); // ~4 Bytes per IO entry
+
+    if (tend != tstart)
+        printf ("Approx datarate is %ld KB/s\n", (long int)((NUMBER_OF_MACHINES * 1024 * 4) * IORW_SPEED_CYCLES/ (tend-tstart))); // ~4 Bytes per IO entry
+    else
+        printf ("Way too fast to perform measurement \n");
 
     // read data from local store
     {
@@ -86,7 +90,12 @@ int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
         tend = clock();
 
         printf ("Elasped read time is %ld ms.\n", tend-tstart );
-        printf ("Approx datarate is %ld KB/s\n", (long int)((NUMBER_OF_MACHINES * 1024 * 4) * IORW_SPEED_CYCLES/ (tend-tstart))); // ~4 Bytes per IO entry
+
+        if (tend != tstart)
+            printf ("Approx datarate is %ld KB/s\n", (long int)((NUMBER_OF_MACHINES * 1024 * 4) * IORW_SPEED_CYCLES/ (tend-tstart))); // ~4 Bytes per IO entry
+        else
+            printf ("Way too fast to perform measurement \n");
+
 
         /* Check correctness of last read */
         UINT16* Content = (UINT16*)(IOU.getIO_UNIT_CORE())->Content;
@@ -100,7 +109,7 @@ int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
     }
 }
 
-#define NOP_SPEED_CYCLES (1000*1000)
+#define NOP_SPEED_CYCLES (1000*1000*10)
 void InitBatchNop(int BatchNumber)
 {
     UINT32 cycles;
@@ -128,7 +137,7 @@ int BenchmarkNOPspeed(int BatchNumber,INT64 Param1, INT64 Param2)
     return PASS;
 }
 
-#define ADD_SPEED_CYCLES (1000)
+#define ADD_SPEED_CYCLES (100*1000)
 void InitBatchAdd(int BatchNumber)
 {
     UINT32 cycles;
@@ -166,7 +175,7 @@ int BenchmarkADDspeed(int BatchNumber,INT64 Param1, INT64 Param2)
     return PASS;
 }
 
-#define MLT_SPEED_CYCLES (10000)
+#define MLT_SPEED_CYCLES (100*1000)
 void InitBatchMlt(int BatchNumber)
 {
     UINT32 cycles;
