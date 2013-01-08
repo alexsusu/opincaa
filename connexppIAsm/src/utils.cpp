@@ -68,8 +68,8 @@ int initialize(UINT8 RunningMode)
         vector::pipe_read_32 = open ("/dev/xillybus_read_array2arm_32",O_RDONLY);
         vector::pipe_write_32 = open ("/dev/xillybus_write_arm2array_32",O_WRONLY);
 
-        io_unit::vpipe_read_32 = open ("/dev/xillybus_read_mem2arm_32",O_RDONLY);
-        io_unit::vpipe_write_32 = open ("/dev/xillybus_write_arm2mem_32",O_RDONLY);
+        io_unit::vpipe_read_32 = open ("/dev/xillybus_read_array2mem_32",O_RDONLY);
+        io_unit::vpipe_write_32 = open ("/dev/xillybus_write_mem2array_32",O_WRONLY);
 
         EXECUTE_KERNEL = vector::executeKernel;
         EXECUTE_KERNEL_RED = vector::executeKernelRed;
