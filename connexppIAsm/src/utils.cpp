@@ -55,8 +55,8 @@ int initialize(UINT8 RunningMode)
         vector::pipe_read_32 = open ("reduction_fifo_device",O_RDONLY);
         vector::pipe_write_32 = open ("program_fifo_device",O_WRONLY);
 
-        io_unit::vpipe_read_32 = open ("io_inbound_fifo_device",O_RDONLY);
-        io_unit::vpipe_write_32 = open ("io_outbound_fifo_device",O_RDONLY);
+        io_unit::vpipe_read_32 = open ("io_outbound_fifo_device",O_RDONLY);
+        io_unit::vpipe_write_32 = open ("io_inbound_fifo_device",O_WRONLY);
 
         EXECUTE_KERNEL = vector::executeKernel;
         EXECUTE_KERNEL_RED = vector::executeKernelRed;
