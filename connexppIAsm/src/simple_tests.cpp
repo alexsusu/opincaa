@@ -594,6 +594,7 @@ enum BatchNumbers
     IO_WRITE_BNR = 35,
     IO_READ_BNR = 36,
     PRINT_LS_BNR = 37,
+    CLEAR_LS_BNR = 38,
     MAX_BNR = NUMBER_OF_BATCHES
 };
 
@@ -634,12 +635,26 @@ TestFunction TestFunctionTable[] =
     {WHERE_CARRY_BNR,"WHERECRY",(0x10000UL-10),50,InitKernel_Wherecry,118*50},
 	{CELL_SHL_BNR,"CELLSHL",2,5,InitKernel_Cellshl,5-2},
     {CELL_SHR_BNR,"CELLSHR",2,5,InitKernel_Cellshr,5+2},
-	{IO_WRITE_BNR,"IO_WRITE1",1,0,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,0)},
+	//{IO_WRITE_BNR,"IO_WRITE1",1,0,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,0)},
     //{IO_WRITE_BNR,"IO_WRITE2",1024,1,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,NUMBER_OF_MACHINES)},
     //{IO_WRITE_BNR,"IO_WRITE3",1024,1023,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,NUMBER_OF_MACHINES*1023)},
     //{IO_READ_BNR,"IO_READ",1024,0,InitKernel_Ioread, NUMBER_OF_MACHINES},
 };
 
+void simpleClearLS( )
+{
+    int BatchNumber = CLEAR_LS_BNR;
+    int vector_index;
+    for (vector_index = 0; vector_index < MAX_VECTORS; vector_index++)
+    {
+        BEGIN_BATCH(BatchNumber);
+            EXECUTE_IN_ALL(
+                        LS[vector_index] = 0;
+                      );
+        END_BATCH(BatchNumber);
+        EXECUTE_KERNEL(BatchNumber);
+    }
+}
 void simplePrintLS(INT64 Param2)
 {
     int BatchNumber = PRINT_LS_BNR;
@@ -686,6 +701,10 @@ int test_Simple_All()
 
 //    DEASM_KERNEL(WHERE_LT_BNR);
 //    DEASM_KERNEL(WHERE_CARRY_BNR);
+    simpleClearLS();
+    simplePrintLS(0);
+    InitKernel_Iowrite(IO_WRITE_BNR,1,0);
+    cout <<"Result of Iowrite test " << EXECUTE_KERNEL_RED(IO_WRITE_BNR)<<endl;
     simplePrintLS(0);
     return testFails;
 }

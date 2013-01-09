@@ -233,9 +233,9 @@ SpeedTestFunction SpeedTestFunctionTable[] =
     {NOP_SPEED_BNR,"NOP_SPEED",0,0,InitBatchNop,BenchmarkNOPspeed,PASS},
     {ADD_SPEED_BNR,"ADD_SPEED",0,0,InitBatchAdd,BenchmarkADDspeed,PASS},
     {MLT_SPEED_BNR,"MLT_SPEED",0,0,InitBatchMlt,BenchmarkMLTspeed,PASS},
-    {IO_RW_1_SPEED_BNR,"IO_RW_1_SPEED",1024,1,dummy,BenchmarkIoRWspeed,PASS},
-    {IO_RW_2_SPEED_BNR,"IO_RW_2_SPEED",1024,2,dummy,BenchmarkIoRWspeed,PASS},
-    {IO_RW_100_SPEED_BNR,"IO_RW_100_SPEED",1024,100,dummy,BenchmarkIoRWspeed,PASS}
+    //{IO_RW_1_SPEED_BNR,"IO_RW_1_SPEED",1024,1,dummy,BenchmarkIoRWspeed,PASS},
+    //{IO_RW_2_SPEED_BNR,"IO_RW_2_SPEED",1024,2,dummy,BenchmarkIoRWspeed,PASS},
+    //{IO_RW_100_SPEED_BNR,"IO_RW_100_SPEED",1024,100,dummy,BenchmarkIoRWspeed,PASS}
 
 };
 
