@@ -674,8 +674,11 @@ void simplePrintLS(INT64 Param2)
                     )
         END_BATCH(BatchNumber);
         result = EXECUTE_KERNEL_RED(BatchNumber);
-        cout<<"Machine "<< cell_index <<" : LS["<<Param2<<"] = "<<result<<endl;
+        if ((cell_index & 1) == 0) cout<< endl;
+        cout<<"Machine "<< cell_index <<" : LS["<<Param2<<"] = "<<result<<"    ";
+
     }
+    cout<< endl;
 }
 
 int test_Simple_All()

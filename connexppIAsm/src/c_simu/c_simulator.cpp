@@ -64,7 +64,7 @@ int c_simulator::vwrite(void* Iou)
     IO_UNIT_CORE* pIOUC = ((io_unit*)Iou)->getIO_UNIT_CORE();
     UINT32 LSaddress = (pIOUC->Descriptor).LsAddress;
 
-    cout << "Tring to write " << ((io_unit*)Iou)->getSize() << "bytes "<<endl;
+    cout << "Trying to write " << ((io_unit*)Iou)->getSize() << "bytes "<<endl;
     for (vectors = 0; vectors < pIOUC->Descriptor.NumOfVectors; vectors++)
     {
 
