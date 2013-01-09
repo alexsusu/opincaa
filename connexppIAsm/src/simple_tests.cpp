@@ -649,7 +649,8 @@ void simpleClearLS( )
     {
         BEGIN_BATCH(BatchNumber);
             EXECUTE_IN_ALL(
-                        LS[vector_index] = 0;
+                            R0 = 0;
+                            LS[vector_index] = R0;
                       );
         END_BATCH(BatchNumber);
         EXECUTE_KERNEL(BatchNumber);
