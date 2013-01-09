@@ -650,6 +650,7 @@ void simpleClearLS( )
         BEGIN_BATCH(BatchNumber);
             EXECUTE_IN_ALL(
                             R0 = 0;
+                            NOP;
                             LS[vector_index] = R0;
                       );
         END_BATCH(BatchNumber);
@@ -664,7 +665,8 @@ void simplePrintLS(INT64 Param2)
     for (cell_index = 0; cell_index < NUMBER_OF_MACHINES; cell_index++)
     {
         BEGIN_BATCH(BatchNumber);
-            EXECUTE_IN_ALL( R4 = 0;
+            EXECUTE_IN_ALL(
+                        R4 = 0;
                         R1 = INDEX;
                         R2 = cell_index;
                         R3 = (R1 == R2);
