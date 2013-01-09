@@ -63,6 +63,8 @@ int c_simulator::vwrite(void* Iou)
     UINT32 vectors;
     IO_UNIT_CORE* pIOUC = ((io_unit*)Iou)->getIO_UNIT_CORE();
     UINT32 LSaddress = (pIOUC->Descriptor).LsAddress;
+
+    cout << "Tring to write " << ((io_unit*)Iou)->getSize() << "bytes "<<endl;
     for (vectors = 0; vectors < pIOUC->Descriptor.NumOfVectors; vectors++)
     {
 
@@ -75,6 +77,36 @@ int c_simulator::vwrite(void* Iou)
     }
     return PASS;
 }
+
+
+#define IO_MODE_POS             0
+#define IO_LS_ADDRESS_POS       1
+#define IO_NUM_OF_VECTORS_POS   2
+#define IO_CONTENT_POS          3
+/*
+int c_simulator::vwrite(void* Iou)
+{
+    UINT32 vectors;
+    UINT32* pIOUC = (UINT32*)(((io_unit*)Iou)->getIO_UNIT_CORE());
+
+    UINT32 IoMode = *(pIOUC + IO_MODE_POS);
+    UINT32 LSaddress = *(pIOUC + IO_LS_ADDRESS_POS);
+    UINT32 NumOfVectors = *(pIOUC + IO_NUM_OF_VECTORS_POS);
+    UINT32 *Content = pIOUC + IO_CONTENT_POS;
+
+    for (vectors = 0; vectors < NumOfVectors; vectors++)
+    {
+
+        FOR_ALL_MACHINES(
+                          if (MACHINE % 2 == 0)
+                            C_SIMU_LS[MACHINE][LSaddress + vectors] = *((UINT32*)(Content + vectors * VECTOR_SIZE_IN_DWORDS + MACHINE/2)) & REGISTER_SIZE_MASK;
+                          else
+                            C_SIMU_LS[MACHINE][LSaddress + vectors] = *((UINT32*)(Content + vectors * VECTOR_SIZE_IN_DWORDS + MACHINE/2)) >> REGISTER_SIZE;
+                        );
+    }
+    return PASS;
+}
+*/
 
 int c_simulator::vread(void* Iou)
 {

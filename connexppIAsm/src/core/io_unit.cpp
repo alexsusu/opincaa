@@ -29,8 +29,8 @@ void io_unit::setIOParams(int mode, int LsAddress, int NumOfVectors)
     Iouc.Descriptor.LsAddress = LsAddress;
     Iouc.Descriptor.NumOfVectors = NumOfVectors;
 
-    Size = NumOfVectors * 2;
-    if (mode == WRITE_MODE) Size += DESCRIPTOR_SIZE;
+    Size = NumOfVectors * VECTOR_SIZE_IN_BYTES;
+    if (mode == WRITE_MODE) Size += DESCRIPTOR_SIZE * 4;
 }
 
 void io_unit::preWriteVectors(UINT16 destAddress, UINT16 *srcAddress, UINT16 numVectors)
@@ -46,6 +46,7 @@ void io_unit::preWriteVectors(UINT16 destAddress, UINT16 *srcAddress, UINT16 num
 int io_unit::vwrite(void *_iou)
 {
     io_unit *iou = (io_unit*)_iou;
+    printf("Tring to write %ld bytes", iou->getSize());
     if (iou->getSize() == write(vpipe_write_32,iou->getIO_UNIT_CORE(),iou->getSize()))
         return PASS;
     else return FAIL;

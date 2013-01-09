@@ -480,9 +480,11 @@ void InitKernel_Iowrite(int BatchNumber,INT64 Param1, INT64 Param2)
     {
         io_unit IOU;
         IOU.preWriteVectors(destAddr,data,num_vectors);
-        IO_WRITE_NOW(&IOU);
+        if (PASS != IO_WRITE_NOW(&IOU))
+            printf("Writing to IO pipe, FAILED !");
         //c_simulator::printLS(destAddr);
     }
+
     BEGIN_BATCH(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = LS[Param2];
@@ -591,7 +593,7 @@ enum BatchNumbers
     XOR_BNR     = 34,
     IO_WRITE_BNR = 35,
     IO_READ_BNR = 36,
-
+    PRINT_LS_BNR = 37,
     MAX_BNR = NUMBER_OF_BATCHES
 };
 
@@ -633,10 +635,33 @@ TestFunction TestFunctionTable[] =
 	{CELL_SHL_BNR,"CELLSHL",2,5,InitKernel_Cellshl,5-2},
     {CELL_SHR_BNR,"CELLSHR",2,5,InitKernel_Cellshr,5+2},
 	{IO_WRITE_BNR,"IO_WRITE1",1024,0,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,0)},
-    {IO_WRITE_BNR,"IO_WRITE2",1024,1,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,NUMBER_OF_MACHINES)},
-    {IO_WRITE_BNR,"IO_WRITE3",1024,1023,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,NUMBER_OF_MACHINES*1023)},
-    {IO_READ_BNR,"IO_READ",1024,0,InitKernel_Ioread, NUMBER_OF_MACHINES},
+    //{IO_WRITE_BNR,"IO_WRITE2",1024,1,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,NUMBER_OF_MACHINES)},
+    //{IO_WRITE_BNR,"IO_WRITE3",1024,1023,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,NUMBER_OF_MACHINES*1023)},
+    //{IO_READ_BNR,"IO_READ",1024,0,InitKernel_Ioread, NUMBER_OF_MACHINES},
 };
+
+void simplePrintLS(INT64 Param2)
+{
+    int BatchNumber = PRINT_LS_BNR;
+    int cell_index;
+    int result;
+    for (cell_index = 0; cell_index < NUMBER_OF_MACHINES; cell_index++)
+    {
+        BEGIN_BATCH(BatchNumber);
+            EXECUTE_IN_ALL( R4 = 0;
+                        R1 = INDEX;
+                        R2 = cell_index;
+                        R3 = (R1 == R2);
+                      );
+            EXECUTE_WHERE_EQ
+                    ( R4 = LS[Param2];
+                      REDUCE(R4);
+                    )
+        END_BATCH(BatchNumber);
+        result = EXECUTE_KERNEL_RED(BatchNumber);
+        cout<<"Machine "<< cell_index <<" : LS["<<Param2<<"] = "<<result<<endl;
+    }
+}
 
 int test_Simple_All()
 {
@@ -661,7 +686,7 @@ int test_Simple_All()
 
 //    DEASM_KERNEL(WHERE_LT_BNR);
 //    DEASM_KERNEL(WHERE_CARRY_BNR);
-
+    simplePrintLS(0);
     return testFails;
 }
 
