@@ -671,10 +671,12 @@ void simplePrintLS(INT64 Param2)
                         R2 = cell_index;
                         R3 = (R1 == R2);
                       );
-            EXECUTE_WHERE_EQ
-                    ( R4 = LS[Param2];
-                      REDUCE(R4);
-                    )
+            EXECUTE_WHERE_EQ(
+                        R4 = LS[Param2];
+            )
+            EXECUTE_IN_ALL(
+                        REDUCE(R4);
+            )
         END_BATCH(BatchNumber);
         result = EXECUTE_KERNEL_RED(BatchNumber);
         if ((cell_index & 1) == 0) cout<< endl;
