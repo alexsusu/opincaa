@@ -167,9 +167,8 @@ static void simplePrintLS(INT64 Param2)
             )
         END_BATCH(BatchNumber);
         result = EXECUTE_KERNEL_RED(BatchNumber);
-        if ((cell_index & 1) == 0) cout<< endl;
-        cout<<"Machine "<< cell_index <<" : LS["<<Param2<<"] = "<<result<<"    ";
-
+        if ((cell_index & 2) == 0) cout<< endl;
+        cout<<"Mach "<< cell_index <<" : LS["<<Param2<<"] = "<<result<<"    ";
     }
     cout<< endl;
 }
@@ -184,6 +183,7 @@ int test_Simple_IO_All()
     {
         testFails++;
         cout<< " testIowrite FAILED." <<endl;
+        simplePrintLS(0);
     }
     else cout<< " testIowrite passed." <<endl;
 
