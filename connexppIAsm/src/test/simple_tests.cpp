@@ -648,7 +648,7 @@ static INT64 SumRedofFirstXnumbers(UINT64 numbers, UINT64 start)
     return sum & REDUCTION_SIZE_MASK;
 }
 
-enum BatchNumbers
+enum SimpleBatchNumbers
 {
     NOP_BNR         ,
     IWRITE_BNR      ,
@@ -726,7 +726,7 @@ enum BatchNumbers
     MAX_BNR = NUMBER_OF_BATCHES
 };
 
-TestFunction TestFunctionTable[] =
+static TestFunction TestFunctionTable[] =
 {
     {NOP_BNR,"NOP",InitKernel_Nop,{0x00,0x00,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
     {IWRITE_BNR,"IWRITE",InitKernel_Iwrite,{0x01,0x02,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
@@ -798,7 +798,7 @@ TestFunction TestFunctionTable[] =
 
 };
 
-int getIndexTestFunctionTable(int BatchNumber)
+static int getIndexTestFunctionTable(int BatchNumber)
 {
     int i;
     for (i = 0; i < sizeof(TestFunctionTable)/sizeof(TestFunction); i++)
@@ -807,7 +807,7 @@ int getIndexTestFunctionTable(int BatchNumber)
     return -1;
 }
 
-void UpdateDatasetTable(int BatchNumber)
+static void UpdateDatasetTable(int BatchNumber)
 {
     int i = getIndexTestFunctionTable(BatchNumber);
     if (i>0)
@@ -1024,7 +1024,7 @@ int test_Simple_All(bool stress)
 
     UINT16 testFails = 0;
 
-    if (stress == true) { stressLoops = 10;initRand();} else stressLoops = 0;
+    if (stress == true) { stressLoops = 10;} else stressLoops = 0;
 
     for (i = 0; i < sizeof (TestFunctionTable) / sizeof (TestFunction); i++)
     {

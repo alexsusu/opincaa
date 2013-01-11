@@ -125,7 +125,9 @@ int initialize(UINT8 RunningMode)
 
 void initRand()
 {
-    srand ( GetMilliCount() );
+    int seed =  GetMilliCount();
+    srand ( seed );
+    printf("\n Running with seed = %d\n",seed);
 }
 INT64 randPar(INT64 limit)
 {

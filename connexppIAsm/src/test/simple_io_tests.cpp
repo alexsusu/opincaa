@@ -16,6 +16,23 @@
 #include <iomanip>
 using namespace std;
 
+
+enum SimpleIoBatchNumbers
+{
+    IO_READ1_BNR    ,
+    IO_READ2_BNR    ,
+    IO_READ3_BNR    ,
+    IO_READ4_BNR    ,
+    IO_WRITE1_BNR   ,
+    IO_WRITE2_BNR   ,
+    IO_WRITE3_BNR   ,
+    IO_WRITE4_BNR   ,
+
+    PRINT_LS_BNR = 98,
+    CLEAR_LS_BNR = 99,
+    MAX_BNR = NUMBER_OF_BATCHES
+};
+
 /**
     Computes sum of first "numbers" consecutive nubers starting with start.
     Numbers are forced to UINT16.
@@ -45,7 +62,9 @@ static int testIowrite(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     UINT32 cnt;
     const int num_vectors = Param1;
+    UINT16 VectorIndex;
     UINT16 data[NUMBER_OF_MACHINES*num_vectors];
+    UINT16 testResult;
 
     for (cnt = 0; cnt < NUMBER_OF_MACHINES*num_vectors; cnt++) data[cnt] = cnt;
 
@@ -60,13 +79,32 @@ static int testIowrite(int BatchNumber,INT64 Param1, INT64 Param2)
             //c_simulator::printLS(Param2);
         }
     }
+    testResult = PASS;
 
-    BEGIN_BATCH(BatchNumber);
-        EXECUTE_IN_ALL(
-                        R1 = LS[Param2];
-                        REDUCE(R1);
-                      )
-    END_BATCH(BatchNumber);
+    for (VectorIndex = 0; VectorIndex < num_vectors; VectorIndex++)
+        for (cnt = 0; cnt < NUMBER_OF_MACHINES; cnt++)
+        // write data to local store
+        {
+            BEGIN_BATCH(BatchNumber);
+                EXECUTE_IN_ALL(
+                                R1 = INDEX;
+                                R2 = cnt;
+                                R3 = 0;
+                                R4 = (R1 == R2);
+                                NOP;
+                              )
+                EXECUTE_WHERE_EQ ( R3 = LS[VectorIndex + Param2];)
+                EXECUTE_IN_ALL ( REDUCE(R3);)
+            END_BATCH(BatchNumber);
+
+            if (data[VectorIndex * VECTOR_SIZE_IN_WORDS + cnt] != EXECUTE_KERNEL_RED(BatchNumber))
+            {
+                testResult = FAIL;
+                //cout<<VectorIndex << " "<<cnt << " "<< EXECUTE_KERNEL_RED(BatchNumber)<< " "<<data[VectorIndex * VECTOR_SIZE_IN_WORDS + cnt]<<endl;
+            }
+        }
+   return  testResult;
+
 }
 
 /**
@@ -95,13 +133,13 @@ static int testIoread(int BatchNumber,INT64 Param1, INT64 Param2)
                                 R1 = INDEX;
                                 R2 = cnt;
                                 R4 = (R1 == R2);
-                                R3 = data[cnt];// ensured 1 slot between == and where_eq !
+                                R3 = data[VectorIndex * VECTOR_SIZE_IN_WORDS + cnt];// ensured 1 slot between == and where_eq !
                               )
-                EXECUTE_WHERE_EQ ( LS[VectorIndex] = R3;)
+                EXECUTE_WHERE_EQ ( LS[VectorIndex + Param2] = R3;)
             END_BATCH(BatchNumber);
             EXECUTE_KERNEL(BatchNumber);
         }
-
+        //c_simulator::printLS(Param2+1);
     // read data from local store
     {
         io_unit IOU;
@@ -111,23 +149,17 @@ static int testIoread(int BatchNumber,INT64 Param1, INT64 Param2)
 
         UINT16* Content = (UINT16*)(IOU.getIO_UNIT_CORE())->Content;
         testResult = PASS;
-        for (cnt = 0; cnt < NUMBER_OF_MACHINES*num_vectors; cnt++)
-            if (data[cnt] != Content[cnt])
-                testResult = FAIL;
+        for (VectorIndex = 0; VectorIndex < num_vectors; VectorIndex++)
+            for (cnt = 0; cnt < NUMBER_OF_MACHINES; cnt++)
+                if (data[VectorIndex * VECTOR_SIZE_IN_WORDS + cnt] != Content[VectorIndex * VECTOR_SIZE_IN_WORDS + cnt])
+                {
+                    //cout<<VectorIndex << " "<<cnt << " "<< " "<<data[VectorIndex * VECTOR_SIZE_IN_WORDS + cnt]<<endl;
+                    testResult = FAIL;
+                }
     }
 
     return testResult;
 }
-
-enum BatchNumbers
-{
-    IO_WRITE_BNR    ,
-    IO_READ_BNR     ,
-
-    PRINT_LS_BNR = 98,
-    CLEAR_LS_BNR = 99,
-    MAX_BNR = NUMBER_OF_BATCHES
-};
 
 static void simpleClearLS( )
 {
@@ -173,26 +205,101 @@ static void simplePrintLS(INT64 Param2)
     cout<< endl;
 }
 
+struct Dataset
+{
+   INT64 Param1;
+   INT64 Param2;
+};
 
-int test_Simple_IO_All()
+struct TestIoFunction
+{
+   int BatchNumber;
+   const char *TestName;
+   int (*runTest)(int BatchNumber,INT64 Param1,INT64 Param2);
+   Dataset ds;
+};
+
+TestIoFunction TestIoFunctionTable[] =
+{
+    {IO_READ1_BNR, "IO_READ_1.0    ",testIoread,{1,0}},
+    {IO_READ2_BNR, "IO_READ_2.1    ",testIoread,{2,1}},
+    {IO_READ3_BNR, "IO_READ_3.1    ",testIoread,{3,1}},
+    {IO_READ4_BNR, "IO_READ_1024.0 ",testIoread,{MAX_VECTORS,0}},
+    {IO_WRITE1_BNR,"IO_WRITE_1.0   ",testIowrite,{1,0}},
+    {IO_WRITE2_BNR,"IO_WRITE_2.1   ",testIowrite,{2,1}},
+    {IO_WRITE3_BNR,"IO_WRITE_3.1   ",testIowrite,{3,1}},
+    {IO_WRITE4_BNR,"IO_WRITE_1024.0",testIowrite,{MAX_VECTORS,0}},
+};
+
+static int getIndexTestIoFunctionTable(int BatchNumber)
+{
+    int i;
+    for (i = 0; i < sizeof(TestIoFunctionTable)/sizeof(TestIoFunction); i++)
+        if (TestIoFunctionTable[i].BatchNumber == BatchNumber)
+            return i;
+    return -1;
+}
+
+static void UpdateDatasetTable(int BatchNumber)
+{
+    int i = getIndexTestIoFunctionTable(BatchNumber);
+    if (i>0)
+    switch(BatchNumber)
+    {
+        case IO_WRITE1_BNR:
+        case IO_READ1_BNR      :{TestIoFunctionTable[i].ds.Param2 = randPar(MAX_VECTORS-1);break;}
+
+        case IO_WRITE2_BNR:
+        case IO_READ2_BNR      :{TestIoFunctionTable[i].ds.Param2 = randPar(MAX_VECTORS-2);break;}
+
+        case IO_WRITE3_BNR:
+        case IO_READ3_BNR      :{TestIoFunctionTable[i].ds.Param2 = randPar(MAX_VECTORS-3);break;}
+
+        case IO_WRITE4_BNR:
+        case IO_READ4_BNR      :{
+                                    TestIoFunctionTable[i].ds.Param2 = randPar(MAX_VECTORS);
+                                    do
+                                    {
+                                        TestIoFunctionTable[i].ds.Param1 = randPar(MAX_VECTORS);
+                                    }while (TestIoFunctionTable[i].ds.Param2 + TestIoFunctionTable[i].ds.Param1 > MAX_VECTORS);
+                                    break;
+                                }
+    }
+}
+int test_Simple_IO_All(bool stress)
 {
     //simpleClearLS();
     int testFails = 0;
+    int stressLoops;
+    int i,j;
     cout<<endl;
-    if (PASS != testIowrite(IO_WRITE_BNR,1,0))
-    {
-        testFails++;
-        cout<< " testIowrite FAILED." <<endl;
-        simplePrintLS(0);
-    }
-    else cout<< " testIowrite passed." <<endl;
 
-    if (PASS != testIoread(IO_READ_BNR,1,0))
+    if (stress == true) { stressLoops = 10;} else stressLoops = 0;
+    for (i = 0; i < sizeof (TestIoFunctionTable) / sizeof (TestIoFunction); i++)
     {
-        testFails++;
-        cout<< " testIoread FAILED." <<endl;
+        j = stressLoops;
+        do
+        {
+            if (PASS != TestIoFunctionTable[i].runTest(TestIoFunctionTable[i].BatchNumber,
+                                                            TestIoFunctionTable[i].ds.Param1,
+                                                            TestIoFunctionTable[i].ds.Param2))
+            {
+               cout<< "Test "<< setw(8) << left << TestIoFunctionTable[i].TestName <<" FAILED ! params are "
+               << TestIoFunctionTable[i].ds.Param1 << " and " << TestIoFunctionTable[i].ds.Param2 <<endl;
+               testFails++;
+               return testFails;
+            }
+            else
+            {
+                if (j == stressLoops)
+                    cout<< "Test "<< setw(8) << left << TestIoFunctionTable[i].TestName;
+                if ((j > 0) && (j <= stressLoops)) cout<<".";
+                if (j == 0) {cout << " PASSED"<<endl;break;}
+            }
+            UpdateDatasetTable(TestIoFunctionTable[i].BatchNumber);
+        }
+        while (j-- >= 0);
     }
-    else cout<< " testIoread passed." <<endl;
 
     if (testFails ==0)
         cout<<endl<< " All SimpleIOTests PASSED." <<endl;

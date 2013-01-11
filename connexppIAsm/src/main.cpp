@@ -44,7 +44,7 @@
  *               Note that Rx = number OP Ry is NOT supported for now (compiler error)
  *   v0.7.1  - bugfix in IO read function. Refactored tests.
  *   TODO: add parameters in kernel-init functions.
- *
+ *	 v0.7.2  - bugfix IO write test. Added random tests for IO.
  *
  * Created on December 19, 2012, 3:32 PM
  *
@@ -172,9 +172,10 @@ int main(int argc, char *argv[])
 
 
     INIT(run_mode);
+    initRand();
     test_Simple_All(true);
     //test_Speed_All();
-    test_Simple_IO_All();
+    test_Simple_IO_All(true);
     DEINIT();
 
     cout << "Press ENTER to continue...";
