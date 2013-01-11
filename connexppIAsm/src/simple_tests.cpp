@@ -685,7 +685,7 @@ static INT64 SumRedofFirstXnumbers(UINT64 numbers, UINT64 start)
 */
 static void InitKernel_Iowrite(int BatchNumber,INT64 Param1, INT64 Param2)
 {
-    UINT16 destAddr = 0;
+    UINT16 destAddr = Param2;
     UINT32 cnt;
     const int num_vectors = Param1;
     UINT16 data[NUMBER_OF_MACHINES*num_vectors];
@@ -703,7 +703,7 @@ static void InitKernel_Iowrite(int BatchNumber,INT64 Param1, INT64 Param2)
 
     BEGIN_BATCH(BatchNumber);
         EXECUTE_IN_ALL(
-                        R1 = LS[Param2];
+                        R1 = LS[destAddr];
                         REDUCE(R1);
                       )
     END_BATCH(BatchNumber);
@@ -994,10 +994,15 @@ int test_Simple_All()
     simpleClearLS();
     simplePrintLS(0);
     InitKernel_Iowrite(IO_WRITE_BNR,1,0);
-    cout <<"Result of Iowrite test " << EXECUTE_KERNEL_RED(IO_WRITE_BNR)<<endl;
+    cout <<"Result of Iowrite test 1: " << EXECUTE_KERNEL_RED(IO_WRITE_BNR)<<endl;
+    InitKernel_Iowrite(IO_WRITE_BNR,1,1);
+    cout <<"Result of Iowrite test 2: " << EXECUTE_KERNEL_RED(IO_WRITE_BNR)<<endl;
+    InitKernel_Iowrite(IO_WRITE_BNR,1,2);
+    cout <<"Result of Iowrite test 3: " << EXECUTE_KERNEL_RED(IO_WRITE_BNR)<<endl;
+
     simplePrintLS(0);
-    //simplePrintLS(1);
-    //simplePrintLS(2);
+    simplePrintLS(1);
+    simplePrintLS(2);
 
     if (testFails ==0)
         cout<<endl<< " All SimpleTests PASSED." <<endl;
