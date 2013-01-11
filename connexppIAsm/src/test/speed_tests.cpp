@@ -147,8 +147,8 @@ int BenchmarkNOPspeed(int BatchNumber,INT64 Param1, INT64 Param2)
 
     if (tend != tstart)
     {
-        printf ("Approx performance is %ld KIPS\n", NOP_SPEED_CYCLES / (tend-tstart));
-        printf ("Approx delta time is %ld ms \n", (tend-tstart));
+        printf ("Approx performance is %ld KIPS\n", NOP_SPEED_CYCLES / 1000 * CLOCKS_PER_SEC/ (tend-tstart));
+        printf ("Approx delta time is %ld ms \n", 1000 * (tend-tstart)/CLOCKS_PER_SEC);
     }
     else printf ("Way too fast to perform measurement \n");
     return PASS;
@@ -188,8 +188,8 @@ int BenchmarkADDspeed(int BatchNumber,INT64 Param1, INT64 Param2)
 
     if (tend != tstart)
     {
-        printf ("Approx performance is %ld KIPS\n", ADD_SPEED_CYCLES / (tend-tstart));
-        printf ("Approx delta time is %ld ms \n", (tend-tstart));
+        printf ("Approx performance is %ld KIPS\n", ADD_SPEED_CYCLES / 1000 * CLOCKS_PER_SEC/ (tend-tstart));
+        printf ("Approx delta time is %ld ms \n", 1000 * (tend-tstart)/CLOCKS_PER_SEC);
     }
     else printf ("Way too fast to perform measurement \n");
     return PASS;
@@ -221,8 +221,8 @@ int BenchmarkMLTspeed(int BatchNumber,INT64 Param1, INT64 Param2)
 
     if (tend != tstart)
     {
-        printf ("Approx performance is %ld KIPS\n", MLT_SPEED_CYCLES / (tend-tstart));
-        printf ("Approx delta time is %ld ms \n", (tend-tstart));
+        printf ("Approx performance is %ld KIPS\n", MLT_SPEED_CYCLES/ 1000 * CLOCKS_PER_SEC / (tend-tstart));
+        printf ("Approx delta time is %ld ms \n", 1000 * (tend-tstart)/CLOCKS_PER_SEC);
     }
     else printf ("Way too fast to perform measurement \n");
     return PASS;
