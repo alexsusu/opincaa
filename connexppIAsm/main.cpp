@@ -35,6 +35,13 @@
  *			 - bugfix: reduction is on log2(NUMBER_OF_MACHINES) + REGISTER_SIZE ( 23 bits for 128 UINT16 machines )
  *   v0.6.7  - added some speed tests. Tested on csimulator.
  *   v0.6.8  - speed tests were downsized to run in a reasonable time on arm
+ *   v0.7.0  - added 12+5 pseudo-instructions and simple tests for them
+ *               Rx = Ry * Rz is done as MULT = Ry * Rz; Rx = _LO(MULT);
+ *               Rx = Ry OP number, where OP is +,ADDC,-,SUBC,|,&,^,==,<,ULT,* is done as Rx = number; Rx = Ry OP Rx
+ *               Rx OP= Ry,      Rx OP= Ry, where OP is +,-,|,&,^ is done as Rx = Rx OP Ry; 
+ *
+ *               Note that Rx OP= number   is NOT supported (by hw)
+ *               Note that Rx = number OP Ry is NOT supported for now (compiler error)
  *
  *   TODO: add parameters in kernel-init functions.
  *

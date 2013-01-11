@@ -64,21 +64,36 @@ void vector::appendInstruction(UINT_INSTRUCTION instr)
 
 
 
-/* BINM = binary operators: for use with binary operators that use two operands but not self */
+/* BIN = binary operators: for use with binary operators that use two operands but not self */
 /* These functions will be static, to highlight non-use of self */
 #define RETURN_NEW_OBJ_BIN(opcode) return vector(0, (other_left.mval << (LEFT_POS)) + (other_right.mval << (RIGHT_POS)), opcode);
 
 /* BINM = binary operators modificated: for use with binary operators that use self and another operand */
 #define RETURN_NEW_OBJ_BINM(opcode) return vector(0, (other.mval << (RIGHT_POS)) + (mval << (LEFT_POS)), opcode);
 #define RETURN_NEW_OBJ_UNM(opcode) return vector(0, (mval << (LEFT_POS)), opcode);
+
+#define SELF_OP(opcodeee) vector self(0, (other.mval << (RIGHT_POS)) + (mval << (LEFT_POS)), opcodeee);\
+                        appendInstruction((self.opcode << OPCODE_9BITS_POS) + (self.ival + mval));
+
 // uses immediate value
 #define RETURN_NEW_OBJ_BINM_IMMVAL(opcode) return vector(0, (imm_val << (IMMEDIATE_VALUE_POS)) + (mval << (LEFT_POS)), opcode);
 #define RETURN_NEW_OBJ_BIN_IMMVAL(opcode) return vector(0, (imm_val << (IMMEDIATE_VALUE_POS)) + (other.mval << (LEFT_POS)), opcode);
 
-vector vector::operator+(vector other) {RETURN_NEW_OBJ_BINM(_ADD)};
-vector vector::operator-(vector other) {RETURN_NEW_OBJ_BINM(_SUB)};
+// for pseudo instructions
+#define RETURN_NEW_OBJ_PBINM_IMMVAL(opcode) return vector(0, (mval << (LEFT_POS)), imm_val, opcode);
+#define RETURN_NEW_OBJ_PBIN_IMMVAL(opcode) return vector(0, (other.mval << (LEFT_POS)), imm_val, opcode);
 
-/* Keep NOPin MULT: the marker of multiplication is the MULT register usage in operator =.
+
+vector vector::operator+(vector other) {RETURN_NEW_OBJ_BINM(_ADD)};
+vector vector::operator+(UINT_PARAM imm_val) {RETURN_NEW_OBJ_PBINM_IMMVAL(_ADD);};
+void vector::operator+=(vector other){ SELF_OP(_ADD);}
+
+vector vector::operator-(vector other) {RETURN_NEW_OBJ_BINM(_SUB)};
+vector vector::operator-(UINT_PARAM imm_val) {RETURN_NEW_OBJ_PBINM_IMMVAL(_SUB)};
+void vector::operator-=(vector other) {SELF_OP(_SUB);}
+
+
+/* Keep NOP in MULT: the marker of multiplication is the MULT register usage in operator =.
     This way, in case of R5 = R6 * R7, a nop will be generated instead.
     Legal use is:
     MULT = Rx * Ry // I had to use "=" to force compilator evaluate Rx.*(Ry)
@@ -86,7 +101,8 @@ vector vector::operator-(vector other) {RETURN_NEW_OBJ_BINM(_SUB)};
     Ra = _HI(MULT);
     Rb = _LO(MULT);
 */
-vector vector::operator*(vector other) {RETURN_NEW_OBJ_BINM(_NOP)};
+vector vector::operator*(vector other) {RETURN_NEW_OBJ_BINM(_MULT)};
+vector vector::operator*(UINT_PARAM imm_val) {RETURN_NEW_OBJ_PBINM_IMMVAL(_MULT)};
 
 vector vector::multlo(vector other)
 {
@@ -104,14 +120,24 @@ vector vector::multhi(vector other)
     return vector(0, 0, _MULT_HI);
 };
 
-//!!!
-//vector vector::operator!(vector other) {CREATE_OBJ_BINM;  SET_OBJ_BINM_OPCODE(_LNOT);    RETURN_OBJ_BINM};
-
 vector vector::operator|(vector other) {RETURN_NEW_OBJ_BINM(_OR)};
+vector vector::operator|(UINT_PARAM imm_val) {RETURN_NEW_OBJ_PBINM_IMMVAL(_OR)};
+void vector::operator|=(vector other) {SELF_OP(_OR);};
+
 vector vector::operator&(vector other) {RETURN_NEW_OBJ_BINM(_AND)};
+vector vector::operator&(UINT_PARAM imm_val) {RETURN_NEW_OBJ_PBINM_IMMVAL(_AND)};
+void vector::operator&=(vector other) {SELF_OP(_AND);};
+
 vector vector::operator^(vector other) {RETURN_NEW_OBJ_BINM(_XOR)};
+vector vector::operator^(UINT_PARAM imm_val) {RETURN_NEW_OBJ_PBINM_IMMVAL(_XOR)};
+void vector::operator^=(vector other) {SELF_OP(_XOR);};
+
 vector vector::operator==(vector other) {RETURN_NEW_OBJ_BINM(_EQ)};
+vector vector::operator==(UINT_PARAM imm_val) {RETURN_NEW_OBJ_PBINM_IMMVAL(_EQ)};
+
 vector vector::operator<(vector other) {RETURN_NEW_OBJ_BINM(_LT)};
+vector vector::operator<(UINT_PARAM imm_val) {RETURN_NEW_OBJ_PBINM_IMMVAL(_LT)};
+
 vector vector::operator~() {RETURN_NEW_OBJ_UNM(_NOT)};
 
 vector vector::operator<<(vector other) {RETURN_NEW_OBJ_BINM(_SHL)};
@@ -153,8 +179,13 @@ vector vector::shra(vector other_left, vector other_right)  {RETURN_NEW_OBJ_BIN(
 vector vector::ishra(vector other, UINT_PARAM imm_val) {RETURN_NEW_OBJ_BIN_IMMVAL(_ISHRA)};
 
 vector vector::ult(vector other_left, vector other_right) {RETURN_NEW_OBJ_BIN(_ULT)};
+vector vector::ult(vector other, UINT_PARAM imm_val) {RETURN_NEW_OBJ_PBIN_IMMVAL(_ULT)};
+
 vector vector::addc(vector other_left, vector other_right) {RETURN_NEW_OBJ_BIN(_ADDC)};
+vector vector::addc(vector other, UINT_PARAM imm_val) {RETURN_NEW_OBJ_PBIN_IMMVAL(_ADDC)};
+
 vector vector::subc(vector other_left, vector other_right) {RETURN_NEW_OBJ_BIN(_SUBC)};
+vector vector::subc(vector other, UINT_PARAM imm_val) {RETURN_NEW_OBJ_PBIN_IMMVAL(_SUBC)};
 
 void vector::cellshl(vector other_left, vector other_right)
 {
@@ -193,11 +224,42 @@ void vector::operator=(vector other)
     }
     else if (mval == MULTIPLICATION_MARKER) // MULT = Rx * Ry
     {
-        appendInstruction((_MULT << OPCODE_9BITS_POS) + (other.ival));
+        appendInstruction((_MULT << OPCODE_9BITS_POS) + other.ival);
+    }
+    // MULT from R3 = R1 * R2 or from R3 = R1 * 5.
+    else if (other.opcode == _MULT)
+    {
+        if (other.imval == 0)
+        {
+            // MULT = R1 * R2; R3 = _LO(MULT)
+            appendInstruction((_MULT << OPCODE_9BITS_POS) + other.ival);
+            appendInstruction((_MULT_LO << OPCODE_9BITS_POS) + mval);
+        }
+        else
+        {
+            // R3 = 5; MULT = R1 * R3; R3 = _LO(MULT)
+            appendInstruction((_VLOAD << OPCODE_6BITS_POS) + ((other.imval << IMMEDIATE_VALUE_POS)  + mval));
+            appendInstruction((other.opcode << OPCODE_9BITS_POS) + (mval << RIGHT_POS) + (other.ival + mval));
+            appendInstruction((_MULT_LO << OPCODE_9BITS_POS) + mval);
+
+            other.imval = 0;
+            imval = 0;
+        }
+        opcode = _NOP;
+        other.opcode = _NOP;
     }
     else // including MULT_LO / HI
     {
-        appendInstruction((other.opcode << OPCODE_9BITS_POS) + (other.ival + mval));
+        if (other.imval == 0)
+            appendInstruction((other.opcode << OPCODE_9BITS_POS) + (other.ival + mval));
+        else
+        {
+            //printf("A: %d\n", other.imval);
+            appendInstruction((_VLOAD << OPCODE_6BITS_POS) + ((other.imval << IMMEDIATE_VALUE_POS)  + mval));
+            appendInstruction((other.opcode << OPCODE_9BITS_POS) + (mval << RIGHT_POS) + (other.ival + mval));
+            other.imval = 0;
+            imval = 0;
+        }
         opcode = _NOP;
     }
 }

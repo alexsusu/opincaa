@@ -110,8 +110,7 @@
 class vector
 {
     public:
-        //vars
-        //static UINT_INSTRUCTION dwBatch[NUMBER_OF_BATCHES][NUMBER_OF_INSTRUCTIONS_PER_BATCH];
+        //vars: static
         static UINT_INSTRUCTION *dwBatch[NUMBER_OF_BATCHES];
         static UINT32 dwInBatchCounter[NUMBER_OF_BATCHES];
         static UINT16 dwBatchIndex;
@@ -123,9 +122,13 @@ class vector
         static void appendInstruction(UINT_INSTRUCTION instr);
 
         static vector addc(vector other_left, vector other_right);
+        static vector addc(vector other_left, UINT_PARAM value);
+
         static vector subc(vector other_left, vector other_right);
+        static vector subc(vector other_left, UINT_PARAM value);
+
         static vector shra(vector other_left, vector other_right);
-        static vector ishra(vector other_left, UINT_PARAM right);
+        static vector ishra(vector other_left, UINT_PARAM value);
 
         static vector multhi(vector mult);
         static vector multlo(vector mult);
@@ -135,6 +138,8 @@ class vector
 
         static void reduce(vector other_left);
         static vector ult(vector other_left, vector other_right);
+        static vector ult(vector other_left, UINT_PARAM value);
+
         static void onlyOpcode(UINT_INSTRUCTION opcode);
 
         static void nop();
@@ -164,22 +169,41 @@ class vector
 
         // methods: non-static : overloaded operators
         vector operator+(vector);
-        //vector operator+=(vector);
+        vector operator+(UINT_PARAM);
+        void operator+=(vector);
+
         vector operator-(vector);
-        //vector operator-=(vector);
+        vector operator-(UINT_PARAM);
+        void operator-=(vector);
 
         vector operator*(vector);
+        vector operator*(UINT_PARAM);
 
         void operator=(vector);
         void operator=(UINT_PARAM);
 
         vector operator~(void);
+
         vector operator|(vector);
+        vector operator|(UINT_PARAM);
+        void operator|=(vector);
+
         vector operator&(vector);
+        vector operator&(UINT_PARAM);
+        void operator&=(vector);
+
         vector operator==(vector);
+        vector operator==(UINT_PARAM);
+
         vector operator<(vector);
+        vector operator<(UINT_PARAM);
+
         vector operator^(vector);
+        vector operator^(UINT_PARAM);
+        void operator^=(vector);
+
         vector operator>(vector);
+        vector operator>(UINT_PARAM);
 
         vector operator[](vector);
         vector operator[](UINT_PARAM);
@@ -192,8 +216,7 @@ class vector
 
     protected:
     private:
-        //UINT_INSTRUCTION mval; /* 0 for R0, .. 15 for R15 */
-        UINT_INSTRUCTION mval;
+        UINT_INSTRUCTION mval; /* 0 for R0, .. 31 for R31 */
         UINT_INSTRUCTION ival; /* intermediate assembly of instruction, usually R[RIGHT] concatenated with R[LEFT] */
         UINT_INSTRUCTION imval; /* immediate value: will make distinction between 6 and 9 bits-opcode */;
         UINT_INSTRUCTION opcode;

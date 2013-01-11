@@ -131,7 +131,7 @@ int c_simulator::printDeasmKernel(UINT16 dwBatchNumber)
     int result = 0;
     UINT_INSTRUCTION* CurrentInstruction;
 
-    printf("De-asm batch number %d", dwBatchNumber);
+    printf("De-asm batch number %d :\n", dwBatchNumber);
     for (CurrentInstruction = &vector::dwBatch[dwBatchNumber][0];
             CurrentInstruction < (vector::dwBatch[dwBatchNumber] + vector::dwInBatchCounter[dwBatchNumber]);
                 CurrentInstruction++)
