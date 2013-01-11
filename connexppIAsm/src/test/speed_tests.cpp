@@ -5,11 +5,11 @@
  * Speed tests for some instructions on connex machine.
  *
  */
-#include "../include/core/vector_registers.h"
-#include "../include/core/vector.h"
-#include "../include/core/io_unit.h"
-#include "../include/c_simu/c_simulator.h"
-#include "../include/utils.h"
+#include "../../include/core/vector_registers.h"
+#include "../../include/core/vector.h"
+#include "../../include/core/io_unit.h"
+#include "../../include/c_simu/c_simulator.h"
+#include "../../include/util/utils.h"
 
 #include <time.h>
 #include <iostream>

@@ -40,19 +40,23 @@
 		<Unit filename="include/core/vector.h" />
 		<Unit filename="include/core/vector_errors.h" />
 		<Unit filename="include/core/vector_registers.h" />
-		<Unit filename="include/simple_tests.h" />
-		<Unit filename="include/speed_tests.h" />
-		<Unit filename="include/utils.h" />
-		<Unit filename="main.cpp" />
+		<Unit filename="include/test/simple_io_tests.h" />
+		<Unit filename="include/test/simple_tests.h" />
+		<Unit filename="include/test/speed_tests.h" />
+		<Unit filename="include/util/timing.h" />
+		<Unit filename="include/util/utils.h" />
 		<Unit filename="src/c_simu/c_simulator.cpp" />
 		<Unit filename="src/c_simu/de_asm.cpp" />
 		<Unit filename="src/core/io_unit.cpp" />
 		<Unit filename="src/core/vector.cpp" />
 		<Unit filename="src/core/vector_errors.cpp" />
 		<Unit filename="src/core/vector_registers.cpp" />
-		<Unit filename="src/simple_tests.cpp" />
-		<Unit filename="src/speed_tests.cpp" />
-		<Unit filename="src/utils.cpp" />
+		<Unit filename="src/main.cpp" />
+		<Unit filename="src/test/simple_io_tests.cpp" />
+		<Unit filename="src/test/simple_tests.cpp" />
+		<Unit filename="src/test/speed_tests.cpp" />
+		<Unit filename="src/util/timing.cpp" />
+		<Unit filename="src/util/utils.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

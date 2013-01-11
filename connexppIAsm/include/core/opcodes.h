@@ -20,6 +20,7 @@
 
     #define IMMEDIATE_VALUE_POS 10
     #define IMMEDIATE_VALUE_SIZE 16
+    #define IMMEDIATE_VALUE_MASK ((1 << IMMEDIATE_VALUE_SIZE) -1)
 
     #define OPCODE_9BITS_POS    23
     #define OPCODE_9BITS_SIZE    9

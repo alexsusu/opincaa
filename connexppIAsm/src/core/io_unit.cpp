@@ -30,7 +30,7 @@ void io_unit::setIOParams(int mode, int LsAddress, int NumOfVectors)
     Iouc.Descriptor.NumOfVectors = NumOfVectors;
 
     Size = NumOfVectors * VECTOR_SIZE_IN_BYTES;
-    if (mode == WRITE_MODE) Size += DESCRIPTOR_SIZE * 4;
+    if (mode == WRITE_MODE) Size += DESCRIPTOR_SIZE_IN_BYTES;
 }
 
 void io_unit::preWriteVectors(UINT16 destAddress, UINT16 *srcAddress, UINT16 numVectors)
@@ -60,7 +60,7 @@ void io_unit::preReadVectors(UINT16 srcAddress,UINT16 numVectors)
 int io_unit::vread(void *_iou)
 {
     io_unit *iou = (io_unit*)_iou;
-    if (DESCRIPTOR_SIZE == write(vpipe_write_32, &(iou->getIO_UNIT_CORE())->Descriptor, DESCRIPTOR_SIZE))
+    if (DESCRIPTOR_SIZE_IN_BYTES == write(vpipe_write_32, &(iou->getIO_UNIT_CORE())->Descriptor, DESCRIPTOR_SIZE_IN_BYTES))
     {
         if (iou->getSize() == read(vpipe_read_32, &(iou->getIO_UNIT_CORE())->Content, iou->getSize()))
             return PASS;

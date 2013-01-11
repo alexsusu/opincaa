@@ -1,6 +1,7 @@
-#include "../include/utils.h"
-#include "../include/core/vector.h"
-#include "../include/c_simu/c_simulator.h"
+#include "../../include/util/utils.h"
+#include "../../include/core/vector.h"
+#include "../../include/c_simu/c_simulator.h"
+#include "../../include/util/timing.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -51,12 +52,11 @@ int initialize(UINT8 RunningMode)
 
     if(RunningMode == VERILOG_SIMULATION_MODE)
     {
-        //open and close files to make sure they exist
-        vector::pipe_read_32 = open ("reduction_fifo_device",O_RDONLY);
-        vector::pipe_write_32 = open ("program_fifo_device",O_WRONLY);
+        vector::pipe_read_32 = open ("reduction_fifo_device",O_RDONLY | O_CREAT);
+        vector::pipe_write_32 = open ("program_fifo_device",O_WRONLY | O_CREAT);
 
-        io_unit::vpipe_read_32 = open ("io_outbound_fifo_device",O_RDONLY);
-        io_unit::vpipe_write_32 = open ("io_inbound_fifo_device",O_WRONLY);
+        io_unit::vpipe_read_32 = open ("io_outbound_fifo_device",O_RDONLY | O_CREAT);
+        io_unit::vpipe_write_32 = open ("io_inbound_fifo_device",O_WRONLY | O_CREAT);
 
         EXECUTE_KERNEL = vector::executeKernel;
         EXECUTE_KERNEL_RED = vector::executeKernelRed;
@@ -123,3 +123,11 @@ int initialize(UINT8 RunningMode)
     return result;
 }
 
+void initRand()
+{
+    srand ( GetMilliCount() );
+}
+INT64 randPar(INT64 limit)
+{
+    return (INT64)( limit * rand() / ( RAND_MAX + 1.0 ) );
+}

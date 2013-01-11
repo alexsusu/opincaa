@@ -11,6 +11,7 @@
 #include "vector.h"
 
 #define IMM_VAL_MAX 0xFFFF
+#define IMM_VAL_SIGNED_MIN -32768
 #define IMM_SHIFT_VAL_MAX 0x1F
 
 #define ERR_SUBSCRIPT_OUT_OF_RANGE "Subscript operation failed: immediate value too large !"

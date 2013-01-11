@@ -1,7 +1,7 @@
 #ifndef IO_UNIT_H
 #define IO_UNIT_H
 
-#include "../utils.h"
+#include "../util/utils.h"
 /*
 Transfers occur in the following sequence of events:
 1)	Host pushes descriptor into the inbound FIFO, lowest-index first
@@ -17,12 +17,14 @@ Transfers occur in the following sequence of events:
         #define VECTOR_SIZE_IN_DWORDS (VECTOR_SIZE_IN_WORDS / 2)
         #define MAX_VECTORS 1024
 
-        #define DESCRIPTOR_SIZE         3
+        #define DESCRIPTOR_SIZE_IN_DWORDS    3
+        #define DESCRIPTOR_SIZE_IN_WORDS     (2*DESCRIPTOR_SIZE_IN_WORDS)
+        #define DESCRIPTOR_SIZE_IN_BYTES     (4*DESCRIPTOR_SIZE_IN_DWORDS)
         #define MODE_POS                0
         #define LOCAL_STORE_ADDR_POS    1
         #define VECTOR_COUNT_POS        2
 
-        #define IO_UNIT_MAX_SIZE        (DESCRIPTOR_SIZE + MAX_VECTORS * VECTOR_SIZE_IN_DWORDS)
+        #define IO_UNIT_MAX_SIZE        (DESCRIPTOR_SIZE_IN_DWORDS + MAX_VECTORS * VECTOR_SIZE_IN_DWORDS)
 
 enum IO_MODE
 {

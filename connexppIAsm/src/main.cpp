@@ -38,11 +38,11 @@
  *   v0.7.0  - added 12+5 pseudo-instructions and simple tests for them
  *               Rx = Ry * Rz is done as MULT = Ry * Rz; Rx = _LO(MULT);
  *               Rx = Ry OP number, where OP is +,ADDC,-,SUBC,|,&,^,==,<,ULT,* is done as Rx = number; Rx = Ry OP Rx
- *               Rx OP= Ry,      Rx OP= Ry, where OP is +,-,|,&,^ is done as Rx = Rx OP Ry; 
+ *               Rx OP= Ry,      Rx OP= Ry, where OP is +,-,|,&,^ is done as Rx = Rx OP Ry;
  *
  *               Note that Rx OP= number   is NOT supported (by hw)
  *               Note that Rx = number OP Ry is NOT supported for now (compiler error)
- *
+ *   v0.7.1  - bugfix in IO read function. Refactored tests.
  *   TODO: add parameters in kernel-init functions.
  *
  *
@@ -54,10 +54,11 @@
 #include <limits>
 #include <string.h>
 
-#include "include/core/vector_registers.h"
-#include "include/utils.h"
-#include "include/simple_tests.h"
-#include "include/speed_tests.h"
+#include "../include/core/vector_registers.h"
+#include "../include/util/utils.h"
+#include "../include/test/simple_tests.h"
+#include "../include/test/speed_tests.h"
+#include "../include/test/simple_io_tests.h"
 
 using namespace std;
 
@@ -137,31 +138,43 @@ enum errorCodes
 
 int main(int argc, char *argv[])
 {
-    int i;
-    int run_mode = REAL_HARDWARE_MODE;
-    //look for simulation option in arguments
-    for(i=0;i<argc;i++)
+    int i = 1;
+    int run_mode = INVALID_MODE;
+    //look for running option in arguments
+    if (argc == i+1)
     {
         if(strcmp(argv[i],"--vsimulation") == 0)
         {
             cout << "Running in verilog simulation mode" << endl;
-            //set simulation flag
             run_mode = VERILOG_SIMULATION_MODE;
-            break;
         }
-
-        if(strcmp(argv[i],"--csimulation") == 0)
+        else if(strcmp(argv[i],"--csimulation") == 0)
         {
             cout << "Running in c-simulation mode" << endl;
-            //set simulation flag
             run_mode = C_SIMULATION_MODE;
-            break;
+        }
+        else if(strcmp(argv[i],"--hemulation") == 0)
+        {
+            cout << "Running in hardware mode" << endl;
+            run_mode = REAL_HARDWARE_MODE;
         }
     }
 
+     if (run_mode == INVALID_MODE)
+        {
+             cout<< "ERROR: No running mode selected."<<endl;
+             cout<<"    Choose one of the following: "<<endl;
+             cout<<"        --vsimulation (for Verilog Simulation)" << endl;
+             cout<<"        --csimulation (for C++ Simulation)" << endl;
+             cout<<"        --hemulation (for Hardware emulation)" << endl;
+             return -1;
+        }
+
+
     INIT(run_mode);
-    test_Simple_All();
-    test_Speed_All();
+    test_Simple_All(true);
+    //test_Speed_All();
+    test_Simple_IO_All();
     DEINIT();
 
     cout << "Press ENTER to continue...";

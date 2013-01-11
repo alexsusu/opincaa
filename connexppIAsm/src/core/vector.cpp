@@ -268,6 +268,8 @@ void vector::operator=(vector other)
 void vector::operator=(UINT_PARAM imm_val)
 {
     if (imm_val > IMM_VAL_MAX) vectorError(ERR_IMM_VALUE_OUT_OF_RANGE);
+    //if (imm_val < IMM_VAL_SIGNED_MIN) vectorError(ERR_IMM_VALUE_OUT_OF_RANGE);
+    //imm_val = imm_val & IMMEDIATE_VALUE_MASK;
     appendInstruction((_VLOAD << OPCODE_6BITS_POS) + ((imm_val << IMMEDIATE_VALUE_POS)  + mval)); // vload
 }
 

@@ -7,39 +7,36 @@
  *
  *
  */
-#include "../include/core/vector_registers.h"
-#include "../include/core/vector.h"
-#include "../include/core/io_unit.h"
-#include "../include/c_simu/c_simulator.h"
-#include "../include/utils.h"
+#include "../../include/core/vector_registers.h"
+#include "../../include/core/vector.h"
+#include "../../include/core/io_unit.h"
+#include "../../include/c_simu/c_simulator.h"
+#include "../../include/util/utils.h"
+
 #include <iostream>
 #include <iomanip>
 using namespace std;
 //STATIC_VECTOR_DEFINITIONS;
 
-
+struct Dataset
+{
+   INT64 Param1;
+   INT64 Param2;
+   INT64 ExpectedResult;
+};
 
 struct TestFunction
 {
    int BatchNumber;
    const char *OperationName;
-   INT64 Param1;
-   INT64 Param2;
    void (*initKernel)(int BatchNumber,INT64 Param1,INT64 Param2);
-   INT64 ExpectedResult;
+   Dataset ds;
 };
 
+static void InitKernel_Write(int BatchNumber,INT64 Param1, INT64 Param2);
 static void InitKernel_Nop(int BatchNumber,INT64 Param1, INT64 Param2)
 {
-    BEGIN_BATCH(BatchNumber);
-        EXECUTE_IN_ALL(
-                        R1 = Param1;
-                        R2 = Param2;
-                        R3 = 1;
-                        REDUCE(R3);
-                    )
-
-    END_BATCH(BatchNumber);
+    InitKernel_Write(BatchNumber, Param1, Param2);
 }
 
 static void InitKernel_Iwrite(int BatchNumber,INT64 Param1, INT64 Param2)
@@ -58,16 +55,7 @@ static void InitKernel_Iwrite(int BatchNumber,INT64 Param1, INT64 Param2)
 
 static void InitKernel_Iread(int BatchNumber,INT64 Param1, INT64 Param2)
 {
-    BEGIN_BATCH(BatchNumber);
-        EXECUTE_IN_ALL(
-                        R0 = INDEX;
-                        NOP;
-                        LS[Param1] = R0;
-                        R1 = LS[Param1];
-                        REDUCE(R1);
-                        )
-
-    END_BATCH(BatchNumber);
+    InitKernel_Iwrite(BatchNumber, Param1, Param2);
 }
 
 static void InitKernel_Write(int BatchNumber,INT64 Param1, INT64 Param2)
@@ -87,30 +75,13 @@ static void InitKernel_Write(int BatchNumber,INT64 Param1, INT64 Param2)
 
 static void InitKernel_Read(int BatchNumber,INT64 Param1, INT64 Param2)
 {
-    BEGIN_BATCH(BatchNumber);
-        EXECUTE_IN_ALL(
-                        R0 = INDEX;
-                        R1 = Param1;
-                        NOP;
-                        LS[R1] = R0;
-                        R2 = LS[R1];
-                        REDUCE(R2);
-                        )
-
-    END_BATCH(BatchNumber);
+    InitKernel_Write(BatchNumber, Param1, Param2);
 }
 
+static void InitKernel_Add(int BatchNumber,INT64 Param1, INT64 Param2);
 static void InitKernel_Vload(int BatchNumber,INT64 Param1, INT64 Param2)
 {
-    BEGIN_BATCH(BatchNumber);
-        EXECUTE_IN_ALL(
-                        R0 = Param1;
-                        R1 = Param2;
-                        R2 = R0 + R1;
-                        REDUCE(R2);
-                    )
-
-    END_BATCH(BatchNumber);
+    InitKernel_Add(BatchNumber,Param1, Param2);
 }
 
 static void InitKernel_Add(int BatchNumber,INT64 Param1, INT64 Param2)
@@ -677,99 +648,6 @@ static INT64 SumRedofFirstXnumbers(UINT64 numbers, UINT64 start)
     return sum & REDUCTION_SIZE_MASK;
 }
 
-/**
-    Param 1: Number of vectors to be written.
-    Param 2: Location in Local Store.
-    Warning: Test assumes that InitKernel is called right before Iowrite test is executed
-    ( io write occurs twice during the InitKernel evaluation, then Iowrite batch is ran)
-*/
-static void InitKernel_Iowrite(int BatchNumber,INT64 Param1, INT64 Param2)
-{
-    UINT16 destAddr = Param2;
-    UINT32 cnt;
-    const int num_vectors = Param1;
-    UINT16 data[NUMBER_OF_MACHINES*num_vectors];
-
-    for (cnt = 0; cnt < NUMBER_OF_MACHINES*num_vectors; cnt++) data[cnt] = cnt;
-
-
-    {
-        io_unit IOU;
-        IOU.preWriteVectors(destAddr,data,num_vectors);
-        if (PASS != IO_WRITE_NOW(&IOU))
-            printf("Writing to IO pipe, FAILED !");
-        //c_simulator::printLS(destAddr);
-    }
-
-    BEGIN_BATCH(BatchNumber);
-        EXECUTE_IN_ALL(
-                        R1 = LS[destAddr];
-                        REDUCE(R1);
-                      )
-    END_BATCH(BatchNumber);
-}
-
-/**
-
-Param1 = Number of vectors to be read.
-Param2 = Location in local store where we read from.
-
-*/
-static void InitKernel_Ioread(int BatchNumber,INT64 Param1, INT64 Param2)
-{
-    UINT16 destAddr = 0;
-    UINT32 cnt;
-    const int num_vectors = Param1;
-    UINT16 data[NUMBER_OF_MACHINES*num_vectors];
-    UINT16 testResult = PASS;
-
-    // fill buffer with data to be written
-    for (cnt = 0; cnt < NUMBER_OF_MACHINES*num_vectors; cnt++) data[cnt] = cnt;
-
-    // write data to local store
-    {
-        io_unit IOU;
-        IOU.preWriteVectors(destAddr,data,num_vectors);
-        IO_WRITE_NOW(&IOU);
-        //c_simulator::printLS(destAddr);
-    }
-
-    // read data from local store
-    {
-        io_unit IOU;
-        IOU.preReadVectors(destAddr,num_vectors);
-        IO_READ_NOW(&IOU);
-        //c_simulator::printLS(destAddr);
-
-        UINT16* Content = (UINT16*)(IOU.getIO_UNIT_CORE())->Content;
-        for (cnt = 0; cnt < NUMBER_OF_MACHINES*num_vectors; cnt++)
-            if (data[cnt] != Content[cnt])
-            {
-                /* Fail */
-                BEGIN_BATCH(BatchNumber);
-                EXECUTE_IN_ALL(
-                                R2 = 0;
-                                REDUCE(R2);
-                               )
-                END_BATCH(BatchNumber);
-                testResult = FAIL;
-            }
-
-        if (testResult == PASS)
-            {
-                /* Pass */
-                BEGIN_BATCH(BatchNumber);
-                EXECUTE_IN_ALL(
-                                R2 = 1;
-                                REDUCE(R2);
-                              )
-                END_BATCH(BatchNumber);
-                testResult = FAIL;
-            }
-    }
-
-}
-
 enum BatchNumbers
 {
     NOP_BNR         ,
@@ -848,74 +726,71 @@ enum BatchNumbers
     MAX_BNR = NUMBER_OF_BATCHES
 };
 
-
-// TODO with random numbers.
-// Remember to handle truncation properly !
-// eg: 128* 0xff ff ff ff = ???
 TestFunction TestFunctionTable[] =
 {
-    {NOP_BNR,"NOP",0x00,0x00,InitKernel_Nop,NUMBER_OF_MACHINES},
-    {IWRITE_BNR,"IWRITE",0x01,0x02,InitKernel_Iwrite,127*NUMBER_OF_MACHINES/2},
-    {IREAD_BNR,"IREAD",0x01,0x02,InitKernel_Iread,127*NUMBER_OF_MACHINES/2},
-    {WRITE_BNR,"WRITE",0x01,0x02,InitKernel_Write,127*NUMBER_OF_MACHINES/2},
-    {READ_BNR,"READ",0x01,0x02,InitKernel_Read,127*NUMBER_OF_MACHINES/2},
-    {VLOAD_BNR,"VLOAD",0x01,0x02,InitKernel_Vload,3*NUMBER_OF_MACHINES},
+    {NOP_BNR,"NOP",InitKernel_Nop,{0x00,0x00,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
+    {IWRITE_BNR,"IWRITE",InitKernel_Iwrite,{0x01,0x02,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
+    {IREAD_BNR,"IREAD",InitKernel_Iread,{0x01,0x02,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
+    {WRITE_BNR,"WRITE",InitKernel_Write,{0x01,0x02,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
+    {READ_BNR,"READ",InitKernel_Read,{0x01,0x02,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
+    {VLOAD_BNR,"VLOAD",InitKernel_Vload,{0x01,0x02,3*NUMBER_OF_MACHINES}},
 
-    {ADD_BNR,"ADD",0xff,0xf1,InitKernel_Add,(0xff + 0xf1)*NUMBER_OF_MACHINES},
-    {pADD_BNR,"pADD",0xff,0xf1,InitKernel_pAdd,(0xff + 0xf1)*NUMBER_OF_MACHINES},
-    {sADD_BNR,"sADD",0xff,0xf1,InitKernel_sAdd,(0xff + 0xf1)*NUMBER_OF_MACHINES},
+    {ADD_BNR,"ADD",InitKernel_Add,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
+    {pADD_BNR,"pADD",InitKernel_pAdd,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
+    {sADD_BNR,"sADD",InitKernel_sAdd,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
 
-    {ADDC_BNR,"ADDC",0xf0,0x1,InitKernel_Addc,(0xf0 + 1 + 1)*NUMBER_OF_MACHINES},
-    {pADDC_BNR,"pADDC",0xf0,0x1,InitKernel_pAddc,(0xf0 + 1 + 1)*NUMBER_OF_MACHINES},
+    {ADDC_BNR,"ADDC",InitKernel_Addc,{0xf0,0x1,(0xf0 + 1 + 1)*NUMBER_OF_MACHINES}},
+    {pADDC_BNR,"pADDC",InitKernel_pAddc,{0xf0,0x1,(0xf0 + 1 + 1)*NUMBER_OF_MACHINES}},
 
-    {SUB_BNR,"SUB",0xffff,0xff8f,InitKernel_Sub, (0xffff - 0xff8f)*NUMBER_OF_MACHINES},
-    {pSUB_BNR,"pSUB",0xffff,0xff8f,InitKernel_pSub, (0xffff - 0xff8f)*NUMBER_OF_MACHINES},
-    {sSUB_BNR,"sSUB",0xffff,0xff8f,InitKernel_sSub, (0xffff - 0xff8f)*NUMBER_OF_MACHINES},
+    {SUB_BNR,"SUB",InitKernel_Sub,{0xffff,0xff8f, (0xffff - 0xff8f)*NUMBER_OF_MACHINES}},
+    {pSUB_BNR,"pSUB",InitKernel_pSub,{0xffff,0xff8f, (0xffff - 0xff8f)*NUMBER_OF_MACHINES}},
+    {sSUB_BNR,"sSUB",InitKernel_sSub,{0xffff,0xff8f, (0xffff - 0xff8f)*NUMBER_OF_MACHINES}},
 
-    {SUBC_BNR,"SUBC",0xffff,0xff8f,InitKernel_Subc,(0xffff - 0xff8f -1)*NUMBER_OF_MACHINES},
-    {pSUBC_BNR,"pSUBC",0xffff,0xff8f,InitKernel_pSubc,(0xffff - 0xff8f -1)*NUMBER_OF_MACHINES},
+    {SUBC_BNR,"SUBC",InitKernel_Subc,{0xffff,0xff8f,(0xffff - 0xff8f -1)*NUMBER_OF_MACHINES}},
+    {pSUBC_BNR,"pSUBC",InitKernel_pSubc,{0xffff,0xff8f,(0xffff - 0xff8f -1)*NUMBER_OF_MACHINES}},
 
-    {NOT_BNR,"NOT",0xfff0,0x00,InitKernel_Not,(0xf)*NUMBER_OF_MACHINES},
+    {NOT_BNR,"NOT",InitKernel_Not,{0xfff0,0x00,(0xf)*NUMBER_OF_MACHINES}},
 
-    {OR_BNR,"OR",0x10,0x01,InitKernel_Or,(0x10 | 0x01)*NUMBER_OF_MACHINES},
-    {pOR_BNR,"pOR",0x10,0x01,InitKernel_pOr,(0x10 | 0x01)*NUMBER_OF_MACHINES},
-    {sOR_BNR,"sOR",0x10,0x01,InitKernel_sOr,(0x10 | 0x01)*NUMBER_OF_MACHINES},
+    {OR_BNR,"OR",InitKernel_Or,{0x10,0x01,(0x10 | 0x01)*NUMBER_OF_MACHINES}},
+    {pOR_BNR,"pOR",InitKernel_pOr,{0x10,0x01,(0x10 | 0x01)*NUMBER_OF_MACHINES}},
+    {sOR_BNR,"sOR",InitKernel_sOr,{0x10,0x01,(0x10 | 0x01)*NUMBER_OF_MACHINES}},
 
-    {AND_BNR,"AND",0xfffe,0x11,InitKernel_And,(0xfffe & 0x11)*NUMBER_OF_MACHINES},
-    {pAND_BNR,"pAND",0xfffe,0x11,InitKernel_pAnd,(0xfffe & 0x11)*NUMBER_OF_MACHINES},
-    {sAND_BNR,"sAND",0xfffe,0x11,InitKernel_sAnd,(0xfffe & 0x11)*NUMBER_OF_MACHINES},
+    {AND_BNR,"AND",InitKernel_And,{0xfffe,0x11,(0xfffe & 0x11)*NUMBER_OF_MACHINES}},
+    {pAND_BNR,"pAND",InitKernel_pAnd,{0xfffe,0x11,(0xfffe & 0x11)*NUMBER_OF_MACHINES}},
+    {sAND_BNR,"sAND",InitKernel_sAnd,{0xfffe,0x11,(0xfffe & 0x11)*NUMBER_OF_MACHINES}},
 
-    {XOR_BNR,"XOR",0x01,0x10,InitKernel_Xor,(0x01 ^ 0x10)*NUMBER_OF_MACHINES},
-    {pXOR_BNR,"pXOR",0x01,0x10,InitKernel_pXor,(0x01 ^ 0x10)*NUMBER_OF_MACHINES},
-    {sXOR_BNR,"sXOR",0x01,0x10,InitKernel_sXor,(0x01 ^ 0x10)*NUMBER_OF_MACHINES},
+    {XOR_BNR,"XOR",InitKernel_Xor,{0x01,0x10,(0x01 ^ 0x10)*NUMBER_OF_MACHINES}},
+    {pXOR_BNR,"pXOR",InitKernel_pXor,{0x01,0x10,(0x01 ^ 0x10)*NUMBER_OF_MACHINES}},
+    {sXOR_BNR,"sXOR",InitKernel_sXor,{0x01,0x10,(0x01 ^ 0x10)*NUMBER_OF_MACHINES}},
 
-    {EQ_BNR,"EQ",0xff3f,0xff3f,InitKernel_Eq,(0xff3f == 0xff3f)*NUMBER_OF_MACHINES},
-    {pEQ_BNR,"pEQ",0xff3f,0xff3f,InitKernel_pEq,(0xff3f == 0xff3f)*NUMBER_OF_MACHINES},
+    {EQ_BNR,"EQ",InitKernel_Eq,{0xff3f,0xff3f,(0xff3f == 0xff3f)*NUMBER_OF_MACHINES}},
+    {pEQ_BNR,"pEQ",InitKernel_pEq,{0xff3f,0xff3f,(0xff3f == 0xff3f)*NUMBER_OF_MACHINES}},
 
-    {LT_BNR,"LT",0xfffd,0xfffe,InitKernel_Lt,(-3 < -2)*NUMBER_OF_MACHINES},
-    {pLT_BNR,"pLT",0xfffd,0xfffe,InitKernel_pLt,(-3 < -2)*NUMBER_OF_MACHINES},
+    {LT_BNR,"LT",InitKernel_Lt,{0xfffd,0xfffe,(-3 < -2)*NUMBER_OF_MACHINES}},
+    {pLT_BNR,"pLT",InitKernel_pLt,{0xfffd,0xfffe,(-3 < 2)*NUMBER_OF_MACHINES}},
 
-    {ULT_BNR,"ULT",0xabcd,0xabcc,InitKernel_Ult,(0xabcdUL < 0xabccUL)*NUMBER_OF_MACHINES},
-    {pULT_BNR,"pULT",0xabcd,0xabcc,InitKernel_pUlt,(0xabcdUL < 0xabccUL)*NUMBER_OF_MACHINES},
+    {ULT_BNR,"ULT",InitKernel_Ult,{0xabcd,0xabcc,(0xabcdUL < 0xabccUL)*NUMBER_OF_MACHINES}},
+    {pULT_BNR,"pULT",InitKernel_pUlt,{0xabcd,0xabcc,(0xabcdUL < 0xabccUL)*NUMBER_OF_MACHINES}},
 
-    {SHL_BNR,"SHL",0xcd,3,InitKernel_Shl,((0xcd << 3)*NUMBER_OF_MACHINES)},
-    {SHR_BNR,"SHR",0xabcd,3,InitKernel_Shr,((0xabcd >> 3)*NUMBER_OF_MACHINES)},
-    {SHRA_BNR,"SHRA",0x01cd,4,InitKernel_Shra,(0x01c)*NUMBER_OF_MACHINES},//will fail: 128*big
-    {ISHL_BNR,"ISHL",0xabcd,4,InitKernel_Ishl,((0xbcd0UL)*NUMBER_OF_MACHINES)},
-    {ISHR_BNR,"ISHR",0xabcd,4,InitKernel_Ishr,((0x0abcUL)*NUMBER_OF_MACHINES)},
-    {ISHRA_BNR,"ISHRA",0xabcd,4,InitKernel_Ishra,((0xfabcUL)*NUMBER_OF_MACHINES)},
+    {SHL_BNR,"SHL",InitKernel_Shl,{0xcd,3,((0xcd << 3)*NUMBER_OF_MACHINES)}},
+    {SHR_BNR,"SHR",InitKernel_Shr,{0xabcd,3,((0xabcd >> 3)*NUMBER_OF_MACHINES)}},
+    {SHRA_BNR,"SHRA",InitKernel_Shra,{0x01cd,4,(0x01c)*NUMBER_OF_MACHINES}},//will fail: 128*big
+    {ISHL_BNR,"ISHL",InitKernel_Ishl,{0xabcd,4,((0xbcd0UL)*NUMBER_OF_MACHINES)}},
+    {ISHR_BNR,"ISHR",InitKernel_Ishr,{0xabcd,4,((0x0abcUL)*NUMBER_OF_MACHINES)}},
+    {ISHRA_BNR,"ISHRA",InitKernel_Ishra,{0xabcd,4,((0xfabcUL)*NUMBER_OF_MACHINES)}},
 
-    {MULTLO_BNR,"MULTLO",0x2,0x3,InitKernel_Multlo,(0x2UL * 0x3UL)*NUMBER_OF_MACHINES},
-    {pMULTLO_BNR,"pMULTLO",0x2,0x3,InitKernel_pMultlo,(0x2UL * 0x3UL)*NUMBER_OF_MACHINES},
-    {p2MULTLO_BNR,"p2MULTLO",0x2,0x3,InitKernel_p2Multlo,(0x2UL * 0x3UL)*NUMBER_OF_MACHINES},
+    {MULTLO_BNR,"MULTLO",InitKernel_Multlo,{0x2,0x3,(0x2UL * 0x3UL)*NUMBER_OF_MACHINES}},
+    {pMULTLO_BNR,"pMULTLO",InitKernel_pMultlo,{0x2,0x3,(0x2UL * 0x3UL)*NUMBER_OF_MACHINES}},
+    {p2MULTLO_BNR,"p2MULTLO",InitKernel_p2Multlo,{0x2,0x3,(0x2UL * 0x3UL)*NUMBER_OF_MACHINES}},
 
-    {MULTHI_BNR,"MULTHI",0x8000,0x2,InitKernel_Multhi,((0x8000UL * 0x2UL) >> 16)*NUMBER_OF_MACHINES},
+    {MULTHI_BNR,"MULTHI",InitKernel_Multhi,{0x8000,0x2,((0x8000UL * 0x2UL) >> 16)*NUMBER_OF_MACHINES}},
 
-    {WHERE_EQ_BNR,"WHEREQ",27,50,InitKernel_Whereq,50},
-    {WHERE_LT_BNR,"WHERELT",27,50,InitKernel_Wherelt,27*50},
-    {WHERE_CARRY_BNR,"WHERECRY",(0x10000UL-10),50,InitKernel_Wherecry,118*50},
-	{CELL_SHL_BNR,"CELLSHL",2,5,InitKernel_Cellshl,5-2},
-    {CELL_SHR_BNR,"CELLSHR",2,5,InitKernel_Cellshr,5+2},
+    {WHERE_EQ_BNR,"WHEREQ",InitKernel_Whereq,{27,50,50}},
+    {WHERE_LT_BNR,"WHERELT",InitKernel_Wherelt,{27,50,27*50}},
+    {WHERE_CARRY_BNR,"WHERECRY",InitKernel_Wherecry,{(0x10000UL-10),50,118*50}},
+	{CELL_SHL_BNR,"CELLSHL",InitKernel_Cellshl,{2,5,5-2}},
+    {CELL_SHR_BNR,"CELLSHR",InitKernel_Cellshr,{2,5,5+2}},
+
 	//{IO_WRITE_BNR,"IO_WRITE1",1,0,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,0)},
     //{IO_WRITE_BNR,"IO_WRITE2",1024,1,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,NUMBER_OF_MACHINES)},
     //{IO_WRITE_BNR,"IO_WRITE3",1024,1023,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,NUMBER_OF_MACHINES*1023)},
@@ -923,14 +798,186 @@ TestFunction TestFunctionTable[] =
 
 };
 
+int getIndexTestFunctionTable(int BatchNumber)
+{
+    int i;
+    for (i = 0; i < sizeof(TestFunctionTable)/sizeof(TestFunction); i++)
+        if (TestFunctionTable[i].BatchNumber == BatchNumber)
+            return i;
+    return -1;
+}
+
+void UpdateDatasetTable(int BatchNumber)
+{
+    int i = getIndexTestFunctionTable(BatchNumber);
+    if (i>0)
+    switch(BatchNumber)
+    {
+        case NOP_BNR        ://fallthrough
+        case WRITE_BNR      ://fallthrough
+        case READ_BNR       ://fallthrough
+        case IWRITE_BNR     ://fallthrough
+        case IREAD_BNR      :{
+                                TestFunctionTable[i].ds.Param1 = randPar(1024);
+                                TestFunctionTable[i].ds.ExpectedResult = (NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2;
+                                break;
+                             }
+
+        case RED_BNR        :break;
+        case MULT_BNR       :break;
+        case CELL_SHL_BNR   :break;
+        case CELL_SHR_BNR   :break;
+
+        case WHERE_CARRY_BNR:break;
+        case WHERE_EQ_BNR   :break;
+        case WHERE_LT_BNR   :break;
+        case ENDWHERE_BNR   :break;
+
+
+        case MULTLO_BNR     ://fallthrough
+        case pMULTLO_BNR    ://fallthrough
+        case p2MULTLO_BNR   :break;
+
+        case LDSH_BNR       :break;
+        case MULTHI_BNR     :break;
+        case SHL_BNR        :break;
+        case ISHL_BNR       :break;
+
+        case VLOAD_BNR      ://fallthrough
+        case ADD_BNR        ://fallthrough
+        case pADD_BNR       ://fallthrough
+        case sADD_BNR       ://fallthrough
+                {
+                    do{
+                            TestFunctionTable[i].ds.Param1 = randPar(0x10000);
+                            TestFunctionTable[i].ds.Param2 = randPar(0x10000);
+                      }
+                    while (TestFunctionTable[i].ds.Param1 + TestFunctionTable[i].ds.Param2 >= 0x10000);
+                    TestFunctionTable[i].ds.ExpectedResult =
+                        (TestFunctionTable[i].ds.Param1 + TestFunctionTable[i].ds.Param2)*NUMBER_OF_MACHINES;
+                    break;
+                }
+
+        case EQ_BNR         :
+        case pEQ_BNR        :
+                {
+                     TestFunctionTable[i].ds.Param1 = randPar(0x10000);
+                     TestFunctionTable[i].ds.Param2 = TestFunctionTable[i].ds.Param1;
+                     TestFunctionTable[i].ds.ExpectedResult = NUMBER_OF_MACHINES;
+                    break;
+                }
+
+        case NOT_BNR        :
+                    {
+                         TestFunctionTable[i].ds.Param1 = randPar(0x10000);
+                         TestFunctionTable[i].ds.ExpectedResult = ((~TestFunctionTable[i].ds.Param1) & REGISTER_SIZE_MASK) * NUMBER_OF_MACHINES;
+                         break;
+                    }
+
+        case SHR_BNR        :break;
+        case ISHR_BNR       :break;
+
+        case SUB_BNR        :
+        case pSUB_BNR       :
+        case sSUB_BNR       :break;
+                            {
+                                do{
+                                        TestFunctionTable[i].ds.Param1 = randPar(0x10000);
+                                        TestFunctionTable[i].ds.Param2 = randPar(0x10000);
+                                  }
+                                while (TestFunctionTable[i].ds.Param1 - TestFunctionTable[i].ds.Param2 <= -0x10000);
+                                TestFunctionTable[i].ds.ExpectedResult =
+                                    (TestFunctionTable[i].ds.Param1 - TestFunctionTable[i].ds.Param2)*NUMBER_OF_MACHINES;
+                                break;
+                            }
+
+        case LT_BNR         :
+        case pLT_BNR        :break;
+                            {
+                               TestFunctionTable[i].ds.Param1 = (randPar(0x10000) -32768);
+                               TestFunctionTable[i].ds.Param2 = (randPar(0x10000) - 32768);
+                               TestFunctionTable[i].ds.ExpectedResult =
+                                    (TestFunctionTable[i].ds.Param1 < TestFunctionTable[i].ds.Param2) * NUMBER_OF_MACHINES;
+                                break;
+                            }
+
+
+
+        case OR_BNR         :
+        case pOR_BNR        :
+        case sOR_BNR        :
+                            {
+                                 TestFunctionTable[i].ds.Param1 = randPar(0x10000);
+                                 TestFunctionTable[i].ds.Param2 = randPar(0x10000);
+                                 TestFunctionTable[i].ds.ExpectedResult =
+                                    (TestFunctionTable[i].ds.Param1 | TestFunctionTable[i].ds.Param2) * NUMBER_OF_MACHINES;
+                                break;
+                            }
+
+        case SHRA_BNR       :
+        case ISHRA_BNR      :break;
+
+        case ADDC_BNR       :
+        case pADDC_BNR      :
+        case sADDC_BNR      :
+                            {
+                                do{
+                                        TestFunctionTable[i].ds.Param1 = randPar(0x10000);
+                                        TestFunctionTable[i].ds.Param2 = randPar(0x10000);
+                                  }
+                                while (TestFunctionTable[i].ds.Param1 + TestFunctionTable[i].ds.Param2 >= 0x10000);
+                                TestFunctionTable[i].ds.ExpectedResult =
+                                    (TestFunctionTable[i].ds.Param1 + TestFunctionTable[i].ds.Param2 + 1)*NUMBER_OF_MACHINES;
+                                break;
+                            }
+
+        case ULT_BNR        :
+        case pULT_BNR       :
+                            {
+                               TestFunctionTable[i].ds.Param1 = randPar(0x10000);
+                               TestFunctionTable[i].ds.Param2 = randPar(0x10000);
+                               if (TestFunctionTable[i].ds.Param1 < TestFunctionTable[i].ds.Param2)
+                                    TestFunctionTable[i].ds.ExpectedResult = NUMBER_OF_MACHINES;
+                               else
+                                    TestFunctionTable[i].ds.ExpectedResult = 0;
+                               break;
+                            }
+
+        case AND_BNR        :
+        case pAND_BNR       :
+        case sAND_BNR       :
+                            {
+                                 TestFunctionTable[i].ds.Param1 = randPar(0x10000);
+                                 TestFunctionTable[i].ds.Param2 = randPar(0x10000);
+                                 TestFunctionTable[i].ds.ExpectedResult =
+                                    (TestFunctionTable[i].ds.Param1 & TestFunctionTable[i].ds.Param2) * NUMBER_OF_MACHINES;
+                                break;
+                            }
+
+        case SUBC_BNR       :
+        case pSUBC_BNR      :break;
+
+        case XOR_BNR        :
+        case pXOR_BNR       :
+        case sXOR_BNR       :
+                            {
+                                TestFunctionTable[i].ds.Param1 = randPar(0x10000);
+                                TestFunctionTable[i].ds.Param2 = randPar(0x10000);
+                                TestFunctionTable[i].ds.ExpectedResult =
+                                (TestFunctionTable[i].ds.Param1 ^ TestFunctionTable[i].ds.Param2)*NUMBER_OF_MACHINES;
+                                break;
+                            }
+    }
+}
+
 static void simpleClearLS( )
 {
-    int BatchNumber = CLEAR_LS_BNR;
-    int vector_index;
-    for (vector_index = 0; vector_index < MAX_VECTORS; vector_index++)
-    {
-        BEGIN_BATCH(BatchNumber);
-            EXECUTE_IN_ALL(
+int BatchNumber = CLEAR_LS_BNR;
+int vector_index;
+for (vector_index = 0; vector_index < MAX_VECTORS; vector_index++)
+{
+    BEGIN_BATCH(BatchNumber);
+        EXECUTE_IN_ALL(
                             R0 = 0;
                             NOP;
                             LS[vector_index] = R0;
@@ -968,48 +1015,53 @@ static void simplePrintLS(INT64 Param2)
     cout<< endl;
 }
 
-int test_Simple_All()
+int test_Simple_All(bool stress)
 {
     UINT16 i = 0;
+    INT16 j = 0;
+    UINT16 stressLoops;
     INT64 result;
+
     UINT16 testFails = 0;
+
+    if (stress == true) { stressLoops = 10;initRand();} else stressLoops = 0;
 
     for (i = 0; i < sizeof (TestFunctionTable) / sizeof (TestFunction); i++)
     {
-        TestFunctionTable[i].initKernel( TestFunctionTable[i].BatchNumber, TestFunctionTable[i].Param1, TestFunctionTable[i].Param2 );
-        result = EXECUTE_KERNEL_RED(TestFunctionTable[i].BatchNumber);
-        if (result != TestFunctionTable[i].ExpectedResult)
+        j = stressLoops;
+        do
         {
-           cout<< "Test "<< setw(8) << left << TestFunctionTable[i].OperationName <<" FAILED with result "
-           <<result << " (expected " <<TestFunctionTable[i].ExpectedResult<<" ) !"<<endl;
-           testFails++;
+            TestFunctionTable[i].initKernel
+                ( TestFunctionTable[i].BatchNumber,
+                  TestFunctionTable[i].ds.Param1,
+                  TestFunctionTable[i].ds.Param2);
+
+            result = EXECUTE_KERNEL_RED(TestFunctionTable[i].BatchNumber);
+
+            if (result != TestFunctionTable[i].ds.ExpectedResult)
+            {
+               cout<< "Test "<< setw(8) << left << TestFunctionTable[i].OperationName <<" FAILED with result "
+               <<result << " (expected " <<TestFunctionTable[i].ds.ExpectedResult<<" ) !" << " params are "
+               << TestFunctionTable[i].ds.Param1 << " and " << TestFunctionTable[i].ds.Param2 <<endl;
+               testFails++;
+               return testFails;
+            }
+            else
+            {
+                if (j == stressLoops)
+                    cout<< "Test "<< setw(8) << left << TestFunctionTable[i].OperationName;
+                if ((j > 0) && (j <= stressLoops)) cout<<".";
+                if (j == 0) {cout << " PASSED"<<endl;break;}
+            }
+            UpdateDatasetTable(TestFunctionTable[i].BatchNumber);
         }
-        else
-            //printf("Test %s     passed ! \n", TestFunctionTable[i].OperationName);
-            cout<< "Test "<< setw(8) << left << TestFunctionTable[i].OperationName << " passed. " <<endl;
+        while (j-- >= 0);
     }
-
-
-    //DEASM_KERNEL(WHERE_CARRY_BNR);
-    simpleClearLS();
-    simplePrintLS(0);
-    InitKernel_Iowrite(IO_WRITE_BNR,1,0);
-    cout <<"Result of Iowrite test 1: " << EXECUTE_KERNEL_RED(IO_WRITE_BNR)<<endl;
-    InitKernel_Iowrite(IO_WRITE_BNR,1,1);
-    cout <<"Result of Iowrite test 2: " << EXECUTE_KERNEL_RED(IO_WRITE_BNR)<<endl;
-    InitKernel_Iowrite(IO_WRITE_BNR,1,2);
-    cout <<"Result of Iowrite test 3: " << EXECUTE_KERNEL_RED(IO_WRITE_BNR)<<endl;
-
-    simplePrintLS(0);
-    simplePrintLS(1);
-    simplePrintLS(2);
 
     if (testFails ==0)
         cout<<endl<< " All SimpleTests PASSED." <<endl;
     else
         cout<< testFails << " SimpleTests failed." <<endl;
-
-    cout<< "LocalStore[0] in all machines must be INDEX. Check this !"<<endl;
 
     return testFails;
 }

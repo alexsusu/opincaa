@@ -23,6 +23,7 @@
 #define C_SIMULATION_MODE       2
 #define VERILOG_SIMULATION_MODE 1
 #define REAL_HARDWARE_MODE      0
+#define INVALID_MODE           -1
 
 #define INIT(x) initialize(x)
 #define DEINIT() deinitialize()
@@ -33,5 +34,8 @@ extern int (*EXECUTE_KERNEL)(UINT16 dwBatchNumber);
 extern int (*EXECUTE_KERNEL_RED)(UINT16 dwBatchNumber);
 extern int (*IO_WRITE_NOW)(void*);
 extern int (*IO_READ_NOW)(void*);
+
+void initRand();
+INT64 randPar(INT64 limit);
 
 #endif // TYPES_H
