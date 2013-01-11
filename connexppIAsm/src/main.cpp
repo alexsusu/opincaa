@@ -174,7 +174,7 @@ int main(int argc, char *argv[])
     INIT(run_mode);
     initRand();
     test_Simple_All(true);
-    //test_Speed_All();
+    test_Speed_All();
     test_Simple_IO_All(true);
     DEINIT();
 

@@ -10,6 +10,7 @@
 #include "../../include/core/io_unit.h"
 #include "../../include/c_simu/c_simulator.h"
 #include "../../include/util/utils.h"
+#include "../../include/util/timing.h"
 
 #include <time.h>
 #include <iostream>
@@ -60,7 +61,7 @@ int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
         tstart = clock();
             IOU.preWriteVectors(destAddr,data,num_vectors);
         tend = clock();
-        printf ("Elasped time for write precache is %ld ms.\n", tend-tstart );
+        printf ("\nElasped time for write precache is %ld ms.\n", tend-tstart );
 
         tstart = clock();
         for (cycles = 0; cycles < Param2; cycles++)
@@ -71,7 +72,11 @@ int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
     printf ("Elasped write time is %ld ms.\n", tend-tstart );
 
     if (tend != tstart)
-        printf ("Approx datarate is %ld KB/s\n", (long int)((NUMBER_OF_MACHINES * 1024 * 4) * Param2/ (tend-tstart))); // ~4 Bytes per IO entry
+    {
+        printf ("Approx datarate is %ld Kvectors/s\n", (long int)(num_vectors * Param2/ (tend-tstart))); // ~4 Bytes per IO entry
+        printf ("Approx datarate is %ld KB/s\n", (long int)(num_vectors* VECTOR_SIZE_IN_BYTES * Param2/ (tend-tstart))); // ~4 Bytes per IO entry
+        printf ("Approx delta time is %ld ms \n", (tend-tstart));
+    }
     else
         printf ("Way too fast to perform measurement \n");
 
@@ -133,13 +138,18 @@ void InitBatchNop(int BatchNumber)
 int BenchmarkNOPspeed(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     clock_t tstart,tend;
+    int start_time = GetMilliCount();
 
     tstart = clock();
         EXECUTE_KERNEL(BatchNumber);
     tend = clock();
+    int delta_time = GetMilliSpan(start_time);
 
     if (tend != tstart)
+    {
         printf ("Approx performance is %ld KIPS\n", NOP_SPEED_CYCLES / (tend-tstart));
+        printf ("Approx delta time is %ld ms \n", (tend-tstart));
+    }
     else printf ("Way too fast to perform measurement \n");
     return PASS;
 }
@@ -177,7 +187,10 @@ int BenchmarkADDspeed(int BatchNumber,INT64 Param1, INT64 Param2)
     tend = clock();
 
     if (tend != tstart)
+    {
         printf ("Approx performance is %ld KIPS\n", ADD_SPEED_CYCLES / (tend-tstart));
+        printf ("Approx delta time is %ld ms \n", (tend-tstart));
+    }
     else printf ("Way too fast to perform measurement \n");
     return PASS;
 }
@@ -207,7 +220,10 @@ int BenchmarkMLTspeed(int BatchNumber,INT64 Param1, INT64 Param2)
     tend = clock();
 
     if (tend != tstart)
+    {
         printf ("Approx performance is %ld KIPS\n", MLT_SPEED_CYCLES / (tend-tstart));
+        printf ("Approx delta time is %ld ms \n", (tend-tstart));
+    }
     else printf ("Way too fast to perform measurement \n");
     return PASS;
 }
@@ -233,7 +249,7 @@ SpeedTestFunction SpeedTestFunctionTable[] =
     {NOP_SPEED_BNR,"NOP_SPEED",0,0,InitBatchNop,BenchmarkNOPspeed,PASS},
     {ADD_SPEED_BNR,"ADD_SPEED",0,0,InitBatchAdd,BenchmarkADDspeed,PASS},
     {MLT_SPEED_BNR,"MLT_SPEED",0,0,InitBatchMlt,BenchmarkMLTspeed,PASS},
-    //{IO_RW_1_SPEED_BNR,"IO_RW_1_SPEED",1024,1,dummy,BenchmarkIoRWspeed,PASS},
+    {IO_RW_1_SPEED_BNR,"IO_RW_1_SPEED",1024,1,dummy,BenchmarkIoRWspeed,PASS},
     //{IO_RW_2_SPEED_BNR,"IO_RW_2_SPEED",1024,2,dummy,BenchmarkIoRWspeed,PASS},
     //{IO_RW_100_SPEED_BNR,"IO_RW_100_SPEED",1024,100,dummy,BenchmarkIoRWspeed,PASS}
 
