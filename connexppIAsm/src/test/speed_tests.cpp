@@ -61,7 +61,7 @@ int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
         tstart = clock();
             IOU.preWriteVectors(destAddr,data,num_vectors);
         tend = clock();
-        printf ("\nElasped time for write precache is %ld ms.\n", tend-tstart );
+        printf ("\nElasped time for write precache is %ld ms.\n", 1000 * (tend-tstart)/ CLOCKS_PER_SEC );
 
         tstart = clock();
         for (cycles = 0; cycles < Param2; cycles++)
@@ -69,13 +69,13 @@ int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
         tend = clock();
     }
 
-    printf ("Elasped write time is %ld ms.\n", tend-tstart );
+    printf ("Elasped write time is %ld ms.\n", 1000 * (tend-tstart)/CLOCKS_PER_SEC );
 
     if (tend != tstart)
     {
-        printf ("Approx datarate is %ld Kvectors/s\n", (long int)(num_vectors * Param2/ (tend-tstart))); // ~4 Bytes per IO entry
-        printf ("Approx datarate is %ld KB/s\n", (long int)(num_vectors* VECTOR_SIZE_IN_BYTES * Param2/ (tend-tstart))); // ~4 Bytes per IO entry
-        printf ("Approx delta time is %ld ms \n", (tend-tstart));
+        printf ("Approx datarate is %ld vectors/s\n", (long int)(num_vectors * Param2 * CLOCKS_PER_SEC / (tend-tstart))); // ~4 Bytes per IO entry
+        printf ("Approx datarate is %ld KB/s\n", (long int)(num_vectors* VECTOR_SIZE_IN_BYTES * Param2 * CLOCKS_PER_SEC / 1000 / (tend-tstart))); // ~4 Bytes per IO entry
+        printf ("Approx delta time is %ld ms \n", 1000 * (tend-tstart)/CLOCKS_PER_SEC);
     }
     else
         printf ("Way too fast to perform measurement \n");
@@ -86,17 +86,17 @@ int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
         tstart = clock();
             IOU.preReadVectors(destAddr,num_vectors);
         tend = clock();
-        printf ("Elasped time for read precache is %ld ms.\n", tend-tstart );
+        printf ("Elasped time for read precache is %ld ms.\n", 1000 * ((tend-tstart) / CLOCKS_PER_SEC ));
 
         tstart = clock();
         for (cycles = 0; cycles < Param2; cycles++)
             IO_READ_NOW(&IOU);
         tend = clock();
 
-        printf ("Elasped read time is %ld ms.\n", tend-tstart );
+        printf ("Elasped read time is %ld ms.\n", 1000 * (tend-tstart)/CLOCKS_PER_SEC );
 
         if (tend != tstart)
-            printf ("Approx datarate is %ld KB/s\n", (long int)((NUMBER_OF_MACHINES * 1024 * 4) * Param2/ (tend-tstart))); // ~4 Bytes per IO entry
+            printf ("Approx datarate is %ld KB/s\n", (long int)((NUMBER_OF_MACHINES * 1024 * 4) * Param2 * CLOCKS_PER_SEC / 1000 / ((tend-tstart)))); // ~4 Bytes per IO entry
         else
             printf ("Way too fast to perform measurement \n");
 
