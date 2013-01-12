@@ -169,7 +169,7 @@ static void simpleClearLS( )
     {
         BEGIN_BATCH(BatchNumber);
             EXECUTE_IN_ALL(
-                                R0 = 0;
+                                R0 = 0xffff;
                                 NOP;
                                 LS[vector_index] = R0;
                           );
@@ -268,7 +268,6 @@ static void UpdateDatasetTable(int BatchNumber)
 }
 int test_Simple_IO_All(bool stress)
 {
-    //simpleClearLS();
     int testFails = 0;
     int stressLoops;
     int i,j;
@@ -280,6 +279,7 @@ int test_Simple_IO_All(bool stress)
         j = stressLoops;
         do
         {
+            simpleClearLS();
             if (PASS != TestIoFunctionTable[i].runTest(TestIoFunctionTable[i].BatchNumber,
                                                             TestIoFunctionTable[i].ds.Param1,
                                                             TestIoFunctionTable[i].ds.Param2))
@@ -308,10 +308,5 @@ int test_Simple_IO_All(bool stress)
 
     return testFails;
 
-    //simplePrintLS(0);
-    //simplePrintLS(1);
-    //simplePrintLS(2);
-
-    //return testFails;
 }
 
