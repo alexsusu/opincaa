@@ -6,6 +6,7 @@
  *
  */
 #include <sys/timeb.h>
+#include <stdio.h>
 int GetMilliCount()
 {
   // Something like GetTickCount but portable
@@ -23,4 +24,18 @@ int GetMilliSpan( int nTimeStart )
   if ( nSpan < 0 )
     nSpan += 0x100000 * 1000;
   return nSpan;
+}
+
+void CountMilliTime()
+{
+    int i;
+    int tstart;
+
+    for (i = 9; i >= 0 ; i--)
+    {
+        tstart = GetMilliCount();
+        printf("Countdown %d\n",i);
+        while ( GetMilliSpan(tstart) < 1000)
+            ;//wait
+    }
 }

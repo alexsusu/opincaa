@@ -8,4 +8,4 @@
 
 int GetMilliCount();
 int GetMilliSpan( int nTimeStart );
-
+void CountMilliTime();

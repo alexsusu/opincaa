@@ -55,10 +55,14 @@
 #include <string.h>
 
 #include "../include/core/vector_registers.h"
+
 #include "../include/util/utils.h"
+#include "../include/util/timing.h"
+
 #include "../include/test/simple_tests.h"
 #include "../include/test/speed_tests.h"
 #include "../include/test/simple_io_tests.h"
+
 
 using namespace std;
 
@@ -170,7 +174,7 @@ int main(int argc, char *argv[])
              return -1;
         }
 
-
+    CountMilliTime();
     INIT(run_mode);
     initRand();
     test_Simple_All(true);

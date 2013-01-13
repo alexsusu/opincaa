@@ -255,12 +255,27 @@ SpeedTestFunction SpeedTestFunctionTable[] =
 
 };
 
+void CountTime()
+{
+    int i;
+    clock_t tstart;
+
+    for (i = 9; i >= 0 ; i--)
+    {
+        tstart = clock();
+        printf("Countdown %d\n",i);
+        while ( (clock()- tstart) < CLOCKS_PER_SEC)
+            ;//wait
+    }
+}
+
 int test_Speed_All()
 {
     UINT16 i = 0;
     INT64 result;
     UINT16 testFails = 0;
 
+    CountTime();
     cout<<endl<< "Starting speed tests:"<<endl<<endl;
     for (i = 0; i < sizeof (SpeedTestFunctionTable) / sizeof (SpeedTestFunction); i++)
     {
