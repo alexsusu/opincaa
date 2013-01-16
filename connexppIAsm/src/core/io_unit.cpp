@@ -46,10 +46,13 @@ void io_unit::preWriteVectors(UINT16 destAddress, UINT16 *srcAddress, UINT16 num
 int io_unit::vwrite(void *_iou)
 {
     io_unit *iou = (io_unit*)_iou;
-    printf("Trying to write %ld bytes \n", (long int)iou->getSize());
+    //printf("Trying to write %ld bytes \n", (long int)iou->getSize());
     if (iou->getSize() == write(vpipe_write_32,iou->getIO_UNIT_CORE(),iou->getSize()))
-        return PASS;
-    else return FAIL;
+    { write(vpipe_write_32, NULL, 0); return PASS;}
+     else {
+		write(vpipe_write_32, NULL, 0);
+    		return FAIL;
+	}
 }
 
 void io_unit::preReadVectors(UINT16 srcAddress,UINT16 numVectors)

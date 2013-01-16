@@ -319,6 +319,7 @@ void vector::setBatchIndex(UINT16 BI)
 int vector::executeKernel(UINT16 dwBatchNumber)
 {
     write(pipe_write_32, dwBatch[dwBatchNumber], 4*dwInBatchCounter[dwBatchNumber]);
+    write(pipe_write_32, NULL, 0);
     return PASS;//compatibility with c_simulator function
 }
 

@@ -129,7 +129,20 @@ void initRand()
     srand ( seed );
     printf("\n Running with seed = %d\n",seed);
 }
+
+void eatRand(int times)
+{
+	int i;
+	for (i=0; i< times; i++)
+		printf(" Eating up %d-th rand number, %d\n",i,rand());
+		
+	
+}
+
 INT64 randPar(INT64 limit)
 {
-    return (INT64)( limit * rand() / ( RAND_MAX + 1.0 ) );
+	static int randTimes = 0;
+	randTimes++;
+	//printf(" Getting rand number for the %d-th time \n", randTimes);    
+	return (INT64)( limit * rand() / ( RAND_MAX + 1.0 ) );
 }

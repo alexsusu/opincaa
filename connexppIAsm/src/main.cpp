@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
     int i = 1;
     int run_mode = INVALID_MODE;
     //look for running option in arguments
-    if (argc == i+1)
+    if (argc >= i+1)
     {
         if(strcmp(argv[i],"--vsimulation") == 0)
         {
@@ -174,12 +174,27 @@ int main(int argc, char *argv[])
              return -1;
         }
 
-    CountMilliTime();
+//    CountMilliTime();
     INIT(run_mode);
-    initRand();
-    test_Simple_All(true);
-    test_Speed_All();
-    test_Simple_IO_All(true);
+	if (argc > i + 1) // check for super stress    
+	if (0 == strcmp(argv[i+1],"--superstress"))
+	{
+	 cout<<"Starting superstress"<<endl;
+	 while (1)
+		{
+			initRand();
+			//    test_Simple_All(true);
+			//    test_Speed_All();
+			    test_Simple_IO_All(true);
+		}
+	}
+	//else:
+	initRand();
+	//force seed
+	//srand(358529032);
+	//eatRand(276);
+	//cout << "Starting IO ALL"<<endl;
+	test_Simple_IO_All(true);
     DEINIT();
 
     cout << "Press ENTER to continue...";

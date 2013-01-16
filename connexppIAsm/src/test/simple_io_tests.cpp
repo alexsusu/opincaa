@@ -81,6 +81,7 @@ static int testIowrite(int BatchNumber,INT64 Param1, INT64 Param2)
     }
     testResult = PASS;
 
+    //printf("Reading IO-wrote data, via Regs \n");
     for (VectorIndex = 0; VectorIndex < num_vectors; VectorIndex++)
         for (cnt = 0; cnt < NUMBER_OF_MACHINES; cnt++)
         // write data to local store
@@ -93,7 +94,11 @@ static int testIowrite(int BatchNumber,INT64 Param1, INT64 Param2)
                                 R4 = (R1 == R2);
                                 NOP;
                               )
-                EXECUTE_WHERE_EQ ( R3 = LS[VectorIndex + Param2];)
+                EXECUTE_WHERE_EQ ( 
+                                NOP;
+                                R3 = LS[VectorIndex + Param2];
+                                NOP;
+                )
                 EXECUTE_IN_ALL ( REDUCE(R3);)
             END_BATCH(BatchNumber);
 
@@ -165,6 +170,8 @@ static void simpleClearLS( )
 {
     int BatchNumber = CLEAR_LS_BNR;
     int vector_index;
+    
+    //printf("Running simpleClearLS \n");
     for (vector_index = 0; vector_index < MAX_VECTORS; vector_index++)
     {
         BEGIN_BATCH(BatchNumber);
@@ -182,6 +189,7 @@ static void simplePrintLS(INT64 Param2)
     int BatchNumber = PRINT_LS_BNR;
     int cell_index;
     int result;
+    
     for (cell_index = 0; cell_index < NUMBER_OF_MACHINES; cell_index++)
     {
         BEGIN_BATCH(BatchNumber);
@@ -225,6 +233,7 @@ TestIoFunction TestIoFunctionTable[] =
     {IO_READ2_BNR, "IO_READ_2.1    ",testIoread,{2,1}},
     {IO_READ3_BNR, "IO_READ_3.1    ",testIoread,{3,1}},
     {IO_READ4_BNR, "IO_READ_1024.0 ",testIoread,{MAX_VECTORS,0}},
+
     {IO_WRITE1_BNR,"IO_WRITE_1.0   ",testIowrite,{1,0}},
     {IO_WRITE2_BNR,"IO_WRITE_2.1   ",testIowrite,{2,1}},
     {IO_WRITE3_BNR,"IO_WRITE_3.1   ",testIowrite,{3,1}},
@@ -243,7 +252,7 @@ static int getIndexTestIoFunctionTable(int BatchNumber)
 static void UpdateDatasetTable(int BatchNumber)
 {
     int i = getIndexTestIoFunctionTable(BatchNumber);
-    if (i>0)
+    if (i>=0)
     switch(BatchNumber)
     {
         case IO_WRITE1_BNR:
@@ -260,9 +269,12 @@ static void UpdateDatasetTable(int BatchNumber)
                                     TestIoFunctionTable[i].ds.Param2 = randPar(MAX_VECTORS);
                                     do
                                     {
-                                        TestIoFunctionTable[i].ds.Param1 = randPar(MAX_VECTORS);
+                                        TestIoFunctionTable[i].ds.Param1 = randPar(MAX_VECTORS-1)+1;
                                     }while (TestIoFunctionTable[i].ds.Param2 + TestIoFunctionTable[i].ds.Param1 > MAX_VECTORS);
-                                    break;
+//TestIoFunctionTable[i].ds.Param1 = 970;
+//TestIoFunctionTable[i].ds.Param2 = 23;                                    
+//cout<<endl<<"  IO test running with params "<< TestIoFunctionTable[i].ds.Param1 << " " << TestIoFunctionTable[i].ds.Param2;
+					break;
                                 }
     }
 }

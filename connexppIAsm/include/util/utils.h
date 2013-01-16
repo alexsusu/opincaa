@@ -37,5 +37,5 @@ extern int (*IO_READ_NOW)(void*);
 
 void initRand();
 INT64 randPar(INT64 limit);
-
+void eatRand(int times);
 #endif // TYPES_H
