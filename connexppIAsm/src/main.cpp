@@ -45,6 +45,12 @@
  *   v0.7.1  - bugfix in IO read function. Refactored tests.
  *   TODO: add parameters in kernel-init functions.
  *	 v0.7.2  - bugfix IO write test. Added random tests for IO.
+ *   v0.8.0  - added algo for basic matching.
+ * 			 - added support for running batch with multiple reduction ops.
+ *			 - renamed KERNEL macros to BATCH (eg. EXECUTE_BATCH)
+ *			 - moved simpleClearLS and simplePrintLS to utils
+ *           - renamed _LO and _HI to _LOW / _HIGH (as in _LO(MULT)): there was a collision with MS VC++ compiler
+ *           - changed names of some internal simulator variables (coding guideline) - not finished
  *
  * Created on December 19, 2012, 3:32 PM
  *
@@ -62,11 +68,11 @@
 #include "../include/test/simple_tests.h"
 #include "../include/test/speed_tests.h"
 #include "../include/test/simple_io_tests.h"
-
+#include "../include/test/basic_match_tests.h"
 
 using namespace std;
 
-STATIC_VECTOR_DEFINITIONS;
+//STATIC_VECTOR_DEFINITIONS;
 // Make sure that batches do not overlap !
 // BNR = Batch NumBer
 
@@ -92,14 +98,14 @@ void InitKernel_Radu()
                         CELL_SHL(R3,R5);
                         LS[R1] = R7;)
         EXECUTE_WHERE_CARRY();
-        EXECUTE_WHERE_EQ();
+        EXECUTE_WHERE_EQ(;);
         EXECUTE_WHERE_LT();
         EXECUTE_IN_ALL(
                         R1 = INDEX;
                         R3 = LS[R6];
-                        R3 = _LO(MULT);
+                        R3 = _LOW(MULT);
                         R15 = SHIFT_REG;
-                        R31 = _HI(MULT);
+                        R31 = _HIGH(MULT);
                         R29 = R31 << R29;
                         R20 = R14 << 8;
                         R2 = R1 + R2;
@@ -176,7 +182,7 @@ int main(int argc, char *argv[])
 
 //    CountMilliTime();
     INIT(run_mode);
-	if (argc > i + 1) // check for super stress    
+	if (argc > i + 1) // check for super stress
 	if (0 == strcmp(argv[i+1],"--superstress"))
 	{
 	 cout<<"Starting superstress"<<endl;
@@ -194,7 +200,13 @@ int main(int argc, char *argv[])
 	//srand(358529032);
 	//eatRand(276);
 	//cout << "Starting IO ALL"<<endl;
-	test_Simple_IO_All(true);
+	//test_Simple_IO_All(true);
+
+	test_Simple_All(true);
+    //test_Speed_All();
+    test_Simple_IO_All(true);
+	test_BasicMatching_All();
+
     DEINIT();
 
     cout << "Press ENTER to continue...";

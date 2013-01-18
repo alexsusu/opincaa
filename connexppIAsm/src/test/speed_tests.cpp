@@ -38,12 +38,13 @@ Param1 = Number of vectors to be read.
 Param2 = Location in local store where we read from.
 
 */
+UINT16 data[NUMBER_OF_MACHINES * MAX_VECTORS];
 int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     UINT16 destAddr = 0;
     UINT32 cnt;
-    const int num_vectors = Param1;
-    UINT16 data[NUMBER_OF_MACHINES*num_vectors];
+    const int num_vectors = (int)Param1;
+
     UINT16 testResult = PASS;
 
     clock_t tstart,tend;
@@ -52,7 +53,7 @@ int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
 
 
     // fill buffer with data to be written
-    for (cnt = 0; cnt < NUMBER_OF_MACHINES*num_vectors; cnt++) data[cnt] = cnt;
+    for (cnt = 0; cnt < NUMBER_OF_MACHINES * num_vectors; cnt++) data[cnt] = cnt;
 
 
     // write data to local store
@@ -138,12 +139,9 @@ void InitBatchNop(int BatchNumber)
 int BenchmarkNOPspeed(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     clock_t tstart,tend;
-    int start_time = GetMilliCount();
-
     tstart = clock();
-        EXECUTE_KERNEL(BatchNumber);
+        EXECUTE_BATCH(BatchNumber);
     tend = clock();
-    int delta_time = GetMilliSpan(start_time);
 
     if (tend != tstart)
     {
@@ -183,7 +181,7 @@ int BenchmarkADDspeed(int BatchNumber,INT64 Param1, INT64 Param2)
     clock_t tstart,tend;
 
     tstart = clock();
-        EXECUTE_KERNEL(BatchNumber);
+        EXECUTE_BATCH(BatchNumber);
     tend = clock();
 
     if (tend != tstart)
@@ -204,8 +202,8 @@ void InitBatchMlt(int BatchNumber)
                 for (cycles = 0; cycles < MLT_SPEED_CYCLES/3; cycles++)
                 {
                     MULT = R0 * R1;
-                    R2 = _LO(MULT);
-                    R3 = _HI(MULT);
+                    R2 = _LOW(MULT);
+                    R3 = _HIGH(MULT);
                 }
               )
     END_BATCH(BatchNumber);
@@ -216,7 +214,7 @@ int BenchmarkMLTspeed(int BatchNumber,INT64 Param1, INT64 Param2)
     clock_t tstart,tend;
 
     tstart = clock();
-        EXECUTE_KERNEL(BatchNumber);
+        EXECUTE_BATCH(BatchNumber);
     tend = clock();
 
     if (tend != tstart)
@@ -275,7 +273,7 @@ int test_Speed_All()
     INT64 result;
     UINT16 testFails = 0;
 
-    CountTime();
+    //CountTime();
     cout<<endl<< "Starting speed tests:"<<endl<<endl;
     for (i = 0; i < sizeof (SpeedTestFunctionTable) / sizeof (SpeedTestFunction); i++)
     {

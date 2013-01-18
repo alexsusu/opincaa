@@ -1,14 +1,27 @@
+
 #include "../../include/util/utils.h"
-#include "../../include/core/vector.h"
-#include "../../include/c_simu/c_simulator.h"
 #include "../../include/util/timing.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <unistd.h>
+
+#include "../../include/core/vector.h"
+#include "../../include/core/vector_registers.h"
+
+#include "../../include/core/io_unit.h"
+#include "../../include/c_simu/c_simulator.h"
+
+using namespace std;
+#include <iostream>
+
+#ifndef _MSC_VER //MS C++ compiler
+	#include <unistd.h>
+#else
+	#include "../../ms_visual_c/fake_unistd.h"
+#endif
+
 #include <fcntl.h>
 
-int (*EXECUTE_KERNEL)(UINT16 dwBatchNumber);
-int (*EXECUTE_KERNEL_RED)(UINT16 dwBatchNumber);
+UINT_RED_REG_VAL (*EXECUTE_BATCH)(UINT16 dwBatchNumber);
+UINT_RED_REG_VAL (*EXECUTE_BATCH_RED)(UINT16 dwBatchNumber);
+UINT32 (*GET_MULTIRED_RESULT)(UINT_RED_REG_VAL* Results);
 
 int (*IO_WRITE_NOW)(void*);
 int (*IO_READ_NOW)(void*);
@@ -58,8 +71,9 @@ int initialize(UINT8 RunningMode)
         io_unit::vpipe_read_32 = open ("io_outbound_fifo_device",O_RDONLY | O_CREAT);
         io_unit::vpipe_write_32 = open ("io_inbound_fifo_device",O_WRONLY | O_CREAT);
 
-        EXECUTE_KERNEL = vector::executeKernel;
-        EXECUTE_KERNEL_RED = vector::executeKernelRed;
+        EXECUTE_BATCH = vector::executeBatch;
+        EXECUTE_BATCH_RED = vector::executeBatchRed;
+        GET_MULTIRED_RESULT = vector::getMultiRedResult;
         IO_WRITE_NOW = io_unit::vwrite;
         IO_READ_NOW = io_unit::vread;
     }
@@ -71,17 +85,19 @@ int initialize(UINT8 RunningMode)
         io_unit::vpipe_read_32 = open ("/dev/xillybus_read_array2mem_32",O_RDONLY);
         io_unit::vpipe_write_32 = open ("/dev/xillybus_write_mem2array_32",O_WRONLY);
 
-        EXECUTE_KERNEL = vector::executeKernel;
-        EXECUTE_KERNEL_RED = vector::executeKernelRed;
+        EXECUTE_BATCH = vector::executeBatch;
+        EXECUTE_BATCH_RED = vector::executeBatchRed;
         IO_WRITE_NOW = io_unit::vwrite;
         IO_READ_NOW = io_unit::vread;
+        GET_MULTIRED_RESULT = vector::getMultiRedResult;
     }
     else if (RunningMode == C_SIMULATION_MODE)
     {
-        EXECUTE_KERNEL = c_simulator::executeDeasmKernel;
-        EXECUTE_KERNEL_RED = c_simulator::executeDeasmKernel;
+        EXECUTE_BATCH = c_simulator::executeBatchOneReduce;
+        EXECUTE_BATCH_RED = c_simulator::executeBatchOneReduce;
         IO_WRITE_NOW = c_simulator::vwrite;
         IO_READ_NOW = c_simulator::vread;
+        GET_MULTIRED_RESULT = c_simulator::getMultiRedResult;
         c_simulator::initialize();
     }
     else
@@ -129,20 +145,88 @@ void initRand()
     srand ( seed );
     printf("\n Running with seed = %d\n",seed);
 }
+INT32 randPar(INT32 limit)
+{
+    return (INT32)( limit * rand() / ( RAND_MAX + 1.0 ) );
+}
 
 void eatRand(int times)
 {
 	int i;
 	for (i=0; i< times; i++)
 		printf(" Eating up %d-th rand number, %d\n",i,rand());
-		
-	
+
+
 }
 
 INT64 randPar(INT64 limit)
 {
 	static int randTimes = 0;
 	randTimes++;
-	//printf(" Getting rand number for the %d-th time \n", randTimes);    
+	//printf(" Getting rand number for the %d-th time \n", randTimes);
 	return (INT64)( limit * rand() / ( RAND_MAX + 1.0 ) );
+}
+
+/**
+    Computes sum of first "numbers" consecutive nubers starting with start.
+    Numbers are forced to UINT16.
+    Sum is forced to UINT16 + log2(NUMBER_OF_MACHINES)
+
+    Eg.
+    SumRedofFirstXnumbers(1, 145) = 145
+    SumRedofFirstXnumbers(2, 14) = 14 + 15 = 29
+    SumRedofFirstXnumbers(1, 5) = 1+2+3+4+5 = 15
+
+*/
+INT32 SumRedOfFirstXnumbers(UINT32 numbers, UINT32 start)
+{
+    UINT32 x;
+    UINT32 sum = 0;
+    for (x = start; x < start + numbers; x++ ) sum += x;
+    return sum & REDUCTION_SIZE_MASK;
+}
+
+void simpleClearLS(int ClearLsBnr)
+{
+    int BatchNumber = ClearLsBnr;
+    int vector_index;
+    for (vector_index = 0; vector_index < MAX_VECTORS; vector_index++)
+    {
+        BEGIN_BATCH(BatchNumber);
+            EXECUTE_IN_ALL(
+                                R0 = 0;
+                                NOP;
+                                LS[vector_index] = R0;
+                          );
+            END_BATCH(BatchNumber);
+            EXECUTE_BATCH(BatchNumber);
+        }
+}
+
+void simplePrintLS(int PrintLsBnr, INT32 LsIndex)
+{
+    int BatchNumber = PrintLsBnr;
+    int cell_index;
+    int result;
+    for (cell_index = 0; cell_index < NUMBER_OF_MACHINES; cell_index++)
+    {
+        BEGIN_BATCH(BatchNumber);
+            EXECUTE_IN_ALL(
+                        R4 = 0;
+                        R1 = INDEX;
+                        R2 = cell_index;
+                        R3 = (R1 == R2);
+                      );
+            EXECUTE_WHERE_EQ(
+                        R4 = LS[LsIndex];
+            )
+            EXECUTE_IN_ALL(
+                        REDUCE(R4);
+            )
+        END_BATCH(BatchNumber);
+        result = EXECUTE_BATCH_RED(BatchNumber);
+        if ((cell_index & 2) == 0) cout<< endl;
+        cout<<"Mach "<< cell_index <<" : LS["<<LsIndex<<"] = "<<result<<"    ";
+    }
+    cout<< endl;
 }

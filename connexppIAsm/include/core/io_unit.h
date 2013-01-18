@@ -55,6 +55,7 @@ class io_unit
         void setIOParams(int mode, int LsAddress, int NumOfVectors);
 
         void preWriteVectors(UINT16 destAddress, UINT16 *srcAddress, UINT16 numVectors);
+        void preWriteVectorsAppend(UINT16 destAddress, UINT16 *srcAddress, UINT16 numVectors);
         void preReadVectors(UINT16 srcAddress,UINT16 numVectors);
 
         IO_UNIT_CORE* getIO_UNIT_CORE();

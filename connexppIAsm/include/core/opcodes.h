@@ -42,6 +42,8 @@
     //#define _INVALID_DESTINATION    0b111000001
     //#define _INVALID_SOURCE         0b111000010
 
+#ifndef _MSC_VER //MS C++ compiler
+
     /* 9-bit opcodes (instruction will NOT have immediate value) */
     #define _ADD     0b101000100
     #define _ADDC    0b101100100
@@ -85,6 +87,8 @@
     #define _VLOAD     0b110101
     #define _IREAD     0b110100
     #define _IWRITE    0b110010
-
+#else
+	#include "../../ms_visual_c/vc_opcodes.h"
+#endif
 
 #endif // OPCODES_H

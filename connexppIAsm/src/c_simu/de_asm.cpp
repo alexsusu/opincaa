@@ -7,11 +7,32 @@
  *
  */
 
+#ifndef ALLOW_DE_ASM_CPP
+    #error DO NOT compile de_asm.cpp file separately from c_simulator.cpp
+#endif // ALLOW_DE_ASM_CPP
+
 #include "../../include/core/vector.h"
 #include "../../include/core/opcodes.h"
 #include "../../include/c_simu/c_simulator.h"
 
-DECLARE_STATIC_C_SIMU_VARS;
+#ifndef _MSC_VER //MS C++ compiler
+	DECLARE_STATIC_C_SIMU_VARS
+#else
+	UINT_REGVALUE c_simulator::CSimuRegs[NUMBER_OF_MACHINES][32];
+	UINT_REGVALUE c_simulator::CSimuLocalStore[NUMBER_OF_MACHINES][1024];
+	UINT8 c_simulator::CSimuActiveFlags[NUMBER_OF_MACHINES];
+	UINT8 c_simulator::CSimuCarryFlags[NUMBER_OF_MACHINES];
+	UINT8 c_simulator::CSimuEqFlags[NUMBER_OF_MACHINES];
+	UINT8 c_simulator::CSimuLtFlags[NUMBER_OF_MACHINES];
+	UINT16 c_simulator::CSimuIndexRegs[NUMBER_OF_MACHINES];
+	UINT_REGVALUE c_simulator::CSimuShiftRegs[NUMBER_OF_MACHINES];
+	UINT_MULTVALUE c_simulator::CSimuMultRegs[NUMBER_OF_MACHINES];
+	UINT16 c_simulator::CSimuRotationMagnitude[NUMBER_OF_MACHINES];
+	UINT_RED_REG_VAL c_simulator::CSimuRed[C_SIMU_RED_MAX];
+	UINT32 c_simulator::CSimuRedCnt;
+
+#endif
+
 /* opcodes */
 struct OpCodeDeAsm
 {
@@ -58,7 +79,7 @@ OpCodeDeAsm OpCodeDeAsms[] =
     {_NOP,"nop"}
 };
 
-int c_simulator::verifyKernelInstruction(UINT_INSTRUCTION CurrentInstruction)
+int c_simulator::verifyBatchInstruction(UINT_INSTRUCTION CurrentInstruction)
 {
     UINT16 index;
     if  ( (GET_OPCODE_6BITS(CurrentInstruction) == _VLOAD) ||
@@ -74,14 +95,13 @@ int c_simulator::verifyKernelInstruction(UINT_INSTRUCTION CurrentInstruction)
     return FAIL;
 }
 
-int c_simulator::verifyKernel(UINT16 dwBatchNumber)
+int c_simulator::verifyBatch(UINT16 dwBatchNumber)
 {
     // verify opcodes
-    UINT_INSTRUCTION* pCurrentInstruction;
-    for (pCurrentInstruction = &vector::dwBatch[dwBatchNumber][0];
-            pCurrentInstruction < (vector::dwBatch[dwBatchNumber] + vector::dwInBatchCounter[dwBatchNumber]);
-                pCurrentInstruction++)
-                    if (FAIL == verifyKernelInstruction(*pCurrentInstruction)) return FAIL;
+    UINT32 InstructionIndex = 0;
+    UINT32 InstructionIndexMax = vector::getInBatchCounter(dwBatchNumber);
+    for (InstructionIndex = 0; InstructionIndex < InstructionIndexMax; InstructionIndex++)
+                    if (FAIL == verifyBatchInstruction(vector::getBatchInstruction(dwBatchNumber,InstructionIndex))) return FAIL;
 
     return PASS;
 }
@@ -124,29 +144,32 @@ void printWRITE(UINT_INSTRUCTION instr){   printf("LS [R%d] = R%d\n", GET_RIGHT(
 void printMULT(UINT_INSTRUCTION instr){   printf("MULT = R%d %s R%d\n", GET_LEFT(instr), getOpCodeName(instr), GET_RIGHT(instr));}
 void printMULTLH(UINT_INSTRUCTION instr){   printf("R%d = %s\n", GET_DEST(instr), getOpCodeName(instr));}
 
-int c_simulator::printDeasmKernel(UINT16 dwBatchNumber)
+int c_simulator::printDeAsmBatch(UINT16 dwBatchNumber)
 {
     // verify opcodes
-    int index = 0;
+    long int index = 0;
     int result = 0;
-    UINT_INSTRUCTION* CurrentInstruction;
+    UINT_INSTRUCTION CurrentInstruction;
 
     printf("De-asm batch number %d :\n", dwBatchNumber);
-    for (CurrentInstruction = &vector::dwBatch[dwBatchNumber][0];
-            CurrentInstruction < (vector::dwBatch[dwBatchNumber] + vector::dwInBatchCounter[dwBatchNumber]);
-                CurrentInstruction++)
+
+    UINT32 InstructionIndex = 0;
+    UINT32 InstructionIndexMax = vector::getInBatchCounter(dwBatchNumber);
+
+    for (InstructionIndex = 0; InstructionIndex < InstructionIndexMax; InstructionIndex++)
     {
-        printf("%5d: ",index);
+        CurrentInstruction = vector::getBatchInstruction(dwBatchNumber,InstructionIndex);
+        printf("%6ld: ",index);
         index++;
 
-        switch (((*CurrentInstruction) >> OPCODE_6BITS_POS) & ((1 << OPCODE_6BITS_SIZE)-1))
+        switch (((CurrentInstruction) >> OPCODE_6BITS_POS) & ((1 << OPCODE_6BITS_SIZE)-1))
             {
-                case _VLOAD: {printVLOAD(*CurrentInstruction);continue;}
-                case _IREAD: {printIREAD(*CurrentInstruction);continue;}
-                case _IWRITE: {printIWRITE(*CurrentInstruction);continue;}
+                case _VLOAD: {printVLOAD(CurrentInstruction);continue;}
+                case _IREAD: {printIREAD(CurrentInstruction);continue;}
+                case _IWRITE: {printIWRITE(CurrentInstruction);continue;}
             }
 
-        switch (((*CurrentInstruction) >> OPCODE_9BITS_POS) & ((1 << OPCODE_9BITS_SIZE)-1))
+        switch (((CurrentInstruction) >> OPCODE_9BITS_POS) & ((1 << OPCODE_9BITS_SIZE)-1))
             {
                 case _ADD:
                 case _ADDC:
@@ -160,174 +183,198 @@ int c_simulator::printDeasmKernel(UINT16 dwBatchNumber)
                 case _SHL:
                 case _SHR:
                 case _SHRA:
-                        printLRD(*CurrentInstruction);continue;
+                        printLRD(CurrentInstruction);continue;
 
-                case _EQ:  printLRDP(*CurrentInstruction);continue;
+                case _EQ:  printLRDP(CurrentInstruction);continue;
 
-                case _NOT: printNOT(*CurrentInstruction);continue;
+                case _NOT: printNOT(CurrentInstruction);continue;
 
                 case _ISHL:
                 case _ISHR:
                 case _ISHRA:
-                        printLRDI(*CurrentInstruction);continue;
+                        printLRDI(CurrentInstruction);continue;
 
-                case _LDIX:printLDIX(*CurrentInstruction);continue;
-                case _LDSH:printLDSH(*CurrentInstruction);continue;
+                case _LDIX:printLDIX(CurrentInstruction);continue;
+                case _LDSH:printLDSH(CurrentInstruction);continue;
 
                 case _CELL_SHL:
-                case _CELL_SHR: printCELL_SHLR(*CurrentInstruction);continue;
+                case _CELL_SHR: printCELL_SHLR(CurrentInstruction);continue;
 
-                case _READ:  printREAD(*CurrentInstruction);continue;
-                case _WRITE: printWRITE(*CurrentInstruction);continue;
+                case _READ:  printREAD(CurrentInstruction);continue;
+                case _WRITE: printWRITE(CurrentInstruction);continue;
 
-                case _MULT:  printMULT(*CurrentInstruction);continue;
+                case _MULT:  printMULT(CurrentInstruction);continue;
 
                 case _MULT_HI:
-                case _MULT_LO: printMULTLH(*CurrentInstruction);continue;
+                case _MULT_LO: printMULTLH(CurrentInstruction);continue;
 
                 case _WHERE_CRY:
                 case _WHERE_EQ:
                 case _WHERE_LT:
                 case _END_WHERE:
-                case _NOP:      printWN(*CurrentInstruction);continue;
-                case _REDUCE:   printRED(*CurrentInstruction);continue;
-                default: result= FAIL; break;
+                case _NOP:      printWN(CurrentInstruction);continue;
+                case _REDUCE:   printRED(CurrentInstruction);continue;
+                default: {
+                            result= FAIL;
+                            break;
+                        }
             }
     }
     return result;
 }
 
-int c_simulator::executeDeasmKernel(UINT16 dwBatchNumber)
+UINT32 c_simulator::getMultiRedResult(UINT_RED_REG_VAL* RedResults)
+{
+    UINT32 i;
+    for(i = 0; i < CSimuRedCnt; i++)
+        RedResults[i] = CSimuRed[i];
+
+    CSimuRedCnt = 0;//simulate same behaviour as in named pipes (see vector::getMultiRedResult)
+    return i;
+}
+
+UINT_RED_REG_VAL c_simulator::executeBatchOneReduce(UINT16 dwBatchNumber)
+{
+    c_simulator::DeAsmBatch(dwBatchNumber);
+    return CSimuRed[0]; // return first result
+}
+
+UINT_RED_REG_VAL* c_simulator::executeBatchMultipleReduce(UINT16 dwBatchNumber)
+{
+    c_simulator::DeAsmBatch(dwBatchNumber);
+    return CSimuRed;
+}
+
+int c_simulator::DeAsmBatch(UINT16 dwBatchNumber)
 {
     // verify opcodes
-    int index = 0;
     int result = 0;
-    UINT_INSTRUCTION* CI; //current instruction
-    for (CI = &vector::dwBatch[dwBatchNumber][0];
-            CI < (vector::dwBatch[dwBatchNumber] + vector::dwInBatchCounter[dwBatchNumber]);
-                CI++)
-    {
-        //printf("Executing %5d: ",index);
-        index++;
+    UINT_INSTRUCTION CI; //current instruction
+    UINT32 InstructionIndex = 0;
+    CSimuRedCnt = 0;
 
-        switch (((*CI) >> OPCODE_6BITS_POS) & ((1 << OPCODE_6BITS_SIZE)-1))
+    UINT32 InstructionIndexMax = vector::getInBatchCounter(dwBatchNumber);
+    for (InstructionIndex = 0; InstructionIndex < InstructionIndexMax; InstructionIndex++)
+    {
+        CI = vector::getBatchInstruction(dwBatchNumber,InstructionIndex);
+        switch (((CI) >> OPCODE_6BITS_POS) & ((1 << OPCODE_6BITS_SIZE)-1))
             {
-                case _VLOAD: {FOR_ALL_ACTIVE_MACHINES( C_SIMU_REGS[MACHINE][GET_DEST(*CI)] = GET_IMM(*CI));continue;}
-                case _IREAD: {FOR_ALL_ACTIVE_MACHINES( C_SIMU_REGS[MACHINE][GET_DEST(*CI)] = C_SIMU_LS[MACHINE][GET_IMM(*CI)]);continue;}
-                case _IWRITE: {FOR_ALL_ACTIVE_MACHINES( C_SIMU_LS[MACHINE][GET_IMM(*CI)] = C_SIMU_REGS[MACHINE][GET_LEFT(*CI)]);continue;}
+                case _VLOAD: {FOR_ALL_ACTIVE_MACHINES( CSimuRegs[MACHINE][GET_DEST(CI)] = GET_IMM(CI));continue;}
+                case _IREAD: {FOR_ALL_ACTIVE_MACHINES( CSimuRegs[MACHINE][GET_DEST(CI)] = CSimuLocalStore[MACHINE][GET_IMM(CI)]);continue;}
+                case _IWRITE: {FOR_ALL_ACTIVE_MACHINES( CSimuLocalStore[MACHINE][GET_IMM(CI)] = CSimuRegs[MACHINE][GET_LEFT(CI)]);continue;}
             }
 
-        switch (((*CI) >> OPCODE_9BITS_POS) & ((1 << OPCODE_9BITS_SIZE)-1))
+        switch (((CI) >> OPCODE_9BITS_POS) & ((1 << OPCODE_9BITS_SIZE)-1))
             {
                 case _ADD:{FOR_ALL_ACTIVE_MACHINES(
-                                C_SIMU_REGS[MACHINE][GET_DEST(*CI)] = C_SIMU_REGS[MACHINE][GET_LEFT(*CI)] + C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)];
-                                if (C_SIMU_REGS[MACHINE][GET_LEFT(*CI)] + C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)] > UINT_REGVALUE_TOP)
-                                     C_SIMU_CARRY[MACHINE] = 1;
-                                else C_SIMU_CARRY[MACHINE] = 0;
+                                CSimuRegs[MACHINE][GET_DEST(CI)] = CSimuRegs[MACHINE][GET_LEFT(CI)] + CSimuRegs[MACHINE][GET_RIGHT(CI)];
+                                if (CSimuRegs[MACHINE][GET_LEFT(CI)] + CSimuRegs[MACHINE][GET_RIGHT(CI)] > UINT_REGVALUE_TOP)
+                                     CSimuCarryFlags[MACHINE] = 1;
+                                else CSimuCarryFlags[MACHINE] = 0;
                                      );
                                 continue;}
 
                 case _ADDC:{FOR_ALL_ACTIVE_MACHINES(
-                                C_SIMU_REGS[MACHINE][GET_DEST(*CI)] = C_SIMU_REGS[MACHINE][GET_LEFT(*CI)] +
-                                                                        C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)] +
-                                                                            C_SIMU_CARRY[MACHINE];
-                                if (C_SIMU_REGS[MACHINE][GET_LEFT(*CI)] +
-                                        C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)] +
-                                            C_SIMU_CARRY[MACHINE] > UINT_REGVALUE_TOP)
-                                     C_SIMU_CARRY[MACHINE] = 1;
-                                else C_SIMU_CARRY[MACHINE] = 0;
+                                CSimuRegs[MACHINE][GET_DEST(CI)] = CSimuRegs[MACHINE][GET_LEFT(CI)] +
+                                                                        CSimuRegs[MACHINE][GET_RIGHT(CI)] +
+                                                                            CSimuCarryFlags[MACHINE];
+                                if (CSimuRegs[MACHINE][GET_LEFT(CI)] +
+                                        CSimuRegs[MACHINE][GET_RIGHT(CI)] +
+                                            CSimuCarryFlags[MACHINE] > UINT_REGVALUE_TOP)
+                                     CSimuCarryFlags[MACHINE] = 1;
+                                else CSimuCarryFlags[MACHINE] = 0;
                                      );
                                                    continue;}
 
-                case _SUB:{FOR_ALL_ACTIVE_MACHINES(C_SIMU_REGS[MACHINE][GET_DEST(*CI)] =
-                                                    C_SIMU_REGS[MACHINE][GET_LEFT(*CI)] - C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)];
+                case _SUB:{FOR_ALL_ACTIVE_MACHINES(CSimuRegs[MACHINE][GET_DEST(CI)] =
+                                                    CSimuRegs[MACHINE][GET_LEFT(CI)] - CSimuRegs[MACHINE][GET_RIGHT(CI)];
 
-                                                if (C_SIMU_REGS[MACHINE][GET_LEFT(*CI)] < C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)])
-                                                     C_SIMU_CARRY[MACHINE] = 1;
-                                                else C_SIMU_CARRY[MACHINE] = 0;
+                                                if (CSimuRegs[MACHINE][GET_LEFT(CI)] < CSimuRegs[MACHINE][GET_RIGHT(CI)])
+                                                     CSimuCarryFlags[MACHINE] = 1;
+                                                else CSimuCarryFlags[MACHINE] = 0;
 
                                                    );
                                                     continue;}
 
-                case _SUBC:{FOR_ALL_ACTIVE_MACHINES(C_SIMU_REGS[MACHINE][GET_DEST(*CI)] =
-                                                    C_SIMU_REGS[MACHINE][GET_LEFT(*CI)] - C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)]
-                                                   - C_SIMU_CARRY[MACHINE]); continue;
-                                    if (C_SIMU_REGS[MACHINE][GET_LEFT(*CI)] <
-                                            C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)] + C_SIMU_CARRY[MACHINE])
-                                         C_SIMU_CARRY[MACHINE] = 1;
-                                    else C_SIMU_CARRY[MACHINE] = 0;
+                case _SUBC:{FOR_ALL_ACTIVE_MACHINES(CSimuRegs[MACHINE][GET_DEST(CI)] =
+                                                    CSimuRegs[MACHINE][GET_LEFT(CI)] - CSimuRegs[MACHINE][GET_RIGHT(CI)]
+                                                   - CSimuCarryFlags[MACHINE]); continue;
+                                    if (CSimuRegs[MACHINE][GET_LEFT(CI)] <
+                                            CSimuRegs[MACHINE][GET_RIGHT(CI)] + CSimuCarryFlags[MACHINE])
+                                         CSimuCarryFlags[MACHINE] = 1;
+                                    else CSimuCarryFlags[MACHINE] = 0;
                                                    }
 
-                case _OR:{FOR_ALL_ACTIVE_MACHINES(C_SIMU_REGS[MACHINE][GET_DEST(*CI)] =
-                                                    C_SIMU_REGS[MACHINE][GET_LEFT(*CI)] | C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)]);
+                case _OR:{FOR_ALL_ACTIVE_MACHINES(CSimuRegs[MACHINE][GET_DEST(CI)] =
+                                                    CSimuRegs[MACHINE][GET_LEFT(CI)] | CSimuRegs[MACHINE][GET_RIGHT(CI)]);
                                                    continue;}
 
-                case _AND:{FOR_ALL_ACTIVE_MACHINES(C_SIMU_REGS[MACHINE][GET_DEST(*CI)] =
-                                                    C_SIMU_REGS[MACHINE][GET_LEFT(*CI)] & C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)]);
+                case _AND:{FOR_ALL_ACTIVE_MACHINES(CSimuRegs[MACHINE][GET_DEST(CI)] =
+                                                    CSimuRegs[MACHINE][GET_LEFT(CI)] & CSimuRegs[MACHINE][GET_RIGHT(CI)]);
                                                    continue;}
 
-                case _XOR:{FOR_ALL_ACTIVE_MACHINES(C_SIMU_REGS[MACHINE][GET_DEST(*CI)] =
-                                                    C_SIMU_REGS[MACHINE][GET_LEFT(*CI)] ^ C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)]);
+                case _XOR:{FOR_ALL_ACTIVE_MACHINES(CSimuRegs[MACHINE][GET_DEST(CI)] =
+                                                    CSimuRegs[MACHINE][GET_LEFT(CI)] ^ CSimuRegs[MACHINE][GET_RIGHT(CI)]);
                                                    continue;}
                 case _LT:
                     {
-                        FOR_ALL_ACTIVE_MACHINES( if(C_SIMU_REGS[MACHINE][GET_LEFT(*CI)] < C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)])
-                                                    { C_SIMU_REGS[MACHINE][GET_DEST(*CI)] = 1; C_SIMU_LT[MACHINE] = 1; }
-                                                else { C_SIMU_REGS[MACHINE][GET_DEST(*CI)] = 0; C_SIMU_LT[MACHINE] = 0; };  );
+                        FOR_ALL_ACTIVE_MACHINES( if(CSimuRegs[MACHINE][GET_LEFT(CI)] < CSimuRegs[MACHINE][GET_RIGHT(CI)])
+                                                    { CSimuRegs[MACHINE][GET_DEST(CI)] = 1; CSimuLtFlags[MACHINE] = 1; }
+                                                else { CSimuRegs[MACHINE][GET_DEST(CI)] = 0; CSimuLtFlags[MACHINE] = 0; };  );
                         continue;}
                 case _ULT:
                     {
-                        FOR_ALL_ACTIVE_MACHINES( if(C_SIMU_REGS[MACHINE][GET_LEFT(*CI)] < C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)])
-                                                    { C_SIMU_REGS[MACHINE][GET_DEST(*CI)] = 1; C_SIMU_LT[MACHINE] = 1; }
-                                                else { C_SIMU_REGS[MACHINE][GET_DEST(*CI)] = 0; C_SIMU_LT[MACHINE] = 0; };  );
+                        FOR_ALL_ACTIVE_MACHINES( if(CSimuRegs[MACHINE][GET_LEFT(CI)] < CSimuRegs[MACHINE][GET_RIGHT(CI)])
+                                                    { CSimuRegs[MACHINE][GET_DEST(CI)] = 1; CSimuLtFlags[MACHINE] = 1; }
+                                                else { CSimuRegs[MACHINE][GET_DEST(CI)] = 0; CSimuLtFlags[MACHINE] = 0; };  );
                         continue;}
                 case _SHL:
                     {
-                        FOR_ALL_ACTIVE_MACHINES(C_SIMU_REGS[MACHINE][GET_DEST(*CI)] =
-                                                    C_SIMU_REGS[MACHINE][GET_LEFT(*CI)] << C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)]);
+                        FOR_ALL_ACTIVE_MACHINES(CSimuRegs[MACHINE][GET_DEST(CI)] =
+                                                    CSimuRegs[MACHINE][GET_LEFT(CI)] << CSimuRegs[MACHINE][GET_RIGHT(CI)]);
                         continue;
                     }
                 case _SHR:
                     {
-                        FOR_ALL_ACTIVE_MACHINES(C_SIMU_REGS[MACHINE][GET_DEST(*CI)] =
-                                                    C_SIMU_REGS[MACHINE][GET_LEFT(*CI)] >> C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)]);
+                        FOR_ALL_ACTIVE_MACHINES(CSimuRegs[MACHINE][GET_DEST(CI)] =
+                                                    CSimuRegs[MACHINE][GET_LEFT(CI)] >> CSimuRegs[MACHINE][GET_RIGHT(CI)]);
                         continue;
                     }
                 case _SHRA:
                     {
-                        FOR_ALL_ACTIVE_MACHINES(C_SIMU_REGS[MACHINE][GET_DEST(*CI)] =
-                                                    (INT_REGVALUE)(C_SIMU_REGS[MACHINE][GET_LEFT(*CI)]) >> (C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)]));
+                        FOR_ALL_ACTIVE_MACHINES(CSimuRegs[MACHINE][GET_DEST(CI)] =
+                                                    (INT_REGVALUE)(CSimuRegs[MACHINE][GET_LEFT(CI)]) >> (CSimuRegs[MACHINE][GET_RIGHT(CI)]));
                         continue;
                     }
 
                 case _EQ:
                     {
-                        FOR_ALL_ACTIVE_MACHINES( if(C_SIMU_REGS[MACHINE][GET_LEFT(*CI)] == C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)])
-                                                    { C_SIMU_REGS[MACHINE][GET_DEST(*CI)] = 1; C_SIMU_EQ[MACHINE] = 1; }
-                                                else { C_SIMU_REGS[MACHINE][GET_DEST(*CI)] = 0; C_SIMU_EQ[MACHINE] = 0; });
+                        FOR_ALL_ACTIVE_MACHINES( if(CSimuRegs[MACHINE][GET_LEFT(CI)] == CSimuRegs[MACHINE][GET_RIGHT(CI)])
+                                                    { CSimuRegs[MACHINE][GET_DEST(CI)] = 1; CSimuEqFlags[MACHINE] = 1; }
+                                                else { CSimuRegs[MACHINE][GET_DEST(CI)] = 0; CSimuEqFlags[MACHINE] = 0; });
                         continue;}
 
-                case _NOT: {FOR_ALL_ACTIVE_MACHINES(C_SIMU_REGS[MACHINE][GET_DEST(*CI)] = ~C_SIMU_REGS[MACHINE][GET_LEFT(*CI)]); continue;}
+                case _NOT: {FOR_ALL_ACTIVE_MACHINES(CSimuRegs[MACHINE][GET_DEST(CI)] = ~CSimuRegs[MACHINE][GET_LEFT(CI)]); continue;}
                 case _ISHL:
                     {
-                        FOR_ALL_ACTIVE_MACHINES(C_SIMU_REGS[MACHINE][GET_DEST(*CI)] =
-                                                    C_SIMU_REGS[MACHINE][GET_LEFT(*CI)] << GET_RIGHT(*CI));
+                        FOR_ALL_ACTIVE_MACHINES(CSimuRegs[MACHINE][GET_DEST(CI)] =
+                                                    CSimuRegs[MACHINE][GET_LEFT(CI)] << GET_RIGHT(CI));
                         continue;
                     }
                 case _ISHR:
                     {
-                        FOR_ALL_ACTIVE_MACHINES(C_SIMU_REGS[MACHINE][GET_DEST(*CI)] =
-                                                    C_SIMU_REGS[MACHINE][GET_LEFT(*CI)] >> GET_RIGHT(*CI));
+                        FOR_ALL_ACTIVE_MACHINES(CSimuRegs[MACHINE][GET_DEST(CI)] =
+                                                    CSimuRegs[MACHINE][GET_LEFT(CI)] >> GET_RIGHT(CI));
                         continue;
                     }
                 case _ISHRA:
                     {
-                        FOR_ALL_ACTIVE_MACHINES(C_SIMU_REGS[MACHINE][GET_DEST(*CI)] =
-                                                    ((INT_REGVALUE)C_SIMU_REGS[MACHINE][GET_LEFT(*CI)]) >> GET_RIGHT(*CI));
+                        FOR_ALL_ACTIVE_MACHINES(CSimuRegs[MACHINE][GET_DEST(CI)] =
+                                                    ((INT_REGVALUE)CSimuRegs[MACHINE][GET_LEFT(CI)]) >> GET_RIGHT(CI));
                         continue;
                     }
-                case _LDIX:{FOR_ALL_ACTIVE_MACHINES(C_SIMU_REGS[MACHINE][GET_DEST(*CI)] = MACHINE);continue;}
-                case _LDSH:{FOR_ALL_ACTIVE_MACHINES(C_SIMU_REGS[MACHINE][GET_DEST(*CI)] = C_SIMU_SH[MACHINE]);continue;}
+                case _LDIX:{FOR_ALL_ACTIVE_MACHINES(CSimuRegs[MACHINE][GET_DEST(CI)] = MACHINE);continue;}
+                case _LDSH:{FOR_ALL_ACTIVE_MACHINES(CSimuRegs[MACHINE][GET_DEST(CI)] = CSimuShiftRegs[MACHINE]);continue;}
 
 //void printCELL_SHLR(UINT_INSTRUCTION instr){   printf("SHIFT_REG = R%d then %s by R%d positions \n", GET_LEFT(instr),getOpCodeName(instr),GET_RIGHT(instr));}
 // any contraints regarding ACTIVE ?
@@ -336,26 +383,26 @@ int c_simulator::executeDeasmKernel(UINT16 dwBatchNumber)
                 case _CELL_SHL: {
                                     //step 1: load shift reg with R[LEFT].
                                     bool rotation_existed;
-                                    {FOR_ALL_MACHINES( C_SIMU_SH[MACHINE] = C_SIMU_REGS[MACHINE][GET_LEFT(*CI)] % NUMBER_OF_MACHINES;);}
+                                    {FOR_ALL_MACHINES( CSimuShiftRegs[MACHINE] = CSimuRegs[MACHINE][GET_LEFT(CI)] % NUMBER_OF_MACHINES;);}
 
                                     //step 2: copy number of positions to rotate
-                                    {FOR_ALL_MACHINES( C_SIMU_ROTATION_MAGNITUDE[MACHINE] = C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)];);}
+                                    {FOR_ALL_MACHINES( CSimuRotationMagnitude[MACHINE] = CSimuRegs[MACHINE][GET_RIGHT(CI)];);}
 
                                     //step 3: rotate one position at a time
                                     do
                                     {
                                         rotation_existed = false;
                                         FOR_ALL_MACHINES(
-                                                        if ( C_SIMU_ROTATION_MAGNITUDE[MACHINE] > 0)
+                                                        if ( CSimuRotationMagnitude[MACHINE] > 0)
                                                         {
                                                             INT_REGVALUE man;
                                                             rotation_existed = true;
 
-                                                            if (MACHINE == 0) man = C_SIMU_SH[NUMBER_OF_MACHINES -1];
-                                                            C_SIMU_SH[(MACHINE + NUMBER_OF_MACHINES -1)% NUMBER_OF_MACHINES] = C_SIMU_SH[MACHINE];
-                                                            if (MACHINE == NUMBER_OF_MACHINES - 1) C_SIMU_SH[NUMBER_OF_MACHINES - 2] = man;
+                                                            if (MACHINE == 0) man = CSimuShiftRegs[NUMBER_OF_MACHINES -1];
+                                                            CSimuShiftRegs[(MACHINE + NUMBER_OF_MACHINES -1)% NUMBER_OF_MACHINES] = CSimuShiftRegs[MACHINE];
+                                                            if (MACHINE == NUMBER_OF_MACHINES - 1) CSimuShiftRegs[NUMBER_OF_MACHINES - 2] = man;
 
-                                                            C_SIMU_ROTATION_MAGNITUDE[MACHINE]--;
+                                                            CSimuRotationMagnitude[MACHINE]--;
                                                         });
                                     } while (rotation_existed == true);
                                     continue;}
@@ -363,47 +410,47 @@ int c_simulator::executeDeasmKernel(UINT16 dwBatchNumber)
                 case _CELL_SHR: {
                                     //step 1: load shift reg with R[LEFT].
                                     bool rotation_existed;
-                                    {FOR_ALL_MACHINES( C_SIMU_SH[MACHINE] = C_SIMU_REGS[MACHINE][GET_LEFT(*CI)];);}
+                                    {FOR_ALL_MACHINES( CSimuShiftRegs[MACHINE] = CSimuRegs[MACHINE][GET_LEFT(CI)];);}
 
                                     //step 2: copy number of positions to rotate
-                                    {FOR_ALL_MACHINES( C_SIMU_ROTATION_MAGNITUDE[MACHINE] = C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)] % NUMBER_OF_MACHINES;);}
+                                    {FOR_ALL_MACHINES( CSimuRotationMagnitude[MACHINE] = CSimuRegs[MACHINE][GET_RIGHT(CI)] % NUMBER_OF_MACHINES;);}
 
                                     //step 3: rotate one position at a time
                                     do
                                     {
                                         rotation_existed = false;
                                         FOR_ALL_MACHINES(
-                                                        if ( C_SIMU_ROTATION_MAGNITUDE[MACHINE] > 0)
+                                                        if ( CSimuRotationMagnitude[MACHINE] > 0)
                                                         {
                                                             INT_REGVALUE man;
                                                             rotation_existed = true;
 
-                                                            if (MACHINE == NUMBER_OF_MACHINES -2) man = C_SIMU_SH[NUMBER_OF_MACHINES-1];
-                                                            C_SIMU_SH[(NUMBER_OF_MACHINES - MACHINE)% NUMBER_OF_MACHINES] = C_SIMU_SH[NUMBER_OF_MACHINES - MACHINE -1];
-                                                            if (MACHINE == NUMBER_OF_MACHINES - 1) C_SIMU_SH[0] = man;
+                                                            if (MACHINE == NUMBER_OF_MACHINES -2) man = CSimuShiftRegs[NUMBER_OF_MACHINES-1];
+                                                            CSimuShiftRegs[(NUMBER_OF_MACHINES - MACHINE)% NUMBER_OF_MACHINES] = CSimuShiftRegs[NUMBER_OF_MACHINES - MACHINE -1];
+                                                            if (MACHINE == NUMBER_OF_MACHINES - 1) CSimuShiftRegs[0] = man;
 
-                                                            C_SIMU_ROTATION_MAGNITUDE[MACHINE]--;
+                                                            CSimuRotationMagnitude[MACHINE]--;
                                                         });
                                     } while (rotation_existed == true);
                                     continue;}
 
-                case _READ:  {FOR_ALL_ACTIVE_MACHINES(C_SIMU_REGS[MACHINE][GET_DEST(*CI)] = C_SIMU_LS[MACHINE][GET_RIGHT(*CI)]);continue;}
-                case _WRITE: {FOR_ALL_ACTIVE_MACHINES(C_SIMU_LS[MACHINE][GET_RIGHT(*CI)] = C_SIMU_REGS[MACHINE][GET_LEFT(*CI)]);continue;}
+                case _READ:  {FOR_ALL_ACTIVE_MACHINES(CSimuRegs[MACHINE][GET_DEST(CI)] = CSimuLocalStore[MACHINE][GET_RIGHT(CI)]);continue;}
+                case _WRITE: {FOR_ALL_ACTIVE_MACHINES(CSimuLocalStore[MACHINE][GET_RIGHT(CI)] = CSimuRegs[MACHINE][GET_LEFT(CI)]);continue;}
 
-                case _MULT:  {FOR_ALL_ACTIVE_MACHINES(C_SIMU_MULTREGS[MACHINE] = C_SIMU_REGS[MACHINE][GET_RIGHT(*CI)] * C_SIMU_REGS[MACHINE][GET_LEFT(*CI)]);continue;}
-                case _MULT_HI:{FOR_ALL_ACTIVE_MACHINES(C_SIMU_REGS[MACHINE][GET_DEST(*CI)] = C_SIMU_MULTREGS[MACHINE] >> 16);continue;}
-                case _MULT_LO:{FOR_ALL_ACTIVE_MACHINES(C_SIMU_REGS[MACHINE][GET_DEST(*CI)] = C_SIMU_MULTREGS[MACHINE] & 0xFFFF);continue;}
+                case _MULT:  {FOR_ALL_ACTIVE_MACHINES(CSimuMultRegs[MACHINE] = CSimuRegs[MACHINE][GET_RIGHT(CI)] * CSimuRegs[MACHINE][GET_LEFT(CI)]);continue;}
+                case _MULT_HI:{FOR_ALL_ACTIVE_MACHINES(CSimuRegs[MACHINE][GET_DEST(CI)] = CSimuMultRegs[MACHINE] >> 16);continue;}
+                case _MULT_LO:{FOR_ALL_ACTIVE_MACHINES(CSimuRegs[MACHINE][GET_DEST(CI)] = CSimuMultRegs[MACHINE] & 0xFFFF);continue;}
 
-                case _WHERE_CRY:{FOR_ALL_MACHINES(if (C_SIMU_CARRY[MACHINE]==1) C_SIMU_ACTIVE[MACHINE]= _ACTIVE;else C_SIMU_ACTIVE[MACHINE]=_INACTIVE);continue;}
-                case _WHERE_EQ:{FOR_ALL_MACHINES(if (C_SIMU_EQ[MACHINE]==1) C_SIMU_ACTIVE[MACHINE]= _ACTIVE;else C_SIMU_ACTIVE[MACHINE]=_INACTIVE);continue;}
-                case _WHERE_LT:{FOR_ALL_MACHINES(if (C_SIMU_LT[MACHINE]==1) C_SIMU_ACTIVE[MACHINE]= _ACTIVE;else C_SIMU_ACTIVE[MACHINE]=_INACTIVE);continue;}
-                case _END_WHERE:{FOR_ALL_MACHINES(C_SIMU_ACTIVE[MACHINE]= _ACTIVE);continue;}
+                case _WHERE_CRY:{FOR_ALL_MACHINES(if (CSimuCarryFlags[MACHINE]==1) CSimuActiveFlags[MACHINE]= _ACTIVE;else CSimuActiveFlags[MACHINE]=_INACTIVE);continue;}
+                case _WHERE_EQ:{FOR_ALL_MACHINES(if (CSimuEqFlags[MACHINE]==1) CSimuActiveFlags[MACHINE]= _ACTIVE;else CSimuActiveFlags[MACHINE]=_INACTIVE);continue;}
+                case _WHERE_LT:{FOR_ALL_MACHINES(if (CSimuLtFlags[MACHINE]==1) CSimuActiveFlags[MACHINE]= _ACTIVE;else CSimuActiveFlags[MACHINE]=_INACTIVE);continue;}
+                case _END_WHERE:{FOR_ALL_MACHINES(CSimuActiveFlags[MACHINE]= _ACTIVE);continue;}
                 case _NOP:      continue;
-                case _REDUCE:   {UINT32 sum = 0; FOR_ALL_ACTIVE_MACHINES(sum += C_SIMU_REGS[MACHINE][GET_LEFT(*CI)]);result = sum & REDUCTION_SIZE_MASK; continue;}
+                case _REDUCE:   {UINT32 sum = 0; FOR_ALL_ACTIVE_MACHINES(sum += CSimuRegs[MACHINE][GET_LEFT(CI)]);
+                                if (CSimuRedCnt < C_SIMU_RED_MAX) CSimuRed[CSimuRedCnt++] = sum & REDUCTION_SIZE_MASK; continue;}
                 default: result= FAIL; break;
             }
     }
     return result;
 }
-
 

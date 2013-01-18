@@ -34,6 +34,7 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="ideascode.txt" />
 		<Unit filename="include/c_simu/c_simulator.h" />
 		<Unit filename="include/core/io_unit.h" />
 		<Unit filename="include/core/opcodes.h" />
@@ -46,12 +47,16 @@
 		<Unit filename="include/util/timing.h" />
 		<Unit filename="include/util/utils.h" />
 		<Unit filename="src/c_simu/c_simulator.cpp" />
-		<Unit filename="src/c_simu/de_asm.cpp" />
+		<Unit filename="src/c_simu/de_asm.cpp">
+			<Option compile="0" />
+			<Option link="0" />
+		</Unit>
 		<Unit filename="src/core/io_unit.cpp" />
 		<Unit filename="src/core/vector.cpp" />
 		<Unit filename="src/core/vector_errors.cpp" />
 		<Unit filename="src/core/vector_registers.cpp" />
 		<Unit filename="src/main.cpp" />
+		<Unit filename="src/test/basic_match_tests.cpp" />
 		<Unit filename="src/test/simple_io_tests.cpp" />
 		<Unit filename="src/test/simple_tests.cpp" />
 		<Unit filename="src/test/speed_tests.cpp" />

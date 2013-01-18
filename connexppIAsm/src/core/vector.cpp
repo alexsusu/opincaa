@@ -18,28 +18,40 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 
+#ifndef _MSC_VER //MS C++ compiler
+	#include <unistd.h>
+#else
+	#include "../../ms_visual_c/fake_unistd.h"
+#endif
 
-vector::vector(UINT_INSTRUCTION main_val, UINT_INSTRUCTION intermediate_val)
+    UINT_INSTRUCTION* vector::dwBatch[NUMBER_OF_BATCHES];
+    UINT32 vector::dwInBatchCounter[NUMBER_OF_BATCHES];
+    UINT16 vector::dwBatchIndex;
+    int vector::pipe_read_32;
+    int vector::pipe_write_32;
+    int vector::dwErrorCounter;
+    unsigned char vector::bEstimationMode;
+
+vector::vector(UINT_INSTRUCTION MainVal, UINT_INSTRUCTION intermediate_val)
 {
-    mval = main_val;
+    mval = MainVal;
     ival = intermediate_val;
     imval = 0;
     opcode = _NOP;
 }
 
-vector::vector(UINT_INSTRUCTION main_val, UINT_INSTRUCTION intermediate_val, UINT_INSTRUCTION op_code)
+vector::vector(UINT_INSTRUCTION MainVal, UINT_INSTRUCTION intermediate_val, UINT_INSTRUCTION op_code)
 {
-    mval = main_val;
+    mval = MainVal;
     ival = intermediate_val;
     imval = 0;
     opcode = op_code;
 }
 
-vector::vector(UINT_INSTRUCTION main_val, UINT_INSTRUCTION intermediate_val, UINT16 imm_val, UINT_INSTRUCTION op_code)
+vector::vector(UINT_INSTRUCTION MainVal, UINT_INSTRUCTION intermediate_val, UINT16 imm_val, UINT_INSTRUCTION op_code)
 {
-    mval = main_val;
+    mval = MainVal;
     ival = intermediate_val;
     imval = imm_val;
     opcode = op_code;
@@ -55,6 +67,8 @@ void vector::appendInstruction(UINT_INSTRUCTION instr)
     if (bEstimationMode == 0)
         dwBatch[dwBatchIndex][dwInBatchCounter[dwBatchIndex]++] = instr;
     else dwInBatchCounter[dwBatchIndex]++;
+    //if ((dwInBatchCounter[dwBatchIndex] % 1000) ==0)
+      //  printf("%d ",dwInBatchCounter[dwBatchIndex]);
 }
 
 
@@ -316,23 +330,39 @@ void vector::setBatchIndex(UINT16 BI)
     dwInBatchCounter[BI] = 0;
 }
 
-int vector::executeKernel(UINT16 dwBatchNumber)
+UINT_INSTRUCTION vector::getBatchInstruction(UINT16 BI, UINT32 index)
+{
+    return dwBatch[BI][index];
+}
+
+UINT32 vector::getInBatchCounter(UINT16 BI)
+{
+    return dwInBatchCounter[BI];
+}
+
+UINT_RED_REG_VAL vector::executeBatch(UINT16 dwBatchNumber)
 {
     write(pipe_write_32, dwBatch[dwBatchNumber], 4*dwInBatchCounter[dwBatchNumber]);
-    write(pipe_write_32, NULL, 0);
+    write(pipe_write_32, NULL, 0);//flush
     return PASS;//compatibility with c_simulator function
 }
 
-int vector::executeKernelRed(UINT16 dwBatchNumber)
+UINT_RED_REG_VAL vector::executeBatchRed(UINT16 dwBatchNumber)
 {
     unsigned char data_read[4];
-    executeKernel(dwBatchNumber);
+    executeBatch(dwBatchNumber);
 
     read(pipe_read_32,data_read,1);
     read(pipe_read_32,data_read+1,1);
     read(pipe_read_32,data_read+2,1);
     read(pipe_read_32,data_read+3,1);
 
-    return *((int *)data_read);
+    return *((UINT_RED_REG_VAL *)data_read);
+}
+
+UINT32 vector::getMultiRedResult(UINT_RED_REG_VAL* RedResults)
+{
+    //return number of actually read bytes
+    return read(pipe_read_32,RedResults,MAX_MULTIRED_DWORDS);
 }
 

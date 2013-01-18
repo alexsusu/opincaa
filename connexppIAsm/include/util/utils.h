@@ -8,7 +8,8 @@
 #define INT32  int
 #define UINT64 unsigned long long int
 #define INT64  long long int
-#define UINT_INSTRUCTION UINT32
+#define UINT_INSTRUCTION UINT32 // how long an instruction is
+#define UINT_RED_REG_VAL UINT32 //actually 16+ log2(128) = 23 bits are enough for RedAdd
 
 #define NUMBER_OF_MACHINES 128LL
 #define REDUCTION_SIZE      (7 + REGISTER_SIZE) // 7 = log2(NUMBER_OF_MACHINES)
@@ -30,12 +31,17 @@
 
 int initialize(UINT8);
 int deinitialize();
-extern int (*EXECUTE_KERNEL)(UINT16 dwBatchNumber);
-extern int (*EXECUTE_KERNEL_RED)(UINT16 dwBatchNumber);
+extern UINT_RED_REG_VAL (*EXECUTE_BATCH)(UINT16 dwBatchNumber);
+extern UINT_RED_REG_VAL (*EXECUTE_BATCH_RED)(UINT16 dwBatchNumber);
+extern UINT32 (*GET_MULTIRED_RESULT)(UINT_RED_REG_VAL* Destination);
 extern int (*IO_WRITE_NOW)(void*);
 extern int (*IO_READ_NOW)(void*);
 
 void initRand();
-INT64 randPar(INT64 limit);
+INT32 randPar(INT32 limit);
+INT32 SumRedOfFirstXnumbers(UINT32 numbers, UINT32 start);
+void simpleClearLS(int ClearLsBnr);
+void simplePrintLS(int PrintLsBnr, INT32 LsIndex);
 void eatRand(int times);
+
 #endif // TYPES_H

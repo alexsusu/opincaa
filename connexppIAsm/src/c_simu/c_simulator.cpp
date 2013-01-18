@@ -12,18 +12,14 @@
  *
  */
 
-//#include "../include/vector.h"
-//#include "../include/vector_errors.h"
-//#include "../include/opcodes.h"
-//#include <fcntl.h>
-#include <iostream>
-//#include <stdlib.h>
-//#include <unistd.h>
-#include "../../include/core/io_unit.h"
-
 using namespace std;
+#include <iostream>
 
+#include "../../include/core/io_unit.h"
 #include "../../include/c_simu/c_simulator.h"
+
+#define ALLOW_DE_ASM_CPP
+#include "de_asm.cpp"
 
 int c_simulator::deinitialize()
 {
@@ -35,27 +31,27 @@ int c_simulator::initialize()
     int RegNr;
     int LsCnt;
     FOR_ALL_MACHINES(
-                     for(RegNr = 0; RegNr < 32; RegNr++) C_SIMU_REGS[MACHINE][RegNr] = 0;
-                     for(LsCnt = 0; LsCnt < 1024; LsCnt++) C_SIMU_LS[MACHINE][LsCnt] = 0;
-                     C_SIMU_ACTIVE[MACHINE] = _ACTIVE;
-                     C_SIMU_CARRY[MACHINE] = 0;
-                     C_SIMU_EQ[MACHINE] = 0;
-                     C_SIMU_LT[MACHINE] = 0;
-                     C_SIMU_SH[MACHINE] = 0;
-                     C_SIMU_ROTATION_MAGNITUDE[MACHINE] = 0;// keeps the magnitude of the rotation
-                     C_SIMU_MULTREGS[MACHINE] = 0;
+                     for(RegNr = 0; RegNr < REGISTER_FILE_SIZE; RegNr++) CSimuRegs[MACHINE][RegNr] = 0;
+                     for(LsCnt = 0; LsCnt < LOCAL_STORE_SIZE; LsCnt++) CSimuLocalStore[MACHINE][LsCnt] = 0;
+                     CSimuActiveFlags[MACHINE] = _ACTIVE;
+                     CSimuCarryFlags[MACHINE] = 0;
+                     CSimuEqFlags[MACHINE] = 0;
+                     CSimuLtFlags[MACHINE] = 0;
+                     CSimuShiftRegs[MACHINE] = 0;
+					 CSimuMultRegs[MACHINE] = 0;
+					 CSimuRotationMagnitude[MACHINE] = 0;
                 );
     return PASS;
 }
 
 void c_simulator::printSHIFT_REGS()
 {
-    FOR_ALL_MACHINES( cout << " Machine "<<MACHINE<<": " << " SHIFT_REG = "<<  C_SIMU_SH[MACHINE] << endl; );
+    FOR_ALL_MACHINES( cout << " Machine "<<MACHINE<<": " << " SHIFT_REG = "<<  CSimuShiftRegs[MACHINE] << endl; );
 }
 
 void c_simulator::printLS(int address)
 {
-    FOR_ALL_MACHINES( cout << " Machine "<<MACHINE<<": " << " LS["<<address<<"]= "<<  C_SIMU_LS[MACHINE][address] << endl; );
+    FOR_ALL_MACHINES( cout << " Machine "<<MACHINE<<": " << " LS["<<address<<"]= "<<  CSimuLocalStore[MACHINE][address] << endl; );
 }
 
 int c_simulator::vwrite(void* Iou)
@@ -70,9 +66,9 @@ int c_simulator::vwrite(void* Iou)
 
         FOR_ALL_MACHINES(
                           if (MACHINE % 2 == 0)
-                            C_SIMU_LS[MACHINE][LSaddress + vectors] = pIOUC->Content[vectors * VECTOR_SIZE_IN_DWORDS + MACHINE/2] & REGISTER_SIZE_MASK;
+                            CSimuLocalStore[MACHINE][LSaddress + vectors] = pIOUC->Content[vectors * VECTOR_SIZE_IN_DWORDS + MACHINE/2] & REGISTER_SIZE_MASK;
                           else
-                            C_SIMU_LS[MACHINE][LSaddress + vectors] = pIOUC->Content[vectors * VECTOR_SIZE_IN_DWORDS + MACHINE/2] >> REGISTER_SIZE;
+                            CSimuLocalStore[MACHINE][LSaddress + vectors] = pIOUC->Content[vectors * VECTOR_SIZE_IN_DWORDS + MACHINE/2] >> REGISTER_SIZE;
                         );
     }
     return PASS;
@@ -99,9 +95,9 @@ int c_simulator::vwrite(void* Iou)
 
         FOR_ALL_MACHINES(
                           if (MACHINE % 2 == 0)
-                            C_SIMU_LS[MACHINE][LSaddress + vectors] = *((UINT32*)(Content + vectors * VECTOR_SIZE_IN_DWORDS + MACHINE/2)) & REGISTER_SIZE_MASK;
+                            CSimuLocalStore[MACHINE][LSaddress + vectors] = *((UINT32*)(Content + vectors * VECTOR_SIZE_IN_DWORDS + MACHINE/2)) & REGISTER_SIZE_MASK;
                           else
-                            C_SIMU_LS[MACHINE][LSaddress + vectors] = *((UINT32*)(Content + vectors * VECTOR_SIZE_IN_DWORDS + MACHINE/2)) >> REGISTER_SIZE;
+                            CSimuLocalStore[MACHINE][LSaddress + vectors] = *((UINT32*)(Content + vectors * VECTOR_SIZE_IN_DWORDS + MACHINE/2)) >> REGISTER_SIZE;
                         );
     }
     return PASS;
@@ -117,8 +113,8 @@ int c_simulator::vread(void* Iou)
     {
         int MACHINE;
         for (MACHINE = 0; MACHINE < NUMBER_OF_MACHINES; MACHINE+=2)
-            pIOUC->Content[vectors * VECTOR_SIZE_IN_DWORDS + MACHINE/2] = (C_SIMU_LS[MACHINE + 1][LSaddress + vectors] << REGISTER_SIZE) +
-                                                                            C_SIMU_LS[MACHINE][LSaddress + vectors];
+            pIOUC->Content[vectors * VECTOR_SIZE_IN_DWORDS + MACHINE/2] = (CSimuLocalStore[MACHINE + 1][LSaddress + vectors] << REGISTER_SIZE) +
+                                                                            CSimuLocalStore[MACHINE][LSaddress + vectors];
 
     }
     return PASS;

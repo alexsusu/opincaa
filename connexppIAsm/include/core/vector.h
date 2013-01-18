@@ -15,6 +15,32 @@
 #include <stdlib.h>
 #include "vector_errors.h"
 
+
+#define NUMBER_OF_BATCHES 100
+#define MAX_MULTIRED_DWORDS (2*1024*1024) // seems that there is a problem with linux, trying to read more tham 8 MB.
+
+#ifndef _MSC_VER //MS C++ compiler
+	#define STATIC_VECTOR_DEFINITIONS\
+        UINT_INSTRUCTION* vector::dwBatch[NUMBER_OF_BATCHES];\
+        UINT32 vector::dwInBatchCounter[NUMBER_OF_BATCHES];\
+        UINT16 vector::dwBatchIndex;\
+        int vector::pipe_read_32;\
+        int vector::pipe_write_32;\
+        int vector::dwErrorCounter;\
+        unsigned char vector::bEstimationMode;
+
+#else
+	#define STATIC_VECTOR_DEFINITIONS\
+        UINT_INSTRUCTION* vector::dwBatch[NUMBER_OF_BATCHES];\
+        UINT32 vector::dwInBatchCounter[NUMBER_OF_BATCHES];\
+        UINT16 vector::dwBatchIndex;\
+        int vector::pipe_read_32;\
+        int vector::pipe_write_32;\
+        int vector::dwErrorCounter;\
+        unsigned char vector::bEstimationMode;
+
+#endif
+
 /*
  The idea of "estimation mode" in a batch is:
   Pass once for counting how many slots we need in a particular slot, then pass again and fill it with instructions.
@@ -57,8 +83,8 @@
 #define CELL_SHL(x,y)   vector::cellshl(x,y)
 #define CELL_SHR(x,y)   vector::cellshr(x,y)
 
-#define _LO(x)       vector::multlo(x)
-#define _HI(x)       vector::multhi(x)
+#define _LOW(x)       vector::multlo(x)
+#define _HIGH(x)       vector::multhi(x)
 
 #define NOP             vector::nop()
 
@@ -86,17 +112,6 @@
 
 */
 
-#define NUMBER_OF_BATCHES 100
-//#define NUMBER_OF_INSTRUCTIONS_PER_BATCH 40
-
-#define STATIC_VECTOR_DEFINITIONS\
-        extern UINT_INSTRUCTION* vector::dwBatch[NUMBER_OF_BATCHES];\
-        extern UINT32 vector::dwInBatchCounter[NUMBER_OF_BATCHES];\
-        extern UINT16 vector::dwBatchIndex;\
-        extern int vector::pipe_read_32;\
-        extern int vector::pipe_write_32;\
-        extern int vector::dwErrorCounter;\
-        extern unsigned char vector::bEstimationMode;
 
 // There is no instruction opcode starting with FF, so there is no chance to mistake the INDEX_MARKER
 // There is no instruction opcode starting with FF, so there is no chance to mistake the SHIFTREG_MARKER
@@ -155,11 +170,13 @@ class vector
         static void setBatchIndex(UINT16 BI);
         static int initialize();
         static int deinitialize();
-        static int executeKernel(UINT16 dwBatchNumber);
-        static int executeKernelRed(UINT16 dwBatchNumber);
-        static int verifyKernel(UINT16 dwBatchNumber);
-        static int verifyKernelInstruction(UINT_INSTRUCTION Instruction);
-        static int deasmKernel(UINT16 dwBatchNumber);
+
+        static UINT_RED_REG_VAL executeBatch(UINT16 dwBatchNumber);
+        static UINT_RED_REG_VAL executeBatchRed(UINT16 dwBatchNumber);
+        static UINT32 getMultiRedResult(UINT_RED_REG_VAL* RedResults);
+
+        static int verifyBatch(UINT16 dwBatchNumber);
+        static int verifyBatchInstruction(UINT_INSTRUCTION Instruction);
 
         // methods: non-static
         vector(UINT_INSTRUCTION MainValue, UINT_INSTRUCTION IntermediateValue);
@@ -213,6 +230,9 @@ class vector
 
         vector operator>>(vector);//shr
         vector operator>>(UINT_PARAM);//ishr
+
+        static UINT_INSTRUCTION getBatchInstruction(UINT16 BI, UINT32 index);
+        static UINT32 getInBatchCounter(UINT16 BI);
 
     protected:
     private:

@@ -3,7 +3,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+
+#ifndef _MSC_VER //MS C++ compiler
+	#include <unistd.h>
+#else
+	#include "../../ms_visual_c/fake_unistd.h"
+#endif
+
 #include <fcntl.h>
 #include "../../include/core/io_unit.h"
 
@@ -43,16 +49,32 @@ void io_unit::preWriteVectors(UINT16 destAddress, UINT16 *srcAddress, UINT16 num
         *buff++ = *dwsrcAddress++;
 }
 
+void io_unit::preWriteVectorsAppend(UINT16 destAddress, UINT16 *srcAddress, UINT16 numVectors)
+{
+    setIOParams(WRITE_MODE, destAddress,numVectors);
+    UINT32 *buff = Iouc.Content + (Iouc.Descriptor.NumOfVectors * VECTOR_SIZE_IN_DWORDS);
+    UINT32 *dwsrcAddress = (UINT32*)srcAddress;
+    UINT32 *buffstop = buff + numVectors*VECTOR_SIZE_IN_DWORDS;
+
+    while (buff < buffstop)
+        *buff++ = *dwsrcAddress++;
+
+    Iouc.Descriptor.NumOfVectors += numVectors;
+}
+
+
 int io_unit::vwrite(void *_iou)
 {
+    int result;
     io_unit *iou = (io_unit*)_iou;
     //printf("Trying to write %ld bytes \n", (long int)iou->getSize());
     if (iou->getSize() == write(vpipe_write_32,iou->getIO_UNIT_CORE(),iou->getSize()))
-    { write(vpipe_write_32, NULL, 0); return PASS;}
-     else {
-		write(vpipe_write_32, NULL, 0);
-    		return FAIL;
-	}
+        result = PASS;
+     else
+        result = FAIL;
+
+	write(vpipe_write_32, NULL, 0); //flush
+	return result;
 }
 
 void io_unit::preReadVectors(UINT16 srcAddress,UINT16 numVectors)
