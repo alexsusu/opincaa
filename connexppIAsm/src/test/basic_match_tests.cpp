@@ -20,6 +20,13 @@
 	using namespace Concurrency;
 #endif
 
+#include <unistd.h>     /* Symbolic Constants */
+#include <sys/types.h>  /* Primitive System Data Types */
+#include <errno.h>      /* Errors */
+#include <stdio.h>      /* Input/Output */
+#include <sys/wait.h>   /* Wait for Process Termination */
+#include <stdlib.h>
+
 #include <iostream>
 #include <iomanip>
 using namespace std;
@@ -260,6 +267,58 @@ void FindMatches(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatches* SMs)
 	#endif
 }
 
+void FindMatches2T(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatches* SMs)
+{
+    pid_t childpid;
+    int status;
+
+    int RealMatches;
+    int DescriptorIndex1;
+
+    SMs->RealMatches = SDs1->RealDescriptors;
+
+    childpid = fork();
+    if (childpid >= 0) //fork success
+    {
+        if (childpid == 0) DescriptorIndex1 = 1;
+        else DescriptorIndex1 = 0;
+
+        for (; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1+=2)
+        {
+            SMs->Matches[SMs->RealMatches].Score = (UINT32)-1;
+            int DescriptorIndex2;
+            for (DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
+            {
+                UINT32 Score = 0;
+                int FeatIndex;
+                for (FeatIndex = 0; FeatIndex < FEATURES_PER_DESCRIPTOR; FeatIndex++)
+                {
+                    INT32 sq = (SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1][FeatIndex] -
+                                SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2][FeatIndex]);
+                    Score += sq*sq;
+                }
+
+                //if (DescriptorIndex1==0)
+                //{ cout<<Score<<" "; if ((DescriptorIndex2 % 8) == 0) cout<<endl; }
+
+                if (Score < SMs->Matches[RealMatches].Score)
+                {
+                    SMs->Matches[RealMatches].X1 = SDs1->SD[DescriptorIndex1].X;
+                    SMs->Matches[RealMatches].Y1 = SDs1->SD[DescriptorIndex1].Y;
+
+                    SMs->Matches[RealMatches].X2 = SDs2->SD[DescriptorIndex2].X;
+                    SMs->Matches[RealMatches].Y2 = SDs2->SD[DescriptorIndex2].Y;
+
+                    SMs->Matches[RealMatches].Score = Score;
+                }
+            }
+        }
+        if (childpid > 0) //parent
+            wait(&status);
+        else exit(0);//child
+    }
+}
+
 /*
     Out of 1024 LocalStore locations, each having 128 Bytes:
     (fortunately a SIFT descriptor also has 128 features of 1 Bytes each)
@@ -436,6 +495,10 @@ int test_BasicMatching_All()
     Start = GetMilliCount();
     FindMatches(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm);
     cout<<"armFindMatches ran in " << GetMilliSpan(Start)<< " ms"<<endl;
+
+    Start = GetMilliCount();
+    FindMatches2T(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm);
+    cout<<"armFindMatches (2 threads) ran in " << GetMilliSpan(Start)<< " ms"<<endl;
 
     //PrintMatches(&SM_Arm);
     Start = GetMilliCount();
