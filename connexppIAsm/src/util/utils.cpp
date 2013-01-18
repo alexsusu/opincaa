@@ -21,7 +21,7 @@ using namespace std;
 
 UINT_RED_REG_VAL (*EXECUTE_BATCH)(UINT16 dwBatchNumber);
 UINT_RED_REG_VAL (*EXECUTE_BATCH_RED)(UINT16 dwBatchNumber);
-UINT32 (*GET_MULTIRED_RESULT)(UINT_RED_REG_VAL* Results);
+UINT32 (*GET_MULTIRED_RESULT)(UINT_RED_REG_VAL* Results, UINT32 Limit);
 
 int (*IO_WRITE_NOW)(void*);
 int (*IO_READ_NOW)(void*);

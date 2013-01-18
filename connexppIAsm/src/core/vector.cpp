@@ -360,9 +360,12 @@ UINT_RED_REG_VAL vector::executeBatchRed(UINT16 dwBatchNumber)
     return *((UINT_RED_REG_VAL *)data_read);
 }
 
-UINT32 vector::getMultiRedResult(UINT_RED_REG_VAL* RedResults)
+UINT32 vector::getMultiRedResult(UINT_RED_REG_VAL* RedResults, UINT32 Limit)
 {
     //return number of actually read bytes
-    return read(pipe_read_32,RedResults,MAX_MULTIRED_DWORDS);
+    if (Limit == 0)
+        return read(pipe_read_32,RedResults,MAX_MULTIRED_DWORDS);
+    else
+        return read(pipe_read_32,RedResults,Limit);
 }
 

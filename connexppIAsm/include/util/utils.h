@@ -33,7 +33,7 @@ int initialize(UINT8);
 int deinitialize();
 extern UINT_RED_REG_VAL (*EXECUTE_BATCH)(UINT16 dwBatchNumber);
 extern UINT_RED_REG_VAL (*EXECUTE_BATCH_RED)(UINT16 dwBatchNumber);
-extern UINT32 (*GET_MULTIRED_RESULT)(UINT_RED_REG_VAL* Destination);
+extern UINT32 (*GET_MULTIRED_RESULT)(UINT_RED_REG_VAL* RedResults, UINT32 Limit);
 extern int (*IO_WRITE_NOW)(void*);
 extern int (*IO_READ_NOW)(void*);
 

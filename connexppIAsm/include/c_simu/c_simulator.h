@@ -77,7 +77,7 @@ class c_simulator
 
         static UINT_RED_REG_VAL executeBatchOneReduce(UINT16 dwBatchNumber);
         static UINT_RED_REG_VAL* executeBatchMultipleReduce(UINT16 dwBatchNumber);
-        static UINT32 getMultiRedResult(UINT_RED_REG_VAL* RedResults);
+        static UINT32 getMultiRedResult(UINT_RED_REG_VAL* RedResults, UINT32 Limit);
 
         static int DeAsmBatch(UINT16 dwBatchNumber);
 

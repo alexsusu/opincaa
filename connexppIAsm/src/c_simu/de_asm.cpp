@@ -223,14 +223,15 @@ int c_simulator::printDeAsmBatch(UINT16 dwBatchNumber)
     return result;
 }
 
-UINT32 c_simulator::getMultiRedResult(UINT_RED_REG_VAL* RedResults)
+UINT32 c_simulator::getMultiRedResult(UINT_RED_REG_VAL* RedResults, UINT32 Limit)
 {
-    UINT32 i;
-    for(i = 0; i < CSimuRedCnt; i++)
-        RedResults[i] = CSimuRed[i];
+    if (Limit >= CSimuRedCnt) Limit = CSimuRedCnt;
+    for(UINT32 i = 0; i < Limit; i++) RedResults[i] = CSimuRed[i];
 
-    CSimuRedCnt = 0;//simulate same behaviour as in named pipes (see vector::getMultiRedResult)
-    return i;
+    //try to simulate same behaviour as in named pipes (see vector::getMultiRedResult)
+    // please note that this is not a FIFO like the vector class has !
+    CSimuRedCnt = CSimuRedCnt-Limit;
+    return Limit*4;
 }
 
 UINT_RED_REG_VAL c_simulator::executeBatchOneReduce(UINT16 dwBatchNumber)

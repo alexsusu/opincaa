@@ -315,12 +315,15 @@ static int connexFindMatches(int RunningMode,int LoadToRxBatchNumber,
 
                 EXECUTE_BATCH(UsingBuffer0or1);
                 {
-                    int ExpectedReductions = VECTORS_CHUNK_IMAGE1 * VECTORS_CHUNK_IMAGE2;
-                    int RealReductions = GET_MULTIRED_RESULT(BasicMatchRedResults +
+                    #define BYTES_IN_DWORD 4
+                    int ExpectedBytesOfReductions = BYTES_IN_DWORD* VECTORS_CHUNK_IMAGE1 * VECTORS_CHUNK_IMAGE2;
+                    int RealBytesOfReductions = GET_MULTIRED_RESULT(BasicMatchRedResults +
                                         VECTORS_CHUNK_IMAGE1 * (TotalVectorChunksImg2*VECTORS_CHUNK_IMAGE2) * CurrentVectorChunkImg1 +
-                                        VECTORS_CHUNK_IMAGE1 * VECTORS_CHUNK_IMAGE2 * CurrentVectorChunkImg2);
-                    if (ExpectedReductions != RealReductions)
-                     cout<<" Unexpected size of reductions (expected: "<<ExpectedReductions<<" but got "<<RealReductions<<endl;
+                                        VECTORS_CHUNK_IMAGE1 * VECTORS_CHUNK_IMAGE2 * CurrentVectorChunkImg2,
+                                        ExpectedBytesOfReductions
+                                        );
+                    if (ExpectedBytesOfReductions != RealBytesOfReductions)
+                     cout<<" Unexpected size of bytes of reductions (expected: "<<ExpectedBytesOfReductions<<" but got "<<RealBytesOfReductions<<endl;
                 }
             }
             //next: create or execute created batch

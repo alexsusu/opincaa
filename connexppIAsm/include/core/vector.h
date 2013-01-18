@@ -173,7 +173,7 @@ class vector
 
         static UINT_RED_REG_VAL executeBatch(UINT16 dwBatchNumber);
         static UINT_RED_REG_VAL executeBatchRed(UINT16 dwBatchNumber);
-        static UINT32 getMultiRedResult(UINT_RED_REG_VAL* RedResults);
+        static UINT32 getMultiRedResult(UINT_RED_REG_VAL* RedResults, UINT32 Limit);
 
         static int verifyBatch(UINT16 dwBatchNumber);
         static int verifyBatchInstruction(UINT_INSTRUCTION Instruction);
