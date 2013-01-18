@@ -30,6 +30,7 @@
 	UINT16 c_simulator::CSimuRotationMagnitude[NUMBER_OF_MACHINES];
 	UINT_RED_REG_VAL c_simulator::CSimuRed[C_SIMU_RED_MAX];
 	UINT32 c_simulator::CSimuRedCnt;
+	INT32 c_simulator::CSimulatorVWriteCounter;
 
 #endif
 

@@ -375,7 +375,6 @@ static int connexFindMatches(int RunningMode,int LoadToRxBatchNumber,
 
                 EXECUTE_BATCH(UsingBuffer0or1);
                 {
-                    #define BYTES_IN_DWORD 4
                     int ExpectedBytesOfReductions = BYTES_IN_DWORD* VECTORS_CHUNK_IMAGE1 * VECTORS_CHUNK_IMAGE2;
                     int RealBytesOfReductions = GET_MULTIRED_RESULT(BasicMatchRedResults +
                                         VECTORS_CHUNK_IMAGE1 * (TotalVectorChunksImg2*VECTORS_CHUNK_IMAGE2) * CurrentVectorChunkImg1 +

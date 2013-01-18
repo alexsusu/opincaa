@@ -33,7 +33,7 @@ void io_unit::setIOParams(int mode, int LsAddress, int NumOfVectors)
 {
     Iouc.Descriptor.Mode = mode;
     Iouc.Descriptor.LsAddress = LsAddress;
-    Iouc.Descriptor.NumOfVectors = NumOfVectors;
+    Iouc.Descriptor.NumOfVectors = NumOfVectors - 1;
 
     Size = NumOfVectors * VECTOR_SIZE_IN_BYTES;
     if (mode == WRITE_MODE) Size += DESCRIPTOR_SIZE_IN_BYTES;
@@ -48,11 +48,11 @@ void io_unit::preWriteVectors(UINT16 destAddress, UINT16 *srcAddress, UINT16 num
     while (buff < buffstop)
         *buff++ = *dwsrcAddress++;
 }
-
+/*
 void io_unit::preWriteVectorsAppend(UINT16 destAddress, UINT16 *srcAddress, UINT16 numVectors)
 {
     setIOParams(WRITE_MODE, destAddress,numVectors);
-    UINT32 *buff = Iouc.Content + (Iouc.Descriptor.NumOfVectors * VECTOR_SIZE_IN_DWORDS);
+    UINT32 *buff = Iouc.Content + (Iouc.Descriptor.NumOfVectors) * VECTOR_SIZE_IN_DWORDS);
     UINT32 *dwsrcAddress = (UINT32*)srcAddress;
     UINT32 *buffstop = buff + numVectors*VECTOR_SIZE_IN_DWORDS;
 
@@ -61,9 +61,28 @@ void io_unit::preWriteVectorsAppend(UINT16 destAddress, UINT16 *srcAddress, UINT
 
     Iouc.Descriptor.NumOfVectors += numVectors;
 }
+*/
 
-
+/**
+    Blocking write to IO.
+    Writes descriptor and data to IO pipe, flushes the pipe and waits for recevive confirmation
+*/
 int io_unit::vwrite(void *_iou)
+{
+    int result = vwriteNonBlocking(_iou);
+    vwriteWaitEnd();
+    return result;
+}
+
+/**
+    Non-blocking write to IO.
+    Writes descriptor and data to IO pipe and flushes the pipe.
+    It does NOT wait for recevive confirmation.
+
+    Keep in mind to read the confirmation
+    (by calling once waitVwriteComplete()) before any vread call) !
+*/
+int io_unit::vwriteNonBlocking(void *_iou)
 {
     int result;
     io_unit *iou = (io_unit*)_iou;
@@ -79,7 +98,7 @@ int io_unit::vwrite(void *_iou)
 
 void io_unit::preReadVectors(UINT16 srcAddress,UINT16 numVectors)
 {
-    setIOParams(READ_MODE, srcAddress,numVectors);
+    setIOParams(READ_MODE, srcAddress, numVectors);
 }
 
 int io_unit::vread(void *_iou)
@@ -92,6 +111,20 @@ int io_unit::vread(void *_iou)
     }
 
     return FAIL;
+}
+
+int io_unit::vwriteIsEnded()
+{
+    UINT32 dummy;
+    if (BYTES_IN_DWORD == read(vpipe_read_32, &dummy, BYTES_IN_DWORD))
+        return PASS;
+    else return FAIL;
+}
+
+void io_unit::vwriteWaitEnd()
+{
+    while (PASS != vwriteIsEnded())
+    ;//wait
 }
 
 int io_unit::initialize()

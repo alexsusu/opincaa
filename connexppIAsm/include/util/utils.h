@@ -10,6 +10,7 @@
 #define INT64  long long int
 #define UINT_INSTRUCTION UINT32 // how long an instruction is
 #define UINT_RED_REG_VAL UINT32 //actually 16+ log2(128) = 23 bits are enough for RedAdd
+#define BYTES_IN_DWORD 4
 
 #define NUMBER_OF_MACHINES 128LL
 #define REDUCTION_SIZE      (7 + REGISTER_SIZE) // 7 = log2(NUMBER_OF_MACHINES)
@@ -34,7 +35,9 @@ int deinitialize();
 extern UINT_RED_REG_VAL (*EXECUTE_BATCH)(UINT16 dwBatchNumber);
 extern UINT_RED_REG_VAL (*EXECUTE_BATCH_RED)(UINT16 dwBatchNumber);
 extern UINT32 (*GET_MULTIRED_RESULT)(UINT_RED_REG_VAL* RedResults, UINT32 Limit);
+
 extern int (*IO_WRITE_NOW)(void*);
+extern int (*IO_WRITE_BEGIN)(void*);
 extern int (*IO_READ_NOW)(void*);
 
 void initRand();

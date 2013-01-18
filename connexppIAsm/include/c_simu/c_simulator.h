@@ -48,7 +48,8 @@
         UINT_MULTVALUE c_simulator::CSimuMultRegs[NUMBER_OF_MACHINES];\
 		UINT16 c_simulator::CSimuRotationMagnitude[NUMBER_OF_MACHINES];\
 		UINT_RED_REG_VAL c_simulator::CSimuRed[C_SIMU_RED_MAX];\
-        UINT32 c_simulator::CSimuRedCnt;
+        UINT32 c_simulator::CSimuRedCnt;\
+        INT32 c_simulator::CSimulatorVWriteCounter;
 
 
 #else
@@ -83,10 +84,12 @@ class c_simulator
 
         static void printSHIFT_REGS();
         static void printLS(int address);
-        static int vwrite();
-        static int vread();
-        static int vwrite(void* Iou);
+
         static int vread(void* Iou);
+        static int vwrite(void* Iou);
+        static int vwriteNonBlocking(void* Iou);
+        static void vwriteWaitEnd();
+        static int vwriteIsEnded();
 
         virtual ~c_simulator();
 		static UINT_RED_REG_VAL CSimuRed[C_SIMU_RED_MAX];
@@ -103,6 +106,7 @@ class c_simulator
         static UINT_REGVALUE CSimuShiftRegs[NUMBER_OF_MACHINES];
 		static UINT_MULTVALUE CSimuMultRegs[NUMBER_OF_MACHINES];
 		static UINT16 CSimuRotationMagnitude[NUMBER_OF_MACHINES];
+		static INT32 CSimulatorVWriteCounter;
 
 };
 

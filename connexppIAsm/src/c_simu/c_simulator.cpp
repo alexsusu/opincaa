@@ -14,6 +14,7 @@
 
 using namespace std;
 #include <iostream>
+#include <assert.h>
 
 #include "../../include/core/io_unit.h"
 #include "../../include/c_simu/c_simulator.h"
@@ -54,14 +55,22 @@ void c_simulator::printLS(int address)
     FOR_ALL_MACHINES( cout << " Machine "<<MACHINE<<": " << " LS["<<address<<"]= "<<  CSimuLocalStore[MACHINE][address] << endl; );
 }
 
+
 int c_simulator::vwrite(void* Iou)
+{
+    int result = vwriteNonBlocking(Iou);
+    vwriteWaitEnd();
+    return result;
+}
+
+int c_simulator::vwriteNonBlocking(void* Iou)
 {
     UINT32 vectors;
     IO_UNIT_CORE* pIOUC = ((io_unit*)Iou)->getIO_UNIT_CORE();
     UINT32 LSaddress = (pIOUC->Descriptor).LsAddress;
 
     //cout << "Trying to write " << ((io_unit*)Iou)->getSize() << "bytes "<<endl;
-    for (vectors = 0; vectors < pIOUC->Descriptor.NumOfVectors; vectors++)
+    for (vectors = 0; vectors < pIOUC->Descriptor.NumOfVectors + 1; vectors++)
     {
 
         FOR_ALL_MACHINES(
@@ -71,9 +80,25 @@ int c_simulator::vwrite(void* Iou)
                             CSimuLocalStore[MACHINE][LSaddress + vectors] = pIOUC->Content[vectors * VECTOR_SIZE_IN_DWORDS + MACHINE/2] >> REGISTER_SIZE;
                         );
     }
+    CSimulatorVWriteCounter++;
     return PASS;
 }
 
+int c_simulator::vwriteIsEnded()
+{
+    CSimulatorVWriteCounter--;//allow going under zero: simulate as if io_unit is read too many times
+    assert(CSimulatorVWriteCounter >= 0);
+
+    if (CSimulatorVWriteCounter == 0)
+        return PASS;
+    else return FAIL;
+}
+
+void c_simulator::vwriteWaitEnd()
+{
+    while (PASS != vwriteIsEnded())
+    ;//wait
+}
 
 #define IO_MODE_POS             0
 #define IO_LS_ADDRESS_POS       1
@@ -109,12 +134,14 @@ int c_simulator::vread(void* Iou)
     UINT32 vectors;
     IO_UNIT_CORE* pIOUC = ((io_unit*)Iou)->getIO_UNIT_CORE();
     UINT32 LSaddress = (pIOUC->Descriptor).LsAddress;
-    for (vectors = 0; vectors < pIOUC->Descriptor.NumOfVectors; vectors++)
+    assert(CSimulatorVWriteCounter ==0);
+    for (vectors = 0; vectors < pIOUC->Descriptor.NumOfVectors + 1; vectors++)
     {
         int MACHINE;
         for (MACHINE = 0; MACHINE < NUMBER_OF_MACHINES; MACHINE+=2)
-            pIOUC->Content[vectors * VECTOR_SIZE_IN_DWORDS + MACHINE/2] = (CSimuLocalStore[MACHINE + 1][LSaddress + vectors] << REGISTER_SIZE) +
-                                                                            CSimuLocalStore[MACHINE][LSaddress + vectors];
+            pIOUC->Content[vectors * VECTOR_SIZE_IN_DWORDS + MACHINE/2] =
+                (CSimuLocalStore[MACHINE + 1][LSaddress + vectors] << REGISTER_SIZE) +
+                                            CSimuLocalStore[MACHINE][LSaddress + vectors];
 
     }
     return PASS;

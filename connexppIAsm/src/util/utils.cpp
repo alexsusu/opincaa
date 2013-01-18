@@ -24,6 +24,9 @@ UINT_RED_REG_VAL (*EXECUTE_BATCH_RED)(UINT16 dwBatchNumber);
 UINT32 (*GET_MULTIRED_RESULT)(UINT_RED_REG_VAL* Results, UINT32 Limit);
 
 int (*IO_WRITE_NOW)(void*);
+int (*IO_WRITE_BEGIN)(void*);
+int (*IO_WRITE_IS_ENDED)();
+void (*IO_WRITE_WAIT_END)();
 int (*IO_READ_NOW)(void*);
 
 static UINT8 RunMode = REAL_HARDWARE_MODE;
@@ -74,7 +77,12 @@ int initialize(UINT8 RunningMode)
         EXECUTE_BATCH = vector::executeBatch;
         EXECUTE_BATCH_RED = vector::executeBatchRed;
         GET_MULTIRED_RESULT = vector::getMultiRedResult;
+
         IO_WRITE_NOW = io_unit::vwrite;
+        IO_WRITE_BEGIN = io_unit::vwriteNonBlocking;
+        IO_WRITE_IS_ENDED = io_unit::vwriteIsEnded;
+        IO_WRITE_WAIT_END = io_unit::vwriteWaitEnd;
+
         IO_READ_NOW = io_unit::vread;
     }
     else if (RunningMode == REAL_HARDWARE_MODE)
@@ -87,17 +95,27 @@ int initialize(UINT8 RunningMode)
 
         EXECUTE_BATCH = vector::executeBatch;
         EXECUTE_BATCH_RED = vector::executeBatchRed;
-        IO_WRITE_NOW = io_unit::vwrite;
-        IO_READ_NOW = io_unit::vread;
         GET_MULTIRED_RESULT = vector::getMultiRedResult;
+
+        IO_WRITE_NOW = io_unit::vwrite;
+        IO_WRITE_BEGIN = io_unit::vwriteNonBlocking;
+        IO_WRITE_IS_ENDED = io_unit::vwriteIsEnded;
+        IO_WRITE_WAIT_END = io_unit::vwriteWaitEnd;
+
+        IO_READ_NOW = io_unit::vread;
     }
     else if (RunningMode == C_SIMULATION_MODE)
     {
         EXECUTE_BATCH = c_simulator::executeBatchOneReduce;
         EXECUTE_BATCH_RED = c_simulator::executeBatchOneReduce;
-        IO_WRITE_NOW = c_simulator::vwrite;
-        IO_READ_NOW = c_simulator::vread;
         GET_MULTIRED_RESULT = c_simulator::getMultiRedResult;
+
+        IO_WRITE_NOW = c_simulator::vwrite;
+        IO_WRITE_BEGIN = c_simulator::vwriteNonBlocking;
+        IO_WRITE_IS_ENDED = io_unit::vwriteIsEnded;
+        IO_WRITE_WAIT_END = io_unit::vwriteWaitEnd;
+
+        IO_READ_NOW = c_simulator::vread;
         c_simulator::initialize();
     }
     else

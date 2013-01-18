@@ -51,6 +51,14 @@
  *			 - moved simpleClearLS and simplePrintLS to utils
  *           - renamed _LO and _HI to _LOW / _HIGH (as in _LO(MULT)): there was a collision with MS VC++ compiler
  *           - changed names of some internal simulator variables (coding guideline) - not finished
+ *           - Rx register (x= 0... 31) can also be addressed via R[x]
+ *
+ *  v0.8.1   - updated io_unit and simulator to comply with new ConnexIOSpec
+ *             (confirmation of write, size of written/read vectors is (Vector Count + 1)
+ *              NB: The io_unit modifications occured in setIOParams().  Calls to vwrite and vread remain backward compatible !
+ *           - added new functions in io_unit/c_simulator
+ *                          ::vwriteNonBlocking(void* Iou), ::vwriteIsEnded(), ::vwriteWaitEnd()
+                and matching macros: IO_WRITE_BEGIN(); IO_WRITE_IS_ENDED(); IO_WRITE_WAIT_END();
  *
  * Created on December 19, 2012, 3:32 PM
  *
