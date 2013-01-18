@@ -20,12 +20,12 @@
 	using namespace Concurrency;
 #endif
 
-#include <unistd.h>     /* Symbolic Constants */
-#include <sys/types.h>  /* Primitive System Data Types */
-#include <errno.h>      /* Errors */
-#include <stdio.h>      /* Input/Output */
-#include <sys/wait.h>   /* Wait for Process Termination */
-#include <stdlib.h>
+//#include <unistd.h>     /* Symbolic Constants */
+//#include <sys/types.h>  /* Primitive System Data Types */
+//#include <errno.h>      /* Errors */
+//#include <stdio.h>      /* Input/Output */
+//#include <sys/wait.h>   /* Wait for Process Termination */
+//#include <stdlib.h>
 
 #include <iostream>
 #include <iomanip>
@@ -267,6 +267,7 @@ void FindMatches(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatches* SMs)
 	#endif
 }
 
+/*
 void FindMatches2T(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatches* SMs)
 {
     pid_t childpid;
@@ -317,7 +318,7 @@ void FindMatches2T(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatches* SM
             wait(&status);
         else exit(0);//child
     }
-}
+}*/
 
 /*
     Out of 1024 LocalStore locations, each having 128 Bytes:
@@ -496,9 +497,9 @@ int test_BasicMatching_All()
     FindMatches(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm);
     cout<<"armFindMatches ran in " << GetMilliSpan(Start)<< " ms"<<endl;
 
-    Start = GetMilliCount();
-    FindMatches2T(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm);
-    cout<<"armFindMatches (2 threads) ran in " << GetMilliSpan(Start)<< " ms"<<endl;
+    //Start = GetMilliCount();
+    //FindMatches2T(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm);
+    //cout<<"armFindMatches (2 threads) ran in " << GetMilliSpan(Start)<< " ms"<<endl;
 
     //PrintMatches(&SM_Arm);
     Start = GetMilliCount();
