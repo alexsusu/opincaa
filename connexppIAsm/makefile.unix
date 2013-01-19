@@ -29,7 +29,7 @@ OBJDIR_DEBUG = obj/Debug
 DEP_DEBUG = 
 OUT_DEBUG = bin/Debug/connexppAsm
 
-OBJ_DEBUG = $(OBJDIR_DEBUG)/src/core/io_unit.o $(OBJDIR_DEBUG)/src/core/vector.o $(OBJDIR_DEBUG)/src/core/vector_errors.o $(OBJDIR_DEBUG)/src/core/vector_registers.o $(OBJDIR_DEBUG)/src/main.o $(OBJDIR_DEBUG)/src/test/basic_match_tests.o $(OBJDIR_DEBUG)/src/test/crypto/bsDES/algo.o $(OBJDIR_DEBUG)/src/test/crypto/bsDES/bsdes.o $(OBJDIR_DEBUG)/src/test/crypto/bsDES/sboxes.o $(OBJDIR_DEBUG)/src/test/crypto/bsDES/testdata.o $(OBJDIR_DEBUG)/src/test/crypto/bsDES/trial2a.o $(OBJDIR_DEBUG)/src/test/crypto/bsDES/trial2b.o $(OBJDIR_DEBUG)/src/test/crypto/bsDES/utils.o $(OBJDIR_DEBUG)/src/test/simple_io_tests.o $(OBJDIR_DEBUG)/src/test/simple_tests.o $(OBJDIR_DEBUG)/src/test/speed_tests.o $(OBJDIR_DEBUG)/src/util/timing.o $(OBJDIR_DEBUG)/src/util/utils.o $(OBJDIR_DEBUG)/src/c_simu/c_simulator.o
+OBJ_DEBUG = $(OBJDIR_DEBUG)/src/util/utils.o $(OBJDIR_DEBUG)/src/util/timing.o $(OBJDIR_DEBUG)/src/test/speed_tests.o $(OBJDIR_DEBUG)/src/test/simple_tests.o $(OBJDIR_DEBUG)/src/test/simple_io_tests.o $(OBJDIR_DEBUG)/src/test/basic_match_tests.o $(OBJDIR_DEBUG)/src/main.o $(OBJDIR_DEBUG)/src/core/vector_registers.o $(OBJDIR_DEBUG)/src/core/vector_errors.o $(OBJDIR_DEBUG)/src/core/vector.o $(OBJDIR_DEBUG)/src/core/io_unit.o $(OBJDIR_DEBUG)/src/c_simu/c_simulator.o
 
 all: debug
 
@@ -37,11 +37,10 @@ clean: clean_debug
 
 before_debug: 
 	test -d bin/Debug || mkdir -p bin/Debug
-	test -d $(OBJDIR_DEBUG)/src/core || mkdir -p $(OBJDIR_DEBUG)/src/core
-	test -d $(OBJDIR_DEBUG)/src || mkdir -p $(OBJDIR_DEBUG)/src
-	test -d $(OBJDIR_DEBUG)/src/test || mkdir -p $(OBJDIR_DEBUG)/src/test
-	test -d $(OBJDIR_DEBUG)/src/test/crypto/bsDES || mkdir -p $(OBJDIR_DEBUG)/src/test/crypto/bsDES
 	test -d $(OBJDIR_DEBUG)/src/util || mkdir -p $(OBJDIR_DEBUG)/src/util
+	test -d $(OBJDIR_DEBUG)/src/test || mkdir -p $(OBJDIR_DEBUG)/src/test
+	test -d $(OBJDIR_DEBUG)/src || mkdir -p $(OBJDIR_DEBUG)/src
+	test -d $(OBJDIR_DEBUG)/src/core || mkdir -p $(OBJDIR_DEBUG)/src/core
 	test -d $(OBJDIR_DEBUG)/src/c_simu || mkdir -p $(OBJDIR_DEBUG)/src/c_simu
 
 after_debug: 
@@ -51,59 +50,38 @@ debug: before_debug out_debug after_debug
 out_debug: $(OBJ_DEBUG) $(DEP_DEBUG)
 	$(LD) $(LDFLAGS_DEBUG) $(LIBDIR_DEBUG) $(OBJ_DEBUG) $(LIB_DEBUG) -o $(OUT_DEBUG)
 
-$(OBJDIR_DEBUG)/src/core/io_unit.o: src/core/io_unit.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/core/io_unit.cpp -o $(OBJDIR_DEBUG)/src/core/io_unit.o
-
-$(OBJDIR_DEBUG)/src/core/vector.o: src/core/vector.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/core/vector.cpp -o $(OBJDIR_DEBUG)/src/core/vector.o
-
-$(OBJDIR_DEBUG)/src/core/vector_errors.o: src/core/vector_errors.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/core/vector_errors.cpp -o $(OBJDIR_DEBUG)/src/core/vector_errors.o
-
-$(OBJDIR_DEBUG)/src/core/vector_registers.o: src/core/vector_registers.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/core/vector_registers.cpp -o $(OBJDIR_DEBUG)/src/core/vector_registers.o
-
-$(OBJDIR_DEBUG)/src/main.o: src/main.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/main.cpp -o $(OBJDIR_DEBUG)/src/main.o
-
-$(OBJDIR_DEBUG)/src/test/basic_match_tests.o: src/test/basic_match_tests.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/basic_match_tests.cpp -o $(OBJDIR_DEBUG)/src/test/basic_match_tests.o
-
-$(OBJDIR_DEBUG)/src/test/crypto/bsDES/algo.o: src/test/crypto/bsDES/algo.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/crypto/bsDES/algo.cpp -o $(OBJDIR_DEBUG)/src/test/crypto/bsDES/algo.o
-
-$(OBJDIR_DEBUG)/src/test/crypto/bsDES/bsdes.o: src/test/crypto/bsDES/bsdes.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/crypto/bsDES/bsdes.cpp -o $(OBJDIR_DEBUG)/src/test/crypto/bsDES/bsdes.o
-
-$(OBJDIR_DEBUG)/src/test/crypto/bsDES/sboxes.o: src/test/crypto/bsDES/sboxes.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/crypto/bsDES/sboxes.cpp -o $(OBJDIR_DEBUG)/src/test/crypto/bsDES/sboxes.o
-
-$(OBJDIR_DEBUG)/src/test/crypto/bsDES/testdata.o: src/test/crypto/bsDES/testdata.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/crypto/bsDES/testdata.cpp -o $(OBJDIR_DEBUG)/src/test/crypto/bsDES/testdata.o
-
-$(OBJDIR_DEBUG)/src/test/crypto/bsDES/trial2a.o: src/test/crypto/bsDES/trial2a.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/crypto/bsDES/trial2a.cpp -o $(OBJDIR_DEBUG)/src/test/crypto/bsDES/trial2a.o
-
-$(OBJDIR_DEBUG)/src/test/crypto/bsDES/trial2b.o: src/test/crypto/bsDES/trial2b.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/crypto/bsDES/trial2b.cpp -o $(OBJDIR_DEBUG)/src/test/crypto/bsDES/trial2b.o
-
-$(OBJDIR_DEBUG)/src/test/crypto/bsDES/utils.o: src/test/crypto/bsDES/utils.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/crypto/bsDES/utils.cpp -o $(OBJDIR_DEBUG)/src/test/crypto/bsDES/utils.o
-
-$(OBJDIR_DEBUG)/src/test/simple_io_tests.o: src/test/simple_io_tests.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/simple_io_tests.cpp -o $(OBJDIR_DEBUG)/src/test/simple_io_tests.o
-
-$(OBJDIR_DEBUG)/src/test/simple_tests.o: src/test/simple_tests.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/simple_tests.cpp -o $(OBJDIR_DEBUG)/src/test/simple_tests.o
-
-$(OBJDIR_DEBUG)/src/test/speed_tests.o: src/test/speed_tests.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/speed_tests.cpp -o $(OBJDIR_DEBUG)/src/test/speed_tests.o
+$(OBJDIR_DEBUG)/src/util/utils.o: src/util/utils.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/util/utils.cpp -o $(OBJDIR_DEBUG)/src/util/utils.o
 
 $(OBJDIR_DEBUG)/src/util/timing.o: src/util/timing.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/util/timing.cpp -o $(OBJDIR_DEBUG)/src/util/timing.o
 
-$(OBJDIR_DEBUG)/src/util/utils.o: src/util/utils.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/util/utils.cpp -o $(OBJDIR_DEBUG)/src/util/utils.o
+$(OBJDIR_DEBUG)/src/test/speed_tests.o: src/test/speed_tests.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/speed_tests.cpp -o $(OBJDIR_DEBUG)/src/test/speed_tests.o
+
+$(OBJDIR_DEBUG)/src/test/simple_tests.o: src/test/simple_tests.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/simple_tests.cpp -o $(OBJDIR_DEBUG)/src/test/simple_tests.o
+
+$(OBJDIR_DEBUG)/src/test/simple_io_tests.o: src/test/simple_io_tests.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/simple_io_tests.cpp -o $(OBJDIR_DEBUG)/src/test/simple_io_tests.o
+
+$(OBJDIR_DEBUG)/src/test/basic_match_tests.o: src/test/basic_match_tests.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/basic_match_tests.cpp -o $(OBJDIR_DEBUG)/src/test/basic_match_tests.o
+
+$(OBJDIR_DEBUG)/src/main.o: src/main.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/main.cpp -o $(OBJDIR_DEBUG)/src/main.o
+
+$(OBJDIR_DEBUG)/src/core/vector_registers.o: src/core/vector_registers.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/core/vector_registers.cpp -o $(OBJDIR_DEBUG)/src/core/vector_registers.o
+
+$(OBJDIR_DEBUG)/src/core/vector_errors.o: src/core/vector_errors.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/core/vector_errors.cpp -o $(OBJDIR_DEBUG)/src/core/vector_errors.o
+
+$(OBJDIR_DEBUG)/src/core/vector.o: src/core/vector.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/core/vector.cpp -o $(OBJDIR_DEBUG)/src/core/vector.o
+
+$(OBJDIR_DEBUG)/src/core/io_unit.o: src/core/io_unit.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/core/io_unit.cpp -o $(OBJDIR_DEBUG)/src/core/io_unit.o
 
 $(OBJDIR_DEBUG)/src/c_simu/c_simulator.o: src/c_simu/c_simulator.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/c_simu/c_simulator.cpp -o $(OBJDIR_DEBUG)/src/c_simu/c_simulator.o
@@ -111,11 +89,10 @@ $(OBJDIR_DEBUG)/src/c_simu/c_simulator.o: src/c_simu/c_simulator.cpp
 clean_debug: 
 	rm -f $(OBJ_DEBUG) $(OUT_DEBUG)
 	rm -rf bin/Debug
-	rm -rf $(OBJDIR_DEBUG)/src/core
-	rm -rf $(OBJDIR_DEBUG)/src
-	rm -rf $(OBJDIR_DEBUG)/src/test
-	rm -rf $(OBJDIR_DEBUG)/src/test/crypto/bsDES
 	rm -rf $(OBJDIR_DEBUG)/src/util
+	rm -rf $(OBJDIR_DEBUG)/src/test
+	rm -rf $(OBJDIR_DEBUG)/src
+	rm -rf $(OBJDIR_DEBUG)/src/core
 	rm -rf $(OBJDIR_DEBUG)/src/c_simu
 
 .PHONY: before_debug after_debug clean_debug
