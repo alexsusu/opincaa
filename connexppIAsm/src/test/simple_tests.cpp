@@ -1033,7 +1033,7 @@ int test_Simple_All(bool stress)
             else
             {
                 if (j == stressLoops)
-                    cout<< "Test "<< setw(8) << left << TestFunctionTable[i].OperationName;
+                    cout<< "Test "<< setw(10) << left << TestFunctionTable[i].OperationName;
                 if ((j > 0) && (j <= stressLoops)) cout<<".";
                 if (j == 0) {cout << " PASSED"<<endl;break;}
             }
