@@ -41,7 +41,7 @@ void PRINT_TIME(char *text)
 {
     printf("Time = %d (ms) %s\n",(int)(end_time - start_time),text);
 }
-
+/*
 UINT8 getMachineType()
 {
     UINT16 i;
@@ -86,3 +86,4 @@ UINT8 getMachineType()
     STOP_COUNTER();
     PRINT_TIME(" 1M UINT64+");
 }
+*/
