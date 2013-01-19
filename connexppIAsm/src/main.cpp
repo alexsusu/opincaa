@@ -58,8 +58,11 @@
  *              NB: The io_unit modifications occured in setIOParams().  Calls to vwrite and vread remain backward compatible !
  *           - added new functions in io_unit/c_simulator
  *                          ::vwriteNonBlocking(void* Iou), ::vwriteIsEnded(), ::vwriteWaitEnd()
- *           and matching macros: IO_WRITE_BEGIN(); IO_WRITE_IS_ENDED(); IO_WRITE_WAIT_END();
- * v0.8.2    - bugfix? randPar() modified: x86 was compiling and running ok, arm was not.
+ *              and matching macros: IO_WRITE_BEGIN(); IO_WRITE_IS_ENDED(); IO_WRITE_WAIT_END();
+ *  v0.8.2   - bugfix? randPar() modified: x86 was compiling and running ok, arm was not.
+ *
+ *
+ *
  * Created on December 19, 2012, 3:32 PM
  *
  */
@@ -77,10 +80,10 @@
 #include "../include/test/speed_tests.h"
 #include "../include/test/simple_io_tests.h"
 #include "../include/test/basic_match_tests.h"
+#include "../include/test/crypto/bsDES/bs_des_tests.h"
 
 using namespace std;
 
-//STATIC_VECTOR_DEFINITIONS;
 // Make sure that batches do not overlap !
 // BNR = Batch NumBer
 
@@ -153,7 +156,6 @@ enum errorCodes
     INIT_FAILED
 };
 
-
 int main(int argc, char *argv[])
 {
     int i = 1;
@@ -175,6 +177,11 @@ int main(int argc, char *argv[])
         {
             cout << "Running in hardware mode" << endl;
             run_mode = REAL_HARDWARE_MODE;
+        }
+        else
+        {
+            bsDesTest();
+            return 0;
         }
     }
 
