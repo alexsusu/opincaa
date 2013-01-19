@@ -1001,6 +1001,7 @@ int test_Simple_All(bool stress)
     else
         cout<< testFails << " SimpleTests failed." <<endl;
 
+    //DEASM_BATCH(pADD_BNR);
     return testFails;
 }
 

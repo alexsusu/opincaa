@@ -165,7 +165,9 @@ void initRand()
 }
 INT32 randPar(INT32 limit)
 {
-    return (INT32)( limit * rand() / ( RAND_MAX + 1.0 ) );
+    INT64 result = limit;
+    result = result * rand() / ( RAND_MAX + 1.0 );
+    return (INT32)result;
 }
 
 void eatRand(int times)
@@ -177,13 +179,13 @@ void eatRand(int times)
 
 }
 
-INT64 randPar(INT64 limit)
-{
-	static int randTimes = 0;
-	randTimes++;
-	//printf(" Getting rand number for the %d-th time \n", randTimes);
-	return (INT64)( limit * rand() / ( RAND_MAX + 1.0 ) );
-}
+//INT64 randPar(INT64 limit)
+//{
+//	static int randTimes = 0;
+//	randTimes++;
+//	//printf(" Getting rand number for the %d-th time \n", randTimes);
+//	return (INT64)( limit * rand() / ( RAND_MAX + 1.0 ) );
+//}
 
 /**
     Computes sum of first "numbers" consecutive nubers starting with start.

@@ -58,8 +58,8 @@
  *              NB: The io_unit modifications occured in setIOParams().  Calls to vwrite and vread remain backward compatible !
  *           - added new functions in io_unit/c_simulator
  *                          ::vwriteNonBlocking(void* Iou), ::vwriteIsEnded(), ::vwriteWaitEnd()
-                and matching macros: IO_WRITE_BEGIN(); IO_WRITE_IS_ENDED(); IO_WRITE_WAIT_END();
- *
+ *           and matching macros: IO_WRITE_BEGIN(); IO_WRITE_IS_ENDED(); IO_WRITE_WAIT_END();
+ * v0.8.2    - bugfix? randPar() modified: x86 was compiling and running ok, arm was not.
  * Created on December 19, 2012, 3:32 PM
  *
  */
@@ -205,7 +205,7 @@ int main(int argc, char *argv[])
 	//else:
 	initRand();
 	//force seed
-	//srand(358529032);
+	//srand(648462746);
 	//eatRand(276);
 	//cout << "Starting IO ALL"<<endl;
 	//test_Simple_IO_All(true);
