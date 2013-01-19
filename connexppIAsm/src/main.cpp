@@ -80,7 +80,7 @@
 #include "../include/test/speed_tests.h"
 #include "../include/test/simple_io_tests.h"
 #include "../include/test/basic_match_tests.h"
-#include "../include/test/crypto/bsDES/bs_des_tests.h"
+//#include "../include/test/crypto/bsDES/bs_des_tests.h"
 
 using namespace std;
 
@@ -180,7 +180,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            bsDesTest();
+            //bsDesTest();
             return 0;
         }
     }

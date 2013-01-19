@@ -41,11 +41,6 @@
 		<Unit filename="include/core/vector.h" />
 		<Unit filename="include/core/vector_errors.h" />
 		<Unit filename="include/core/vector_registers.h" />
-		<Unit filename="include/test/crypto/bsDES/algo.h" />
-		<Unit filename="include/test/crypto/bsDES/bs_des_tests.h" />
-		<Unit filename="include/test/crypto/bsDES/sboxes.h" />
-		<Unit filename="include/test/crypto/bsDES/testdata.h" />
-		<Unit filename="include/test/crypto/bsDES/utils.h" />
 		<Unit filename="include/test/simple_io_tests.h" />
 		<Unit filename="include/test/simple_tests.h" />
 		<Unit filename="include/test/speed_tests.h" />
@@ -62,13 +57,6 @@
 		<Unit filename="src/core/vector_registers.cpp" />
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/test/basic_match_tests.cpp" />
-		<Unit filename="src/test/crypto/bsDES/algo.cpp" />
-		<Unit filename="src/test/crypto/bsDES/bsdes.cpp" />
-		<Unit filename="src/test/crypto/bsDES/sboxes.cpp" />
-		<Unit filename="src/test/crypto/bsDES/testdata.cpp" />
-		<Unit filename="src/test/crypto/bsDES/trial2a.cpp" />
-		<Unit filename="src/test/crypto/bsDES/trial2b.cpp" />
-		<Unit filename="src/test/crypto/bsDES/utils.cpp" />
 		<Unit filename="src/test/simple_io_tests.cpp" />
 		<Unit filename="src/test/simple_tests.cpp" />
 		<Unit filename="src/test/speed_tests.cpp" />
