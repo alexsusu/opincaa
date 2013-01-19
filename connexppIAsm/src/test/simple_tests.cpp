@@ -17,8 +17,6 @@
 #include <iomanip>
 using namespace std;
 
-//STATIC_VECTOR_DEFINITIONS;
-
 struct Dataset
 {
    INT32 Param1;
@@ -105,6 +103,20 @@ static void InitKernel_pAdd(int BatchNumber,INT32 Param1, INT32 Param2)
         EXECUTE_IN_ALL(
                         R1 = (UINT_PARAM)Param1;
                         R2 = R1 + (UINT_PARAM)Param2;
+                        //R3 = Param2 + R1;
+                        REDUCE(R2);
+                     )
+
+    END_BATCH(BatchNumber);
+}
+
+// pseudo instruction with zero
+static void InitKernel_pzAdd(int BatchNumber,INT32 Param1, INT32 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        EXECUTE_IN_ALL(
+                        R1 = (UINT_PARAM)(Param1 + Param2);
+                        R2 = R1 + 0;
                         //R3 = Param2 + R1;
                         REDUCE(R2);
                      )
@@ -491,6 +503,19 @@ static void InitKernel_Ishr(int BatchNumber,INT32 Param1, INT32 Param2)
     END_BATCH(BatchNumber);
 }
 
+// pseudo-instruction for mov
+static void InitKernel_pMov(int BatchNumber,INT32 Param1, INT32 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        EXECUTE_IN_ALL(
+                        R1 = Param1 + Param2;
+                        R2 = R1; // (R1 >> 0);
+                        REDUCE(R2);
+                      )
+
+    END_BATCH(BatchNumber);
+}
+
 static void InitKernel_Ishra(int BatchNumber,INT32 Param1, INT32 Param2)
 {
     BEGIN_BATCH(BatchNumber);
@@ -576,6 +601,17 @@ static void InitKernel_p2Multlo(int BatchNumber, INT32 Param1, INT32 Param2)
     END_BATCH(BatchNumber);
 }
 
+static void InitKernel_p2zMultlo(int BatchNumber, INT32 Param1, INT32 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        EXECUTE_IN_ALL(
+                        R0 = (Param1 + Param2);
+                        R1 = R0 * 0;
+                        REDUCE(R1);
+                    )
+    END_BATCH(BatchNumber);
+}
+
 static void InitKernel_Multhi(int BatchNumber, INT32 Param1, INT32 Param2)
 {
     BEGIN_BATCH(BatchNumber);
@@ -652,6 +688,7 @@ enum SimpleBatchNumbers
     MULTLO_BNR      ,
     pMULTLO_BNR     ,
     p2MULTLO_BNR    ,
+    p2zMULTLO_BNR   ,
 
     LDSH_BNR        ,
     MULTHI_BNR      ,
@@ -660,6 +697,7 @@ enum SimpleBatchNumbers
 
     ADD_BNR         ,
     pADD_BNR        ,
+    pzADD_BNR       ,
     sADD_BNR        ,
 
     EQ_BNR          ,
@@ -668,6 +706,7 @@ enum SimpleBatchNumbers
     NOT_BNR         ,
     SHR_BNR         ,
     ISHR_BNR        ,
+    pMOV_BNR        ,
 
     SUB_BNR         ,
     pSUB_BNR        ,
@@ -682,6 +721,7 @@ enum SimpleBatchNumbers
 
     SHRA_BNR        ,
     ISHRA_BNR       ,
+    PMOV_BNR        ,
 
     ADDC_BNR        ,
     pADDC_BNR       ,
@@ -720,6 +760,7 @@ static TestFunction TestFunctionTable[] =
 
     {ADD_BNR,"ADD",InitKernel_Add,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
     {pADD_BNR,"pADD",InitKernel_pAdd,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
+    {pzADD_BNR,"pzADD",InitKernel_pzAdd,{0,0,(0 + 0)*NUMBER_OF_MACHINES}},
     {sADD_BNR,"sADD",InitKernel_sAdd,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
 
     {ADDC_BNR,"ADDC",InitKernel_Addc,{0xf0,0x1,(0xf0 + 1 + 1)*NUMBER_OF_MACHINES}},
@@ -761,10 +802,14 @@ static TestFunction TestFunctionTable[] =
     {ISHL_BNR,"ISHL",InitKernel_Ishl,{0xabcd,4,((0xbcd0UL)*NUMBER_OF_MACHINES)}},
     {ISHR_BNR,"ISHR",InitKernel_Ishr,{0xabcd,4,((0x0abcUL)*NUMBER_OF_MACHINES)}},
     {ISHRA_BNR,"ISHRA",InitKernel_Ishra,{0xabcd,4,((0xfabcUL)*NUMBER_OF_MACHINES)}},
+    {PMOV_BNR,"pMOV",InitKernel_pMov,{0xabcd,4,(0xabcd + 4)*NUMBER_OF_MACHINES}},
 
     {MULTLO_BNR,"MULTLO",InitKernel_Multlo,{0x2,0x3,(0x2UL * 0x3UL)*NUMBER_OF_MACHINES}},
     {pMULTLO_BNR,"pMULTLO",InitKernel_pMultlo,{0x2,0x3,(0x2UL * 0x3UL)*NUMBER_OF_MACHINES}},
     {p2MULTLO_BNR,"p2MULTLO",InitKernel_p2Multlo,{0x2,0x3,(0x2UL * 0x3UL)*NUMBER_OF_MACHINES}},
+    {p2zMULTLO_BNR,"p2zMULTLO",InitKernel_p2zMultlo,{0x2,0x3,0}},
+
+
 
     {MULTHI_BNR,"MULTHI",InitKernel_Multhi,{0x8000,0x2,((0x8000UL * 0x2UL) >> 16)*NUMBER_OF_MACHINES}},
 
@@ -830,6 +875,7 @@ static void UpdateDatasetTable(int BatchNumber)
         case ADD_BNR        ://fallthrough
         case pADD_BNR       ://fallthrough
         case sADD_BNR       ://fallthrough
+        case pzADD_BNR      ://fallthrough
                 {
                     do{
                             TestFunctionTable[i].ds.Param1 = randPar(0x10000);

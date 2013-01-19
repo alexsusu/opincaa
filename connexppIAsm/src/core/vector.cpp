@@ -33,11 +33,22 @@
     int vector::dwErrorCounter;
     unsigned char vector::bEstimationMode;
 
+
+vector::vector(UINT_INSTRUCTION MainVal)
+{
+    mval = MainVal;
+    ival = NO_IVAL_MARKER;
+    imval = NO_IMVAL_MARKER;
+    //opcode = _ISHR; // for Assign (R0 = R1 via R0= ISHR(R1,0))
+    opcode = _NOP;
+}
+
 vector::vector(UINT_INSTRUCTION MainVal, UINT_INSTRUCTION intermediate_val)
 {
     mval = MainVal;
     ival = intermediate_val;
-    imval = 0;
+    imval = NO_IMVAL_MARKER;
+    //opcode = _ISHR; // for Assign (R0 = R1 via R0= ISHR(R1,0))
     opcode = _NOP;
 }
 
@@ -45,7 +56,7 @@ vector::vector(UINT_INSTRUCTION MainVal, UINT_INSTRUCTION intermediate_val, UINT
 {
     mval = MainVal;
     ival = intermediate_val;
-    imval = 0;
+    imval = NO_IMVAL_MARKER;
     opcode = op_code;
 }
 
@@ -172,7 +183,7 @@ vector vector::operator>>(UINT_PARAM imm_val)
 vector vector::operator[](vector other) // to use in read / write with LOCALSTORE_REG
 {
     if (mval != LOCALSTORE_MARKER) vectorError(ERR_NOT_LOCALSTORE);
-    imval = 0; // force avoid collision with LS[immediate_value]
+    imval = NO_IMVAL_MARKER; // force avoid collision with LS[immediate_value]
     ival = other.mval << (RIGHT_POS); // for write
     return vector(mval, ival, imval, _NOP); // for read
     /* keep nop by default as it might be read or write */
@@ -224,14 +235,14 @@ void vector::operator=(vector other)
     }
     else if (other.mval == LOCALSTORE_MARKER) //read from local sstore. "other" is vector_localstore[vector rX] !
     {
-        if (other.imval == 0) // LS[REG], non immediate
+        if (other.imval == NO_IMVAL_MARKER) // LS[REG], non immediate
             appendInstruction((_READ << OPCODE_9BITS_POS) + other.ival + mval);
         else // LS[value], immediate
             appendInstruction((_IREAD << OPCODE_6BITS_POS) + other.ival + mval);
     }
     else if (mval == LOCALSTORE_MARKER) //write in local sstore. "other" a vector rX !
     {
-        if (imval == 0) // LS[REG], non immediate
+        if (imval == NO_IMVAL_MARKER) // LS[REG], non immediate
             appendInstruction((_WRITE << OPCODE_9BITS_POS) + ival + (other.mval << LEFT_POS));
         else
             appendInstruction((_IWRITE << OPCODE_6BITS_POS) + ival + (other.mval << LEFT_POS));
@@ -243,7 +254,7 @@ void vector::operator=(vector other)
     // MULT from R3 = R1 * R2 or from R3 = R1 * 5.
     else if (other.opcode == _MULT)
     {
-        if (other.imval == 0)
+        if (other.imval == NO_IMVAL_MARKER)
         {
             // MULT = R1 * R2; R3 = _LO(MULT)
             appendInstruction((_MULT << OPCODE_9BITS_POS) + other.ival);
@@ -256,23 +267,29 @@ void vector::operator=(vector other)
             appendInstruction((other.opcode << OPCODE_9BITS_POS) + (mval << RIGHT_POS) + (other.ival + mval));
             appendInstruction((_MULT_LO << OPCODE_9BITS_POS) + mval);
 
-            other.imval = 0;
-            imval = 0;
+            other.imval = NO_IMVAL_MARKER;
+            imval = NO_IMVAL_MARKER;
         }
         opcode = _NOP;
         other.opcode = _NOP;
     }
     else // including MULT_LO / HI
     {
-        if (other.imval == 0)
-            appendInstruction((other.opcode << OPCODE_9BITS_POS) + (other.ival + mval));
+        if (other.imval == NO_IMVAL_MARKER)
+        {
+            // no intermediate value
+            if (other.ival == NO_IVAL_MARKER)
+                appendInstruction((_ISHR << OPCODE_9BITS_POS) + (other.mval << LEFT_POS) + mval);
+            else
+                appendInstruction((other.opcode << OPCODE_9BITS_POS) + (other.ival + mval));
+        }
         else
         {
             //printf("A: %d\n", other.imval);
             appendInstruction((_VLOAD << OPCODE_6BITS_POS) + ((other.imval << IMMEDIATE_VALUE_POS)  + mval));
             appendInstruction((other.opcode << OPCODE_9BITS_POS) + (mval << RIGHT_POS) + (other.ival + mval));
-            other.imval = 0;
-            imval = 0;
+            other.imval = NO_IMVAL_MARKER;
+            imval = NO_IMVAL_MARKER;
         }
         opcode = _NOP;
     }

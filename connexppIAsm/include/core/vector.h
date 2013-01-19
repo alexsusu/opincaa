@@ -117,10 +117,14 @@
 // There is no instruction opcode starting with FF, so there is no chance to mistake the SHIFTREG_MARKER
 // There is no instruction opcode starting with FF, so there is no chance to mistake the LOCALSTORE_MARKER
 // There is no instruction opcode starting with FF, so there is no chance to mistake the MULTIPLICATION_MARKER
-#define INDEX_MARKER    0xFFFFFFFF
-#define SHIFTREG_MARKER     0xFFFFFFFE
-#define LOCALSTORE_MARKER   0xFFFFFFFD
-#define MULTIPLICATION_MARKER 0xFFFFFFFC
+// There is no instruction opcode starting with FF, so there is no chance to mistake the NO_IMVAL_MARKER
+// There is no instruction opcode starting with FF, so there is no chance to mistake the NO_IVAL_MARKER
+#define INDEX_MARKER            0xFFFFFFFF
+#define SHIFTREG_MARKER         0xFFFFFFFE
+#define LOCALSTORE_MARKER       0xFFFFFFFD
+#define MULTIPLICATION_MARKER   0xFFFFFFFC
+#define NO_IMVAL_MARKER         0xFFFFFFFB
+#define NO_IVAL_MARKER          0xFFFFFFFA
 
 class vector
 {
@@ -179,6 +183,7 @@ class vector
         static int verifyBatchInstruction(UINT_INSTRUCTION Instruction);
 
         // methods: non-static
+        vector(UINT_INSTRUCTION MainValue);
         vector(UINT_INSTRUCTION MainValue, UINT_INSTRUCTION IntermediateValue);
         vector(UINT_INSTRUCTION MainValue, UINT_INSTRUCTION IntermediateValue, UINT_INSTRUCTION OpCode);
         vector(UINT_INSTRUCTION MainValue, UINT_INSTRUCTION IntermediateValue, UINT16 ImmVal, UINT_INSTRUCTION OpCode);

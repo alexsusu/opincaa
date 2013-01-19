@@ -60,9 +60,10 @@
  *                          ::vwriteNonBlocking(void* Iou), ::vwriteIsEnded(), ::vwriteWaitEnd()
  *              and matching macros: IO_WRITE_BEGIN(); IO_WRITE_IS_ENDED(); IO_WRITE_WAIT_END();
  *  v0.8.2   - bugfix? randPar() modified: x86 was compiling and running ok, arm was not.
- *
- *
- *
+ *  v0.8.3   - bugfix: pseudo-instructions can now use immediate value of 0.
+ *           - feature extension: pMov pseudo instruction ( R1 = R0 gets automatically translated to R1 = R0 >> 0 )
+ *			 - added new construction with only one param, the MainVal (therefore, Rx were redefined)
+ *			 - added simpleTests to check for bugfix and new feature correct operation
  * Created on December 19, 2012, 3:32 PM
  *
  */
@@ -80,7 +81,7 @@
 #include "../include/test/speed_tests.h"
 #include "../include/test/simple_io_tests.h"
 #include "../include/test/basic_match_tests.h"
-//#include "../include/test/crypto/bsDES/bs_des_tests.h"
+#include "../include/test/crypto/bsDES/bs_des_tests.h"
 
 using namespace std;
 
@@ -180,7 +181,9 @@ int main(int argc, char *argv[])
         }
         else
         {
-            //bsDesTest();
+            INIT(C_SIMULATION_MODE);
+            bsDesTest();
+            DEINIT();
             return 0;
         }
     }
