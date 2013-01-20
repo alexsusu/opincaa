@@ -267,9 +267,18 @@ class Image
        void setSlice(unsigned x, unsigned y, Image * slice);
 
        /*
+        * Converts the current image from RGB 3 bytes/pixel representation to
+        * Luma 1 byte/pixel representation. Croma information is lost;
+        * 
+        * @throws string if Image is already in Luma format
+        */
+       void convertRgbToLuma();
+       
+       /*
         * Dumps the image data to standard output stream
         */
        void dumpToConsole();
+       
        
     private:
         /*

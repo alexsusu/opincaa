@@ -613,6 +613,32 @@ void Image::setSlice(unsigned x, unsigned y, Image * slice)
 }
 
 /*
+ * Converts the current image from RGB 3 bytes/pixel representation to
+ * Luma 1 byte/pixel representation. Croma information is lost;
+ * 
+ * @throws string if Image is already in Luma format
+ */
+void Image::convertRgbToLuma()
+{
+    if(bytes_per_pixel == LUMA_BYTES_PER_PIXEL)
+    {
+        throw string("Image format is already in LUMA_BYTES_PER_PIXEL Image::convertRgbToLuma");
+    }
+    
+    for(unsigned i=0; i<width * height * bytes_per_pixel; i+=3)
+    {
+        unsigned char red   = buffer[i + 0];
+        unsigned char green = buffer[i + 1];
+        unsigned char blue  = buffer[i + 2];
+        double luma = 0.299 * red + 0.587 * green + 0.114 * blue;
+        buffer[i] = luma > 255 ? 255 : (unsigned char)luma;
+    }
+    
+    bytes_per_pixel = LUMA_BYTES_PER_PIXEL;
+    buffer_size = width * height * bytes_per_pixel;
+}
+
+/*
  * Dumps the image data to standard output stream
  */
 void Image::dumpToConsole()
