@@ -48,7 +48,7 @@ class Image
          * 
          * @param address The address where the image buffer should be written
          * 
-         * @throws *string if the specified address is NULL
+         * @throws string if the specified address is NULL
          */
         void writeTo(unsigned char * address);
         
@@ -62,7 +62,7 @@ class Image
          * @param pixel_data the pixed data containing bytes_per_pixel useful
          *       information
          * 
-         * @throws *string if the x or y values are outside the image boundaries
+         * @throws string if the x or y values are outside the image boundaries
          */
         void setPixel(unsigned x, unsigned y, int pixel_data);
         
@@ -74,7 +74,7 @@ class Image
          * @return the red, green, blue data stored in the return value's least 
          *      significat bytes
          * 
-         * @throws *string if the x or y values are outside the image boundaries
+         * @throws string if the x or y values are outside the image boundaries
          */
         int getPixel(unsigned x, unsigned y);
         
@@ -84,7 +84,7 @@ class Image
          * @param line_number the image line number
          * @return a copy of the image data at the specified line
          * 
-         * @throws *string if the line_number value is outside the image boundaries
+         * @throws string if the line_number value is outside the image boundaries
          */
         unsigned char* getLine(unsigned line_number);
         
@@ -94,7 +94,7 @@ class Image
          * @param line_number the image line number
          * @param line_buffer the buffer containing the line number
          * 
-         * @throws *string if the line_number value is outside the image boundaries
+         * @throws string if the line_number value is outside the image boundaries
          */
         void setLine(unsigned line_number, unsigned char * line_buffer);
         
@@ -106,7 +106,7 @@ class Image
         * @param line_number the image line number
         * @param line_buffer the buffer containing the line number
         * 
-        * @throws *string if the line_number value is outside the image boundaries
+        * @throws string if the line_number value is outside the image boundaries
         */
        void insertLine(unsigned line_number, unsigned char * line_buffer);
        
@@ -117,7 +117,7 @@ class Image
         * 
         * @param line_number the image line number
         * 
-        * @throws *string if the line_number value is outside the image boundaries
+        * @throws string if the line_number value is outside the image boundaries
         */
        void deleteLine(unsigned line_number);
        
@@ -127,7 +127,7 @@ class Image
         * @param column_number the image column number
         * @return a copy of the image data at the specified column
         * 
-        * @throws *string if the column_number value is outside the image boundaries
+        * @throws string if the column_number value is outside the image boundaries
         */
        unsigned char* getColumn(unsigned column_number);
        
@@ -137,7 +137,7 @@ class Image
         * @param column_number the image column number
         * @param column_buffer the buffer containing the column number
         * 
-        * @throws *string if the column_number value is outside the image boundaries
+        * @throws string if the column_number value is outside the image boundaries
         */
        void setColumn(unsigned column_number, unsigned char * column_buffer);
        
@@ -149,7 +149,7 @@ class Image
         * @param column_number the image column number
         * @param column_buffer the buffer containing the column number
         * 
-        * @throws *string if the column_number value is outside the image boundaries
+        * @throws string if the column_number value is outside the image boundaries
         */
        void insertColumn(unsigned column_number, unsigned char * column_buffer);
        
@@ -160,7 +160,7 @@ class Image
         * 
         * @param column_number the image line number
         * 
-        * @throws *string if the column_number value is outside the image boundaries
+        * @throws string if the column_number value is outside the image boundaries
         */
        void deleteColumn(unsigned column_number);
        
@@ -205,7 +205,7 @@ class Image
         * 
         * @param pad_size the amount of columns that should be removed
         *
-        * @throws *string if pad_size is larger than the actual image
+        * @throws string if pad_size is larger than the actual image
         */
        void unpadImageLeft(unsigned pad_size);
        
@@ -214,7 +214,7 @@ class Image
         * 
         * @param pad_size the amount of columns that should be removed
         *
-        * @throws *string if pad_size is larger than the actual image
+        * @throws string if pad_size is larger than the actual image
         */
        void unpadImageRight(unsigned pad_size);
        
@@ -223,7 +223,7 @@ class Image
         * 
         * @param pad_size the amount lines that should be removed
         * 
-        * @throws *string if pad_size is larger than the actual image
+        * @throws string if pad_size is larger than the actual image
         */
        void unpadImageTop(unsigned pad_size);
        
@@ -232,7 +232,7 @@ class Image
         * 
         * @param pad_size the amount lines that should be removed
         * 
-        * @throws *string if pad_size is larger than the actual image
+        * @throws string if pad_size is larger than the actual image
         */
        void unpadImageBottom(unsigned pad_size);
        
@@ -242,7 +242,7 @@ class Image
         * 
         * @param pad_size the amount of lines/columns that should be removed
         * 
-        * @throws *string if pad_size is larger than the actual image
+        * @throws string if pad_size is larger than the actual image
         */
        void unpadImage(unsigned pad_size);
       
