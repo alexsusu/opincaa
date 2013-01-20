@@ -344,6 +344,8 @@ static int connexFindMatches(int RunningMode,int LoadToRxBatchNumber,
     int TotalVectorChunksImg2 = (SiftDescriptors2->RealDescriptors + VECTORS_CHUNK_IMAGE2 - 1) / VECTORS_CHUNK_IMAGE2;
     int TotalVectorSubChunksImg2 = VECTORS_CHUNK_IMAGE2 / VECTORS_SUBCHUNK_IMAGE2;
     int UsingBuffer0or1;
+    int TimeStart;
+    int TotalTime = 0;
 
     //forall vector chunks in img1
     for(CurrentVectorChunkImg1 = 0; CurrentVectorChunkImg1 < TotalVectorChunksImg1; CurrentVectorChunkImg1++)
@@ -352,8 +354,10 @@ static int connexFindMatches(int RunningMode,int LoadToRxBatchNumber,
         //>>>>IO-load vector chunk on img1 to LocalStore[0...363]
         if (RunningMode == MODE_EXECUTE_FIND_MATCHES)
         {
+            TimeStart = GetMilliCount();
             IOU_CVCI1.preWriteVectors(0,SiftDescriptors1->SiftDescriptorsBasicFeatures[VECTORS_CHUNK_IMAGE1*CurrentVectorChunkImg1],VECTORS_CHUNK_IMAGE1);
             if (PASS != IO_WRITE_NOW(&IOU_CVCI1)) {   printf("Writing next CurrentVectorChunkImg1 to IO pipe, FAILED !"); return FAIL;}
+            TotalTime += GetMilliSpan(TimeStart);
         }
 
         //forall vector chunks in img2
@@ -364,9 +368,11 @@ static int connexFindMatches(int RunningMode,int LoadToRxBatchNumber,
             {
                 //>>>> BLOCKING_IO-load vector chunk on img2 to LocalStore[364 ... 364 + 329] or [364+329 ... 1023] (aka wait for loading;)
                 //if still have data, start NON_BLOCKING_IO-load vector chunk on img2 to LS[364+329 ... 1023] or [364 ... 364 + 329]
+                    TimeStart = GetMilliCount();
                     IOU_CVCI2.preWriteVectors(VECTORS_CHUNK_IMAGE1 + UsingBuffer0or1*VECTORS_CHUNK_IMAGE2,
                                                     SiftDescriptors2->SiftDescriptorsBasicFeatures[VECTORS_CHUNK_IMAGE2*CurrentVectorChunkImg2],
                                                         VECTORS_CHUNK_IMAGE2);
+                    TotalTime += GetMilliSpan(TimeStart);
                     if (PASS != IO_WRITE_NOW(&IOU_CVCI2))
                     {
                         printf("Writing next CurrentVectorChunkImg2 to IO pipe, FAILED !");
@@ -458,6 +464,7 @@ static int connexFindMatches(int RunningMode,int LoadToRxBatchNumber,
          }
     }
     SMs->RealMatches = SiftDescriptors1->RealDescriptors;
+    cout<<"Total IO time is "<<TotalTime<<" ms"<<endl;
     return PASS;
 }
 
