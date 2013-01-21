@@ -209,7 +209,7 @@ int main(int argc, char *argv[])
 			initRand();
 			//    test_Simple_All(true);
 			//    test_Speed_All();
-			    test_Simple_IO_All(true);
+            test_Simple_IO_All(true);
 		}
 	}
 	//else:

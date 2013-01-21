@@ -546,6 +546,24 @@ static void InitKernel_Cellshl(int BatchNumber, INT32 Param1, INT32 Param2)
     END_BATCH(BatchNumber);
 }
 
+/* Check if CELL_SHL is shift or rotation */
+static void InitKernel_Cellshlrol(int BatchNumber, INT32 Param1, INT32 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        EXECUTE_IN_ALL(
+                        R1 = INDEX;
+                        R2 = Param1;
+                        CELL_SHL(R1,R2);
+                        R3 = Param2;// avoid compiler warning
+                        for (int x=0;x < NUMBER_OF_MACHINES;x++)
+                            NOP;
+
+                        R4 = SHIFT_REG;
+                        REDUCE(R4);
+                      )
+    END_BATCH(BatchNumber);
+}
+
 static void InitKernel_Cellshr(int BatchNumber, INT32 Param1, INT32 Param2)
 {
     BEGIN_BATCH(BatchNumber);
@@ -677,6 +695,7 @@ enum SimpleBatchNumbers
     MULT_BNR        ,
     CELL_SHL_BNR    ,
     CELL_SHR_BNR    ,
+    CELL_SHLROL_BNR ,
     WRITE_BNR       ,
     WHERE_CARRY_BNR ,
     WHERE_EQ_BNR    ,
@@ -818,6 +837,8 @@ static TestFunction TestFunctionTable[] =
     {WHERE_CARRY_BNR,"WHERECRY",InitKernel_Wherecry,{(0x10000UL-10),50,118*50}},
 	{CELL_SHL_BNR,"CELLSHL",InitKernel_Cellshl,{2,5,5-2}},
     {CELL_SHR_BNR,"CELLSHR",InitKernel_Cellshr,{2,5,5+2}},
+    {CELL_SHLROL_BNR,"CELLSHLROL",InitKernel_Cellshlrol,{1024,0,0}},
+
 
 	//{IO_WRITE_BNR,"IO_WRITE1",1,0,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,0)},
     //{IO_WRITE_BNR,"IO_WRITE2",1024,1,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,NUMBER_OF_MACHINES)},

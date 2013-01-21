@@ -224,8 +224,8 @@ class cnxvector
         cnxvector operator^(UINT_PARAM);
         void operator^=(cnxvector);
 
-        cnxvector operator>(cnxvector);
-        cnxvector operator>(UINT_PARAM);
+        //cnxvector operator>(cnxvector);
+        //cnxvector operator>(UINT_PARAM);
 
         cnxvector operator[](cnxvector);
         cnxvector operator[](UINT_PARAM);
