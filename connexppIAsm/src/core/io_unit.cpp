@@ -29,37 +29,37 @@ io_unit::~io_unit()
     //dtor
 }
 
-void io_unit::setIOParams(int mode, int LsAddress, int NumOfVectors)
+void io_unit::setIOParams(int mode, int LsAddress, int NumOfCnxvectors)
 {
     Iouc.Descriptor.Mode = mode;
     Iouc.Descriptor.LsAddress = LsAddress;
-    Iouc.Descriptor.NumOfVectors = NumOfVectors - 1;
+    Iouc.Descriptor.NumOfCnxvectors = NumOfCnxvectors - 1;
 
-    Size = NumOfVectors * VECTOR_SIZE_IN_BYTES;
+    Size = NumOfCnxvectors * CNXVECTOR_SIZE_IN_BYTES;
     if (mode == WRITE_MODE) Size += DESCRIPTOR_SIZE_IN_BYTES;
 }
 
-void io_unit::preWriteVectors(UINT16 destAddress, UINT16 *srcAddress, UINT16 numVectors)
+void io_unit::preWritecnxvectors(UINT16 destAddress, UINT16 *srcAddress, UINT16 numcnxvectors)
 {
-    setIOParams(WRITE_MODE, destAddress,numVectors);
+    setIOParams(WRITE_MODE, destAddress,numcnxvectors);
     UINT32 *buff = Iouc.Content;
     UINT32 *dwsrcAddress = (UINT32*)srcAddress;
-    UINT32 *buffstop = buff + numVectors*VECTOR_SIZE_IN_DWORDS;
+    UINT32 *buffstop = buff + numcnxvectors*CNXVECTOR_SIZE_IN_DWORDS;
     while (buff < buffstop)
         *buff++ = *dwsrcAddress++;
 }
 /*
-void io_unit::preWriteVectorsAppend(UINT16 destAddress, UINT16 *srcAddress, UINT16 numVectors)
+void io_unit::preWritecnxvectorsAppend(UINT16 destAddress, UINT16 *srcAddress, UINT16 numcnxvectors)
 {
-    setIOParams(WRITE_MODE, destAddress,numVectors);
-    UINT32 *buff = Iouc.Content + (Iouc.Descriptor.NumOfVectors) * VECTOR_SIZE_IN_DWORDS);
+    setIOParams(WRITE_MODE, destAddress,numcnxvectors);
+    UINT32 *buff = Iouc.Content + (Iouc.Descriptor.NumOfCnxvectors) * CNXVECTOR_SIZE_IN_DWORDS);
     UINT32 *dwsrcAddress = (UINT32*)srcAddress;
-    UINT32 *buffstop = buff + numVectors*VECTOR_SIZE_IN_DWORDS;
+    UINT32 *buffstop = buff + numcnxvectors*CNXVECTOR_SIZE_IN_DWORDS;
 
     while (buff < buffstop)
         *buff++ = *dwsrcAddress++;
 
-    Iouc.Descriptor.NumOfVectors += numVectors;
+    Iouc.Descriptor.NumOfCnxvectors += numcnxvectors;
 }
 */
 
@@ -96,9 +96,9 @@ int io_unit::vwriteNonBlocking(void *_iou)
 	return result;
 }
 
-void io_unit::preReadVectors(UINT16 srcAddress,UINT16 numVectors)
+void io_unit::preReadcnxvectors(UINT16 srcAddress,UINT16 numcnxvectors)
 {
-    setIOParams(READ_MODE, srcAddress, numVectors);
+    setIOParams(READ_MODE, srcAddress, numcnxvectors);
 }
 
 int io_unit::vread(void *_iou)

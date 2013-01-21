@@ -6,7 +6,7 @@
  * O.P.I.N.C.A.A
  * OPINCAA is an kind of asm for connex-arm system, but with c-like compiler interface.
  *
- * Kernel = just like in CUDA, kernel is the function that runs in parallel on connex vector-machine.
+ * Kernel = just like in CUDA, kernel is the function that runs in parallel on connex cnxvector-machine.
  * Batch = a sequence of (logically) grouped instructions, that contain no more than one REDUCTION instruction
  *
  * Concept is:
@@ -54,7 +54,7 @@
  *           - Rx register (x= 0... 31) can also be addressed via R[x]
  *
  *  v0.8.1   - updated io_unit and simulator to comply with new ConnexIOSpec
- *             (confirmation of write, size of written/read vectors is (Vector Count + 1)
+ *             (confirmation of write, size of written/read cnxvectors is (cnxvector Count + 1)
  *              NB: The io_unit modifications occured in setIOParams().  Calls to vwrite and vread remain backward compatible !
  *           - added new functions in io_unit/c_simulator
  *                          ::vwriteNonBlocking(void* Iou), ::vwriteIsEnded(), ::vwriteWaitEnd()
@@ -72,7 +72,7 @@
 #include <limits>
 #include <string.h>
 
-#include "../include/core/vector_registers.h"
+#include "../include/core/cnxvector_registers.h"
 
 #include "../include/util/utils.h"
 #include "../include/util/timing.h"

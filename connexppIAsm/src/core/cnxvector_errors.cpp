@@ -1,25 +1,25 @@
 /*
- * File:   vector_errors.h
+ * File:   cnxvector_errors.h
  *
  * Error methods implementation.
  *
  */
 
-#include "../../include/core/vector.h"
+#include "../../include/core/cnxvector.h"
 
-void vector::vectorError(const char *Msg)
+void cnxvector::cnxvectorError(const char *Msg)
 {
     printf("Error: %s \n", Msg);
     dwErrorCounter++;
 }
 
-int vector::foundError()
+int cnxvector::foundError()
 {
     if (dwErrorCounter !=0) return -1;
         else return 0;
 }
 
-int vector::getNumErrors()
+int cnxvector::getNumErrors()
 {
     return dwErrorCounter;
 }

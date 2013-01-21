@@ -12,19 +12,19 @@ Transfers occur in the following sequence of events:
         #define MODE_READ 0
         #define MODE_WRITE 1
 
-        #define VECTOR_SIZE_IN_BYTES 256
-        #define VECTOR_SIZE_IN_WORDS (VECTOR_SIZE_IN_BYTES / 2)
-        #define VECTOR_SIZE_IN_DWORDS (VECTOR_SIZE_IN_WORDS / 2)
-        #define MAX_VECTORS 1024
+        #define CNXVECTOR_SIZE_IN_BYTES 256
+        #define CNXVECTOR_SIZE_IN_WORDS (CNXVECTOR_SIZE_IN_BYTES / 2)
+        #define CNXVECTOR_SIZE_IN_DWORDS (CNXVECTOR_SIZE_IN_WORDS / 2)
+        #define MAX_CNXVECTORS 1024
 
         #define DESCRIPTOR_SIZE_IN_DWORDS    3
         #define DESCRIPTOR_SIZE_IN_WORDS     (2*DESCRIPTOR_SIZE_IN_WORDS)
         #define DESCRIPTOR_SIZE_IN_BYTES     (4*DESCRIPTOR_SIZE_IN_DWORDS)
         #define MODE_POS                0
         #define LOCAL_STORE_ADDR_POS    1
-        #define VECTOR_COUNT_POS        2
+        #define CNXVECTOR_COUNT_POS        2
 
-        #define IO_UNIT_MAX_SIZE        (DESCRIPTOR_SIZE_IN_DWORDS + MAX_VECTORS * VECTOR_SIZE_IN_DWORDS)
+        #define IO_UNIT_MAX_SIZE        (DESCRIPTOR_SIZE_IN_DWORDS + MAX_CNXVECTORS * CNXVECTOR_SIZE_IN_DWORDS)
 
 enum IO_MODE
 {
@@ -36,7 +36,7 @@ struct IO_UNIT_DESCRIPTOR
 {
     UINT32 Mode;
     UINT32 LsAddress;
-    UINT32 NumOfVectors;
+    UINT32 NumOfCnxvectors;
 };
 
 struct IO_UNIT_CORE
@@ -51,12 +51,12 @@ class io_unit
         io_unit();
         virtual ~io_unit();
 
-        UINT16* getVector(int VectorNumber);
-        void setIOParams(int mode, int LsAddress, int NumOfVectors);
+        UINT16* getcnxvector(int cnxvectorNumber);
+        void setIOParams(int mode, int LsAddress, int NumOfCnxvectors);
 
-        void preWriteVectors(UINT16 destAddress, UINT16 *srcAddress, UINT16 numVectors);
-        //void preWriteVectorsAppend(UINT16 destAddress, UINT16 *srcAddress, UINT16 numVectors);
-        void preReadVectors(UINT16 srcAddress,UINT16 numVectors);
+        void preWritecnxvectors(UINT16 destAddress, UINT16 *srcAddress, UINT16 numcnxvectors);
+        //void preWritecnxvectorsAppend(UINT16 destAddress, UINT16 *srcAddress, UINT16 numcnxvectors);
+        void preReadcnxvectors(UINT16 srcAddress,UINT16 numcnxvectors);
 
         IO_UNIT_CORE* getIO_UNIT_CORE();
         INT32 getSize();

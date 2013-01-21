@@ -11,7 +11,7 @@
     #error DO NOT compile de_asm.cpp file separately from c_simulator.cpp
 #endif // ALLOW_DE_ASM_CPP
 
-#include "../../include/core/vector.h"
+#include "../../include/core/cnxvector.h"
 #include "../../include/core/opcodes.h"
 #include "../../include/c_simu/c_simulator.h"
 
@@ -100,9 +100,9 @@ int c_simulator::verifyBatch(UINT16 dwBatchNumber)
 {
     // verify opcodes
     UINT32 InstructionIndex = 0;
-    UINT32 InstructionIndexMax = vector::getInBatchCounter(dwBatchNumber);
+    UINT32 InstructionIndexMax = cnxvector::getInBatchCounter(dwBatchNumber);
     for (InstructionIndex = 0; InstructionIndex < InstructionIndexMax; InstructionIndex++)
-                    if (FAIL == verifyBatchInstruction(vector::getBatchInstruction(dwBatchNumber,InstructionIndex))) return FAIL;
+                    if (FAIL == verifyBatchInstruction(cnxvector::getBatchInstruction(dwBatchNumber,InstructionIndex))) return FAIL;
 
     return PASS;
 }
@@ -155,11 +155,11 @@ int c_simulator::printDeAsmBatch(UINT16 dwBatchNumber)
     printf("De-asm batch number %d :\n", dwBatchNumber);
 
     UINT32 InstructionIndex = 0;
-    UINT32 InstructionIndexMax = vector::getInBatchCounter(dwBatchNumber);
+    UINT32 InstructionIndexMax = cnxvector::getInBatchCounter(dwBatchNumber);
 
     for (InstructionIndex = 0; InstructionIndex < InstructionIndexMax; InstructionIndex++)
     {
-        CurrentInstruction = vector::getBatchInstruction(dwBatchNumber,InstructionIndex);
+        CurrentInstruction = cnxvector::getBatchInstruction(dwBatchNumber,InstructionIndex);
         printf("%6ld: ",index);
         index++;
 
@@ -229,8 +229,8 @@ UINT32 c_simulator::getMultiRedResult(UINT_RED_REG_VAL* RedResults, UINT32 Limit
     if (Limit >= CSimuRedCnt) Limit = CSimuRedCnt;
     for(UINT32 i = 0; i < Limit; i++) RedResults[i] = CSimuRed[i];
 
-    //try to simulate same behaviour as in named pipes (see vector::getMultiRedResult)
-    // please note that this is not a FIFO like the vector class has !
+    //try to simulate same behaviour as in named pipes (see cnxvector::getMultiRedResult)
+    // please note that this is not a FIFO like the cnxvector class has !
     CSimuRedCnt = CSimuRedCnt-Limit;
     return Limit*4;
 }
@@ -255,10 +255,10 @@ int c_simulator::DeAsmBatch(UINT16 dwBatchNumber)
     UINT32 InstructionIndex = 0;
     CSimuRedCnt = 0;
 
-    UINT32 InstructionIndexMax = vector::getInBatchCounter(dwBatchNumber);
+    UINT32 InstructionIndexMax = cnxvector::getInBatchCounter(dwBatchNumber);
     for (InstructionIndex = 0; InstructionIndex < InstructionIndexMax; InstructionIndex++)
     {
-        CI = vector::getBatchInstruction(dwBatchNumber,InstructionIndex);
+        CI = cnxvector::getBatchInstruction(dwBatchNumber,InstructionIndex);
         switch (((CI) >> OPCODE_6BITS_POS) & ((1 << OPCODE_6BITS_SIZE)-1))
             {
                 case _VLOAD: {FOR_ALL_ACTIVE_MACHINES( CSimuRegs[MACHINE][GET_DEST(CI)] = GET_IMM(CI));continue;}

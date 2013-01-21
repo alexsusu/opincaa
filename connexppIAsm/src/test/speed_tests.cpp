@@ -5,8 +5,8 @@
  * Speed tests for some instructions on connex machine.
  *
  */
-#include "../../include/core/vector_registers.h"
-#include "../../include/core/vector.h"
+#include "../../include/core/cnxvector_registers.h"
+#include "../../include/core/cnxvector.h"
 #include "../../include/core/io_unit.h"
 #include "../../include/c_simu/c_simulator.h"
 #include "../../include/util/utils.h"
@@ -16,7 +16,7 @@
 #include <iostream>
 #include <iomanip>
 using namespace std;
-//STATIC_VECTOR_DEFINITIONS;
+//STATIC_cnxvector_DEFINITIONS;
 
 struct SpeedTestFunction
 {
@@ -34,16 +34,16 @@ void dummy(int BatchNumber) {}
 
 /**
 
-Param1 = Number of vectors to be read.
+Param1 = Number of cnxvectors to be read.
 Param2 = Location in local store where we read from.
 
 */
-UINT16 data[NUMBER_OF_MACHINES * MAX_VECTORS];
+UINT16 data[NUMBER_OF_MACHINES * MAX_CNXVECTORS];
 int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
 {
     UINT16 destAddr = 0;
     UINT32 cnt;
-    const int num_vectors = (int)Param1;
+    const int num_cnxvectors = (int)Param1;
 
     UINT16 testResult = PASS;
 
@@ -53,14 +53,14 @@ int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
 
 
     // fill buffer with data to be written
-    for (cnt = 0; cnt < NUMBER_OF_MACHINES * num_vectors; cnt++) data[cnt] = cnt;
+    for (cnt = 0; cnt < NUMBER_OF_MACHINES * num_cnxvectors; cnt++) data[cnt] = cnt;
 
 
     // write data to local store
     {
         io_unit IOU;
         tstart = clock();
-            IOU.preWriteVectors(destAddr,data,num_vectors);
+            IOU.preWritecnxvectors(destAddr,data,num_cnxvectors);
         tend = clock();
         printf ("\nElasped time for write precache is %ld ms.\n", 1000 * (tend-tstart)/ CLOCKS_PER_SEC );
 
@@ -74,8 +74,8 @@ int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
 
     if (tend != tstart)
     {
-        printf ("Approx datarate is %ld vectors/s\n", (long int)(num_vectors * Param2 * CLOCKS_PER_SEC / (tend-tstart))); // ~4 Bytes per IO entry
-        printf ("Approx datarate is %ld KB/s\n", (long int)(num_vectors* VECTOR_SIZE_IN_BYTES * Param2 * CLOCKS_PER_SEC / 1000 / (tend-tstart))); // ~4 Bytes per IO entry
+        printf ("Approx datarate is %ld cnxvectors/s\n", (long int)(num_cnxvectors * Param2 * CLOCKS_PER_SEC / (tend-tstart))); // ~4 Bytes per IO entry
+        printf ("Approx datarate is %ld KB/s\n", (long int)(num_cnxvectors* CNXVECTOR_SIZE_IN_BYTES * Param2 * CLOCKS_PER_SEC / 1000 / (tend-tstart))); // ~4 Bytes per IO entry
         printf ("Approx delta time is %ld ms \n", 1000 * (tend-tstart)/CLOCKS_PER_SEC);
     }
     else
@@ -85,7 +85,7 @@ int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
     {
         io_unit IOU;
         tstart = clock();
-            IOU.preReadVectors(destAddr,num_vectors);
+            IOU.preReadcnxvectors(destAddr,num_cnxvectors);
         tend = clock();
         printf ("Elasped time for read precache is %ld ms.\n", 1000 * ((tend-tstart) / CLOCKS_PER_SEC ));
 
@@ -104,7 +104,7 @@ int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
 
         /* Check correctness of last read */
         UINT16* Content = (UINT16*)(IOU.getIO_UNIT_CORE())->Content;
-        for (cnt = 0; cnt < NUMBER_OF_MACHINES*num_vectors; cnt++)
+        for (cnt = 0; cnt < NUMBER_OF_MACHINES*num_cnxvectors; cnt++)
             if (data[cnt] != Content[cnt])
             {
                 testResult = FAIL;
@@ -114,7 +114,7 @@ int BenchmarkIoRWspeed(int BatchNumber,INT64 Param1, INT64 Param2)
                 printf ("ERROR Read data is %d \n", Content[cnt]);
                 if (cnt>0)
                     printf ("ERROR Left neighbour is at index %d and has value of %d (expected %d)\n", cnt-1, Content[cnt-1], data[cnt-1]);
-                if (cnt != NUMBER_OF_MACHINES*num_vectors-1)
+                if (cnt != NUMBER_OF_MACHINES*num_cnxvectors-1)
                     printf ("ERROR Right neighbour is at index %d and has value of %d (expected %d)\n", cnt+1, Content[cnt+1], data[cnt+1]);
                 break;
             }

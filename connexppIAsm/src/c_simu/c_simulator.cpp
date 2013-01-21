@@ -1,8 +1,8 @@
 /*
- * File:   vector.cpp
+ * File:   cnxvector.cpp
  *
  * OPINCAA's core implementation file.
- * Contains "vector" class where the usual operators (+, -, [], ^, &,* ....) are overloaded.
+ * Contains "cnxvector" class where the usual operators (+, -, [], ^, &,* ....) are overloaded.
  *
  * Unlike usual systems where operators perform the math operation, this class does
  *  instruction assembly according to spec ConnexISA.docx
@@ -65,19 +65,19 @@ int c_simulator::vwrite(void* Iou)
 
 int c_simulator::vwriteNonBlocking(void* Iou)
 {
-    UINT32 vectors;
+    UINT32 cnxvectors;
     IO_UNIT_CORE* pIOUC = ((io_unit*)Iou)->getIO_UNIT_CORE();
     UINT32 LSaddress = (pIOUC->Descriptor).LsAddress;
 
     //cout << "Trying to write " << ((io_unit*)Iou)->getSize() << "bytes "<<endl;
-    for (vectors = 0; vectors < pIOUC->Descriptor.NumOfVectors + 1; vectors++)
+    for (cnxvectors = 0; cnxvectors < pIOUC->Descriptor.NumOfCnxvectors + 1; cnxvectors++)
     {
 
         FOR_ALL_MACHINES(
                           if (MACHINE % 2 == 0)
-                            CSimuLocalStore[MACHINE][LSaddress + vectors] = pIOUC->Content[vectors * VECTOR_SIZE_IN_DWORDS + MACHINE/2] & REGISTER_SIZE_MASK;
+                            CSimuLocalStore[MACHINE][LSaddress + cnxvectors] = pIOUC->Content[cnxvectors * CNXVECTOR_SIZE_IN_DWORDS + MACHINE/2] & REGISTER_SIZE_MASK;
                           else
-                            CSimuLocalStore[MACHINE][LSaddress + vectors] = pIOUC->Content[vectors * VECTOR_SIZE_IN_DWORDS + MACHINE/2] >> REGISTER_SIZE;
+                            CSimuLocalStore[MACHINE][LSaddress + cnxvectors] = pIOUC->Content[cnxvectors * CNXVECTOR_SIZE_IN_DWORDS + MACHINE/2] >> REGISTER_SIZE;
                         );
     }
     CSimulatorVWriteCounter++;
@@ -102,27 +102,27 @@ void c_simulator::vwriteWaitEnd()
 
 #define IO_MODE_POS             0
 #define IO_LS_ADDRESS_POS       1
-#define IO_NUM_OF_VECTORS_POS   2
+#define IO_NUM_OF_cnxvectorS_POS   2
 #define IO_CONTENT_POS          3
 /*
 int c_simulator::vwrite(void* Iou)
 {
-    UINT32 vectors;
+    UINT32 cnxvectors;
     UINT32* pIOUC = (UINT32*)(((io_unit*)Iou)->getIO_UNIT_CORE());
 
     UINT32 IoMode = *(pIOUC + IO_MODE_POS);
     UINT32 LSaddress = *(pIOUC + IO_LS_ADDRESS_POS);
-    UINT32 NumOfVectors = *(pIOUC + IO_NUM_OF_VECTORS_POS);
+    UINT32 NumOfCnxvectors = *(pIOUC + IO_NUM_OF_cnxvectorS_POS);
     UINT32 *Content = pIOUC + IO_CONTENT_POS;
 
-    for (vectors = 0; vectors < NumOfVectors; vectors++)
+    for (cnxvectors = 0; cnxvectors < NumOfCnxvectors; cnxvectors++)
     {
 
         FOR_ALL_MACHINES(
                           if (MACHINE % 2 == 0)
-                            CSimuLocalStore[MACHINE][LSaddress + vectors] = *((UINT32*)(Content + vectors * VECTOR_SIZE_IN_DWORDS + MACHINE/2)) & REGISTER_SIZE_MASK;
+                            CSimuLocalStore[MACHINE][LSaddress + cnxvectors] = *((UINT32*)(Content + cnxvectors * CNXVECTOR_SIZE_IN_DWORDS + MACHINE/2)) & REGISTER_SIZE_MASK;
                           else
-                            CSimuLocalStore[MACHINE][LSaddress + vectors] = *((UINT32*)(Content + vectors * VECTOR_SIZE_IN_DWORDS + MACHINE/2)) >> REGISTER_SIZE;
+                            CSimuLocalStore[MACHINE][LSaddress + cnxvectors] = *((UINT32*)(Content + cnxvectors * CNXVECTOR_SIZE_IN_DWORDS + MACHINE/2)) >> REGISTER_SIZE;
                         );
     }
     return PASS;
@@ -131,17 +131,17 @@ int c_simulator::vwrite(void* Iou)
 
 int c_simulator::vread(void* Iou)
 {
-    UINT32 vectors;
+    UINT32 cnxvectors;
     IO_UNIT_CORE* pIOUC = ((io_unit*)Iou)->getIO_UNIT_CORE();
     UINT32 LSaddress = (pIOUC->Descriptor).LsAddress;
     assert(CSimulatorVWriteCounter ==0);
-    for (vectors = 0; vectors < pIOUC->Descriptor.NumOfVectors + 1; vectors++)
+    for (cnxvectors = 0; cnxvectors < pIOUC->Descriptor.NumOfCnxvectors + 1; cnxvectors++)
     {
         int MACHINE;
         for (MACHINE = 0; MACHINE < NUMBER_OF_MACHINES; MACHINE+=2)
-            pIOUC->Content[vectors * VECTOR_SIZE_IN_DWORDS + MACHINE/2] =
-                (CSimuLocalStore[MACHINE + 1][LSaddress + vectors] << REGISTER_SIZE) +
-                                            CSimuLocalStore[MACHINE][LSaddress + vectors];
+            pIOUC->Content[cnxvectors * CNXVECTOR_SIZE_IN_DWORDS + MACHINE/2] =
+                (CSimuLocalStore[MACHINE + 1][LSaddress + cnxvectors] << REGISTER_SIZE) +
+                                            CSimuLocalStore[MACHINE][LSaddress + cnxvectors];
 
     }
     return PASS;

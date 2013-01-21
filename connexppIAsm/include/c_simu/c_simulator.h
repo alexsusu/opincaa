@@ -1,9 +1,8 @@
 /*
- * File:   vector.h
+ * File:   c_simulator.h
  *
- * Counterpart for vector.c
+ * Counterpart for c_simulator.cpp
  * Contains class definition and some very useful macros.
- *
  */
 
 #ifndef C_SIMULATOR_H
@@ -94,10 +93,12 @@ class c_simulator
         virtual ~c_simulator();
 		static UINT_RED_REG_VAL CSimuRed[C_SIMU_RED_MAX];
 		static UINT32 CSimuRedCnt;
+
+        static UINT_REGVALUE CSimuLocalStore[NUMBER_OF_MACHINES][LOCAL_STORE_SIZE];
+        static UINT_REGVALUE CSimuRegs[NUMBER_OF_MACHINES][REGISTER_FILE_SIZE];
+
     private:
         //vars
-        static UINT_REGVALUE CSimuRegs[NUMBER_OF_MACHINES][REGISTER_FILE_SIZE];
-        static UINT_REGVALUE CSimuLocalStore[NUMBER_OF_MACHINES][LOCAL_STORE_SIZE];
         static UINT8 CSimuActiveFlags[NUMBER_OF_MACHINES];
         static UINT8 CSimuCarryFlags[NUMBER_OF_MACHINES];
         static UINT8 CSimuEqFlags[NUMBER_OF_MACHINES];

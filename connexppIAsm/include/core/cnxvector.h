@@ -1,43 +1,43 @@
 /*
- * File:   vector.h
+ * File:   cnxvector.h
  *
- * Counterpart for vector.c
+ * Counterpart for cnxvector.c
  * Contains class definition and some very useful macros.
  *
  */
 
-#ifndef VECTOR_H
-#define VECTOR_H
+#ifndef CNXVECTOR_H
+#define CNXVECTOR_H
 
 //#include <stdlib.h>
 #include <stdio.h>
 #include "../util/utils.h"
 #include <stdlib.h>
-#include "vector_errors.h"
+#include "cnxvector_errors.h"
 
 
 #define NUMBER_OF_BATCHES 100
 #define MAX_MULTIRED_DWORDS (2*1024*1024) // seems that there is a problem with linux, trying to read more tham 8 MB.
 
 #ifndef _MSC_VER //MS C++ compiler
-	#define STATIC_VECTOR_DEFINITIONS\
-        UINT_INSTRUCTION* vector::dwBatch[NUMBER_OF_BATCHES];\
-        UINT32 vector::dwInBatchCounter[NUMBER_OF_BATCHES];\
-        UINT16 vector::dwBatchIndex;\
-        int vector::pipe_read_32;\
-        int vector::pipe_write_32;\
-        int vector::dwErrorCounter;\
-        unsigned char vector::bEstimationMode;
+	#define STATIC_cnxvector_DEFINITIONS\
+        UINT_INSTRUCTION* cnxvector::dwBatch[NUMBER_OF_BATCHES];\
+        UINT32 cnxvector::dwInBatchCounter[NUMBER_OF_BATCHES];\
+        UINT16 cnxvector::dwBatchIndex;\
+        int cnxvector::pipe_read_32;\
+        int cnxvector::pipe_write_32;\
+        int cnxvector::dwErrorCounter;\
+        unsigned char cnxvector::bEstimationMode;
 
 #else
-	#define STATIC_VECTOR_DEFINITIONS\
-        UINT_INSTRUCTION* vector::dwBatch[NUMBER_OF_BATCHES];\
-        UINT32 vector::dwInBatchCounter[NUMBER_OF_BATCHES];\
-        UINT16 vector::dwBatchIndex;\
-        int vector::pipe_read_32;\
-        int vector::pipe_write_32;\
-        int vector::dwErrorCounter;\
-        unsigned char vector::bEstimationMode;
+	#define STATIC_cnxvector_DEFINITIONS\
+        UINT_INSTRUCTION* cnxvector::dwBatch[NUMBER_OF_BATCHES];\
+        UINT32 cnxvector::dwInBatchCounter[NUMBER_OF_BATCHES];\
+        UINT16 cnxvector::dwBatchIndex;\
+        int cnxvector::pipe_read_32;\
+        int cnxvector::pipe_write_32;\
+        int cnxvector::dwErrorCounter;\
+        unsigned char cnxvector::bEstimationMode;
 
 #endif
 
@@ -53,48 +53,48 @@
                         {\
                             if (BatchLoopTimes == 1)\
                             {\
-                                vector::bEstimationMode = 1;\
-                                vector::setBatchIndex(x);\
+                                cnxvector::bEstimationMode = 1;\
+                                cnxvector::setBatchIndex(x);\
                             }\
                             else \
                             {\
-                                vector::bEstimationMode = 0;\
-                                if (vector::dwBatch[vector::dwBatchIndex] != NULL)\
-                                    free((UINT_INSTRUCTION*)vector::dwBatch[vector::dwBatchIndex]);\
-                                /*printf("Alloc mem for batch size of %ld slots \n", vector::dwInBatchCounter[vector::dwBatchIndex]);*/\
-                                vector::dwBatch[vector::dwBatchIndex] = (UINT_INSTRUCTION*)malloc(sizeof(UINT_INSTRUCTION) \
-                                                                        * vector::dwInBatchCounter[vector::dwBatchIndex]);\
-                                if (vector::dwBatch[vector::dwBatchIndex] == NULL)\
-                                    vector::vectorError(ERR_NOT_ENOUGH_MEMORY);\
+                                cnxvector::bEstimationMode = 0;\
+                                if (cnxvector::dwBatch[cnxvector::dwBatchIndex] != NULL)\
+                                    free((UINT_INSTRUCTION*)cnxvector::dwBatch[cnxvector::dwBatchIndex]);\
+                                /*printf("Alloc mem for batch size of %ld slots \n", cnxvector::dwInBatchCounter[cnxvector::dwBatchIndex]);*/\
+                                cnxvector::dwBatch[cnxvector::dwBatchIndex] = (UINT_INSTRUCTION*)malloc(sizeof(UINT_INSTRUCTION) \
+                                                                        * cnxvector::dwInBatchCounter[cnxvector::dwBatchIndex]);\
+                                if (cnxvector::dwBatch[cnxvector::dwBatchIndex] == NULL)\
+                                    cnxvector::cnxvectorError(ERR_NOT_ENOUGH_MEMORY);\
                                     \
-                                vector::dwInBatchCounter[vector::dwBatchIndex] = 0;\
+                                cnxvector::dwInBatchCounter[cnxvector::dwBatchIndex] = 0;\
                             }
 
 #define END_BATCH(x)    }
 
 //#define BATCH(x) x
 
-#define REDUCE(x)       vector::reduce(x)
-#define ADDC(x,y)       vector::addc(x,y)
-#define SUBC(x,y)       vector::subc(x,y)
-#define ULT(x,y)        vector::ult(x,y)
-#define SHRA(x,y)       vector::shra(x,y)
-#define ISHRA(x,y)      vector::ishra(x,y)
-#define CELL_SHL(x,y)   vector::cellshl(x,y)
-#define CELL_SHR(x,y)   vector::cellshr(x,y)
+#define REDUCE(x)       cnxvector::reduce(x)
+#define ADDC(x,y)       cnxvector::addc(x,y)
+#define SUBC(x,y)       cnxvector::subc(x,y)
+#define ULT(x,y)        cnxvector::ult(x,y)
+#define SHRA(x,y)       cnxvector::shra(x,y)
+#define ISHRA(x,y)      cnxvector::ishra(x,y)
+#define CELL_SHL(x,y)   cnxvector::cellshl(x,y)
+#define CELL_SHR(x,y)   cnxvector::cellshr(x,y)
 
-#define _LOW(x)       vector::multlo(x)
-#define _HIGH(x)       vector::multhi(x)
+#define _LOW(x)       cnxvector::multlo(x)
+#define _HIGH(x)       cnxvector::multhi(x)
 
-#define NOP             vector::nop()
+#define NOP             cnxvector::nop()
 
-#define EXECUTE_IN_ALL(x)         vector::EndWhere();x;
-#define EXECUTE_WHERE_CARRY(x)    vector::WhereCry();x;
-#define EXECUTE_WHERE_EQ(x)        vector::WhereEq();x;
-#define EXECUTE_WHERE_LT(x)        vector::WhereLt();x;
+#define EXECUTE_IN_ALL(x)         cnxvector::EndWhere();x;
+#define EXECUTE_WHERE_CARRY(x)    cnxvector::WhereCry();x;
+#define EXECUTE_WHERE_EQ(x)        cnxvector::WhereEq();x;
+#define EXECUTE_WHERE_LT(x)        cnxvector::WhereLt();x;
 
-#define FOUND_ERROR()                vector::foundError()
-#define GET_NUM_ERRORS()             vector::getNumErrors()
+#define FOUND_ERROR()                cnxvector::foundError()
+#define GET_NUM_ERRORS()             cnxvector::getNumErrors()
 
 #define UINT_PARAM UINT32
 
@@ -126,7 +126,7 @@
 #define NO_IMVAL_MARKER         0xFFFFFFFB
 #define NO_IVAL_MARKER          0xFFFFFFFA
 
-class vector
+class cnxvector
 {
     public:
         //vars: static
@@ -140,24 +140,24 @@ class vector
         //methods: static
         static void appendInstruction(UINT_INSTRUCTION instr);
 
-        static vector addc(vector other_left, vector other_right);
-        static vector addc(vector other_left, UINT_PARAM value);
+        static cnxvector addc(cnxvector other_left, cnxvector other_right);
+        static cnxvector addc(cnxvector other_left, UINT_PARAM value);
 
-        static vector subc(vector other_left, vector other_right);
-        static vector subc(vector other_left, UINT_PARAM value);
+        static cnxvector subc(cnxvector other_left, cnxvector other_right);
+        static cnxvector subc(cnxvector other_left, UINT_PARAM value);
 
-        static vector shra(vector other_left, vector other_right);
-        static vector ishra(vector other_left, UINT_PARAM value);
+        static cnxvector shra(cnxvector other_left, cnxvector other_right);
+        static cnxvector ishra(cnxvector other_left, UINT_PARAM value);
 
-        static vector multhi(vector mult);
-        static vector multlo(vector mult);
+        static cnxvector multhi(cnxvector mult);
+        static cnxvector multlo(cnxvector mult);
 
-        static void cellshl(vector other_left, vector other_right);
-        static void cellshr(vector other_left, vector other_right);
+        static void cellshl(cnxvector other_left, cnxvector other_right);
+        static void cellshr(cnxvector other_left, cnxvector other_right);
 
-        static void reduce(vector other_left);
-        static vector ult(vector other_left, vector other_right);
-        static vector ult(vector other_left, UINT_PARAM value);
+        static void reduce(cnxvector other_left);
+        static cnxvector ult(cnxvector other_left, cnxvector other_right);
+        static cnxvector ult(cnxvector other_left, UINT_PARAM value);
 
         static void onlyOpcode(UINT_INSTRUCTION opcode);
 
@@ -167,7 +167,7 @@ class vector
         static void WhereLt();
         static void EndWhere();
 
-        static void vectorError(const char*);
+        static void cnxvectorError(const char*);
         static int foundError();
         static int getNumErrors();
 
@@ -183,58 +183,58 @@ class vector
         static int verifyBatchInstruction(UINT_INSTRUCTION Instruction);
 
         // methods: non-static
-        vector(UINT_INSTRUCTION MainValue);
-        vector(UINT_INSTRUCTION MainValue, UINT_INSTRUCTION IntermediateValue);
-        vector(UINT_INSTRUCTION MainValue, UINT_INSTRUCTION IntermediateValue, UINT_INSTRUCTION OpCode);
-        vector(UINT_INSTRUCTION MainValue, UINT_INSTRUCTION IntermediateValue, UINT16 ImmVal, UINT_INSTRUCTION OpCode);
-        virtual ~vector();
+        cnxvector(UINT_INSTRUCTION MainValue);
+        cnxvector(UINT_INSTRUCTION MainValue, UINT_INSTRUCTION IntermediateValue);
+        cnxvector(UINT_INSTRUCTION MainValue, UINT_INSTRUCTION IntermediateValue, UINT_INSTRUCTION OpCode);
+        cnxvector(UINT_INSTRUCTION MainValue, UINT_INSTRUCTION IntermediateValue, UINT16 ImmVal, UINT_INSTRUCTION OpCode);
+        virtual ~cnxvector();
 
         // methods: non-static : overloaded operators
-        vector operator+(vector);
-        vector operator+(UINT_PARAM);
-        void operator+=(vector);
+        cnxvector operator+(cnxvector);
+        cnxvector operator+(UINT_PARAM);
+        void operator+=(cnxvector);
 
-        vector operator-(vector);
-        vector operator-(UINT_PARAM);
-        void operator-=(vector);
+        cnxvector operator-(cnxvector);
+        cnxvector operator-(UINT_PARAM);
+        void operator-=(cnxvector);
 
-        vector operator*(vector);
-        vector operator*(UINT_PARAM);
+        cnxvector operator*(cnxvector);
+        cnxvector operator*(UINT_PARAM);
 
-        void operator=(vector);
+        void operator=(cnxvector);
         void operator=(UINT_PARAM);
 
-        vector operator~(void);
+        cnxvector operator~(void);
 
-        vector operator|(vector);
-        vector operator|(UINT_PARAM);
-        void operator|=(vector);
+        cnxvector operator|(cnxvector);
+        cnxvector operator|(UINT_PARAM);
+        void operator|=(cnxvector);
 
-        vector operator&(vector);
-        vector operator&(UINT_PARAM);
-        void operator&=(vector);
+        cnxvector operator&(cnxvector);
+        cnxvector operator&(UINT_PARAM);
+        void operator&=(cnxvector);
 
-        vector operator==(vector);
-        vector operator==(UINT_PARAM);
+        cnxvector operator==(cnxvector);
+        cnxvector operator==(UINT_PARAM);
 
-        vector operator<(vector);
-        vector operator<(UINT_PARAM);
+        cnxvector operator<(cnxvector);
+        cnxvector operator<(UINT_PARAM);
 
-        vector operator^(vector);
-        vector operator^(UINT_PARAM);
-        void operator^=(vector);
+        cnxvector operator^(cnxvector);
+        cnxvector operator^(UINT_PARAM);
+        void operator^=(cnxvector);
 
-        vector operator>(vector);
-        vector operator>(UINT_PARAM);
+        cnxvector operator>(cnxvector);
+        cnxvector operator>(UINT_PARAM);
 
-        vector operator[](vector);
-        vector operator[](UINT_PARAM);
+        cnxvector operator[](cnxvector);
+        cnxvector operator[](UINT_PARAM);
 
-        vector operator<<(vector);//shl
-        vector operator<<(UINT_PARAM);//ishl
+        cnxvector operator<<(cnxvector);//shl
+        cnxvector operator<<(UINT_PARAM);//ishl
 
-        vector operator>>(vector);//shr
-        vector operator>>(UINT_PARAM);//ishr
+        cnxvector operator>>(cnxvector);//shr
+        cnxvector operator>>(UINT_PARAM);//ishr
 
         static UINT_INSTRUCTION getBatchInstruction(UINT16 BI, UINT32 index);
         static UINT32 getInBatchCounter(UINT16 BI);
@@ -247,4 +247,4 @@ class vector
         UINT_INSTRUCTION opcode;
 };
 
-#endif // VECTOR_H
+#endif // CNXVECTOR_H

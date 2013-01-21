@@ -18,7 +18,7 @@ LIBDIR =
 LIB = 
 LDFLAGS = 
 
-INC_DEBUG =  $(INC)
+INC_DEBUG =  $(INC) -Iinclude -Iinclude/util
 CFLAGS_DEBUG =  $(CFLAGS) -g
 RESINC_DEBUG =  $(RESINC)
 RCFLAGS_DEBUG =  $(RCFLAGS)
@@ -28,15 +28,10 @@ LDFLAGS_DEBUG =  $(LDFLAGS)
 OBJDIR_DEBUG = obj/Debug
 DEP_DEBUG = 
 OUT_DEBUG = bin/Debug/connexppAsm
-OUT_IMG_TEST = bin/Debug/image_test
 
-OBJ_DEBUG = $(OBJDIR_DEBUG)/src/util/utils.o $(OBJDIR_DEBUG)/src/util/timing.o $(OBJDIR_DEBUG)/src/test/speed_tests.o $(OBJDIR_DEBUG)/src/test/simple_tests.o $(OBJDIR_DEBUG)/src/test/simple_io_tests.o $(OBJDIR_DEBUG)/src/test/basic_match_tests.o $(OBJDIR_DEBUG)/src/main.o $(OBJDIR_DEBUG)/src/core/vector_registers.o $(OBJDIR_DEBUG)/src/core/vector_errors.o $(OBJDIR_DEBUG)/src/core/vector.o $(OBJDIR_DEBUG)/src/core/io_unit.o $(OBJDIR_DEBUG)/src/c_simu/c_simulator.o $(OBJDIR_DEBUG)/src/api/wrapper/Image.o
-OBJ_IMG_TEST = $(OBJDIR_DEBUG)/src/api/wrapper/Image.o $(OBJDIR_DEBUG)/src/image_test.o 
+OBJ_DEBUG = $(OBJDIR_DEBUG)/src/util/utils.o $(OBJDIR_DEBUG)/src/util/tinythread.o $(OBJDIR_DEBUG)/src/util/timing.o $(OBJDIR_DEBUG)/src/test/speed_tests.o $(OBJDIR_DEBUG)/src/test/simple_tests.o $(OBJDIR_DEBUG)/src/test/simple_io_tests.o $(OBJDIR_DEBUG)/src/test/basic_match_tests.o $(OBJDIR_DEBUG)/src/main.o $(OBJDIR_DEBUG)/src/core/io_unit.o $(OBJDIR_DEBUG)/src/core/cnxvector_registers.o $(OBJDIR_DEBUG)/src/core/cnxvector_errors.o $(OBJDIR_DEBUG)/src/core/cnxvector.o $(OBJDIR_DEBUG)/src/c_simu/c_simulator.o
 
 all: debug
-
-wrapper_test: $(OBJ_IMG_TEST)
-	$(LD) $(LDFLAGS_DEBUG) $(LIBDIR_DEBUG) $(OBJ_IMG_TEST) $(LIB_DEBUG) -o $(OUT_IMG_TEST)
 
 clean: clean_debug
 
@@ -47,7 +42,6 @@ before_debug:
 	test -d $(OBJDIR_DEBUG)/src || mkdir -p $(OBJDIR_DEBUG)/src
 	test -d $(OBJDIR_DEBUG)/src/core || mkdir -p $(OBJDIR_DEBUG)/src/core
 	test -d $(OBJDIR_DEBUG)/src/c_simu || mkdir -p $(OBJDIR_DEBUG)/src/c_simu
-	test -d $(OBJDIR_DEBUG)/src/api/wrapper || mkdir -p $(OBJDIR_DEBUG)/src/api/wrapper
 
 after_debug: 
 
@@ -58,6 +52,9 @@ out_debug: $(OBJ_DEBUG) $(DEP_DEBUG)
 
 $(OBJDIR_DEBUG)/src/util/utils.o: src/util/utils.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/util/utils.cpp -o $(OBJDIR_DEBUG)/src/util/utils.o
+
+$(OBJDIR_DEBUG)/src/util/tinythread.o: src/util/tinythread.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/util/tinythread.cpp -o $(OBJDIR_DEBUG)/src/util/tinythread.o
 
 $(OBJDIR_DEBUG)/src/util/timing.o: src/util/timing.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/util/timing.cpp -o $(OBJDIR_DEBUG)/src/util/timing.o
@@ -77,27 +74,20 @@ $(OBJDIR_DEBUG)/src/test/basic_match_tests.o: src/test/basic_match_tests.cpp
 $(OBJDIR_DEBUG)/src/main.o: src/main.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/main.cpp -o $(OBJDIR_DEBUG)/src/main.o
 
-$(OBJDIR_DEBUG)/src/core/vector_registers.o: src/core/vector_registers.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/core/vector_registers.cpp -o $(OBJDIR_DEBUG)/src/core/vector_registers.o
-
-$(OBJDIR_DEBUG)/src/core/vector_errors.o: src/core/vector_errors.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/core/vector_errors.cpp -o $(OBJDIR_DEBUG)/src/core/vector_errors.o
-
-$(OBJDIR_DEBUG)/src/core/vector.o: src/core/vector.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/core/vector.cpp -o $(OBJDIR_DEBUG)/src/core/vector.o
-
 $(OBJDIR_DEBUG)/src/core/io_unit.o: src/core/io_unit.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/core/io_unit.cpp -o $(OBJDIR_DEBUG)/src/core/io_unit.o
 
+$(OBJDIR_DEBUG)/src/core/cnxvector_registers.o: src/core/cnxvector_registers.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/core/cnxvector_registers.cpp -o $(OBJDIR_DEBUG)/src/core/cnxvector_registers.o
+
+$(OBJDIR_DEBUG)/src/core/cnxvector_errors.o: src/core/cnxvector_errors.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/core/cnxvector_errors.cpp -o $(OBJDIR_DEBUG)/src/core/cnxvector_errors.o
+
+$(OBJDIR_DEBUG)/src/core/cnxvector.o: src/core/cnxvector.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/core/cnxvector.cpp -o $(OBJDIR_DEBUG)/src/core/cnxvector.o
+
 $(OBJDIR_DEBUG)/src/c_simu/c_simulator.o: src/c_simu/c_simulator.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/c_simu/c_simulator.cpp -o $(OBJDIR_DEBUG)/src/c_simu/c_simulator.o
-
-$(OBJDIR_DEBUG)/src/api/wrapper/Image.o: src/api/wrapper/Image.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/api/wrapper/Image.cpp -o $(OBJDIR_DEBUG)/src/api/wrapper/Image.o
-
-$(OBJDIR_DEBUG)/src/image_test.o: src/image_test.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/image_test.cpp -o $(OBJDIR_DEBUG)/src/image_test.o
-
 
 clean_debug: 
 	rm -f $(OBJ_DEBUG) $(OUT_DEBUG)
@@ -107,7 +97,6 @@ clean_debug:
 	rm -rf $(OBJDIR_DEBUG)/src
 	rm -rf $(OBJDIR_DEBUG)/src/core
 	rm -rf $(OBJDIR_DEBUG)/src/c_simu
-	rm -rf $(OBJDIR_DEBUG)/src/api
 
 .PHONY: before_debug after_debug clean_debug
 

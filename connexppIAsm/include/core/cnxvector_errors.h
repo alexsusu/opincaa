@@ -1,14 +1,14 @@
 /*
- * File:   vector_errors.h
+ * File:   cnxvector_errors.h
  *
  *
  *
  */
 
-#ifndef VECTOR_ERRORS_H
-#define VECTOR_ERRORS_H
+#ifndef cnxvector_ERRORS_H
+#define cnxvector_ERRORS_H
 
-#include "vector.h"
+#include "cnxvector.h"
 
 #define IMM_VAL_MAX 0xFFFF
 #define IMM_VAL_SIGNED_MIN -32768

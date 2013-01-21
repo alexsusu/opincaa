@@ -1,31 +1,31 @@
 /*
- * File:   vector_registers.cpp
+ * File:   cnxvector_registers.cpp
  *
- * Contains the only allowed vector objects.
- * INDEX is a special vector-register that is used for ldix instruction
- * SHIFT_REG is a special vector-register that is used for ldsh instruction
+ * Contains the only allowed cnxvector objects.
+ * INDEX is a special cnxvector-register that is used for ldix instruction
+ * SHIFT_REG is a special cnxvector-register that is used for ldsh instruction
  * LS marks the local store
  * MULT marks the extended multiplicaion result. Use only _LO and _HI macros to read it !
  */
 
-#include "../../include/core/vector.h"
+#include "../../include/core/cnxvector.h"
 
-// define 32 objects of type vector so that we can write operations like R1 = R2 + R3
+// define 32 objects of type cnxvector so that we can write operations like R1 = R2 + R3
 
-vector R0(0),   R1(1),   R2(2),   R3(3),   R4(4),   R5(5),   R6(6),   R7(7);
-vector R8(8),   R9(9),   R10(10), R11(11), R12(12), R13(13), R14(14), R15(15);
-vector R16(16), R17(17), R18(18), R19(19), R20(20), R21(21), R22(22), R23(23);
-vector R24(24), R25(25), R26(26), R27(27), R28(28), R29(29), R30(30), R31(31);
+cnxvector R0(0),   R1(1),   R2(2),   R3(3),   R4(4),   R5(5),   R6(6),   R7(7);
+cnxvector R8(8),   R9(9),   R10(10), R11(11), R12(12), R13(13), R14(14), R15(15);
+cnxvector R16(16), R17(17), R18(18), R19(19), R20(20), R21(21), R22(22), R23(23);
+cnxvector R24(24), R25(25), R26(26), R27(27), R28(28), R29(29), R30(30), R31(31);
 
-vector R[] = {
+cnxvector R[] = {
                 R0,R1,R2,R3,R4,R5,R6,R7,
                 R8,R9,R10,R11,R12,R13,R14,R15,
                 R16,R17,R18,R19,R20,R21,R22,R23,
                 R24,R25,R26,R27,R28,R29,R30,R31
             };
 
-vector INDEX(INDEX_MARKER,INDEX_MARKER);
-vector SHIFT_REG(SHIFTREG_MARKER,SHIFTREG_MARKER);
-vector LS(LOCALSTORE_MARKER);
-vector MULT(MULTIPLICATION_MARKER);
+cnxvector INDEX(INDEX_MARKER,INDEX_MARKER);
+cnxvector SHIFT_REG(SHIFTREG_MARKER,SHIFTREG_MARKER);
+cnxvector LS(LOCALSTORE_MARKER);
+cnxvector MULT(MULTIPLICATION_MARKER);
 
