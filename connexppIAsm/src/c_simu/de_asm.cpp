@@ -385,10 +385,10 @@ int c_simulator::DeAsmBatch(UINT16 dwBatchNumber)
                 case _CELL_SHL: {
                                     //step 1: load shift reg with R[LEFT].
                                     bool rotation_existed;
-                                    {FOR_ALL_MACHINES( CSimuShiftRegs[MACHINE] = CSimuRegs[MACHINE][GET_LEFT(CI)] % NUMBER_OF_MACHINES;);}
+                                    {FOR_ALL_MACHINES( CSimuShiftRegs[MACHINE] = CSimuRegs[MACHINE][GET_LEFT(CI)];);}
 
                                     //step 2: copy number of positions to rotate
-                                    {FOR_ALL_MACHINES( CSimuRotationMagnitude[MACHINE] = CSimuRegs[MACHINE][GET_RIGHT(CI)];);}
+                                    {FOR_ALL_MACHINES( CSimuRotationMagnitude[MACHINE] = CSimuRegs[MACHINE][GET_RIGHT(CI)] % NUMBER_OF_MACHINES;);}
 
                                     //step 3: rotate one position at a time
                                     do
@@ -397,7 +397,7 @@ int c_simulator::DeAsmBatch(UINT16 dwBatchNumber)
                                         FOR_ALL_MACHINES(
                                                         if ( CSimuRotationMagnitude[MACHINE] > 0)
                                                         {
-                                                            INT_REGVALUE man;
+                                                            UINT_REGVALUE man;
                                                             rotation_existed = true;
 
                                                             if (MACHINE == 0) man = CSimuShiftRegs[NUMBER_OF_MACHINES -1];
@@ -424,7 +424,7 @@ int c_simulator::DeAsmBatch(UINT16 dwBatchNumber)
                                         FOR_ALL_MACHINES(
                                                         if ( CSimuRotationMagnitude[MACHINE] > 0)
                                                         {
-                                                            INT_REGVALUE man;
+                                                            UINT_REGVALUE man;
                                                             rotation_existed = true;
 
                                                             if (MACHINE == NUMBER_OF_MACHINES -2) man = CSimuShiftRegs[NUMBER_OF_MACHINES-1];
@@ -446,6 +446,11 @@ int c_simulator::DeAsmBatch(UINT16 dwBatchNumber)
                 case _WHERE_CRY:{FOR_ALL_MACHINES(if (CSimuCarryFlags[MACHINE]==1) CSimuActiveFlags[MACHINE]= _ACTIVE;else CSimuActiveFlags[MACHINE]=_INACTIVE);continue;}
                 case _WHERE_EQ:{FOR_ALL_MACHINES(if (CSimuEqFlags[MACHINE]==1) CSimuActiveFlags[MACHINE]= _ACTIVE;else CSimuActiveFlags[MACHINE]=_INACTIVE);continue;}
                 case _WHERE_LT:{FOR_ALL_MACHINES(if (CSimuLtFlags[MACHINE]==1) CSimuActiveFlags[MACHINE]= _ACTIVE;else CSimuActiveFlags[MACHINE]=_INACTIVE);continue;}
+
+                //case _WHERE_CRY:{FOR_ALL_ACTIVE_MACHINES(if (CSimuCarryFlags[MACHINE]==1) CSimuActiveFlags[MACHINE]= _ACTIVE;else CSimuActiveFlags[MACHINE]=_INACTIVE);continue;}
+                //case _WHERE_EQ:{FOR_ALL_ACTIVE_MACHINES(if (CSimuEqFlags[MACHINE]==1) CSimuActiveFlags[MACHINE]= _ACTIVE;else CSimuActiveFlags[MACHINE]=_INACTIVE);continue;}
+                //case _WHERE_LT:{FOR_ALL_ACTIVE_MACHINES(if (CSimuLtFlags[MACHINE]==1) CSimuActiveFlags[MACHINE]= _ACTIVE;else CSimuActiveFlags[MACHINE]=_INACTIVE);continue;}
+
                 case _END_WHERE:{FOR_ALL_MACHINES(CSimuActiveFlags[MACHINE]= _ACTIVE);continue;}
                 case _NOP:      continue;
                 case _REDUCE:   {UINT32 sum = 0; FOR_ALL_ACTIVE_MACHINES(sum += CSimuRegs[MACHINE][GET_LEFT(CI)]);

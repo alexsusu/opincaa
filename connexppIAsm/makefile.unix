@@ -29,7 +29,7 @@ OBJDIR_DEBUG = obj/Debug
 DEP_DEBUG = 
 OUT_DEBUG = bin/Debug/connexppAsm
 
-OBJ_DEBUG = $(OBJDIR_DEBUG)/src/util/utils.o $(OBJDIR_DEBUG)/src/util/timing.o $(OBJDIR_DEBUG)/src/test/speed_tests.o $(OBJDIR_DEBUG)/src/test/simple_tests.o $(OBJDIR_DEBUG)/src/test/simple_io_tests.o $(OBJDIR_DEBUG)/src/test/basic_match_tests.o $(OBJDIR_DEBUG)/src/main.o $(OBJDIR_DEBUG)/src/core/io_unit.o $(OBJDIR_DEBUG)/src/core/cnxvector_registers.o $(OBJDIR_DEBUG)/src/core/cnxvector_errors.o $(OBJDIR_DEBUG)/src/core/cnxvector.o $(OBJDIR_DEBUG)/src/c_simu/c_simulator.o
+OBJ_DEBUG = $(OBJDIR_DEBUG)/src/util/utils.o $(OBJDIR_DEBUG)/src/util/timing.o $(OBJDIR_DEBUG)/src/test/speed_tests.o $(OBJDIR_DEBUG)/src/test/simple_tests.o $(OBJDIR_DEBUG)/src/test/simple_io_tests.o $(OBJDIR_DEBUG)/src/test/max_tests.o $(OBJDIR_DEBUG)/src/test/basic_match_tests.o $(OBJDIR_DEBUG)/src/main.o $(OBJDIR_DEBUG)/src/core/io_unit.o $(OBJDIR_DEBUG)/src/core/cnxvector_registers.o $(OBJDIR_DEBUG)/src/core/cnxvector_errors.o $(OBJDIR_DEBUG)/src/core/cnxvector.o $(OBJDIR_DEBUG)/src/c_simu/c_simulator.o
 
 all: debug
 
@@ -64,6 +64,9 @@ $(OBJDIR_DEBUG)/src/test/simple_tests.o: src/test/simple_tests.cpp
 
 $(OBJDIR_DEBUG)/src/test/simple_io_tests.o: src/test/simple_io_tests.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/simple_io_tests.cpp -o $(OBJDIR_DEBUG)/src/test/simple_io_tests.o
+
+$(OBJDIR_DEBUG)/src/test/max_tests.o: src/test/max_tests.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/max_tests.cpp -o $(OBJDIR_DEBUG)/src/test/max_tests.o
 
 $(OBJDIR_DEBUG)/src/test/basic_match_tests.o: src/test/basic_match_tests.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/basic_match_tests.cpp -o $(OBJDIR_DEBUG)/src/test/basic_match_tests.o

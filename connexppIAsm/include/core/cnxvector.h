@@ -88,13 +88,14 @@
 
 #define NOP             cnxvector::nop()
 
+#define ENABLE_ALL                cnxvector::EndWhere();
 #define EXECUTE_IN_ALL(x)         cnxvector::EndWhere();x;
 #define EXECUTE_WHERE_CARRY(x)    cnxvector::WhereCry();x;
-#define EXECUTE_WHERE_EQ(x)        cnxvector::WhereEq();x;
-#define EXECUTE_WHERE_LT(x)        cnxvector::WhereLt();x;
+#define EXECUTE_WHERE_EQ(x)       cnxvector::WhereEq();x;
+#define EXECUTE_WHERE_LT(x)       cnxvector::WhereLt();x;
 
-#define FOUND_ERROR()                cnxvector::foundError()
-#define GET_NUM_ERRORS()             cnxvector::getNumErrors()
+#define FOUND_ERROR()             cnxvector::foundError()
+#define GET_NUM_ERRORS()          cnxvector::getNumErrors()
 
 #define UINT_PARAM UINT32
 

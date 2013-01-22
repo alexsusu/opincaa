@@ -83,6 +83,8 @@ class c_simulator
 
         static void printSHIFT_REGS();
         static void printLS(int address);
+        static void printREG(int address);
+        static void printACTIVE();
 
         static int vread(void* Iou);
         static int vwrite(void* Iou);
@@ -94,11 +96,11 @@ class c_simulator
 		static UINT_RED_REG_VAL CSimuRed[C_SIMU_RED_MAX];
 		static UINT32 CSimuRedCnt;
 
-        static UINT_REGVALUE CSimuLocalStore[NUMBER_OF_MACHINES][LOCAL_STORE_SIZE];
-        static UINT_REGVALUE CSimuRegs[NUMBER_OF_MACHINES][REGISTER_FILE_SIZE];
 
     private:
         //vars
+        static UINT_REGVALUE CSimuLocalStore[NUMBER_OF_MACHINES][LOCAL_STORE_SIZE];
+        static UINT_REGVALUE CSimuRegs[NUMBER_OF_MACHINES][REGISTER_FILE_SIZE];
         static UINT8 CSimuActiveFlags[NUMBER_OF_MACHINES];
         static UINT8 CSimuCarryFlags[NUMBER_OF_MACHINES];
         static UINT8 CSimuEqFlags[NUMBER_OF_MACHINES];

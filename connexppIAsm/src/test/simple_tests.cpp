@@ -555,7 +555,7 @@ static void InitKernel_Cellshlrol(int BatchNumber, INT32 Param1, INT32 Param2)
                         R2 = Param1;
                         CELL_SHL(R1,R2);
                         R3 = Param2;// avoid compiler warning
-                        for (int x=0;x < NUMBER_OF_MACHINES;x++)
+                        for (int x=0;x < NUMBER_OF_MACHINES - 1;x++)
                             NOP;
 
                         R4 = SHIFT_REG;
@@ -837,7 +837,7 @@ static TestFunction TestFunctionTable[] =
     {WHERE_CARRY_BNR,"WHERECRY",InitKernel_Wherecry,{(0x10000UL-10),50,118*50}},
 	{CELL_SHL_BNR,"CELLSHL",InitKernel_Cellshl,{2,5,5-2}},
     {CELL_SHR_BNR,"CELLSHR",InitKernel_Cellshr,{2,5,5+2}},
-    {CELL_SHLROL_BNR,"CELLSHLROL",InitKernel_Cellshlrol,{1024,0,0}},
+    {CELL_SHLROL_BNR,"CELLSHLROL",InitKernel_Cellshlrol,{NUMBER_OF_MACHINES,0,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
 
 
 	//{IO_WRITE_BNR,"IO_WRITE1",1,0,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,0)},
@@ -1063,10 +1063,12 @@ int test_Simple_All(bool stress)
         while (j-- >= 0);
     }
 
+        cout<<"================================"<<endl;
     if (testFails ==0)
-        cout<<endl<< " All SimpleTests PASSED." <<endl;
+        cout<< "== All SimpleTests PASSED ======" <<endl;
     else
-        cout<< testFails << " SimpleTests failed." <<endl;
+        cout<< "=="<< testFails << " SimpleTests FAILED ! " <<endl;
+        cout<<"================================"<<endl<<endl;
 
     //DEASM_BATCH(pADD_BNR);
     return testFails;

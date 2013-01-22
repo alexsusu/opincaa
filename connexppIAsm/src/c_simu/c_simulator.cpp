@@ -55,6 +55,15 @@ void c_simulator::printLS(int address)
     FOR_ALL_MACHINES( cout << " Machine "<<MACHINE<<": " << " LS["<<address<<"]= "<<  CSimuLocalStore[MACHINE][address] << endl; );
 }
 
+void c_simulator::printREG(int address)
+{
+    FOR_ALL_MACHINES( cout << " Machine "<<MACHINE<<": " << " R["<<address<<"]= "<<  CSimuRegs[MACHINE][address] << endl; );
+}
+
+void c_simulator::printACTIVE()
+{
+    FOR_ALL_MACHINES( cout << " Machine "<<MACHINE<<": " << " A = "<< CSimuActiveFlags[MACHINE] << endl; );
+}
 
 int c_simulator::vwrite(void* Iou)
 {

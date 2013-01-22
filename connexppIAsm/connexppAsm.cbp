@@ -43,6 +43,7 @@
 		<Unit filename="include/core/cnxvector_registers.h" />
 		<Unit filename="include/core/io_unit.h" />
 		<Unit filename="include/core/opcodes.h" />
+		<Unit filename="include/test/max_tests.h" />
 		<Unit filename="include/test/simple_io_tests.h" />
 		<Unit filename="include/test/simple_tests.h" />
 		<Unit filename="include/test/speed_tests.h" />
@@ -59,6 +60,7 @@
 		<Unit filename="src/core/io_unit.cpp" />
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/test/basic_match_tests.cpp" />
+		<Unit filename="src/test/max_tests.cpp" />
 		<Unit filename="src/test/simple_io_tests.cpp" />
 		<Unit filename="src/test/simple_tests.cpp" />
 		<Unit filename="src/test/speed_tests.cpp" />

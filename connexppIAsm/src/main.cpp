@@ -64,6 +64,13 @@
  *           - feature extension: pMov pseudo instruction ( R1 = R0 gets automatically translated to R1 = R0 >> 0 )
  *			 - added new construction with only one param, the MainVal (therefore, Rx were redefined)
  *			 - added simpleTests to check for bugfix and new feature correct operation
+ * 
+ *  v0.8.4 
+ *			 - bugfix in c_simulator::DeAsmBatch at _CELL_SHL.
+ *			 - added more functions: c_simulator::printREG, printACTIVE()
+ *			 - added macro: ENABLE_ALL
+ *		     - added simpleTest to check for rotation or shift, max test to find maximum UINT16 in a vector.
+ *
  * Created on December 19, 2012, 3:32 PM
  *
  */
@@ -81,6 +88,7 @@
 #include "../include/test/speed_tests.h"
 #include "../include/test/simple_io_tests.h"
 #include "../include/test/basic_match_tests.h"
+#include "../include/test/max_tests.h"
 //#include "../include/test/crypto/bsDES/bs_des_tests.h"
 
 using namespace std;
@@ -221,6 +229,7 @@ int main(int argc, char *argv[])
 	//test_Simple_IO_All(true);
 
 	test_Simple_All(true);
+	test_Max_All(true);
     //test_Speed_All();
     test_Simple_IO_All(true);
 	test_BasicMatching_All();

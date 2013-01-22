@@ -246,10 +246,15 @@ int test_Simple_IO_All(bool stress)
         while (j-- >= 0);
     }
 
+
+        cout<<"====================================="<<endl;
+
     if (testFails ==0)
-        cout<<endl<< " All SimpleIOTests PASSED." <<endl;
+        cout<< "== All SimpleIOTests PASSED ========" <<endl;
     else
-        cout<< testFails << " SimpleIOTests failed." <<endl;
+        cout<< "=="<< testFails << " SimpleIOTests FAILED ! " <<endl;
+
+        cout<<"====================================="<<endl<<endl;
 
     return testFails;
 
