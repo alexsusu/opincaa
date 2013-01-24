@@ -25,10 +25,8 @@
 
 #include <iostream>
 #include <iomanip>
-#include <tinythread.h>
 
 using namespace std;
-using namespace tthread;
 
 /* About descriptor file:
 
@@ -367,7 +365,7 @@ static int connexFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
     int TotalcnxvectorSubChunksImg2 = VECTORS_CHUNK_IMAGE2 / VECTORS_SUBCHUNK_IMAGE2;
     int UsingBuffer0or1;
     int TimeStart;
-    int TotalTime = 0, TotalBatchTime = 0;
+    int TotalIOTime = 0, TotalBatchTime = 0, TotalReductionTime = 0;
 
     //forall cnxvector chunks in img1
     for(CurrentcnxvectorChunkImg1 = 0; CurrentcnxvectorChunkImg1 < TotalcnxvectorChunksImg1; CurrentcnxvectorChunkImg1++)
@@ -379,7 +377,7 @@ static int connexFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
             TimeStart = GetMilliCount();
             IOU_CVCI1.preWritecnxvectors(0,SiftDescriptors1->SiftDescriptorsBasicFeatures[VECTORS_CHUNK_IMAGE1*CurrentcnxvectorChunkImg1],VECTORS_CHUNK_IMAGE1);
             if (PASS != IO_WRITE_NOW(&IOU_CVCI1)) {   printf("Writing next CurrentcnxvectorChunkImg1 to IO pipe, FAILED !"); return FAIL;}
-            TotalTime += GetMilliSpan(TimeStart);
+            TotalIOTime += GetMilliSpan(TimeStart);
         }
 
         //forall cnxvector chunks in img2
@@ -394,7 +392,7 @@ static int connexFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
                     IOU_CVCI2.preWritecnxvectors(VECTORS_CHUNK_IMAGE1 + UsingBuffer0or1*VECTORS_CHUNK_IMAGE2,
                                                     SiftDescriptors2->SiftDescriptorsBasicFeatures[VECTORS_CHUNK_IMAGE2*CurrentcnxvectorChunkImg2],
                                                         VECTORS_CHUNK_IMAGE2);
-                    TotalTime += GetMilliSpan(TimeStart);
+                    TotalIOTime += GetMilliSpan(TimeStart);
                     if (PASS != IO_WRITE_NOW(&IOU_CVCI2))
                     {
                         printf("Writing next CurrentcnxvectorChunkImg2 to IO pipe, FAILED !");
@@ -406,11 +404,13 @@ static int connexFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
 
                 {
                     int ExpectedBytesOfReductions = BYTES_IN_DWORD* VECTORS_CHUNK_IMAGE1 * VECTORS_CHUNK_IMAGE2;
+                    TimeStart = GetMilliCount();
                     int RealBytesOfReductions = GET_MULTIRED_RESULT(BasicMatchRedResults +
                                         VECTORS_CHUNK_IMAGE1 * (TotalcnxvectorChunksImg2*VECTORS_CHUNK_IMAGE2) * CurrentcnxvectorChunkImg1 +
                                         VECTORS_CHUNK_IMAGE1 * VECTORS_CHUNK_IMAGE2 * CurrentcnxvectorChunkImg2,
                                         ExpectedBytesOfReductions
                                         );
+                    TotalReductionTime += GetMilliSpan(TimeStart);
                     if (ExpectedBytesOfReductions != RealBytesOfReductions)
                      cout<<" Unexpected size of bytes of reductions (expected: "<<ExpectedBytesOfReductions<<" but got "<<RealBytesOfReductions<<endl;
                 }
@@ -444,8 +444,9 @@ static int connexFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
             }
         }
     }
-    cout<<"Total IO time is "<<TotalTime<<" ms"<<endl;
+    cout<<"Total IO time is "<<TotalIOTime<<" ms"<<endl;
     cout<<"Total BatchExecution time is "<<TotalBatchTime<<" ms"<<endl;
+    cout<<"Total TotalReductionTime time is "<<TotalReductionTime<<" ms"<<endl;
     return PASS;
 }
 
