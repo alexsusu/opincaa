@@ -64,8 +64,8 @@
  *           - feature extension: pMov pseudo instruction ( R1 = R0 gets automatically translated to R1 = R0 >> 0 )
  *			 - added new construction with only one param, the MainVal (therefore, Rx were redefined)
  *			 - added simpleTests to check for bugfix and new feature correct operation
- * 
- *  v0.8.4 
+ *
+ *  v0.8.4
  *			 - bugfix in c_simulator::DeAsmBatch at _CELL_SHL.
  *			 - added more functions: c_simulator::printREG, printACTIVE()
  *			 - added macro: ENABLE_ALL
@@ -85,6 +85,7 @@
 #include "../include/util/timing.h"
 
 #include "../include/test/simple_tests.h"
+#include "../include/test/icc_simple_tests.h"
 #include "../include/test/speed_tests.h"
 #include "../include/test/simple_io_tests.h"
 #include "../include/test/basic_match_tests.h"
@@ -229,10 +230,11 @@ int main(int argc, char *argv[])
 	//test_Simple_IO_All(true);
 
 	test_Simple_All(true);
-	test_Max_All(true);
+	icc_test_Simple_All(true);
+	//test_Max_All(true);
     //test_Speed_All();
-    test_Simple_IO_All(true);
-	test_BasicMatching_All();
+    //test_Simple_IO_All(true);
+	//test_BasicMatching_All();
 
     DEINIT();
 
