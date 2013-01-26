@@ -27,9 +27,9 @@ LIB_DEBUGLIB = $(LIB)
 LDFLAGS_DEBUGLIB =  $(LDFLAGS)
 OBJDIR_DEBUGLIB = obj/DebugLib
 DEP_DEBUGLIB = 
-OUT_DEBUGLIB = lib/opincaa.a
+OUT_DEBUGLIB = lib/libopincaa.a
 
-OBJ_DEBUGLIB = $(OBJDIR_DEBUGLIB)/src/util/utils.o $(OBJDIR_DEBUGLIB)/src/util/timing.o $(OBJDIR_DEBUGLIB)/src/test/speed_tests.o $(OBJDIR_DEBUGLIB)/src/test/simple_tests.o $(OBJDIR_DEBUGLIB)/src/test/simple_io_tests.o $(OBJDIR_DEBUGLIB)/src/main.o $(OBJDIR_DEBUGLIB)/src/image_test.o $(OBJDIR_DEBUGLIB)/src/core/io_unit.o $(OBJDIR_DEBUGLIB)/src/core/cnxvector_registers.o $(OBJDIR_DEBUGLIB)/src/core/cnxvector_errors.o $(OBJDIR_DEBUGLIB)/src/core/cnxvector.o $(OBJDIR_DEBUGLIB)/src/c_simu/c_simulator.o $(OBJDIR_DEBUGLIB)/src/api/wrapper/Image.o
+OBJ_DEBUGLIB = $(OBJDIR_DEBUGLIB)/src/util/utils.o $(OBJDIR_DEBUGLIB)/src/util/timing.o $(OBJDIR_DEBUGLIB)/src/test/speed_tests.o $(OBJDIR_DEBUGLIB)/src/test/simple_tests.o $(OBJDIR_DEBUGLIB)/src/test/simple_io_tests.o $(OBJDIR_DEBUGLIB)/src/core/io_unit.o $(OBJDIR_DEBUGLIB)/src/core/cnxvector_registers.o $(OBJDIR_DEBUGLIB)/src/core/cnxvector_errors.o $(OBJDIR_DEBUGLIB)/src/core/cnxvector.o $(OBJDIR_DEBUGLIB)/src/c_simu/c_simulator.o $(OBJDIR_DEBUGLIB)/src/api/wrapper/Image.o
 
 all: debuglib
 
@@ -39,7 +39,6 @@ before_debuglib:
 	test -d lib || mkdir -p lib
 	test -d $(OBJDIR_DEBUGLIB)/src/util || mkdir -p $(OBJDIR_DEBUGLIB)/src/util
 	test -d $(OBJDIR_DEBUGLIB)/src/test || mkdir -p $(OBJDIR_DEBUGLIB)/src/test
-	test -d $(OBJDIR_DEBUGLIB)/src || mkdir -p $(OBJDIR_DEBUGLIB)/src
 	test -d $(OBJDIR_DEBUGLIB)/src/core || mkdir -p $(OBJDIR_DEBUGLIB)/src/core
 	test -d $(OBJDIR_DEBUGLIB)/src/c_simu || mkdir -p $(OBJDIR_DEBUGLIB)/src/c_simu
 	test -d $(OBJDIR_DEBUGLIB)/src/api/wrapper || mkdir -p $(OBJDIR_DEBUGLIB)/src/api/wrapper
@@ -66,12 +65,6 @@ $(OBJDIR_DEBUGLIB)/src/test/simple_tests.o: src/test/simple_tests.cpp
 $(OBJDIR_DEBUGLIB)/src/test/simple_io_tests.o: src/test/simple_io_tests.cpp
 	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/test/simple_io_tests.cpp -o $(OBJDIR_DEBUGLIB)/src/test/simple_io_tests.o
 
-$(OBJDIR_DEBUGLIB)/src/main.o: src/main.cpp
-	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/main.cpp -o $(OBJDIR_DEBUGLIB)/src/main.o
-
-$(OBJDIR_DEBUGLIB)/src/image_test.o: src/image_test.cpp
-	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/image_test.cpp -o $(OBJDIR_DEBUGLIB)/src/image_test.o
-
 $(OBJDIR_DEBUGLIB)/src/core/io_unit.o: src/core/io_unit.cpp
 	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/core/io_unit.cpp -o $(OBJDIR_DEBUGLIB)/src/core/io_unit.o
 
@@ -95,7 +88,6 @@ clean_debuglib:
 	rm -rf lib
 	rm -rf $(OBJDIR_DEBUGLIB)/src/util
 	rm -rf $(OBJDIR_DEBUGLIB)/src/test
-	rm -rf $(OBJDIR_DEBUGLIB)/src
 	rm -rf $(OBJDIR_DEBUGLIB)/src/core
 	rm -rf $(OBJDIR_DEBUGLIB)/src/c_simu
 	rm -rf $(OBJDIR_DEBUGLIB)/src/api/wrapper
