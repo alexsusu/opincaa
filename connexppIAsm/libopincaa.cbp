@@ -3,11 +3,12 @@
 	<FileVersion major="1" minor="6" />
 	<Project>
 		<Option title="libopincaa" />
+		<Option makefile="makefile" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="DebugLib">
-				<Option output="lib/opincaa" prefix_auto="1" extension_auto="1" />
+				<Option output="lib/opincaa" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/DebugLib/" />
 				<Option type="2" />
@@ -19,7 +20,7 @@
 				</Compiler>
 			</Target>
 			<Target title="ReleaseLib">
-				<Option output="lib/opincaa" prefix_auto="1" extension_auto="1" />
+				<Option output="lib/opincaa" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output="obj/ReleaseLib/" />
 				<Option type="2" />
