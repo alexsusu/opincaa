@@ -34,7 +34,7 @@ struct TestFunction
    Dataset ds;
 };
 
-static void InitKernel_Write(int BatchNumber,INT32 Param1, INT32 Param2);
+//static void InitKernel_Write(int BatchNumber,INT32 Param1, INT32 Param2);
 static void InitKernel_Nop(int BatchNumber,INT32 Param1, INT32 Param2)
 {
     //InitKernel_Write(BatchNumber, Param1, Param2);
@@ -69,6 +69,7 @@ static void InitKernel_Iread(int BatchNumber,INT32 Param1, INT32 Param2)
     END_BATCH(BatchNumber);
 }
 
+/*
 static void InitKernel_Write(int BatchNumber,INT32 Param1, INT32 Param2)
 {
     BEGIN_BATCH(BatchNumber);
@@ -89,12 +90,15 @@ static void InitKernel_Read(int BatchNumber,INT32 Param1, INT32 Param2)
 {
     InitKernel_Write(BatchNumber, Param1, Param2);
 }
-
+*/
 static void InitKernel_Add(int BatchNumber,INT32 Param1, INT32 Param2);
+
+/*
 static void InitKernel_Vload(int BatchNumber,INT32 Param1, INT32 Param2)
 {
     InitKernel_Add(BatchNumber,Param1, Param2);
 }
+*/
 
 static void InitKernel_Add(int BatchNumber,INT32 Param1, INT32 Param2)
 {
@@ -109,7 +113,7 @@ static void InitKernel_Add(int BatchNumber,INT32 Param1, INT32 Param2)
 
     END_BATCH(BatchNumber);
 }
-
+/*
 static void InitKernel_pAdd(int BatchNumber,INT32 Param1, INT32 Param2)
 {
     BEGIN_BATCH(BatchNumber);
@@ -539,6 +543,7 @@ static void InitKernel_Ishra(int BatchNumber,INT32 Param1, INT32 Param2)
                       )
     END_BATCH(BatchNumber);
 }
+*/
 
 static void InitKernel_Cellshl(int BatchNumber, INT32 Param1, INT32 Param2)
 {
@@ -552,7 +557,8 @@ static void InitKernel_Cellshl(int BatchNumber, INT32 Param1, INT32 Param2)
     END_BATCH(BatchNumber);
 }
 
-/* Check if CELL_SHL is shift or rotation */
+// Check if CELL_SHL is shift or rotation
+/*
 static void InitKernel_Cellshlrol(int BatchNumber, INT32 Param1, INT32 Param2)
 {
     BEGIN_BATCH(BatchNumber);
@@ -588,7 +594,7 @@ static void InitKernel_Cellshr(int BatchNumber, INT32 Param1, INT32 Param2)
         EXECUTE_IN_ALL( REDUCE(R3);)
     END_BATCH(BatchNumber);
 }
-
+*/
 static void InitKernel_Multlo(int BatchNumber, INT32 Param1, INT32 Param2)
 {
     BEGIN_BATCH(BatchNumber);
@@ -602,7 +608,7 @@ static void InitKernel_Multlo(int BatchNumber, INT32 Param1, INT32 Param2)
                     )
     END_BATCH(BatchNumber);
 }
-
+/*
 static void InitKernel_pMultlo(int BatchNumber, INT32 Param1, INT32 Param2)
 {
     BEGIN_BATCH(BatchNumber);
@@ -691,7 +697,7 @@ static void InitKernel_Wherecry(int BatchNumber, INT32 Param1, INT32 Param2)
         EXECUTE_IN_ALL( REDUCE(R4);)
     END_BATCH(BatchNumber);
 }
-
+*/
 enum SimpleBatchNumbers
 {
     NOP_BNR         ,
@@ -860,6 +866,7 @@ static TestFunction TestFunctionTable[] =
 
 };
 
+/*
 static int getIndexTestFunctionTable(int BatchNumber)
 {
     unsigned int i;
@@ -1032,13 +1039,14 @@ static void UpdateDatasetTable(int BatchNumber)
                             }
     }
 }
+*/
 
 int icc_test_Simple_All(bool stress)
 {
     UINT16 i = 0;
     INT16 j = 0;
     UINT16 stressLoops;
-    INT32 result;
+    //INT32 result;
 
     UINT16 testFails = 0;
 
@@ -1054,7 +1062,8 @@ int icc_test_Simple_All(bool stress)
                   TestFunctionTable[i].ds.Param1,
                   TestFunctionTable[i].ds.Param2);
 
-            result = EXECUTE_BATCH_RED(TestFunctionTable[i].BatchNumber);
+            //result =
+            EXECUTE_BATCH_RED(TestFunctionTable[i].BatchNumber);
 
             /*
             if (result != TestFunctionTable[i].ds.ExpectedResult)

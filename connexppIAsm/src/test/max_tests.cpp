@@ -89,7 +89,6 @@ int test_Max()
 
 int test_Max_All(bool stress)
 {
-    UINT16 i = 0;
     INT16 j = 0;
     UINT16 stressLoops;
     INT32 result;

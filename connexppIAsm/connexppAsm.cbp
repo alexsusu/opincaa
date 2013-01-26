@@ -17,6 +17,10 @@
 					<Add directory="include" />
 					<Add directory="include/util" />
 				</Compiler>
+				<Linker>
+					<Add library="lib\libopincaa.a" />
+					<Add directory="M:/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/lib/" />
+				</Linker>
 			</Target>
 			<Target title="Release">
 				<Option output="bin/Release/connexppAsm" prefix_auto="1" extension_auto="1" />
@@ -29,6 +33,8 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add library="lib\libopincaa.a" />
+					<Add directory="M:/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/lib/" />
 				</Linker>
 			</Target>
 		</Build>
@@ -37,12 +43,12 @@
 			<Add option="-fexceptions" />
 		</Compiler>
 		<Unit filename="ideascode.txt" />
-		<Unit filename="include/c_simu/c_simulator.h" />
 		<Unit filename="include/core/cnxvector.h" />
 		<Unit filename="include/core/cnxvector_errors.h" />
 		<Unit filename="include/core/cnxvector_registers.h" />
 		<Unit filename="include/core/io_unit.h" />
 		<Unit filename="include/core/opcodes.h" />
+		<Unit filename="include/test/basic_match_tests.h" />
 		<Unit filename="include/test/icc_simple_tests.h" />
 		<Unit filename="include/test/max_tests.h" />
 		<Unit filename="include/test/simple_io_tests.h" />
@@ -50,15 +56,6 @@
 		<Unit filename="include/test/speed_tests.h" />
 		<Unit filename="include/util/timing.h" />
 		<Unit filename="include/util/utils.h" />
-		<Unit filename="src/c_simu/c_simulator.cpp" />
-		<Unit filename="src/c_simu/de_asm.cpp">
-			<Option compile="0" />
-			<Option link="0" />
-		</Unit>
-		<Unit filename="src/core/cnxvector.cpp" />
-		<Unit filename="src/core/cnxvector_errors.cpp" />
-		<Unit filename="src/core/cnxvector_registers.cpp" />
-		<Unit filename="src/core/io_unit.cpp" />
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/test/basic_match_tests.cpp" />
 		<Unit filename="src/test/icc_simple_tests.cpp" />
@@ -66,8 +63,6 @@
 		<Unit filename="src/test/simple_io_tests.cpp" />
 		<Unit filename="src/test/simple_tests.cpp" />
 		<Unit filename="src/test/speed_tests.cpp" />
-		<Unit filename="src/util/timing.cpp" />
-		<Unit filename="src/util/utils.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

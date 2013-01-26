@@ -328,8 +328,6 @@ io_unit IOU_CVCI2;
 static int connexFM_CreateBatch(int LoadToRxBatchNumber, int UsingBuffer0or1)
 {
     int TotalcnxvectorSubChunksImg2 = VECTORS_CHUNK_IMAGE2 / VECTORS_SUBCHUNK_IMAGE2;
-    int TimeStart;
-    int TotalTime = 0;
 
     BEGIN_BATCH(LoadToRxBatchNumber);
         //forall subchunks of chunk of img 2
@@ -353,6 +351,7 @@ static int connexFM_CreateBatch(int LoadToRxBatchNumber, int UsingBuffer0or1)
             }
         }
     END_BATCH();
+    return PASS;
 }
 
 static int connexFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
@@ -463,7 +462,6 @@ int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
     }
     else // (RunningMode == MODE_EXECUTE_FIND_MATCHES)
     {
-        int CurrentcnxvectorChunkImg1, CurrentcnxvectorChunkImg2;
         int TotalcnxvectorChunksImg1 = (SiftDescriptors1->RealDescriptors + VECTORS_CHUNK_IMAGE1 - 1) / VECTORS_CHUNK_IMAGE1;
         int TotalcnxvectorChunksImg2 = (SiftDescriptors2->RealDescriptors + VECTORS_CHUNK_IMAGE2 - 1) / VECTORS_CHUNK_IMAGE2;
         int TotalcnxvectorSubChunksImg2 = VECTORS_CHUNK_IMAGE2 / VECTORS_SUBCHUNK_IMAGE2;
