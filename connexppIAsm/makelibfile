@@ -18,9 +18,79 @@ LIBDIR =
 LIB = 
 LDFLAGS = 
 
-all: 
+INC_DEBUGLIB =  $(INC)
+CFLAGS_DEBUGLIB =  $(CFLAGS) -Wall -g
+RESINC_DEBUGLIB =  $(RESINC)
+RCFLAGS_DEBUGLIB =  $(RCFLAGS)
+LIBDIR_DEBUGLIB =  $(LIBDIR)
+LIB_DEBUGLIB = $(LIB)
+LDFLAGS_DEBUGLIB =  $(LDFLAGS)
+OBJDIR_DEBUGLIB = obj\\DebugLib
+DEP_DEBUGLIB = 
+OUT_DEBUGLIB = lib\\opincaa.a
 
-clean: 
+OBJ_DEBUGLIB = $(OBJDIR_DEBUGLIB)\\src\\util\\utils.o $(OBJDIR_DEBUGLIB)\\src\\util\\timing.o $(OBJDIR_DEBUGLIB)\\src\\test\\speed_tests.o $(OBJDIR_DEBUGLIB)\\src\\test\\simple_tests.o $(OBJDIR_DEBUGLIB)\\src\\test\\simple_io_tests.o $(OBJDIR_DEBUGLIB)\\src\\core\\io_unit.o $(OBJDIR_DEBUGLIB)\\src\\core\\cnxvector_registers.o $(OBJDIR_DEBUGLIB)\\src\\core\\cnxvector_errors.o $(OBJDIR_DEBUGLIB)\\src\\core\\cnxvector.o $(OBJDIR_DEBUGLIB)\\src\\c_simu\\c_simulator.o $(OBJDIR_DEBUGLIB)\\src\\api\\wrapper\\Image.o
 
-.PHONY: all clean
+all: debuglib
+
+clean: clean_debuglib
+
+before_debuglib: 
+	cmd /c if not exist lib md lib
+	cmd /c if not exist $(OBJDIR_DEBUGLIB)\\src\\util md $(OBJDIR_DEBUGLIB)\\src\\util
+	cmd /c if not exist $(OBJDIR_DEBUGLIB)\\src\\test md $(OBJDIR_DEBUGLIB)\\src\\test
+	cmd /c if not exist $(OBJDIR_DEBUGLIB)\\src\\core md $(OBJDIR_DEBUGLIB)\\src\\core
+	cmd /c if not exist $(OBJDIR_DEBUGLIB)\\src\\c_simu md $(OBJDIR_DEBUGLIB)\\src\\c_simu
+	cmd /c if not exist $(OBJDIR_DEBUGLIB)\\src\\api\\wrapper md $(OBJDIR_DEBUGLIB)\\src\\api\\wrapper
+
+after_debuglib: 
+
+debuglib: before_debuglib out_debuglib after_debuglib
+
+out_debuglib: $(OBJ_DEBUGLIB) $(DEP_DEBUGLIB)
+	$(AR) rcs $(OUT_DEBUGLIB) $(OBJ_DEBUGLIB)
+
+$(OBJDIR_DEBUGLIB)\\src\\util\\utils.o: src\\util\\utils.cpp
+	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src\\util\\utils.cpp -o $(OBJDIR_DEBUGLIB)\\src\\util\\utils.o
+
+$(OBJDIR_DEBUGLIB)\\src\\util\\timing.o: src\\util\\timing.cpp
+	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src\\util\\timing.cpp -o $(OBJDIR_DEBUGLIB)\\src\\util\\timing.o
+
+$(OBJDIR_DEBUGLIB)\\src\\test\\speed_tests.o: src\\test\\speed_tests.cpp
+	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src\\test\\speed_tests.cpp -o $(OBJDIR_DEBUGLIB)\\src\\test\\speed_tests.o
+
+$(OBJDIR_DEBUGLIB)\\src\\test\\simple_tests.o: src\\test\\simple_tests.cpp
+	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src\\test\\simple_tests.cpp -o $(OBJDIR_DEBUGLIB)\\src\\test\\simple_tests.o
+
+$(OBJDIR_DEBUGLIB)\\src\\test\\simple_io_tests.o: src\\test\\simple_io_tests.cpp
+	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src\\test\\simple_io_tests.cpp -o $(OBJDIR_DEBUGLIB)\\src\\test\\simple_io_tests.o
+
+$(OBJDIR_DEBUGLIB)\\src\\core\\io_unit.o: src\\core\\io_unit.cpp
+	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src\\core\\io_unit.cpp -o $(OBJDIR_DEBUGLIB)\\src\\core\\io_unit.o
+
+$(OBJDIR_DEBUGLIB)\\src\\core\\cnxvector_registers.o: src\\core\\cnxvector_registers.cpp
+	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src\\core\\cnxvector_registers.cpp -o $(OBJDIR_DEBUGLIB)\\src\\core\\cnxvector_registers.o
+
+$(OBJDIR_DEBUGLIB)\\src\\core\\cnxvector_errors.o: src\\core\\cnxvector_errors.cpp
+	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src\\core\\cnxvector_errors.cpp -o $(OBJDIR_DEBUGLIB)\\src\\core\\cnxvector_errors.o
+
+$(OBJDIR_DEBUGLIB)\\src\\core\\cnxvector.o: src\\core\\cnxvector.cpp
+	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src\\core\\cnxvector.cpp -o $(OBJDIR_DEBUGLIB)\\src\\core\\cnxvector.o
+
+$(OBJDIR_DEBUGLIB)\\src\\c_simu\\c_simulator.o: src\\c_simu\\c_simulator.cpp
+	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src\\c_simu\\c_simulator.cpp -o $(OBJDIR_DEBUGLIB)\\src\\c_simu\\c_simulator.o
+
+$(OBJDIR_DEBUGLIB)\\src\\api\\wrapper\\Image.o: src\\api\\wrapper\\Image.cpp
+	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src\\api\\wrapper\\Image.cpp -o $(OBJDIR_DEBUGLIB)\\src\\api\\wrapper\\Image.o
+
+clean_debuglib: 
+	cmd /c del /f $(OBJ_DEBUGLIB) $(OUT_DEBUGLIB)
+	cmd /c rd lib
+	cmd /c rd $(OBJDIR_DEBUGLIB)\\src\\util
+	cmd /c rd $(OBJDIR_DEBUGLIB)\\src\\test
+	cmd /c rd $(OBJDIR_DEBUGLIB)\\src\\core
+	cmd /c rd $(OBJDIR_DEBUGLIB)\\src\\c_simu
+	cmd /c rd $(OBJDIR_DEBUGLIB)\\src\\api\\wrapper
+
+.PHONY: before_debuglib after_debuglib clean_debuglib
 
