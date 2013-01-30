@@ -17,7 +17,7 @@
 #include <iomanip>
 using namespace std;
 
-#define ICC_RUN_LOOPS (100*1000*1000)
+#define ICC_RUN_LOOPS (10*1000*1000)
 
 struct Dataset
 {
@@ -1050,13 +1050,16 @@ int icc_test_Simple_All(bool stress)
 
     UINT16 testFails = 0;
 
-    if (stress == true) { stressLoops = 1;} else stressLoops = 0;
+    if (stress == true) { stressLoops = 10;} else stressLoops = 0;
 
     for (i = 0; i < sizeof (TestFunctionTable) / sizeof (TestFunction); i++)
     {
         j = stressLoops;
         do
         {
+            if (j == stressLoops)
+                    cout<< "Test "<< setw(10) << left << TestFunctionTable[i].OperationName;
+
             TestFunctionTable[i].initKernel
                 ( TestFunctionTable[i].BatchNumber,
                   TestFunctionTable[i].ds.Param1,
@@ -1077,8 +1080,6 @@ int icc_test_Simple_All(bool stress)
 
             else*/
             {
-                if (j == stressLoops)
-                    cout<< "Test "<< setw(10) << left << TestFunctionTable[i].OperationName;
                 if ((j > 0) && (j <= stressLoops)) cout<<".";
                 if (j == 0) {cout << " PASSED"<<endl;break;}
             }

@@ -11,7 +11,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="--csimulation" />
+				<Option parameters="--csimulation --icctests" />
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="include" />
@@ -60,9 +60,6 @@
 		<Unit filename="src/test/basic_match_tests.cpp" />
 		<Unit filename="src/test/icc_simple_tests.cpp" />
 		<Unit filename="src/test/max_tests.cpp" />
-		<Unit filename="src/test/simple_io_tests.cpp" />
-		<Unit filename="src/test/simple_tests.cpp" />
-		<Unit filename="src/test/speed_tests.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

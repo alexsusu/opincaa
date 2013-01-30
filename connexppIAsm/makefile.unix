@@ -29,7 +29,7 @@ OBJDIR_DEBUG = obj/Debug
 DEP_DEBUG = 
 OUT_DEBUG = bin/Debug/connexppAsm
 
-OBJ_DEBUG = $(OBJDIR_DEBUG)/src/test/speed_tests.o $(OBJDIR_DEBUG)/src/test/simple_tests.o $(OBJDIR_DEBUG)/src/test/simple_io_tests.o $(OBJDIR_DEBUG)/src/test/max_tests.o $(OBJDIR_DEBUG)/src/test/icc_simple_tests.o $(OBJDIR_DEBUG)/src/test/basic_match_tests.o $(OBJDIR_DEBUG)/src/main.o
+OBJ_DEBUG = $(OBJDIR_DEBUG)/src/test/max_tests.o $(OBJDIR_DEBUG)/src/test/icc_simple_tests.o $(OBJDIR_DEBUG)/src/test/basic_match_tests.o $(OBJDIR_DEBUG)/src/main.o
 
 all: debug
 
@@ -46,15 +46,6 @@ debug: before_debug out_debug after_debug
 
 out_debug: $(OBJ_DEBUG) $(DEP_DEBUG)
 	$(LD) $(LDFLAGS_DEBUG) $(LIBDIR_DEBUG) $(OBJ_DEBUG) $(LIB_DEBUG) -o $(OUT_DEBUG)
-
-$(OBJDIR_DEBUG)/src/test/speed_tests.o: src/test/speed_tests.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/speed_tests.cpp -o $(OBJDIR_DEBUG)/src/test/speed_tests.o
-
-$(OBJDIR_DEBUG)/src/test/simple_tests.o: src/test/simple_tests.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/simple_tests.cpp -o $(OBJDIR_DEBUG)/src/test/simple_tests.o
-
-$(OBJDIR_DEBUG)/src/test/simple_io_tests.o: src/test/simple_io_tests.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/simple_io_tests.cpp -o $(OBJDIR_DEBUG)/src/test/simple_io_tests.o
 
 $(OBJDIR_DEBUG)/src/test/max_tests.o: src/test/max_tests.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/max_tests.cpp -o $(OBJDIR_DEBUG)/src/test/max_tests.o

@@ -230,11 +230,23 @@ int main(int argc, char *argv[])
 	//test_Simple_IO_All(true);
 
 	test_Simple_All(true);
-	//icc_test_Simple_All(true);
-	test_Max_All(true);
+
+	if (argc > i + 1) // check for super stress
+    {
+        if (0 == strcmp(argv[i+1],"--icctests"))
+        {
+            icc_test_Simple_All(true);
+            DEINIT();
+
+            cout << "Press ENTER to continue...";
+            cin.ignore( numeric_limits <streamsize> ::max(), '\n' );
+        }
+    }
+
+	//test_Max_All(true);
     //test_Speed_All();
     test_Simple_IO_All(true);
-	test_BasicMatching_All();
+	//test_BasicMatching_All();
 
     DEINIT();
 
