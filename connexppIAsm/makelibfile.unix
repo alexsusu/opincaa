@@ -18,79 +18,79 @@ LIBDIR =
 LIB = 
 LDFLAGS = 
 
-INC_RELEASELIB =  $(INC)
-CFLAGS_RELEASELIB =  $(CFLAGS) -Wall -O2
-RESINC_RELEASELIB =  $(RESINC)
-RCFLAGS_RELEASELIB =  $(RCFLAGS)
-LIBDIR_RELEASELIB =  $(LIBDIR)
-LIB_RELEASELIB = $(LIB)
-LDFLAGS_RELEASELIB =  $(LDFLAGS) -s
-OBJDIR_RELEASELIB = obj/ReleaseLib
-DEP_RELEASELIB = 
-OUT_RELEASELIB = lib/opincaa.a
+INC_DEBUGLIB =  $(INC)
+CFLAGS_DEBUGLIB =  $(CFLAGS) -Wall -g
+RESINC_DEBUGLIB =  $(RESINC)
+RCFLAGS_DEBUGLIB =  $(RCFLAGS)
+LIBDIR_DEBUGLIB =  $(LIBDIR)
+LIB_DEBUGLIB = $(LIB)
+LDFLAGS_DEBUGLIB =  $(LDFLAGS)
+OBJDIR_DEBUGLIB = obj/DebugLib
+DEP_DEBUGLIB = 
+OUT_DEBUGLIB = lib/opincaa.a
 
-OBJ_RELEASELIB = $(OBJDIR_RELEASELIB)/src/util/utils.o $(OBJDIR_RELEASELIB)/src/util/timing.o $(OBJDIR_RELEASELIB)/src/test/speed_tests.o $(OBJDIR_RELEASELIB)/src/test/simple_tests.o $(OBJDIR_RELEASELIB)/src/test/simple_io_tests.o $(OBJDIR_RELEASELIB)/src/core/io_unit.o $(OBJDIR_RELEASELIB)/src/core/cnxvector_registers.o $(OBJDIR_RELEASELIB)/src/core/cnxvector_errors.o $(OBJDIR_RELEASELIB)/src/core/cnxvector.o $(OBJDIR_RELEASELIB)/src/c_simu/c_simulator.o $(OBJDIR_RELEASELIB)/src/api/wrapper/Image.o
+OBJ_DEBUGLIB = $(OBJDIR_DEBUGLIB)/src/util/utils.o $(OBJDIR_DEBUGLIB)/src/util/timing.o $(OBJDIR_DEBUGLIB)/src/test/speed_tests.o $(OBJDIR_DEBUGLIB)/src/test/simple_tests.o $(OBJDIR_DEBUGLIB)/src/test/simple_io_tests.o $(OBJDIR_DEBUGLIB)/src/core/io_unit.o $(OBJDIR_DEBUGLIB)/src/core/cnxvector_registers.o $(OBJDIR_DEBUGLIB)/src/core/cnxvector_errors.o $(OBJDIR_DEBUGLIB)/src/core/cnxvector.o $(OBJDIR_DEBUGLIB)/src/c_simu/c_simulator.o $(OBJDIR_DEBUGLIB)/src/api/wrapper/Image.o
 
-all: releaselib
+all: debuglib
 
-clean: clean_releaselib
+clean: clean_debuglib
 
-before_releaselib: 
+before_debuglib: 
 	test -d lib || mkdir -p lib
-	test -d $(OBJDIR_RELEASELIB)/src/util || mkdir -p $(OBJDIR_RELEASELIB)/src/util
-	test -d $(OBJDIR_RELEASELIB)/src/test || mkdir -p $(OBJDIR_RELEASELIB)/src/test
-	test -d $(OBJDIR_RELEASELIB)/src/core || mkdir -p $(OBJDIR_RELEASELIB)/src/core
-	test -d $(OBJDIR_RELEASELIB)/src/c_simu || mkdir -p $(OBJDIR_RELEASELIB)/src/c_simu
-	test -d $(OBJDIR_RELEASELIB)/src/api/wrapper || mkdir -p $(OBJDIR_RELEASELIB)/src/api/wrapper
+	test -d $(OBJDIR_DEBUGLIB)/src/util || mkdir -p $(OBJDIR_DEBUGLIB)/src/util
+	test -d $(OBJDIR_DEBUGLIB)/src/test || mkdir -p $(OBJDIR_DEBUGLIB)/src/test
+	test -d $(OBJDIR_DEBUGLIB)/src/core || mkdir -p $(OBJDIR_DEBUGLIB)/src/core
+	test -d $(OBJDIR_DEBUGLIB)/src/c_simu || mkdir -p $(OBJDIR_DEBUGLIB)/src/c_simu
+	test -d $(OBJDIR_DEBUGLIB)/src/api/wrapper || mkdir -p $(OBJDIR_DEBUGLIB)/src/api/wrapper
 
-after_releaselib: 
+after_debuglib: 
 
-releaselib: before_releaselib out_releaselib after_releaselib
+debuglib: before_debuglib out_debuglib after_debuglib
 
-out_releaselib: $(OBJ_RELEASELIB) $(DEP_RELEASELIB)
-	$(AR) rcs $(OUT_RELEASELIB) $(OBJ_RELEASELIB)
+out_debuglib: $(OBJ_DEBUGLIB) $(DEP_DEBUGLIB)
+	$(AR) rcs $(OUT_DEBUGLIB) $(OBJ_DEBUGLIB)
 
-$(OBJDIR_RELEASELIB)/src/util/utils.o: src/util/utils.cpp
-	$(CXX) $(CFLAGS_RELEASELIB) $(INC_RELEASELIB) -c src/util/utils.cpp -o $(OBJDIR_RELEASELIB)/src/util/utils.o
+$(OBJDIR_DEBUGLIB)/src/util/utils.o: src/util/utils.cpp
+	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/util/utils.cpp -o $(OBJDIR_DEBUGLIB)/src/util/utils.o
 
-$(OBJDIR_RELEASELIB)/src/util/timing.o: src/util/timing.cpp
-	$(CXX) $(CFLAGS_RELEASELIB) $(INC_RELEASELIB) -c src/util/timing.cpp -o $(OBJDIR_RELEASELIB)/src/util/timing.o
+$(OBJDIR_DEBUGLIB)/src/util/timing.o: src/util/timing.cpp
+	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/util/timing.cpp -o $(OBJDIR_DEBUGLIB)/src/util/timing.o
 
-$(OBJDIR_RELEASELIB)/src/test/speed_tests.o: src/test/speed_tests.cpp
-	$(CXX) $(CFLAGS_RELEASELIB) $(INC_RELEASELIB) -c src/test/speed_tests.cpp -o $(OBJDIR_RELEASELIB)/src/test/speed_tests.o
+$(OBJDIR_DEBUGLIB)/src/test/speed_tests.o: src/test/speed_tests.cpp
+	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/test/speed_tests.cpp -o $(OBJDIR_DEBUGLIB)/src/test/speed_tests.o
 
-$(OBJDIR_RELEASELIB)/src/test/simple_tests.o: src/test/simple_tests.cpp
-	$(CXX) $(CFLAGS_RELEASELIB) $(INC_RELEASELIB) -c src/test/simple_tests.cpp -o $(OBJDIR_RELEASELIB)/src/test/simple_tests.o
+$(OBJDIR_DEBUGLIB)/src/test/simple_tests.o: src/test/simple_tests.cpp
+	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/test/simple_tests.cpp -o $(OBJDIR_DEBUGLIB)/src/test/simple_tests.o
 
-$(OBJDIR_RELEASELIB)/src/test/simple_io_tests.o: src/test/simple_io_tests.cpp
-	$(CXX) $(CFLAGS_RELEASELIB) $(INC_RELEASELIB) -c src/test/simple_io_tests.cpp -o $(OBJDIR_RELEASELIB)/src/test/simple_io_tests.o
+$(OBJDIR_DEBUGLIB)/src/test/simple_io_tests.o: src/test/simple_io_tests.cpp
+	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/test/simple_io_tests.cpp -o $(OBJDIR_DEBUGLIB)/src/test/simple_io_tests.o
 
-$(OBJDIR_RELEASELIB)/src/core/io_unit.o: src/core/io_unit.cpp
-	$(CXX) $(CFLAGS_RELEASELIB) $(INC_RELEASELIB) -c src/core/io_unit.cpp -o $(OBJDIR_RELEASELIB)/src/core/io_unit.o
+$(OBJDIR_DEBUGLIB)/src/core/io_unit.o: src/core/io_unit.cpp
+	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/core/io_unit.cpp -o $(OBJDIR_DEBUGLIB)/src/core/io_unit.o
 
-$(OBJDIR_RELEASELIB)/src/core/cnxvector_registers.o: src/core/cnxvector_registers.cpp
-	$(CXX) $(CFLAGS_RELEASELIB) $(INC_RELEASELIB) -c src/core/cnxvector_registers.cpp -o $(OBJDIR_RELEASELIB)/src/core/cnxvector_registers.o
+$(OBJDIR_DEBUGLIB)/src/core/cnxvector_registers.o: src/core/cnxvector_registers.cpp
+	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/core/cnxvector_registers.cpp -o $(OBJDIR_DEBUGLIB)/src/core/cnxvector_registers.o
 
-$(OBJDIR_RELEASELIB)/src/core/cnxvector_errors.o: src/core/cnxvector_errors.cpp
-	$(CXX) $(CFLAGS_RELEASELIB) $(INC_RELEASELIB) -c src/core/cnxvector_errors.cpp -o $(OBJDIR_RELEASELIB)/src/core/cnxvector_errors.o
+$(OBJDIR_DEBUGLIB)/src/core/cnxvector_errors.o: src/core/cnxvector_errors.cpp
+	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/core/cnxvector_errors.cpp -o $(OBJDIR_DEBUGLIB)/src/core/cnxvector_errors.o
 
-$(OBJDIR_RELEASELIB)/src/core/cnxvector.o: src/core/cnxvector.cpp
-	$(CXX) $(CFLAGS_RELEASELIB) $(INC_RELEASELIB) -c src/core/cnxvector.cpp -o $(OBJDIR_RELEASELIB)/src/core/cnxvector.o
+$(OBJDIR_DEBUGLIB)/src/core/cnxvector.o: src/core/cnxvector.cpp
+	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/core/cnxvector.cpp -o $(OBJDIR_DEBUGLIB)/src/core/cnxvector.o
 
-$(OBJDIR_RELEASELIB)/src/c_simu/c_simulator.o: src/c_simu/c_simulator.cpp
-	$(CXX) $(CFLAGS_RELEASELIB) $(INC_RELEASELIB) -c src/c_simu/c_simulator.cpp -o $(OBJDIR_RELEASELIB)/src/c_simu/c_simulator.o
+$(OBJDIR_DEBUGLIB)/src/c_simu/c_simulator.o: src/c_simu/c_simulator.cpp
+	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/c_simu/c_simulator.cpp -o $(OBJDIR_DEBUGLIB)/src/c_simu/c_simulator.o
 
-$(OBJDIR_RELEASELIB)/src/api/wrapper/Image.o: src/api/wrapper/Image.cpp
-	$(CXX) $(CFLAGS_RELEASELIB) $(INC_RELEASELIB) -c src/api/wrapper/Image.cpp -o $(OBJDIR_RELEASELIB)/src/api/wrapper/Image.o
+$(OBJDIR_DEBUGLIB)/src/api/wrapper/Image.o: src/api/wrapper/Image.cpp
+	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/api/wrapper/Image.cpp -o $(OBJDIR_DEBUGLIB)/src/api/wrapper/Image.o
 
-clean_releaselib: 
-	rm -f $(OBJ_RELEASELIB) $(OUT_RELEASELIB)
+clean_debuglib: 
+	rm -f $(OBJ_DEBUGLIB) $(OUT_DEBUGLIB)
 	rm -rf lib
-	rm -rf $(OBJDIR_RELEASELIB)/src/util
-	rm -rf $(OBJDIR_RELEASELIB)/src/test
-	rm -rf $(OBJDIR_RELEASELIB)/src/core
-	rm -rf $(OBJDIR_RELEASELIB)/src/c_simu
-	rm -rf $(OBJDIR_RELEASELIB)/src/api/wrapper
+	rm -rf $(OBJDIR_DEBUGLIB)/src/util
+	rm -rf $(OBJDIR_DEBUGLIB)/src/test
+	rm -rf $(OBJDIR_DEBUGLIB)/src/core
+	rm -rf $(OBJDIR_DEBUGLIB)/src/c_simu
+	rm -rf $(OBJDIR_DEBUGLIB)/src/api/wrapper
 
-.PHONY: before_releaselib after_releaselib clean_releaselib
+.PHONY: before_debuglib after_debuglib clean_debuglib
 
