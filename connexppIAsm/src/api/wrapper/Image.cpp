@@ -12,7 +12,6 @@
 #include <string>
 #include <string.h>
 
-using namespace std;
 /*
 * Constructor for creating a new Image
 * 

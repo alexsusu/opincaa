@@ -14,6 +14,8 @@ enum{
     RGB_BYTES_PER_PIXEL     =    3
 };
 
+using namespace std;
+
 class Image
 {
     public:
