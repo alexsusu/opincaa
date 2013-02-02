@@ -157,7 +157,7 @@ unsigned Instruction::assemble()
     }
     
     instruction |= left << LEFT_POS;
-    instruction |= right << LEFT_POS;
+    instruction |= dest << DEST_POS;
     
     return instruction;
 }
