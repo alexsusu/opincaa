@@ -156,7 +156,9 @@ Instruction Operand::operator*(Operand op)
     {
         throw string("Invalid operand type for * operator");
     }
-    return Instruction(_MULT, op.index, index, 0);
+    Instruction instruction = Instruction(_MULT, op.index, index, 0);
+    kernel->append(instruction);
+    return instruction;
 }
 //-----------------------------------------------------------
 Instruction Operand::operator*(short value)
@@ -228,7 +230,6 @@ void Operand::operator=(Instruction insn)
 {
     if(insn.getOpcode() == _MULT)
     {
-        kernel->append(insn);
         kernel->append(Instruction(_MULT_LO, 0, 0, index));
     }
     else
