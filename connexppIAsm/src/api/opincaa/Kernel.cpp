@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include <errno.h>
 #include <iostream>
-#include "ConnexMachine.h"
 
 /*
 * Constructor for creating a new Kernel
@@ -68,7 +67,7 @@ void Kernel::writeTo(int fileDescriptor)
     write(fileDescriptor, instructions.data(), instructions.size() * sizeof(unsigned)); 
     
     /* Flush the descriptor */
-    fsync(fileDescriptor);
+    write(fileDescriptor, NULL, 0); 
 }
 
 /*

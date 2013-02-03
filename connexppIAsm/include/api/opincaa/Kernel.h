@@ -10,8 +10,6 @@
 #define KERNEL_H
 
 #include "Instruction.h"
-#include "Operand.h"
-#include "opcodes.h"
 #include "ConnexMachine.h"
 #include <vector>
 #include <string>
@@ -37,6 +35,24 @@ using namespace std;
 #define     R13         (Operand(TYPE_REGISTER, 13, __kernel))
 #define     R14         (Operand(TYPE_REGISTER, 14, __kernel))
 #define     R15         (Operand(TYPE_REGISTER, 15, __kernel))
+#define     R16         (Operand(TYPE_REGISTER, 16, __kernel))
+#define     R17         (Operand(TYPE_REGISTER, 17, __kernel))
+#define     R18         (Operand(TYPE_REGISTER, 18, __kernel))
+#define     R19         (Operand(TYPE_REGISTER, 19, __kernel))
+#define     R20         (Operand(TYPE_REGISTER, 20, __kernel))
+#define     R21         (Operand(TYPE_REGISTER, 21, __kernel))
+#define     R22         (Operand(TYPE_REGISTER, 22, __kernel))
+#define     R23         (Operand(TYPE_REGISTER, 23, __kernel))
+#define     R24         (Operand(TYPE_REGISTER, 24, __kernel))
+#define     R25         (Operand(TYPE_REGISTER, 25, __kernel))
+#define     R26         (Operand(TYPE_REGISTER, 26, __kernel))
+#define     R27         (Operand(TYPE_REGISTER, 27, __kernel))
+#define     R28         (Operand(TYPE_REGISTER, 28, __kernel))
+#define     R29         (Operand(TYPE_REGISTER, 29, __kernel))
+#define     R30         (Operand(TYPE_REGISTER, 20, __kernel))
+#define     R31         (Operand(TYPE_REGISTER, 31, __kernel))
+
+#define     R(x)        (Operand(TYPE_REGISTER, x, __kernel))
 
 #define     INDEX       (Operand(TYPE_INDEX_REG, 0, __kernel))
 

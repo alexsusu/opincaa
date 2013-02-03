@@ -9,15 +9,17 @@
 #ifndef CONNEX_INTERFACE_H
 #define CONNEX_INTERFACE_H
 
-#include "Instruction.h"
+#include "Operand.h"
 #include "Kernel.h"
 #include <string>
 #include <map>
 
-#define CONNEX_MAX_REGS     16
+#define CONNEX_MAX_REGS     32
 #define CONNEX_MAX_MEMORY   1024
 
 using namespace std;
+
+class Kernel;
 
 class ConnexMachine
 {

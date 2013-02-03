@@ -6,8 +6,7 @@
  */
 
 #include "Operand.h"
-#include "opcodes.h"
-#include "ConnexMachine.h"
+
 /*
  * Constructor for creating a new Operand
  * 

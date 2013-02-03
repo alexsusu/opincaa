@@ -6,7 +6,6 @@
  * 
  */
 
-#include "opcodes.h"
 #include "Instruction.h"
 #include <string>
 #include <stdio.h>

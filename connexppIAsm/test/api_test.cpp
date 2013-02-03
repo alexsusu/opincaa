@@ -2,7 +2,6 @@
 #include <unistd.h>
 #include <iostream>
 
-#include "Kernel.h"
 #include "ConnexMachine.h"
 
 

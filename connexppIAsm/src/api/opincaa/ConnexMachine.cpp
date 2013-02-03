@@ -6,13 +6,10 @@
  * 
  */
 
-#include "Instruction.h"
 #include "ConnexMachine.h"
-#include "Kernel.h"
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
-#include "opcodes.h"
 #include <map>
 
 #define     VECTOR_LENGTH   128
@@ -160,7 +157,7 @@ int ConnexMachine::writeDataToArray(void *buffer, unsigned vectorCount, unsigned
     int bytesWritten = write(ioWriteFifo, buffer, vectorCount * VECTOR_LENGTH * 2);
     
     /* Flush the descriptor */
-    fsync(ioWriteFifo);
+    write(ioWriteFifo, NULL, 0);
     
     /* Read the ACK, NOTE:this is blocking */
     int response;
@@ -198,7 +195,7 @@ void* ConnexMachine::readDataFromArray(void *buffer, unsigned vectorCount, unsig
     write(ioWriteFifo, &connex_io_descriptor, sizeof(connex_io_descriptor));
     
     /* Flush the descriptor */
-    fsync(ioWriteFifo);
+    write(ioWriteFifo, NULL, 0);
     
     /* Read the data */
     if(read(ioReadFifo, buffer, vectorCount * VECTOR_LENGTH * 2) < 0)
