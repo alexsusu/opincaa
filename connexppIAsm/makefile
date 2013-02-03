@@ -25,7 +25,7 @@ lib: make_paths build_lib
 test: lib build_tests run_tests
 
 build_tests:
-	$(CXX) -O3 -L$(LIB_DIR) -lopincaa $(INC) $(TEST_DIR)/api_test.cpp -o $(TEST_BUILD_DIR)/api_test
+	$(CXX) -O3 $(TEST_DIR)/api_test.cpp -o $(TEST_BUILD_DIR)/api_test -L$(LIB_DIR) -lopincaa $(INC) 
 
 run_tests:
 	./$(TEST_BUILD_DIR)/api_test
