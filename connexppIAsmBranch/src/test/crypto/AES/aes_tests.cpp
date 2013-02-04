@@ -23,7 +23,7 @@ using namespace std;
 #define AES_KEY_EXPANSION_BNR   0
 #define AES_ENCRYPTION_BNR      1
 //#define PARALLEL_AES_ENCRYPTIONS 128
-#define AES_TIMING_LOOPS 10000
+#define AES_TIMING_LOOPS (10000 / MAX_DATABLOCKS_IN_LOCALSTORE)
 
 #define Nb 4
 
@@ -516,7 +516,7 @@ void CreateAesEncryptionKernel(int bnr, int datablocks)
 int AES_ConnexSEncryption()
 {
     cout<<"AES encryption test: encryption of  "<< NUMBER_OF_MACHINES
-            <<" parallel blocks of input data, "<< AES_TIMING_LOOPS<<" loops "<<endl;
+            <<" parallel machines, "<< AES_TIMING_LOOPS<<" loops, each loop each machine encrypts "<< MAX_DATABLOCKS_IN_LOCALSTORE <<endl;
 
     int TimeStart = GetMilliCount();
     CreateKeys(CnxKeys);
@@ -561,8 +561,8 @@ int AES_ConnexSEncryption()
 
     cout<<" Time for transfering input/output data via IO "<< TimeIO <<" ms"<<endl;
     cout<<" Time for running kernels "<< TimeRunKernel <<"ms"<<endl;
-    cout<< (((float)AES_TIMING_LOOPS) / (TimeRunKernel + TimeIO)) <<" Kblocks/s per machine "<<endl;
-    cout<< NUMBER_OF_MACHINES*(((float)AES_TIMING_LOOPS) / (TimeRunKernel + TimeIO)) <<" Kblocks/s per ConnexS "<<endl;
+    cout<< (((float)AES_TIMING_LOOPS * MAX_DATABLOCKS_IN_LOCALSTORE) / (TimeRunKernel + TimeIO)) <<" Kblocks/s per machine "<<endl;
+    cout<< NUMBER_OF_MACHINES*(((float)AES_TIMING_LOOPS * MAX_DATABLOCKS_IN_LOCALSTORE) / (TimeRunKernel + TimeIO)) <<" Kblocks/s per ConnexS "<<endl;
 
     //NUMBER_OF_MACHINES
     UINT16 *CryptoContent = (UINT16*)((IOU_CnxDataOutput.getIO_UNIT_CORE())->Content);
