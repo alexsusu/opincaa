@@ -61,6 +61,15 @@ int deinitialize()
     io_unit::deinitialize();
     return result;
 }
+
+#ifndef S_IRUSR
+    #define S_IRUSR 0
+#endif // S_IRUSR
+
+#ifndef S_IWUSR
+    #define S_IWUSR 0
+#endif // S_IWUSR
+
 int initialize(UINT8 RunningMode)
 {
     int result = PASS;
@@ -68,11 +77,11 @@ int initialize(UINT8 RunningMode)
 
     if(RunningMode == VERILOG_SIMULATION_MODE)
     {
-        cnxvector::pipe_read_32 = open ("reduction_fifo_device",O_RDONLY | O_CREAT);
-        cnxvector::pipe_write_32 = open ("program_fifo_device",O_WRONLY | O_CREAT);
+        cnxvector::pipe_read_32 = open ("reduction_fifo_device",O_RDONLY | O_CREAT, S_IRUSR|S_IWUSR);
+        cnxvector::pipe_write_32 = open ("program_fifo_device",O_WRONLY | O_CREAT, S_IRUSR|S_IWUSR);
 
-        io_unit::vpipe_read_32 = open ("io_outbound_fifo_device",O_RDONLY | O_CREAT);
-        io_unit::vpipe_write_32 = open ("io_inbound_fifo_device",O_WRONLY | O_CREAT);
+        io_unit::vpipe_read_32 = open ("io_outbound_fifo_device",O_RDONLY | O_CREAT, S_IRUSR|S_IWUSR);
+        io_unit::vpipe_write_32 = open ("io_inbound_fifo_device",O_WRONLY | O_CREAT, S_IRUSR|S_IWUSR);
 
         EXECUTE_BATCH = cnxvector::executeBatch;
         EXECUTE_BATCH_RED = cnxvector::executeBatchRed;
