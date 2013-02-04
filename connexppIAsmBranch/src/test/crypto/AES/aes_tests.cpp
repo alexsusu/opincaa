@@ -20,7 +20,8 @@
 
 using namespace std;
 
-#define AES_ENCRYPTION_BNR 0
+#define AES_KEY_EXPANSION_BNR   0
+#define AES_ENCRYPTION_BNR      1
 //#define PARALLEL_AES_ENCRYPTIONS 128
 #define AES_TIMING_LOOPS 10000
 
@@ -189,7 +190,7 @@ void AES_CnxMixColumns()
 0   ... 255     AES_SBOX[index]: Keep it at index 0. This is optimal, since we do not have instruction for accessing LS[Rx + offset]
                 // If you modify it however, add extra steps (aka "+" with offset) in AES_CnxSubWord / AES_CnxSubBytes
 256 ... 288     AES_KEYS (in BYTES)
-288 ... 288 + Nb*(Nr+1) = 288 + 4*44 (for 128 bit) AES_Plaintext
+288 ... 288 + Nb*(Nr+1): wi: = 288 + 4*44: wi (for 128 bit) AES_Plaintext
 
 */
 #define AES_KEY_SIZE_IN_BYTES (128/8)
@@ -203,8 +204,14 @@ void AES_CnxMixColumns()
 
 #define AES_DATABLOCK_SIZE_IN_BYTES (128/8)
 
-#define LOCAL_STORE_PLAINTEXT_OFFSET (LOCAL_STORE_WI_OFFSET + 4*Nb*(Nr + 1))
-#define LOCAL_STORE_CRYPTOTEXT_OFFSET (LOCAL_STORE_PLAINTEXT_OFFSET + AES_DATABLOCK_SIZE_IN_BYTES)
+#define LOCAL_STORE_PLAINTEXT_OFFSET(x) ((LOCAL_STORE_WI_OFFSET + 4*Nb*(Nr + 1)) + x*AES_DATABLOCK_SIZE_IN_BYTES)
+#define LOCAL_STORE_CRYPTOTEXT_OFFSET(x) (LOCAL_STORE_PLAINTEXT_OFFSET(MAX_DATABLOCKS_IN_LOCALSTORE) \
+                                            + x*AES_DATABLOCK_SIZE_IN_BYTES)
+
+#define LOCAL_STORE_END(x) (LOCAL_STORE_CRYPTOTEXT_OFFSET(x) + AES_DATABLOCK_SIZE_IN_BYTES)
+
+#define MAX_DATABLOCKS_IN_LOCALSTORE 15
+#define DATABLOCK_SIZE (NUMBER_OF_MACHINES * AES_DATABLOCK_SIZE_IN_BYTES)
 
 UINT_REGISTER_VAL CnxSbox[NUMBER_OF_MACHINES * AES_SBOX_SIZE];
 void CreateSbox(UINT_REGISTER_VAL *CS)
@@ -251,35 +258,41 @@ int AES_CnxTransferKeys()
     if (PASS != IO_WRITE_NOW(&IOU_Keys)){printf("Writing to IO pipe, FAILED !"); return FAIL;}
 }
 
-UINT_REGISTER_VAL CnxDataInput[NUMBER_OF_MACHINES * AES_DATABLOCK_SIZE_IN_BYTES];
-void CreateInputDataBlock(UINT_REGISTER_VAL *CDI)
+
+UINT_REGISTER_VAL CnxDataInput[MAX_DATABLOCKS_IN_LOCALSTORE * DATABLOCK_SIZE];
+void CreateInputDataBlocks(UINT_REGISTER_VAL *CDI, int datablocks)
 {
-    for (int i=0; i < AES_DATABLOCK_SIZE_IN_BYTES; i++)
-        for (int machine=0; machine < NUMBER_OF_MACHINES; machine++)
-        {
-            if (i == (AES_DATABLOCK_SIZE_IN_BYTES - 1))
-               CnxDataInput[i * NUMBER_OF_MACHINES + machine] = plaintext[i] + machine; //make a small difference in the key across machines
-            else
-                CnxDataInput[i * NUMBER_OF_MACHINES + machine] = plaintext[i];
-        }
+    for (int db = 0; db < datablocks; db ++)
+        for (int i=0; i < AES_DATABLOCK_SIZE_IN_BYTES; i++)
+            for (int machine=0; machine < NUMBER_OF_MACHINES; machine++)
+            {
+                if (i == (AES_DATABLOCK_SIZE_IN_BYTES - 1))
+                    //make a small difference in the key across machines
+                    CnxDataInput[db*DATABLOCK_SIZE + (i * NUMBER_OF_MACHINES + machine)] = plaintext[i] + db + machine;
+                else
+                    CnxDataInput[db*DATABLOCK_SIZE + (i * NUMBER_OF_MACHINES + machine)] = plaintext[i];
+            }
 }
 
 io_unit IOU_CnxDataInput;
-void CnxPreprareTransferInputDataBlock(UINT_REGISTER_VAL *CDI)
+void CnxPreprareTransferInputDataBlocks(UINT_REGISTER_VAL *CDI, int datablocks)
 {
-    IOU_CnxDataInput.preWritecnxvectors(LOCAL_STORE_PLAINTEXT_OFFSET,CDI,AES_DATABLOCK_SIZE_IN_BYTES);
+    IOU_CnxDataInput.preWritecnxvectors(LOCAL_STORE_PLAINTEXT_OFFSET(0),CDI, datablocks*AES_DATABLOCK_SIZE_IN_BYTES);
 }
-int AES_CnxTransferInputDataBlock()
+int AES_CnxTransferInputDataBlocks()
 {
     if (PASS != IO_WRITE_NOW(&IOU_CnxDataInput)){printf("Writing to IO pipe, FAILED !"); return FAIL;}
     return PASS;
 }
 
-//UINT_REGISTER_VAL CnxDataOutput[NUMBER_OF_MACHINES * AES_DATABLOCK_SIZE_IN_BYTES];
 io_unit IOU_CnxDataOutput;
-int AES_CnxTransferOutputDataBlock()
+void CnxPreprareTransferOutputDataBlocks(int datablocks)
 {
-    IOU_CnxDataOutput.preReadcnxvectors(LOCAL_STORE_CRYPTOTEXT_OFFSET, AES_DATABLOCK_SIZE_IN_BYTES);
+    IOU_CnxDataOutput.preReadcnxvectors(LOCAL_STORE_CRYPTOTEXT_OFFSET(0), datablocks*AES_DATABLOCK_SIZE_IN_BYTES);
+}
+
+int AES_CnxTransferOutputDataBlocks()
+{
     if (PASS != IO_READ_NOW(&IOU_CnxDataOutput)){printf("Reading from IO pipe, FAILED !"); return FAIL;}
 }
 
@@ -390,16 +403,16 @@ int AES_CnxKeyExpansion()
     return PASS;
 }
 
-void AES_LoadPlainText()
+void AES_LoadPlainText(int DataPair)
 {
     for (int i= 0; i < 4*Nb; i++)
-        R[i] = LS[LOCAL_STORE_PLAINTEXT_OFFSET + i];
+        R[i] = LS[LOCAL_STORE_PLAINTEXT_OFFSET(DataPair) + i];
 }
 
-void AES_StoreCryptoText()
+void AES_StoreCryptoText(int DataPair)
 {
     for (int i= 0; i < 4*Nb; i++)
-        LS[LOCAL_STORE_CRYPTOTEXT_OFFSET + i] = R[i];
+        LS[LOCAL_STORE_CRYPTOTEXT_OFFSET(DataPair) + i] = R[i];
 }
 
 void AES_CnxAddRoundKey(int startIndex, int lastIndex)
@@ -452,10 +465,10 @@ void AES_CnxShiftRows()
     }
 }
 
-void AES_CnxEncryption()
+void AES_CnxEncryption(int datablock)
 {
     /* Load first 128 datablocks from localstore */
-    AES_LoadPlainText();// load plaintext starting with R0: R0 ... R15 has now the plaintext;
+    AES_LoadPlainText(datablock);// load plaintext starting with R0: R0 ... R15 has now the plaintext;
     AES_CnxAddRoundKey(0,Nb-1);
 
     for (int round = 1; round <= Nr-1; round++)
@@ -470,7 +483,7 @@ void AES_CnxEncryption()
     AES_CnxShiftRows(); // See Sec. 5.1.2
     AES_CnxAddRoundKey(Nr*Nb,(Nr+1)*Nb-1);
 
-    AES_StoreCryptoText();
+    AES_StoreCryptoText(datablock);
 }
 
 void print_AES_Wi(int index)
@@ -479,10 +492,10 @@ void print_AES_Wi(int index)
     c_simulator::printLS(LOCAL_STORE_WI_OFFSET + offset,0);
 }
 
-void print_AES_Plaintext(int index)
+void print_AES_Plaintext(int index, int DataPair)
 {
     for (int offset = index; offset < index + 16; offset++)
-    c_simulator::printLS(LOCAL_STORE_PLAINTEXT_OFFSET + offset,0);
+    c_simulator::printLS(LOCAL_STORE_PLAINTEXT_OFFSET(DataPair) + offset,0);
 }
 
 void CreateKeyExpansionKernel(int bnr)
@@ -492,10 +505,11 @@ void CreateKeyExpansionKernel(int bnr)
     END_BATCH(bnr);
 }
 
-void CreateAesEncryptionKernel(int bnr)
+void CreateAesEncryptionKernel(int bnr, int datablocks)
 {
     BEGIN_BATCH(bnr);
-        AES_CnxEncryption();
+    for (int db=0; db < datablocks; db++)
+        AES_CnxEncryption(db);
     END_BATCH(bnr);
 }
 
@@ -507,18 +521,19 @@ int AES_ConnexSEncryption()
     int TimeStart = GetMilliCount();
     CreateKeys(CnxKeys);
     CreateSbox(CnxSbox);
-    CreateInputDataBlock(CnxDataInput);
+    CreateInputDataBlocks(CnxDataInput, MAX_DATABLOCKS_IN_LOCALSTORE);
     cout<<" Time for creation of data, keys, sbox "<< GetMilliSpan(TimeStart)<<" ms"<<endl;
 
     TimeStart = GetMilliCount();
     CnxPreprareTransferKeys(CnxKeys);
     CnxPreprareTransferSbox(CnxSbox);
-    CnxPreprareTransferInputDataBlock(CnxDataInput);
+    CnxPreprareTransferInputDataBlocks(CnxDataInput, MAX_DATABLOCKS_IN_LOCALSTORE);
+    CnxPreprareTransferOutputDataBlocks(MAX_DATABLOCKS_IN_LOCALSTORE);
     cout<<" Time for preparing transfers via IO "<< GetMilliSpan(TimeStart)<<" ms"<<endl;
 
     TimeStart = GetMilliCount();
-    CreateKeyExpansionKernel(AES_ENCRYPTION_BNR);
-    CreateAesEncryptionKernel(AES_ENCRYPTION_BNR+1);
+    CreateKeyExpansionKernel(AES_KEY_EXPANSION_BNR);
+    CreateAesEncryptionKernel(AES_ENCRYPTION_BNR, MAX_DATABLOCKS_IN_LOCALSTORE);
     cout<<" Time for creating batches "<< GetMilliSpan(TimeStart)<<" ms"<<endl;
 
     TimeStart = GetMilliCount();
@@ -531,16 +546,16 @@ int AES_ConnexSEncryption()
     for (int i=0; i < AES_TIMING_LOOPS; i++)
     {
         TimeStart = GetMilliCount();
-            AES_CnxTransferInputDataBlock();
+            AES_CnxTransferInputDataBlocks();
         TimeIO += GetMilliSpan(TimeStart);
 
         TimeStart = GetMilliCount();
+            EXECUTE_BATCH(AES_KEY_EXPANSION_BNR);
             EXECUTE_BATCH(AES_ENCRYPTION_BNR);
-            EXECUTE_BATCH(AES_ENCRYPTION_BNR+1);
         TimeRunKernel += GetMilliSpan(TimeStart);
 
         TimeStart = GetMilliCount();
-            AES_CnxTransferOutputDataBlock();
+            AES_CnxTransferOutputDataBlocks();
         TimeIO += GetMilliSpan(TimeStart);
     }
 
@@ -575,12 +590,16 @@ int AES_ConnexSEncryption()
 
     //c_simulator::printLS(r+LOCAL_STORE_CRYPTOTEXT_OFFSET,0);
 
-    //DEASM_BATCH(AES_ENCRYPTION_BNR+1);
+    //DEASM_BATCH(AES_ENCRYPTION_BNR);
     cout<<"PASS";
 }
 
 int test_AES_All()
 {
+    cout<<" LOCAL_STORE_END = "<<LOCAL_STORE_END(17)<<endl;
+    cout<<" LOCAL_STORE_PLAINTEXT_OFFSET(MAX) = "<<LOCAL_STORE_PLAINTEXT_OFFSET(MAX_DATABLOCKS_IN_LOCALSTORE)<<endl;
+    cout<<" LOCAL_STORE_CRYPTOTEXT_OFFSET(0) = "<<LOCAL_STORE_CRYPTOTEXT_OFFSET(0)<<endl;
+    cout<<" LOCAL_STORE_CRYPTOTEXT_OFFSET(MAX) = "<<LOCAL_STORE_CRYPTOTEXT_OFFSET(MAX_DATABLOCKS_IN_LOCALSTORE)<<endl;
     int Start;
     //Start = GetMilliCount();
     //cout<<"Batches were created in " << GetMilliSpan(Start)<< " ms"<<endl;
