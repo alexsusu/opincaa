@@ -1,0 +1,156 @@
+/*
+ * File:   Operand.h
+ *
+ * This is the header file for a class used to represent
+ * and instruction operand. It is used for the ability to
+ * overload operators.
+ * 
+ */
+
+#ifndef OPERAND_H
+#define OPERAND_H
+
+#include "Instruction.h"
+#include "Kernel.h"
+
+using namespace std;
+
+enum
+{
+    TYPE_REGISTER,
+    TYPE_LOCAL_STORE,
+    TYPE_INDEX_REG,
+    TYPE_SHIFT_REG,
+    TYPE_LS_DESCRIPTOR
+};
+
+class Kernel;
+
+class Operand
+{
+    public:
+        /*
+        * Constructor for creating a new Operand
+        * 
+        * @param type the type of this operand (reg or local store)
+        * @param index the index of the register or local store array that is 
+        *   represented by this object
+        * @param localStoreIndexImmediate Only applies for operands of type 
+        *   TYPE_LOCAL_STORE and it specifies
+        *   if the index is the actual index in the localStore (true) or if
+        *   it is the register storing the index (false)
+        * @param kernel the kernel for which this operand is used
+        * @throws string if the index is out of bounds
+        */ 
+        Operand(int type, unsigned short index, bool localStoreIndexImmediate, Kernel *kernel);
+        
+        /*
+         * Constructor for creating a new Operand with default localStoreIndexImmediate == false
+         * 
+         * @param type the type of this operand (reg or local store)
+         * @param index the index of the register or local store array that is 
+         *   represented by this object
+         * @param kernel the kernel for which this operand is used
+         * @throws string if the index is out of bounds
+         */ 
+        Operand(int type, unsigned short index, Kernel *kernel);
+        
+        /***********************************************************
+         * Start of overloaded operators
+         ***********************************************************/
+        
+        /* Addition */
+        Instruction operator+(Operand op);
+        Instruction operator+(short value);
+        void operator+=(Operand op);
+        
+        /* Subtraction */
+        Instruction operator-(Operand op);
+        Instruction operator-(short value);
+        void operator-=(Operand op);
+        
+        /* Multiplication */
+        Instruction operator*(Operand op);
+        Instruction operator*(short value);
+
+        /* Assignment */
+        void operator=(Operand op);
+        void operator=(short value);
+        void operator=(Instruction insn);
+        
+        /* Logical */
+        Instruction operator~();
+        
+        Instruction operator|(Operand op);
+        Instruction operator|(short value);
+        void operator|=(Operand op);
+        
+        Instruction operator&(Operand op);
+        Instruction operator&(short value);
+        void operator&=(Operand op);
+        
+        Instruction operator==(Operand op);
+        Instruction operator==(short value);
+        
+        Instruction operator<(Operand op);
+        Instruction operator<(short value);
+        
+        Instruction operator^(Operand op);
+        Instruction operator^(short value);
+        void operator^=(Operand op);
+      
+        Operand operator[](Operand op);
+        Operand operator[](short value);
+        
+        Instruction operator<<(Operand op);
+        Instruction operator<<(short value);
+        
+        Instruction operator>>(Operand op);
+        Instruction operator>>(short value);
+        
+        static Instruction addc(Operand op1, Operand op2);
+        static Instruction addc(Operand op1, short value);
+        
+        static Instruction subc(Operand op1, Operand op2);
+        static Instruction subc(Operand op1, short value);
+        
+        static Instruction shra(Operand op1, Operand op2);
+        static Instruction ishra(Operand op1, short value);
+        
+        static Instruction multhi();
+        static Instruction multlo();
+        
+        static void cellshl(Operand op1, Operand op2);
+        static void cellshr(Operand op1, Operand op2);
+        
+        static Instruction ult(Operand op1, Operand op2);
+        static Instruction ult(Operand op1, short value);
+        
+        static void reduce(Operand op);
+    private:
+
+        /*
+         * The type of this operand (register, local store or special type)
+         * See enum above.
+         */
+        int type;
+        
+        /*
+         * The index of this operand in the register file or local store
+         */
+        unsigned short index;
+        
+        /*
+         * The kernel for which this operand is used
+         */
+        Kernel *kernel;
+        
+        /*
+         * Only applies for operands of type TYPE_LOCAL_STORE and it specifies
+         * if the index is the actual index in the localStore (true) or if
+         * it is the register storing the index (false)
+         */
+        bool localStoreIndexImmediate;
+};
+
+#endif // OPERAND_H
