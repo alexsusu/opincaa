@@ -90,12 +90,18 @@ string Kernel::getName()
     return name;
 }
 
+/*
+ * Returns a string representing the disassembled kernel, one
+ * instruction per line.
+ * 
+ * @return the disassembled kernel
+ */
 string Kernel::disassemble()
 {
     string kernel;
-    for(std::vector<unsigned>::iterator it = instructions.begin(); it != instructions.end(); ++it) 
+    for(vector<unsigned>::iterator element = instructions.begin(); element != instructions.end(); element++) 
     {
-        kernel += Instruction(*it).disassemble();
+        kernel += Instruction(*element).disassemble();
     }
     
     return kernel;
