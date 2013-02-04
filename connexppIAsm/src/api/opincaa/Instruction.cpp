@@ -150,7 +150,7 @@ unsigned Instruction::assemble()
             instruction |= right << RIGHT_POS;
             break;
         case INSTRUCTION_TYPE_WITH_VALUE:
-            instruction = opcode << OPCODE_9BITS_POS;
+            instruction = opcode << OPCODE_6BITS_POS;
             instruction |= value << IMMEDIATE_VALUE_POS;
             break;
     }
