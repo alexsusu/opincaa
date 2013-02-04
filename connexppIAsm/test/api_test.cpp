@@ -11,6 +11,7 @@ void initKernel()
     R2 = LS[0];
     R1 = LS[1];
     R1 = R2 + R1;
+    R1 = R2 - R1;
     NOP;
     REDUCE(R1);
     END_KERNEL("test");
@@ -38,6 +39,7 @@ int main()
         connex->executeKernel("test");
         connex->executeKernel("test");
         cout << "Execute complete twice (kernel written to file descriptor)" << endl;
+        cout << "Disassembling kernel test: " << endl << ConnexMachine::disassembleKernel("test");
         delete connex;
     }
     catch(string err)

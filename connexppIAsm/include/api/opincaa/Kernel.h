@@ -146,6 +146,14 @@ class Kernel
          */
         string getName();
         
+        /*
+         * Returns a string representing the disassembled kernel, one
+         * instruction per line.
+         * 
+         * @return the disassembled kernel
+         */
+        string disassemble();
+        
     private:
 
         /*

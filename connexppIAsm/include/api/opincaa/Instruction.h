@@ -203,11 +203,18 @@ class Instruction
          */
         unsigned assemble();
         
-
+        /*
+         * Returns the string representing the disassembled instruction in 
+         * OPINCAA format
+         * 
+         * @return string representing the disassembled instruction
+         */
+        string disassemble();
+        
         /*
          * Returns a string representation of this instruction
          * 
-         * @return the 32bit word representing the assembled instruction
+         * @return the string representing this instruction
          */
         string toString();
         

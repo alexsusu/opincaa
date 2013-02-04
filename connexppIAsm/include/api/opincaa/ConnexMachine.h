@@ -25,6 +25,21 @@ class ConnexMachine
 {
     public:
         /*
+         * Adds a kernel to the static kernel map. 
+         */
+        static void addKernel(Kernel *kernel);
+        
+        /*
+         * Disassembles the specified kernel
+         * 
+         * @param kernelName the kernel to disassemble
+         * 
+         * @return the string representing the disassembled kernel,
+         * one instruction per line
+         */
+        static string disassembleKernel(string kernelName);
+        
+        /*
          * Constructor for creating a new ConnexMachine with the default FIFO
          * descriptors
          * 
@@ -50,11 +65,6 @@ class ConnexMachine
          * descriptors
          */ 
         ~ConnexMachine();
-        
-        /*
-         * Adds a kernel to the static kernel map. 
-         */
-        static void addKernel(Kernel *kernel);
         
         /*
          * Executes the kernel on the current ConnexMachine

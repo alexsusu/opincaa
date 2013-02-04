@@ -89,3 +89,14 @@ string Kernel::getName()
 {
     return name;
 }
+
+string Kernel::disassemble()
+{
+    string kernel;
+    for(std::vector<unsigned>::iterator it = instructions.begin(); it != instructions.end(); ++it) 
+    {
+        kernel += Instruction(*it).disassemble();
+    }
+    
+    return kernel;
+}

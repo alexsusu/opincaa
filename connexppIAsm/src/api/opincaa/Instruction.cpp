@@ -9,6 +9,7 @@
 #include "Instruction.h"
 #include <string>
 #include <stdio.h>
+#include <sstream>
 
 /*
 * Returns a string representation of specified opcode
@@ -92,6 +93,7 @@ Instruction::Instruction(unsigned instruction)
             break;
         case 1:
             type = INSTRUCTION_TYPE_WITH_VALUE;
+            opcode = GET_OPCODE_6BITS(instruction);
             value = GET_IMM(instruction);
             break;
     }
@@ -160,7 +162,62 @@ unsigned Instruction::assemble()
     
     return instruction;
 }
-        
+
+/*
+ * Returns the string representing the disassembled instruction in 
+ * OPINCAA format
+ * 
+ * @return string representing the disassembled instruction
+ */
+string Instruction::disassemble()
+{
+    stringstream stream;
+    
+    switch(opcode)
+    {
+        case _ADD: stream << registerName(dest) << " = " << registerName(left) << " + " << registerName(right); break;
+        case _ADDC: stream << registerName(dest) << " = ADDC(" << registerName(left) << ", " << registerName(right) << ")"; break;
+        case _SUB: stream << registerName(dest) << " = " << registerName(left) << " - " << registerName(right); break;
+        case _SUBC: stream << registerName(dest) << " = SUBC(" << registerName(left) << ", " << registerName(right) << ")"; break;
+        case _NOT: stream << registerName(dest) << " = ~" << registerName(left); break;
+        case _OR: stream << registerName(dest) << " = " << registerName(left) << " | " << registerName(right); break;
+        case _AND: stream << registerName(dest) << " = " << registerName(left) << " & " << registerName(right); break;
+        case _XOR: stream << registerName(dest) << " = " << registerName(left) << " ^ " << registerName(right); break;
+        case _EQ: stream << registerName(dest) << " = " << registerName(left) << " == " << registerName(right); break;
+        case _LT: stream << registerName(dest) << " = " << registerName(left) << " < " << registerName(right); break;
+        case _ULT: stream << registerName(dest) << " = ULT(" << registerName(left) << ", " << registerName(right) << ")"; break;
+        case _SHL: stream << registerName(dest) << " = " << registerName(left) << " << " << registerName(right); break;
+        case _SHR: stream << registerName(dest) << " = " << registerName(left) << " >> " << registerName(right); break;
+        case _SHRA: stream << registerName(dest) << " = SHRA(" << registerName(left) << ", " << registerName(right) << ")"; break;
+        case _ISHL: stream << registerName(dest) << " = " << registerName(left) << " << " << right; break;
+        case _ISHR: stream << registerName(dest) << " = " << registerName(left) << " >> " << right; break;
+        case _ISHRA: stream << registerName(dest) << " = ISHRA(" << registerName(left) << ", " << right << ")"; break;
+        case _LDIX: stream << registerName(dest) << " = INDEX"; break;
+        case _LDSH: stream << registerName(dest) << " = SHIFT_REG"; break;
+        case _CELL_SHL: stream << registerName(dest) << " = CELL_SHL(" << registerName(left) << ", " << registerName(right) << ")"; break;
+        case _CELL_SHR: stream << registerName(dest) << " = CELL_SHR(" << registerName(left) << ", " << registerName(right) << ")"; break;
+        case _READ: stream << registerName(dest) << " = LS[" << registerName(right) << "]"; break;
+        case _WRITE: stream << "LS[" << registerName(right) << "] = " << registerName(left); break;
+        case _MULT: stream << registerName(left) << " * " << registerName(right); break;
+        case _MULT_LO: stream << registerName(dest) << " = LOW()"; break;
+        case _MULT_HI: stream << registerName(dest) << " = HIGH()"; break;
+        case _WHERE_CRY: stream << "WHERE_CRY"; break;
+        case _WHERE_EQ: stream << "WHERE_EQ"; break;
+        case _WHERE_LT: stream << "WHERE_LT"; break; 
+        case _END_WHERE:  stream << "END_WHERE"; break;
+        case _REDUCE: stream << "REDUCE(" << registerName(left) << ")"; break;
+        case _NOP: stream << "NOP"; break;
+        case _VLOAD: stream << registerName(dest) << " = " << value; break;
+        case _IREAD: stream << registerName(dest) << " = LS[" << value << "]"; break;
+        case _IWRITE:   stream << "LS[" << value << "] = " << registerName(left); break;
+        default: throw string("Invalid instruction opcode!");
+    }
+    
+    stream << ";" << endl;
+    
+    return stream.str();
+}
+
 /*
 * Returns a string representation of this instruction
 * 

@@ -62,6 +62,24 @@ void ConnexMachine::addKernel(Kernel *kernel)
 }
 
 /*
+ * Disassembles the specified kernel
+ * 
+ * @param kernelName the kernel to disassemble
+ * 
+ * @return the string representing the disassembled kernel,
+ * one instruction per line
+ */
+string ConnexMachine::disassembleKernel(string kernelName)
+{
+    if(kernels.count(kernelName) == 0)
+    {
+        throw string("Kernel ") + kernelName + string(" not found in ConnexMachine::disassembleKernel!");
+    }
+    Kernel *kernel = kernels.find(kernelName)->second;
+    return kernel->disassemble();
+}
+
+/*
  * Constructor for creating a new ConnexMachine with the default FIFO
  * descriptors
  * 
