@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="libopincaa" />
+		<Option makefile="makefile" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="DebugLib">
+				<Option output="lib/opincaa" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/DebugLib/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O3" />
+					<Add option="-O2" />
+					<Add option="-O1" />
+					<Add option="-O" />
+					<Add option="-Wall" />
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="ReleaseLib">
+				<Option output="lib/opincaa" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="" />
+				<Option object_output="obj/ReleaseLib/" />
+				<Option type="2" />
+				<Option compiler="gcc" />
+				<Option createDefFile="1" />
+				<Compiler>
+					<Add option="-O3" />
+					<Add option="-Wall" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Unit filename="include/api/wrapper/Image.h" />
+		<Unit filename="include/api/wrapper/ImageWrapper.h" />
+		<Unit filename="include/c_simu/c_simulator.h" />
+		<Unit filename="include/core/cnxvector.h" />
+		<Unit filename="include/core/cnxvector_errors.h" />
+		<Unit filename="include/core/cnxvector_registers.h" />
+		<Unit filename="include/core/io_unit.h" />
+		<Unit filename="include/core/opcodes.h" />
+		<Unit filename="include/test/simple_io_tests.h" />
+		<Unit filename="include/test/simple_tests.h" />
+		<Unit filename="include/test/speed_tests.h" />
+		<Unit filename="include/util/kernel_acc.h" />
+		<Unit filename="include/util/timing.h" />
+		<Unit filename="include/util/utils.h" />
+		<Unit filename="src/api/wrapper/Image.cpp" />
+		<Unit filename="src/c_simu/c_simulator.cpp" />
+		<Unit filename="src/core/cnxvector.cpp" />
+		<Unit filename="src/core/cnxvector_errors.cpp" />
+		<Unit filename="src/core/cnxvector_registers.cpp" />
+		<Unit filename="src/core/io_unit.cpp" />
+		<Unit filename="src/test/simple_io_tests.cpp" />
+		<Unit filename="src/test/simple_tests.cpp" />
+		<Unit filename="src/test/speed_tests.cpp" />
+		<Unit filename="src/util/kernel_acc.cpp" />
+		<Unit filename="src/util/timing.cpp" />
+		<Unit filename="src/util/utils.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
