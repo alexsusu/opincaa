@@ -1,0 +1,13 @@
+
+Steps to build and install OPINCAA:
+
+1) make                             Build the OPINCAA library
+2) [optional] sudo make install     Install the OPINCAA library in your system in /usr/local/lib   
+3) [optional] make test             Compile an executable against the installed OPINCAA library and run some tests
+
+NOTE: if you choose not to install the library, you will need to manually specify the location of the library when
+compiling or running executables linked against it. These are the necessary steps to run the executable "foo":
+
+LD_LIBRARY_PATH=*/path/to/opincaa/library*
+export LD_LIBRARY_PATH
+./foo

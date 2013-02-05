@@ -53,6 +53,11 @@ $(BUILD_DIR)/Operand.o: $(SRC_DIR)/Operand.cpp
 $(BUILD_DIR)/ConnexMachine.o: $(SRC_DIR)/ConnexMachine.cpp
 	$(CXX) $(CFLAGS) -I$(INC_DIR) -c $(SRC_DIR)/ConnexMachine.cpp -o $(BUILD_DIR)/ConnexMachine.o
 
+install: lib
+	cp $(LIB_DIR)/libopincaa.so /usr/local/lib
+	chmod 0755 /usr/local/lib/libopincaa.so
+	ldconfig
+
 clean: 
 	rm -rf $(BUILD_DIR)
 	rm -rf $(TEST_BUILD_DIR)
