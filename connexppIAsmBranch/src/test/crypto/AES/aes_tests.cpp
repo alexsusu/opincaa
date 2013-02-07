@@ -474,6 +474,7 @@ void AES_CnxEncryption(int datablock)
 {
     /* Load first 128 datablocks from localstore */
     AES_LoadPlainText(datablock);// load plaintext starting with R0: R0 ... R15 has now the plaintext;
+    /*
     AES_CnxAddRoundKey(0,Nb-1);
 
     for (int round = 1; round <= Nr-1; round++)
@@ -487,7 +488,7 @@ void AES_CnxEncryption(int datablock)
     AES_CnxSubBytes(); // See Sec. 5.1.1
     AES_CnxShiftRows(); // See Sec. 5.1.2
     AES_CnxAddRoundKey(Nr*Nb,(Nr+1)*Nb-1);
-
+    */
     AES_StoreCryptoText(datablock);
 }
 
@@ -514,6 +515,7 @@ int AES_CnxTransferKeyOutput()
     if (PASS != IO_READ_NOW(&IOU_CnxKeyOutput)){printf("Reading from IO pipe, FAILED !"); return FAIL;}
     return PASS;
 }
+
 void print_AES_Key(int machine)
 {
     CnxPreprareTransferKeyOutput();
@@ -529,6 +531,28 @@ void print_AES_Key(int machine)
     //c_simulator::printLS(LOCAL_STORE_WI_OFFSET + offset,0);
 }
 
+io_unit IOU_CnxPlaintextOutput;
+void CnxPreprareTransferPlaintextOutput()
+{
+    IOU_CnxPlaintextOutput.preReadcnxvectors(LOCAL_STORE_PLAINTEXT_OFFSET(0), AES_DATABLOCK_SIZE_IN_BYTES);
+}
+
+int AES_CnxTransferPlaintextOutput()
+{
+    if (PASS != IO_READ_NOW(&IOU_CnxPlaintextOutput)){printf("Reading from IO pipe, FAILED !"); return FAIL;}
+    return PASS;
+}
+
+void print_AES_Plaintext(int machine)
+{
+    CnxPreprareTransferPlaintextOutput();
+    AES_CnxTransferPlaintextOutput();
+
+    UINT16 *PlaintextContent = (UINT16*)((IOU_CnxPlaintextOutput.getIO_UNIT_CORE())->Content);
+    for (int i=0; i< AES_DATABLOCK_SIZE_IN_BYTES; i++)
+        cout<<hex<<PlaintextContent[NUMBER_OF_MACHINES * i + machine]<<" ";
+    cout<<dec<<endl;
+}
 
 void print_AES_Wi(int machine)
 {
@@ -551,8 +575,8 @@ void print_AES_Wi(int machine)
 
 void print_AES_Plaintext(int index, int DataPair)
 {
-    for (int offset = index; offset < index + 16; offset++)
-    c_simulator::printLS(LOCAL_STORE_PLAINTEXT_OFFSET(DataPair) + offset,0);
+    //for (int offset = index; offset < index + 16; offset++)
+    //c_simulator::printLS(LOCAL_STORE_PLAINTEXT_OFFSET(DataPair) + offset,0);
 }
 
 void CreateKeyExpansionKernel(int bnr)
@@ -621,7 +645,8 @@ int AES_ConnexSEncryption()
     }
     //print_AES_Key(0);
     //DEASM_BATCH(0);
-    //print_AES_Wi(0);
+    print_AES_Wi(0);
+    print_AES_Plaintext(0);
 
     cout<<" Time for transfering input/output data via IO "<< TimeIO <<" ms"<<endl;
     cout<<" Time for running kernels "<< TimeRunKernel <<"ms"<<endl;
@@ -635,7 +660,12 @@ int AES_ConnexSEncryption()
         if (cryptotext0[i] != CryptoContent[NUMBER_OF_MACHINES * i])
         {
             cout<<"FAIL"<<endl;
-            cout<< "Failed on cryptotext 0 !"<<CryptoContent[NUMBER_OF_MACHINES * i]<<endl;
+            cout<< "Failed on cryptotext 0 ! index"<<i<<" "<<hex<<
+                CryptoContent[NUMBER_OF_MACHINES * i]<<" "<<
+                CryptoContent[NUMBER_OF_MACHINES * (i+1)]<<" "<<
+                CryptoContent[NUMBER_OF_MACHINES * (i+2)]<<" "<<
+                CryptoContent[NUMBER_OF_MACHINES * (i+3)]<<" "<<
+                dec<<endl;
             return FAIL;
         }
 
