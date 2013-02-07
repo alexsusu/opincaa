@@ -372,7 +372,6 @@ int AES_CnxKeyExpansion()
         R0...R3 will eventually have w3 in them (first w[i-1])
     */
     AES_Copyw0_w3();
-
     while (i < Nb * (Nr+1))
     {
         if (i != Nk) //unless first iteration, when we already have R0...R3 filled with w3
@@ -504,6 +503,33 @@ int AES_CnxTransferWiOutput()
     return PASS;
 }
 
+io_unit IOU_CnxKeyOutput;
+void CnxPreprareTransferKeyOutput()
+{
+    IOU_CnxKeyOutput.preReadcnxvectors(LOCAL_STORE_KEYS_OFFSET, AES_KEY_SIZE_IN_BYTES);
+}
+
+int AES_CnxTransferKeyOutput()
+{
+    if (PASS != IO_READ_NOW(&IOU_CnxKeyOutput)){printf("Reading from IO pipe, FAILED !"); return FAIL;}
+    return PASS;
+}
+void print_AES_Key(int machine)
+{
+    CnxPreprareTransferKeyOutput();
+    AES_CnxTransferKeyOutput();
+
+    UINT16 *KeyContent = (UINT16*)((IOU_CnxKeyOutput.getIO_UNIT_CORE())->Content);
+    for (int i=0; i< AES_KEY_SIZE_IN_BYTES; i++)
+        cout<<hex<<KeyContent[NUMBER_OF_MACHINES * i + machine]<<" ";
+    cout<<dec<<endl;
+        //print_AES_Wi(0);
+
+    //for (int offset = index*4; offset < index*4 + 4; offset++)
+    //c_simulator::printLS(LOCAL_STORE_WI_OFFSET + offset,0);
+}
+
+
 void print_AES_Wi(int machine)
 {
     CnxPreprareTransferWiOutput();
@@ -589,8 +615,8 @@ int AES_ConnexSEncryption()
             AES_CnxTransferOutputDataBlocks();
         TimeIO += GetMilliSpan(TimeStart);
     }
-
-    print_AES_Wi(0);
+    print_AES_Key(0);
+    //print_AES_Wi(0);
 
     cout<<" Time for transfering input/output data via IO "<< TimeIO <<" ms"<<endl;
     cout<<" Time for running kernels "<< TimeRunKernel <<"ms"<<endl;
