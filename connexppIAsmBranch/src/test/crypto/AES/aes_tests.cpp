@@ -554,6 +554,29 @@ void print_AES_Plaintext(int machine)
     cout<<dec<<endl;
 }
 
+io_unit IOU_CnxCryptotextOutput;
+void CnxPreprareTransferCryptotextOutput()
+{
+    IOU_CnxCryptotextOutput.preReadcnxvectors(LOCAL_STORE_CRYPTOTEXT_OFFSET(0), AES_DATABLOCK_SIZE_IN_BYTES);
+}
+
+int AES_CnxTransferCryptotextOutput()
+{
+    if (PASS != IO_READ_NOW(&IOU_CnxCryptotextOutput)){printf("Reading from IO pipe, FAILED !"); return FAIL;}
+    return PASS;
+}
+
+void print_AES_Cryptotext(int machine)
+{
+    CnxPreprareTransferCryptotextOutput();
+    AES_CnxTransferCryptotextOutput();
+
+    UINT16 *CryptotextContent = (UINT16*)((IOU_CnxCryptotextOutput.getIO_UNIT_CORE())->Content);
+    for (int i=0; i< AES_DATABLOCK_SIZE_IN_BYTES; i++)
+        cout<<hex<<CryptotextContent[NUMBER_OF_MACHINES * i + machine]<<" ";
+    cout<<dec<<endl;
+}
+
 void print_AES_Wi(int machine)
 {
     CnxPreprareTransferWiOutput();
@@ -644,9 +667,10 @@ int AES_ConnexSEncryption()
         TimeIO += GetMilliSpan(TimeStart);
     }
     //print_AES_Key(0);
-    //DEASM_BATCH(0);
-    print_AES_Wi(0);
-    print_AES_Plaintext(0);
+    DEASM_BATCH(AES_ENCRYPTION_BNR);
+    print_AES_Cryptotext(0);
+    //print_AES_Wi(0);
+    //print_AES_Plaintext(0);
 
     cout<<" Time for transfering input/output data via IO "<< TimeIO <<" ms"<<endl;
     cout<<" Time for running kernels "<< TimeRunKernel <<"ms"<<endl;
