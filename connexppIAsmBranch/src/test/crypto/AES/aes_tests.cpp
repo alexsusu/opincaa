@@ -372,6 +372,7 @@ int AES_CnxKeyExpansion()
         R0...R3 will eventually have w3 in them (first w[i-1])
     */
     AES_Copyw0_w3();
+
     while (i < Nb * (Nr+1))
     {
         if (i != Nk) //unless first iteration, when we already have R0...R3 filled with w3
@@ -509,8 +510,12 @@ void print_AES_Wi(int machine)
     AES_CnxTransferWiOutput();
 
     UINT16 *WiContent = (UINT16*)((IOU_CnxWiOutput.getIO_UNIT_CORE())->Content);
-    for (int i=0; i< WI_SIZE_IN_BYTES; i++)
-        cout<<WiContent[NUMBER_OF_MACHINES * i + machine]<<endl;
+    for (int i=0; i< WI_SIZE_IN_BYTES; i+=4)
+        cout<<hex<<WiContent[NUMBER_OF_MACHINES * i + machine]<<" "<<
+            WiContent[NUMBER_OF_MACHINES * (i+1) + machine]<<" "<<
+            WiContent[NUMBER_OF_MACHINES * (i+2) + machine]<<" "<<
+            WiContent[NUMBER_OF_MACHINES * (i+3) + machine]<<dec<<endl;
+
 
         //print_AES_Wi(0);
 
