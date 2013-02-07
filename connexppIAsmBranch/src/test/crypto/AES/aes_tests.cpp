@@ -372,6 +372,7 @@ int AES_CnxKeyExpansion()
         R0...R3 will eventually have w3 in them (first w[i-1])
     */
     AES_Copyw0_w3();
+    return 0;
     while (i < Nb * (Nr+1))
     {
         if (i != Nk) //unless first iteration, when we already have R0...R3 filled with w3
@@ -616,7 +617,8 @@ int AES_ConnexSEncryption()
         TimeIO += GetMilliSpan(TimeStart);
     }
     print_AES_Key(0);
-    //print_AES_Wi(0);
+    DEASM_BATCH(0);
+    print_AES_Wi(0);
 
     cout<<" Time for transfering input/output data via IO "<< TimeIO <<" ms"<<endl;
     cout<<" Time for running kernels "<< TimeRunKernel <<"ms"<<endl;
