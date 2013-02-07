@@ -444,6 +444,19 @@ static void InitKernel_Ult(int BatchNumber,INT32 Param1, INT32 Param2)
     END_BATCH(BatchNumber);
 }
 
+static void InitKernel_Ult2(int BatchNumber,INT32 Param1, INT32 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        EXECUTE_IN_ALL(
+                        R1 = INDEX;
+                        R2 = 64; //avoid compiler warning
+                        R3 = ULT(R1,R2);
+                        REDUCE(R3);
+                        )
+
+    END_BATCH(BatchNumber);
+}
+
 static void InitKernel_pUlt(int BatchNumber,INT32 Param1, INT32 Param2)
 {
     BEGIN_BATCH(BatchNumber);
@@ -785,14 +798,14 @@ enum SimpleBatchNumbers
 
 static TestFunction TestFunctionTable[] =
 {
-    /*
+
     {NOP_BNR,"NOP",InitKernel_Nop,{0x00,0x00,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
     {IWRITE_BNR,"IWRITE",InitKernel_Iwrite,{0x01,0x02,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
     {IREAD_BNR,"IREAD",InitKernel_Iread,{0x01,0x02,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
-    */
+
     {WRITE_BNR,"WRITE",InitKernel_Write,{0x01,0x02,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
     {READ_BNR,"READ",InitKernel_Read,{0x01,0x02,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
-    /*
+
     {VLOAD_BNR,"VLOAD",InitKernel_Vload,{0x01,0x02,3*NUMBER_OF_MACHINES}},
 
     {ADD_BNR,"ADD",InitKernel_Add,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
@@ -831,6 +844,8 @@ static TestFunction TestFunctionTable[] =
     {pLT_BNR,"pLT",InitKernel_pLt,{0xfffd,0xfffe,(-3 < 2)*NUMBER_OF_MACHINES}},
 
     {ULT_BNR,"ULT",InitKernel_Ult,{0xabcd,0xabcc,(0xabcdUL < 0xabccUL)*NUMBER_OF_MACHINES}},
+    {ULT_BNR,"ULT2",InitKernel_Ult2,{0,0, 64}},
+
     {pULT_BNR,"pULT",InitKernel_pUlt,{0xabcd,0xabcc,(0xabcdUL < 0xabccUL)*NUMBER_OF_MACHINES}},
 
     {SHL_BNR,"SHL",InitKernel_Shl,{0xcd,3,((0xcd << 3)*NUMBER_OF_MACHINES)}},
@@ -862,7 +877,7 @@ static TestFunction TestFunctionTable[] =
     //{IO_WRITE_BNR,"IO_WRITE2",1024,1,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,NUMBER_OF_MACHINES)},
     //{IO_WRITE_BNR,"IO_WRITE3",1024,1023,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,NUMBER_OF_MACHINES*1023)},
     //{IO_READ_BNR,"IO_READ",1024,0,InitKernel_Ioread, NUMBER_OF_MACHINES},
-*/
+
 };
 
 static int getIndexTestFunctionTable(int BatchNumber)

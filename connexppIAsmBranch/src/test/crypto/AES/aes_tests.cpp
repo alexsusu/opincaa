@@ -106,7 +106,7 @@ void AES_CnxMixColumn(cnxvector r0, cnxvector r1, cnxvector r2, cnxvector r3,
 
     /* h is 0xff if the high bit of r[c] is set, 0 otherwise */
     h = r0;
-    h = ULT(h, man128);// ULT returns 1 for true and 0 for false
+    h = h < man128;// ULT returns 1 for true and 0 for false
     h += manff;
     h = h & man1b;
 
@@ -114,37 +114,44 @@ void AES_CnxMixColumn(cnxvector r0, cnxvector r1, cnxvector r2, cnxvector r3,
     b0 ^= h;
     b0 &= manff;
 
+/*
     h = r1;
-    h = ULT(h, man128);// ULT returns 1 for true and 0 for false
+    //h = h < man128;// ULT returns 1 for true and 0 for false
+    h = r1 >> 7;
+    //h = h & manff;
     h += manff;
     h = h & man1b;
 
-    b1 = r1 << 1; /* we will xor by 0x1b in the next line */
+    b1 = r1 << 1; // we will xor by 0x1b in the next line
     b1 ^= h;
     b1 &= manff;
 
 
     h = r2;
-    h = ULT(h, man128);// ULT returns 1 for true and 0 for false
+    h = ULT(h,man128);// ULT returns 1 for true and 0 for false
     h += manff;
     h = h & man1b;
 
-    b2 = r2 << 1; /* we will xor by 0x1b in the next line */
+    b2 = r2 << 1; //we will xor by 0x1b in the next line
     b2 ^= h;
     b2 &= manff;
 
 
     h = r3;
-    h = ULT(h, man128);// ULT returns 1 for true and 0 for false
+    h = ULT(h,man128);// ULT returns 1 for true and 0 for false
     h += manff;
     h = h & man1b;
 
-    b3 = r3 << 1; /* we will xor by 0x1b in the next line */
+    b3 = r3 << 1; // we will xor by 0x1b in the next line
     b3 ^= h;
     b3 &= manff;
 
-
+*/
     r0 = b0;
+    r1 = 0;
+    r2 = 0;
+    r3 = 0;
+  /*
     r0 ^= a3;
     r0 ^= a2;
     r0 ^= b1;
@@ -167,7 +174,7 @@ void AES_CnxMixColumn(cnxvector r0, cnxvector r1, cnxvector r2, cnxvector r3,
     r3 ^= a1;
     r3 ^= b0;
     r3 ^= a0; // 2 * a3 + a2 + a1 + 3 * a0
-
+*/
 }
 
 void AES_CnxMixColumns()
@@ -176,7 +183,8 @@ void AES_CnxMixColumns()
     R26 = 0x1b;
     R27 = 128;
 
-    for (int i =0; i< 4; i++)
+    //for (int i =0; i< 4; i++)
+    for (int i =0; i< 1; i++)
         AES_CnxMixColumn (R[4*i], R[4*i + 1], R[4*i + 2], R[4*i + 3],
                             R[16], R[17], R[18], R[19],
                             R[20], R[21], R[22], R[23],
@@ -416,8 +424,12 @@ void AES_LoadPlainText(int DataPair)
 
 void AES_StoreCryptoText(int DataPair)
 {
+    //R16 = 0x1000;
+    //R15 = R15 + R16;
     for (int i= 0; i < 4*Nb; i++)
-        LS[LOCAL_STORE_CRYPTOTEXT_OFFSET(DataPair) + i] = R[i];
+      LS[LOCAL_STORE_CRYPTOTEXT_OFFSET(DataPair) + i] = R[i];
+      //for (int i= 464; i < 500; i++)
+        //LS[i] = R16;
 }
 
 void AES_CnxAddRoundKey(int startIndex, int lastIndex)
@@ -474,21 +486,22 @@ void AES_CnxEncryption(int datablock)
 {
     /* Load first 128 datablocks from localstore */
     AES_LoadPlainText(datablock);// load plaintext starting with R0: R0 ... R15 has now the plaintext;
-    /*
+
     AES_CnxAddRoundKey(0,Nb-1);
 
-    for (int round = 1; round <= Nr-1; round++)
+    //for (int round = 1; round <= Nr-1; round++)
+    for (int round = 1; round <= 1; round++)
     {
         AES_CnxSubBytes(); // See Sec. 5.1.1
         AES_CnxShiftRows(); // See Sec. 5.1.2
         AES_CnxMixColumns(); // See Sec. 5.1.3
-        AES_CnxAddRoundKey(round*Nb,(round+1)*Nb-1);
+        //AES_CnxAddRoundKey(round*Nb,(round+1)*Nb-1);
     }
 
-    AES_CnxSubBytes(); // See Sec. 5.1.1
-    AES_CnxShiftRows(); // See Sec. 5.1.2
-    AES_CnxAddRoundKey(Nr*Nb,(Nr+1)*Nb-1);
-    */
+    //AES_CnxSubBytes(); // See Sec. 5.1.1
+    //AES_CnxShiftRows(); // See Sec. 5.1.2
+    //AES_CnxAddRoundKey(Nr*Nb,(Nr+1)*Nb-1);
+
     AES_StoreCryptoText(datablock);
 }
 
@@ -666,11 +679,14 @@ int AES_ConnexSEncryption()
             AES_CnxTransferOutputDataBlocks();
         TimeIO += GetMilliSpan(TimeStart);
     }
-    //print_AES_Key(0);
-    DEASM_BATCH(AES_ENCRYPTION_BNR);
+    print_AES_Key(0);
+    //DEASM_BATCH(AES_ENCRYPTION_BNR);
+    //EXECUTE_BATCH(AES_ENCRYPTION_BNR);
+    //cout<<LOCAL_STORE_PLAINTEXT_OFFSET(0)<<" "<<LOCAL_STORE_CRYPTOTEXT_OFFSET(0)<<endl;
     print_AES_Cryptotext(0);
     //print_AES_Wi(0);
-    //print_AES_Plaintext(0);
+    print_AES_Plaintext(0);
+    //DEASM_BATCH(AES_ENCRYPTION_BNR);
 
     cout<<" Time for transfering input/output data via IO "<< TimeIO <<" ms"<<endl;
     cout<<" Time for running kernels "<< TimeRunKernel <<"ms"<<endl;
@@ -708,7 +724,7 @@ int AES_ConnexSEncryption()
 
     //c_simulator::printLS(r+LOCAL_STORE_CRYPTOTEXT_OFFSET,0);
 
-    //DEASM_BATCH(AES_ENCRYPTION_BNR);
+
     cout<<endl<<"PASS"<<endl;
 }
 
