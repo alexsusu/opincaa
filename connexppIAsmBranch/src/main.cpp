@@ -242,7 +242,7 @@ int main(int argc, char *argv[])
 	//test_Max_All(true);
     //test_Speed_All();
     //test_Simple_IO_All(true);
-	test_BasicMatching_All();
+	//test_BasicMatching_All();
 	test_AES_All();
 
     DEINIT();

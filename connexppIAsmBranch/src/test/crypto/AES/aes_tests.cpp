@@ -22,8 +22,6 @@ using namespace std;
 
 #define AES_KEY_EXPANSION_BNR   0
 #define AES_ENCRYPTION_BNR      1
-//#define PARALLEL_AES_ENCRYPTIONS 128
-#define AES_TIMING_LOOPS (10000 / MAX_DATABLOCKS_IN_LOCALSTORE)
 
 #define Nb 4
 
@@ -193,6 +191,12 @@ void AES_CnxMixColumns()
 288 ... 288 + Nb*(Nr+1): wi: = 288 + 4*44: wi (for 128 bit) AES_Plaintext
 
 */
+//#define PARALLEL_AES_ENCRYPTIONS 128
+//#define AES_TIMING_LOOPS (10000 / MAX_DATABLOCKS_IN_LOCALSTORE)
+#define AES_TIMING_LOOPS (1)
+//#define MAX_DATABLOCKS_IN_LOCALSTORE 15
+#define MAX_DATABLOCKS_IN_LOCALSTORE 1
+
 #define AES_KEY_SIZE_IN_BYTES (128/8)
 #define AES_KEY_SIZE_IN_WORDS   8
 
@@ -203,15 +207,16 @@ void AES_CnxMixColumns()
 #define LOCAL_STORE_WI_OFFSET (AES_SBOX_SIZE + AES_KEY_SIZE_IN_BYTES)
 
 #define AES_DATABLOCK_SIZE_IN_BYTES (128/8)
+#define WI_SIZE_IN_BYTES (4*Nb*(Nr + 1))
 
-#define LOCAL_STORE_PLAINTEXT_OFFSET(x) ((LOCAL_STORE_WI_OFFSET + 4*Nb*(Nr + 1)) + x*AES_DATABLOCK_SIZE_IN_BYTES)
+#define LOCAL_STORE_PLAINTEXT_OFFSET(x) (LOCAL_STORE_WI_OFFSET + WI_SIZE_IN_BYTES + x*AES_DATABLOCK_SIZE_IN_BYTES)
 #define LOCAL_STORE_CRYPTOTEXT_OFFSET(x) (LOCAL_STORE_PLAINTEXT_OFFSET(MAX_DATABLOCKS_IN_LOCALSTORE) \
-                                            + x*AES_DATABLOCK_SIZE_IN_BYTES)
-
+                                           + x*AES_DATABLOCK_SIZE_IN_BYTES)
 #define LOCAL_STORE_END(x) (LOCAL_STORE_CRYPTOTEXT_OFFSET(x) + AES_DATABLOCK_SIZE_IN_BYTES)
 
-#define MAX_DATABLOCKS_IN_LOCALSTORE 15
 #define DATABLOCK_SIZE (NUMBER_OF_MACHINES * AES_DATABLOCK_SIZE_IN_BYTES)
+
+#define WI_SIZE (NUMBER_OF_MACHINES * WI_SIZE_IN_BYTES)
 
 UINT_REGISTER_VAL CnxSbox[NUMBER_OF_MACHINES * AES_SBOX_SIZE];
 void CreateSbox(UINT_REGISTER_VAL *CS)
@@ -486,10 +491,31 @@ void AES_CnxEncryption(int datablock)
     AES_StoreCryptoText(datablock);
 }
 
-void print_AES_Wi(int index)
+io_unit IOU_CnxWiOutput;
+void CnxPreprareTransferWiOutput()
 {
-    for (int offset = index*4; offset < index*4 + 4; offset++)
-    c_simulator::printLS(LOCAL_STORE_WI_OFFSET + offset,0);
+    IOU_CnxWiOutput.preReadcnxvectors(LOCAL_STORE_WI_OFFSET, WI_SIZE_IN_BYTES);
+}
+
+int AES_CnxTransferWiOutput()
+{
+    if (PASS != IO_READ_NOW(&IOU_CnxWiOutput)){printf("Reading from IO pipe, FAILED !"); return FAIL;}
+    return PASS;
+}
+
+void print_AES_Wi(int machine)
+{
+    CnxPreprareTransferWiOutput();
+    AES_CnxTransferWiOutput();
+
+    UINT16 *WiContent = (UINT16*)((IOU_CnxWiOutput.getIO_UNIT_CORE())->Content);
+    for (int i=0; i< WI_SIZE_IN_BYTES; i++)
+        cout<<WiContent[NUMBER_OF_MACHINES * i + machine]<<endl;
+
+        //print_AES_Wi(0);
+
+    //for (int offset = index*4; offset < index*4 + 4; offset++)
+    //c_simulator::printLS(LOCAL_STORE_WI_OFFSET + offset,0);
 }
 
 void print_AES_Plaintext(int index, int DataPair)
@@ -558,6 +584,8 @@ int AES_ConnexSEncryption()
             AES_CnxTransferOutputDataBlocks();
         TimeIO += GetMilliSpan(TimeStart);
     }
+
+    print_AES_Wi(0);
 
     cout<<" Time for transfering input/output data via IO "<< TimeIO <<" ms"<<endl;
     cout<<" Time for running kernels "<< TimeRunKernel <<"ms"<<endl;
