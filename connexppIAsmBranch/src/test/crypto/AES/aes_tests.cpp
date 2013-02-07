@@ -559,15 +559,19 @@ void print_AES_Plaintext(int index, int DataPair)
 void CreateKeyExpansionKernel(int bnr)
 {
     BEGIN_BATCH(bnr);
-        AES_CnxKeyExpansion();
+    EXECUTE_IN_ALL(
+                    AES_CnxKeyExpansion()
+                    )
     END_BATCH(bnr);
 }
 
 void CreateAesEncryptionKernel(int bnr, int datablocks)
 {
     BEGIN_BATCH(bnr);
-    for (int db=0; db < datablocks; db++)
-        AES_CnxEncryption(db);
+    EXECUTE_IN_ALL(
+                    for (int db=0; db < datablocks; db++)
+                    AES_CnxEncryption(db);
+                   )
     END_BATCH(bnr);
 }
 
