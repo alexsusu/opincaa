@@ -487,9 +487,9 @@ static void InitKernel_Shl2(int BatchNumber,INT32 Param1, INT32 Param2)
     BEGIN_BATCH(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = 2;
-                        R2 = R1 << 1;
-                        R1 = R2 >> 0;//equivalent to R1 = R2;
-                        REDUCE(R1);
+                        R0 = R1 << 1;
+                        R1 = R0 >> 0;//equivalent to R1 = R2;
+                        REDUCE(R0);
                         )
 
     END_BATCH(BatchNumber);
