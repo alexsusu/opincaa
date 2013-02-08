@@ -63,9 +63,9 @@ static void InitKernel_Write(int BatchNumber,INT32 Param1, INT32 Param2)
         EXECUTE_IN_ALL(
                         R0 = INDEX;
                         R1 = Param1;
-                        NOP;
                         R2 = 1;
                         R1 += R2;
+                        NOP;
                         LS[R1] = R0;
                         R2 = LS[Param1 + 1];
                         REDUCE(R2);
