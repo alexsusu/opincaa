@@ -489,6 +489,11 @@ static void InitKernel_Shl2(int BatchNumber,INT32 Param1, INT32 Param2)
                         R1 = 2;
                         R0 = R1 << 1;
                         R1 = R0 >> 0;//equivalent to R1 = R2;
+                        NOP;
+                        LS[464] = R0;
+                        NOP; //not needed
+                        R0 = LS[464];
+                        NOP;//needed
                         REDUCE(R0);
                         )
 
