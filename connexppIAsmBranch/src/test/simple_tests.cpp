@@ -1100,7 +1100,7 @@ int test_Simple_All(bool stress)
                <<result << " (expected " <<TestFunctionTable[i].ds.ExpectedResult<<" ) !" << " params are "
                << TestFunctionTable[i].ds.Param1 << " and " << TestFunctionTable[i].ds.Param2 <<endl;
                testFails++;
-               return testFails;
+               //return testFails;
             }
             else
             {
