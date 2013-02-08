@@ -8,3 +8,4 @@
  */
 
 int test_Simple_All(bool);
+int test_ExtendedSimpleAll();

@@ -239,6 +239,7 @@ int main(int argc, char *argv[])
     }
 
     test_Simple_All(false);
+    test_ExtendedSimpleAll();
 	//test_Max_All(true);
     //test_Speed_All();
     //test_Simple_IO_All(true);

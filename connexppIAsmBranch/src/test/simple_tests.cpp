@@ -519,31 +519,6 @@ static void InitKernel_Ishl(int BatchNumber,INT32 Param1, INT32 Param2)
     END_BATCH(BatchNumber);
 }
 
-static void InitKernel_Ishl2(int BatchNumber,INT32 Param1, INT32 Param2)
-{
-    BEGIN_BATCH(BatchNumber);
-        EXECUTE_IN_ALL(
-                        R1 = 2;
-                        R0 = (R1 << 1);
-                        R1 = (R0 >> 0);//equivalent to R1 = R0;
-                        REDUCE(R0);
-                        )
-
-    END_BATCH(BatchNumber);
-}
-
-static void InitKernel_Ishl3(int BatchNumber,INT32 Param1, INT32 Param2)
-{
-    BEGIN_BATCH(BatchNumber);
-        EXECUTE_IN_ALL(
-                        R1 = 2;
-                        R0 = (R1 << 1);
-                        REDUCE(R0);
-                        )
-
-    END_BATCH(BatchNumber);
-}
-
 static void InitKernel_Ishr(int BatchNumber,INT32 Param1, INT32 Param2)
 {
     BEGIN_BATCH(BatchNumber);
@@ -880,8 +855,6 @@ static TestFunction TestFunctionTable[] =
     {SHRA_BNR,"SHRA",InitKernel_Shra,{0x01cd,4,(0x01c)*NUMBER_OF_MACHINES}},//will fail: 128*big
 
     {ISHL_BNR,"ISHL",InitKernel_Ishl,{0xabcd,4,((0xbcd0UL)*NUMBER_OF_MACHINES)}},
-    {ISHL2_BNR,"ISHL2",InitKernel_Ishl2,{0x0,0,(4*NUMBER_OF_MACHINES)}},
-    {ISHL3_BNR,"ISHL3",InitKernel_Ishl3,{0x0,0,(4*NUMBER_OF_MACHINES)}},
 
     {ISHR_BNR,"ISHR",InitKernel_Ishr,{0xabcd,4,((0x0abcUL)*NUMBER_OF_MACHINES)}},
     {ISHRA_BNR,"ISHRA",InitKernel_Ishra,{0xabcd,4,((0xfabcUL)*NUMBER_OF_MACHINES)}},
@@ -1083,6 +1056,19 @@ static void UpdateDatasetTable(int BatchNumber)
                             }
     }
 }
+int test_ExtendedSimpleAll()
+{
+    int val;
+    for (int i = 0; i < 8; i++)
+        for (int j = 0; j < 8; j++)
+        {
+            InitKernel_Ishl(ISHL2_BNR, i, j);
+            val = EXECUTE_BATCH_RED(ISHL2_BNR);
+            if (val != (i << j)* NUMBER_OF_MACHINES)
+                cout<<"ISHL2 failed: expected ("<<i<<" << "<<j<<") = NUMBER_OF_MACHINES* "<<(i<<j)<<" but received "<<val<<endl;
+            else cout<<"ISHL2 PASS: ("<<i<<" << "<<j<<") = NUMBER_OF_MACHINES * "<<(i<<j)<<endl;
+        }
+}
 
 int test_Simple_All(bool stress)
 {
@@ -1127,9 +1113,6 @@ int test_Simple_All(bool stress)
         }
         while (j-- >= 0);
     }
-        DEASM_BATCH(ISHL_BNR);
-        DEASM_BATCH(ISHL2_BNR);
-        DEASM_BATCH(ISHL3_BNR);
         cout<<"================================"<<endl;
     if (testFails ==0)
         cout<< "== All SimpleTests PASSED ======" <<endl;
