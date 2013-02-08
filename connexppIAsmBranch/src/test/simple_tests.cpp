@@ -482,6 +482,19 @@ static void InitKernel_Shl(int BatchNumber,INT32 Param1, INT32 Param2)
     END_BATCH(BatchNumber);
 }
 
+static void InitKernel_Shl2(int BatchNumber,INT32 Param1, INT32 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        EXECUTE_IN_ALL(
+                        R1 = 2;
+                        R2 = R1 << 1;
+                        R1 = R2 >> 0;//equivalent to R1 = R2;
+                        REDUCE(R1);
+                        )
+
+    END_BATCH(BatchNumber);
+}
+
 static void InitKernel_Shr(int BatchNumber,INT32 Param1, INT32 Param2)
 {
     BEGIN_BATCH(BatchNumber);
@@ -844,11 +857,11 @@ static TestFunction TestFunctionTable[] =
     {pLT_BNR,"pLT",InitKernel_pLt,{0xfffd,0xfffe,(-3 < 2)*NUMBER_OF_MACHINES}},
 
     {ULT_BNR,"ULT",InitKernel_Ult,{0xabcd,0xabcc,(0xabcdUL < 0xabccUL)*NUMBER_OF_MACHINES}},
-    {ULT_BNR,"ULT2",InitKernel_Ult2,{0,0, 64}},
 
     {pULT_BNR,"pULT",InitKernel_pUlt,{0xabcd,0xabcc,(0xabcdUL < 0xabccUL)*NUMBER_OF_MACHINES}},
 
     {SHL_BNR,"SHL",InitKernel_Shl,{0xcd,3,((0xcd << 3)*NUMBER_OF_MACHINES)}},
+    {SHL_BNR,"SHL2",InitKernel_Shl2,{0x0,0,(4*NUMBER_OF_MACHINES)}},
     {SHR_BNR,"SHR",InitKernel_Shr,{0xabcd,3,((0xabcd >> 3)*NUMBER_OF_MACHINES)}},
     {SHRA_BNR,"SHRA",InitKernel_Shra,{0x01cd,4,(0x01c)*NUMBER_OF_MACHINES}},//will fail: 128*big
     {ISHL_BNR,"ISHL",InitKernel_Ishl,{0xabcd,4,((0xbcd0UL)*NUMBER_OF_MACHINES)}},
