@@ -9,8 +9,6 @@
 #include "ConnexMachine.h"
 #include <fcntl.h>
 #include <unistd.h>
-#include <stdio.h>
-#include <map>
 
 #define     VECTOR_LENGTH   128
 
@@ -43,6 +41,11 @@ static struct
 map<string, Kernel*> ConnexMachine::kernels;
 
 /*
+ * The mutex used to sync the kernel map operations
+ */
+mutex ConnexMachine::mapMutex;
+
+/*
  * Adds a kernel to the static kernel map. 
  * 
  * @param kernel the new kernel to add
@@ -52,13 +55,16 @@ map<string, Kernel*> ConnexMachine::kernels;
 void ConnexMachine::addKernel(Kernel *kernel)
 {
     string name = kernel->getName();
-    
+
+	mapMutex.lock();
     if(kernels.count(name) > 0)
     {
+		mapMutex.unlock();
         throw string("Kernel ") + name + string(" already exists in ConnexMachine::addKernel");
     }
     
     kernels.insert(map<string, Kernel*>::value_type(name, kernel));
+	mapMutex.unlock();
 }
 
 /*
@@ -142,12 +148,15 @@ ConnexMachine::~ConnexMachine()
  */
 void ConnexMachine::executeKernel(string kernelName)
 {
+	threadMutex.lock();
     if(kernels.count(kernelName) == 0)
     {
+		threadMutex.unlock();
         throw string("Kernel ") + kernelName + string(" not found in ConnexMachine::executeKernel!");
     }
     Kernel *kernel = kernels.find(kernelName)->second;
     kernel->writeTo(distributionFifo);
+	threadMutex.unlock();
 }
 
 /*
@@ -162,6 +171,8 @@ void ConnexMachine::executeKernel(string kernelName)
 */
 int ConnexMachine::writeDataToArray(void *buffer, unsigned vectorCount, unsigned vectorIndex)
 {
+	threadMutex.lock();
+	
     connex_io_descriptor.type = IO_WRITE_OPERATION;
     /* Use LS_ADDRESS macro to mask the least significant 10 bits */
     connex_io_descriptor.lsAddress = LS_ADDRESS(vectorIndex);
@@ -183,6 +194,8 @@ int ConnexMachine::writeDataToArray(void *buffer, unsigned vectorCount, unsigned
     
     //TODO: verify response
     
+	threadMutex.unlock();
+	
     return bytesWritten;
 }
 
@@ -203,6 +216,8 @@ void* ConnexMachine::readDataFromArray(void *buffer, unsigned vectorCount, unsig
         buffer = new short[vectorCount * VECTOR_LENGTH];
     }
     
+	threadMutex.lock();
+	
     connex_io_descriptor.type = IO_READ_OPERATION;
     /* Use LS_ADDRESS macro to mask the least significant 10 bits */
     connex_io_descriptor.lsAddress = LS_ADDRESS(vectorIndex);
@@ -218,9 +233,11 @@ void* ConnexMachine::readDataFromArray(void *buffer, unsigned vectorCount, unsig
     /* Read the data */
     if(read(ioReadFifo, buffer, vectorCount * VECTOR_LENGTH * 2) < 0)
     {
+		threadMutex.unlock();
         throw string("Error reading from memory FIFO");
     }
     
+	threadMutex.unlock();
     return buffer;
 }
 
@@ -231,11 +248,14 @@ void* ConnexMachine::readDataFromArray(void *buffer, unsigned vectorCount, unsig
  */
 int ConnexMachine::readReduction()
 {
+	threadMutex.lock();
     int result;
     if(read(reductionFifo, &result, sizeof(int)) < 0)
     {
+		threadMutex.unlock();
         throw string("Error reading from reduction FIFO");
     }
-    
+	
+    threadMutex.unlock();
     return result;
 }

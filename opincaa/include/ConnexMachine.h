@@ -13,6 +13,7 @@
 #include "Kernel.h"
 #include <string>
 #include <map>
+#include <mutex>
 
 #define CONNEX_MAX_REGS     32
 #define CONNEX_MAX_MEMORY   1024
@@ -131,6 +132,15 @@ class ConnexMachine
          */
         static map<string, Kernel*> kernels;
 
+		/*
+         * The mutex used to sync the IO operations.
+         */
+		mutex threadMutex;
+		
+		/*
+         * The mutex used to sync the kernel map operations
+         */
+		static mutex mapMutex;
 };
 
 #endif // CONNEX_INTERFACE_H
