@@ -152,7 +152,7 @@ void ConnexSimulator::performIO(ConnexIoDescriptor ioDescriptor)
 			}
 			
 			// TODO: Write the ACK with the correct data
-			write(readDescriptor, connexVector, 8);
+			write(readDescriptor, connexVector, 4);
 			write(readDescriptor, NULL, 0);
 			break;
 		case IO_READ_OPERATION:
