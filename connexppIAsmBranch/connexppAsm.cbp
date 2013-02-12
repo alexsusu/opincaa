@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/connexppAsm2" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/connexppAsm" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -49,7 +49,8 @@
 		<Unit filename="include/core/io_unit.h" />
 		<Unit filename="include/core/opcodes.h" />
 		<Unit filename="include/test/basic_match_tests.h" />
-		<Unit filename="include/test/crypto/AES/aes_tests.h" />
+		<Unit filename="include/test/crypto/aes/aes_cpu_tests.h" />
+		<Unit filename="include/test/crypto/aes/aes_tests.h" />
 		<Unit filename="include/test/icc_simple_tests.h" />
 		<Unit filename="include/test/max_tests.h" />
 		<Unit filename="include/test/simple_io_tests.h" />
@@ -60,6 +61,7 @@
 		<Unit filename="include/util/utils.h" />
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/test/basic_match_tests.cpp" />
+		<Unit filename="src/test/crypto/AES/aes_cpu_tests.cpp" />
 		<Unit filename="src/test/crypto/AES/aes_tests.cpp" />
 		<Unit filename="src/test/icc_simple_tests.cpp" />
 		<Unit filename="src/test/max_tests.cpp" />

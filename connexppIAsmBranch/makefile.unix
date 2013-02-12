@@ -27,9 +27,9 @@ LIB_DEBUG = $(LIB) lib/opincaa.a
 LDFLAGS_DEBUG =  $(LDFLAGS)
 OBJDIR_DEBUG = obj/Debug
 DEP_DEBUG = 
-OUT_DEBUG = bin/Debug/connexppAsm2
+OUT_DEBUG = bin/Debug/connexppAsm
 
-OBJ_DEBUG = $(OBJDIR_DEBUG)/src/test/max_tests.o $(OBJDIR_DEBUG)/src/test/icc_simple_tests.o $(OBJDIR_DEBUG)/src/test/crypto/AES/aes_tests.o $(OBJDIR_DEBUG)/src/test/basic_match_tests.o $(OBJDIR_DEBUG)/src/main.o
+OBJ_DEBUG = $(OBJDIR_DEBUG)/src/test/max_tests.o $(OBJDIR_DEBUG)/src/test/icc_simple_tests.o $(OBJDIR_DEBUG)/src/test/crypto/AES/aes_tests.o $(OBJDIR_DEBUG)/src/test/crypto/AES/aes_cpu_tests.o $(OBJDIR_DEBUG)/src/test/basic_match_tests.o $(OBJDIR_DEBUG)/src/main.o
 
 all: debug
 
@@ -56,6 +56,9 @@ $(OBJDIR_DEBUG)/src/test/icc_simple_tests.o: src/test/icc_simple_tests.cpp
 
 $(OBJDIR_DEBUG)/src/test/crypto/AES/aes_tests.o: src/test/crypto/AES/aes_tests.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/crypto/AES/aes_tests.cpp -o $(OBJDIR_DEBUG)/src/test/crypto/AES/aes_tests.o
+
+$(OBJDIR_DEBUG)/src/test/crypto/AES/aes_cpu_tests.o: src/test/crypto/AES/aes_cpu_tests.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/crypto/AES/aes_cpu_tests.cpp -o $(OBJDIR_DEBUG)/src/test/crypto/AES/aes_cpu_tests.o
 
 $(OBJDIR_DEBUG)/src/test/basic_match_tests.o: src/test/basic_match_tests.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/basic_match_tests.cpp -o $(OBJDIR_DEBUG)/src/test/basic_match_tests.o

@@ -29,7 +29,7 @@ OBJDIR_RELEASE = obj/Release
 DEP_RELEASE = 
 OUT_RELEASE = bin/Release/connexppAsm
 
-OBJ_RELEASE = $(OBJDIR_RELEASE)/src/test/max_tests.o $(OBJDIR_RELEASE)/src/test/icc_simple_tests.o $(OBJDIR_RELEASE)/src/test/crypto/AES/aes_tests.o $(OBJDIR_RELEASE)/src/test/basic_match_tests.o $(OBJDIR_RELEASE)/src/main.o
+OBJ_RELEASE = $(OBJDIR_RELEASE)/src/test/max_tests.o $(OBJDIR_RELEASE)/src/test/icc_simple_tests.o $(OBJDIR_RELEASE)/src/test/crypto/AES/aes_tests.o $(OBJDIR_RELEASE)/src/test/crypto/AES/aes_cpu_tests.o $(OBJDIR_RELEASE)/src/test/basic_match_tests.o $(OBJDIR_RELEASE)/src/main.o
 
 all: release
 
@@ -56,6 +56,9 @@ $(OBJDIR_RELEASE)/src/test/icc_simple_tests.o: src/test/icc_simple_tests.cpp
 
 $(OBJDIR_RELEASE)/src/test/crypto/AES/aes_tests.o: src/test/crypto/AES/aes_tests.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/test/crypto/AES/aes_tests.cpp -o $(OBJDIR_RELEASE)/src/test/crypto/AES/aes_tests.o
+
+$(OBJDIR_RELEASE)/src/test/crypto/AES/aes_cpu_tests.o: src/test/crypto/AES/aes_cpu_tests.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/test/crypto/AES/aes_cpu_tests.cpp -o $(OBJDIR_RELEASE)/src/test/crypto/AES/aes_cpu_tests.o
 
 $(OBJDIR_RELEASE)/src/test/basic_match_tests.o: src/test/basic_match_tests.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/test/basic_match_tests.cpp -o $(OBJDIR_RELEASE)/src/test/basic_match_tests.o
