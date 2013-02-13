@@ -12,7 +12,7 @@ BUILD_DIR = build
 SRC_DIR = src
 LIB_DIR = libs
 
-CFLAGS = -fPIC -std=c++11
+CFLAGS = -fPIC -std=c++0x
 LDFLAGS_DEBUG =  $(LDFLAGS)
 
 OBJ = $(BUILD_DIR)/Cell.o  $(BUILD_DIR)/ConnexSimulator.o
