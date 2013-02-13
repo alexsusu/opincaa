@@ -39,6 +39,24 @@ Cell::~Cell()
  */		
 void Cell::execute(Instruction instruction)
 {
+
+	/* Handle insns that change the active flag */
+	switch(instruction.getOpcode())
+    {
+        case _WHERE_CRY:
+			active = carryFlag;
+			return;
+        case _WHERE_EQ:
+			active = eqFlag;
+			return;
+        case _WHERE_LT:
+			active = ltFlag;
+			return;
+        case _END_WHERE:
+			active = true;
+			return;
+	}
+
 	if(!active)
 	{
 		return;
@@ -132,18 +150,6 @@ void Cell::execute(Instruction instruction)
 			break;
         case _MULT_HI: 
 			registerFile[instruction.getDest()] = (short)(multiplicationResult >> 16);
-			break;
-        case _WHERE_CRY:
-			active = carryFlag;
-			break;
-        case _WHERE_EQ:
-			active = eqFlag;
-			break;
-        case _WHERE_LT:
-			active = ltFlag;
-			break;
-        case _END_WHERE:
-			active = true;
 			break;
         case _REDUCE:
 			/* As this depends on all cells, it will be done
