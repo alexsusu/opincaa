@@ -14,7 +14,7 @@ LIB_DIR = libs
 TEST_DIR = test
 TEST_BUILD_DIR = test_build
 
-CFLAGS = -fPIC -std=c++11
+CFLAGS = -fPIC -std=c++0x
 LDFLAGS_DEBUG =  $(LDFLAGS)
 
 OBJ = $(BUILD_DIR)/Instruction.o  $(BUILD_DIR)/Kernel.o $(BUILD_DIR)/ConnexMachine.o $(BUILD_DIR)/Operand.o
@@ -25,7 +25,7 @@ lib: make_paths build_lib
 test: lib build_tests run_tests
 
 build_tests:
-	$(CXX) -O3 -std=c++11 $(TEST_DIR)/api_test.cpp -o $(TEST_BUILD_DIR)/api_test -L$(LIB_DIR) -lopincaa -I$(INC_DIR)
+	$(CXX) -O3 -std=c++0x $(TEST_DIR)/api_test.cpp -o $(TEST_BUILD_DIR)/api_test -L$(LIB_DIR) -lopincaa -I$(INC_DIR)
 
 run_tests:
 	./$(TEST_BUILD_DIR)/api_test
