@@ -6,7 +6,7 @@
 
 #include "Cell.h"
 
-#define HAS_CARRY(x) ((((x) % 0xFFFF8000) != 0) && (((x) % 0xFFFF8000) != 0xFFFF8000))
+#define HAS_CARRY(x) ((((x) & 0xFFFF8000) != 0) && (((x) & 0xFFFF8000) != 0xFFFF8000))
 
 /* 
  * Constructor for creating a new cell
