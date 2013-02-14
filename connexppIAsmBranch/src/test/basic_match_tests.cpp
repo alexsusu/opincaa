@@ -61,8 +61,11 @@ struct SiftDescriptors
 
 struct SiftMatches
 {
-    int DescriptorIndexInSecondImage[MAX_MATCHES];
-    int Score[MAX_MATCHES];
+    //DescriptorIndexInSecondImage
+    UINT32 DescIx2ndImgMin[MAX_MATCHES];
+    UINT32 DescIx2ndImgNextToMin[MAX_MATCHES];
+    UINT32 ScoreMin[MAX_MATCHES];
+    UINT32 ScoreNextToMin[MAX_MATCHES];
     UINT16 RealMatches;
 };
 
@@ -70,6 +73,7 @@ SiftDescriptors SiftDescriptors1;
 SiftDescriptors SiftDescriptors2;
 SiftMatches SM_Arm;
 SiftMatches SM_ConnexArm;
+SiftMatches SM_ConnexArmMan;
 UINT_RED_REG_VAL BasicMatchRedResults[MAX_REDUCES];
 
 static void PrintDescriptors(SiftDescriptors *SDs)
@@ -99,7 +103,7 @@ static void PrintMatches(SiftMatches *SMs)
     for(MatchesIndex =0; MatchesIndex < SMs->RealMatches; MatchesIndex++)
     //for(MatchesIndex =0; MatchesIndex < 10; MatchesIndex++)
     {
-        printf("Matches[%d].DescriptorIndexInSecondImage = %d \n", SMs->DescriptorIndexInSecondImage[MatchesIndex]);
+        printf("Matches[%d].DescriptorIndexInSecondImage = %d \n", SMs->DescIx2ndImgMin[MatchesIndex]);
         /*
         printf("Matches[%d].X1,Y1,X2,Y2,Sc= %f %f %f %f %d\n",
                MatchesIndex, SMs->Matches[MatchesIndex].X1, SMs->Matches[MatchesIndex].Y1,
@@ -112,7 +116,7 @@ static int CompareMatches(SiftMatches *SMs1, SiftMatches *SMs2)
 {
     int CntMax = SMs1->RealMatches;
     cout << "Comparing "<<CntMax<< " matches... "<<endl;
-    if (CntMax != SMs2->RealMatches) return FAIL;
+    if (CntMax != SMs2->RealMatches) {cout << "FAIL: not the same number of matches "<<SMs1->RealMatches<<" != "<<SMs2->RealMatches <<endl;return FAIL;}
     for (int cnt = 0; cnt < CntMax; cnt++)
         /*
         if ((SMs1->Matches[cnt].Score != SMs2->Matches[cnt].Score) ||
@@ -122,7 +126,7 @@ static int CompareMatches(SiftMatches *SMs1, SiftMatches *SMs2)
             (SMs1->Matches[cnt].Y2 != SMs2->Matches[cnt].Y2)
             )
         */
-        if (SMs1->DescriptorIndexInSecondImage[cnt] != SMs2->DescriptorIndexInSecondImage[cnt])
+        if (SMs1->DescIx2ndImgMin[cnt] != SMs2->DescIx2ndImgMin[cnt])
             {
                 cout <<"Failed at index "<<cnt<<endl;
                 return FAIL;
@@ -179,6 +183,15 @@ static int LoadDescriptors(char *FileName, SiftDescriptors *SDs, int Limit)
     }
 }
 
+
+#define FACTOR1 46
+#define FACTOR2 7 // that is (1 << 7)
+/* We have to compare x/y with 0.36 ; if it is less, we have a true match
+
+x/y < 0.36 is eqv with x < 0.36*y
+0.36*y ~ 0.359375 *y = ((46 * y) >> 7) = (FACTOR1 * y) >> FACTOR2
+
+*/
 void FindMatches(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatches* SMs)
 {
     SMs->RealMatches = 0;
@@ -195,30 +208,45 @@ void FindMatches(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatches* SMs)
 	for (DescriptorIndex1 =0; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1++)
     {
 		int DescriptorIndex2;
-		UINT32 BestScore = (UINT32)-1;
+		int minIndex;
+		int nexttominIndex;
+		UINT32 dsq, distsq1, distsq2;
+		distsq1 = (UINT32)-1;
+		distsq2 = (UINT32)-1;
 
         for (DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
 	    {
-            UINT32 LastScore = 0;
+            UINT32 dsq = 0;
 
 			int FeatIndex;
             for (FeatIndex = 0; FeatIndex < FEATURES_PER_DESCRIPTOR; FeatIndex++)
             {
                 INT32 sq = (SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1][FeatIndex] -
                             SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2][FeatIndex]);
-                LastScore += sq*sq;
+                dsq += sq*sq;
             }
 
             //if (DescriptorIndex1==0)
             //{ cout<<LastScore<<" "; if ((DescriptorIndex2 % 8) == 0) cout<<endl; }
 
-            if (LastScore < BestScore)
-            {
-                BestScore = LastScore;
-                SMs->DescriptorIndexInSecondImage[SMs->RealMatches] = DescriptorIndex2;
-            }
+            //BestScore = LastScore;
+            //SMs->DescriptorIndexInSecondImage[SMs->RealMatches] = DescriptorIndex2;
+            if (dsq < distsq1)
+                {
+                    distsq2 = distsq1;
+                    distsq1 = dsq;
+                    nexttominIndex = minIndex;
+                    minIndex = DescriptorIndex2;
+                }
+            else if (dsq < distsq2)
+                {
+                    distsq2 = dsq;
+                    nexttominIndex = DescriptorIndex2;
+                }
         }
-        SMs->RealMatches++;
+        if (distsq1 < (FACTOR1 * distsq2) >> FACTOR2)
+            SMs->DescIx2ndImgMin[SMs->RealMatches++] = minIndex;
+        //otherwise overwrite it next image1 descriptor
     }
 }
 
@@ -267,8 +295,7 @@ static int connexFM_CreateBatch(int LoadToRxBatchNumber, int UsingBuffer0or1)
 }
 
 static int connexFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
-                                    SiftDescriptors *SiftDescriptors1, SiftDescriptors *SiftDescriptors2,
-                                        SiftMatches* SMs)
+                                    SiftDescriptors *SiftDescriptors1, SiftDescriptors *SiftDescriptors2)
 {
     int CurrentcnxvectorChunkImg1, CurrentcnxvectorChunkImg2;
     int TotalcnxvectorChunksImg1 = (SiftDescriptors1->RealDescriptors + VECTORS_CHUNK_IMAGE1 - 1) / VECTORS_CHUNK_IMAGE1;
@@ -363,14 +390,20 @@ static int connexFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
 
 int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
                                     SiftDescriptors *SiftDescriptors1, SiftDescriptors *SiftDescriptors2,
-                                        SiftMatches* SMs)
+                                        SiftMatches* SMs, SiftMatches* SMsFinal)
 {
+    int TrueMatches = 0;
     if (RunningMode == MODE_CREATE_BATCHES)
     {
         // After running, get reduced results
         //clear scores (set score to the max):
         for (int CntDescIm1 = 0; CntDescIm1 < SiftDescriptors1->RealDescriptors; CntDescIm1++)
-            SMs->Score[CntDescIm1] = (UINT32)-1;
+        {
+            SMs->ScoreMin[CntDescIm1] = (UINT32)-1;
+            SMs->ScoreNextToMin[CntDescIm1] = (UINT32)-1;
+        }
+
+        SMs->RealMatches = 0;
     }
     else // (RunningMode == MODE_EXECUTE_FIND_MATCHES)
     {
@@ -379,6 +412,7 @@ int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
         int TotalcnxvectorSubChunksImg2 = VECTORS_CHUNK_IMAGE2 / VECTORS_SUBCHUNK_IMAGE2;
 
         int RedCounter = 0;
+
          for(int CurrentcnxvectorChunkImg1 = 0; CurrentcnxvectorChunkImg1 < TotalcnxvectorChunksImg1; CurrentcnxvectorChunkImg1++)
          {
             // for all chunks of img 2
@@ -396,18 +430,36 @@ int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
                         {
                             int descIm2 = CurrentcnxvectorChunkImg2*VECTORS_CHUNK_IMAGE2 + (CurrentcnxvectorSubChunkImg2 * VECTORS_SUBCHUNK_IMAGE2) + x;
                             //if (descIm1 == 0) { cout<<RedCounter<<":"<<BasicMatchRedResults[RedCounter]<<" "; if ((descIm2 & 3) == 3) cout << endl;}
-                            if ((BasicMatchRedResults[RedCounter]) < SMs->Score[descIm1])
+
+                            int dsq = BasicMatchRedResults[RedCounter];
+                            if (dsq < SMs->ScoreMin[descIm1])
                             {
-                                SMs->Score[descIm1] = BasicMatchRedResults[RedCounter];
-                                SMs->DescriptorIndexInSecondImage[descIm1] = descIm2;
+                                SMs->ScoreNextToMin[descIm1] = SMs->ScoreMin[descIm1];
+                                SMs->ScoreMin[descIm1] = dsq;
+
+                                SMs->DescIx2ndImgNextToMin[descIm1] = SMs->DescIx2ndImgMin[descIm1];
+                                SMs->DescIx2ndImgMin[descIm1] = descIm2;
                             }
+                            else if (dsq < SMs->ScoreNextToMin[descIm1])
+                            {
+                                SMs->ScoreNextToMin[descIm1] = dsq;
+                                SMs->DescIx2ndImgNextToMin[descIm1] = descIm2;
+                            }
+
                             RedCounter++;
                         }
                     }
             }
          }
+
+        for (int i = 0; i < SiftDescriptors1->RealDescriptors; i++)
+        if (SMs->ScoreMin[i] < (FACTOR1 * SMs->ScoreNextToMin[i]) >> FACTOR2)
+        {
+            SMsFinal->DescIx2ndImgMin[SMsFinal->RealMatches++] = SMs->DescIx2ndImgMin[i];
+        }
     }
-    SMs->RealMatches = SiftDescriptors1->RealDescriptors;
+
+
     return PASS;
 }
 #define LOAD_VECTOR(VECT_ADDRESS, MEMORY_ADDRESS) \
@@ -478,8 +530,8 @@ int test_BasicMatching_All()
 
     //PrintMatches(&SM_Arm);
     Start = GetMilliCount();
-    connexFindMatchesPass1(MODE_CREATE_BATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArm);
-    connexFindMatchesPass2(MODE_CREATE_BATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArm);
+    connexFindMatchesPass1(MODE_CREATE_BATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);
+    connexFindMatchesPass2(MODE_CREATE_BATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan, &SM_ConnexArm);
     cout<<"Batches were created in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
 
     //database
@@ -507,8 +559,8 @@ int test_BasicMatching_All()
     */
 
     Start = GetMilliCount();
-    connexFindMatchesPass1(MODE_EXECUTE_FIND_MATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArm);
-    connexFindMatchesPass2(MODE_EXECUTE_FIND_MATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArm);
+    connexFindMatchesPass1(MODE_EXECUTE_FIND_MATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);
+    connexFindMatchesPass2(MODE_EXECUTE_FIND_MATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan, &SM_ConnexArm);
     cout<<"connexFindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
     //PrintMatches(&SM_ConnexArm);
 
