@@ -1,17 +1,14 @@
 
 /*
  *
- * File: aes_tests.cpp
+ * File: aes_cpu_tests.cpp
  *
  * AES tests.
  *
  *
  */
-#include "../../../../include/core/io_unit.h"
-#include "../../../../include/c_simu/c_simulator.h"
 #include "../../../../include/util/utils.h"
 #include "../../../../include/util/timing.h"
-#include "../../../../include/util/kernel_acc.h"
 
 #include <iostream>
 #include <iomanip>
@@ -24,22 +21,22 @@ using namespace std;
 #define Nr (Nk + 6) /* number of rounds */
 #define WI_SIZE_IN_DWORDS (Nk * (Nr + 1))
 #define AES_DATABLOCK_SIZE_IN_DWORDS (128/32)
-UINT8 UINT8_TestKEY[] = {0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6, 0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c};
-UINT32 UINT32_TestKEY[] = {0x2b7e1516, 0x28aed2a6, 0xabf71588, 0x09cf4f3c};
+static UINT8 UINT8_TestKEY[] = {0x2b, 0x7e, 0x15, 0x16, 0x28, 0xae, 0xd2, 0xa6, 0xab, 0xf7, 0x15, 0x88, 0x09, 0xcf, 0x4f, 0x3c};
+static UINT32 UINT32_TestKEY[] = {0x2b7e1516, 0x28aed2a6, 0xabf71588, 0x09cf4f3c};
 //UINT8 TestKEY[AES_KEY_SIZE_IN_BYTES] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f};
 
 //UINT8 UINT8_plaintext[4*Nb] = {0x32, 0x43, 0xf6, 0xa8, 0x88, 0x5a, 0x30, 0x8d,0x31, 0x31, 0x98, 0xa2, 0xe0, 0x37, 0x07, 0x34};
-UINT32 UINT32_plaintext[Nb] = {0x3243f6a8, 0x885a308d,0x313198a2, 0xe0370734};
+static UINT32 UINT32_plaintext[Nb] = {0x3243f6a8, 0x885a308d,0x313198a2, 0xe0370734};
 //UINT8 plaintext[4*Nb] = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff};
 
-UINT32 UINT32_cryptotext[Nb] = {0,0,0,0};
-UINT32 UINT32_expected_cryptotext[Nb] = {0x3925841d,0x02dc09fb,0xdc118597,0x196a0b32};
+static UINT32 UINT32_cryptotext[Nb] = {0,0,0,0};
+static UINT32 UINT32_expected_cryptotext[Nb] = {0x3925841d,0x02dc09fb,0xdc118597,0x196a0b32};
 //UINT8 UINT8_cryptotext[4*Nb] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
-UINT8 cryptotext0[4*Nb] = {0x39, 0x25, 0x84, 0x1d, 0x02, 0xdc, 0x09, 0xfb,
+static UINT8 cryptotext0[4*Nb] = {0x39, 0x25, 0x84, 0x1d, 0x02, 0xdc, 0x09, 0xfb,
                             0xdc, 0x11, 0x85, 0x97, 0x19, 0x6a, 0x0b, 0x32};
 
-UINT8 cryptotext127[4*Nb] = {0x0f, 0x4e, 0xfe, 0x64, 0xf0, 0x6e, 0xb9, 0x95,
+static UINT8 cryptotext127[4*Nb] = {0x0f, 0x4e, 0xfe, 0x64, 0xf0, 0x6e, 0xb9, 0x95,
                             0x76, 0x9a, 0xf0, 0xc8, 0x0f, 0x99, 0x18, 0xf2};
 
 
@@ -55,7 +52,7 @@ multiplication is done modulo x8 + x4 + x3 + x + 1;
 */
 
 
-void printU128(UINT8 *data)
+static void printU128(UINT8 *data)
 {
     for (int i=0; i< 128/8; i++)
     {
@@ -68,7 +65,7 @@ void printU128(UINT8 *data)
     }
 }
 
-UINT8 AES_SBOX[16*16] =
+static UINT8 AES_SBOX[16*16] =
 {
     0x63,0x7c,0x77,0x7b,0xf2,0x6b,0x6f,0xc5,0x30,0x01,0x67,0x2b,0xfe,0xd7,0xab,0x76,
     0xca,0x82,0xc9,0x7d,0xfa,0x59,0x47,0xf0,0xad,0xd4,0xa2,0xaf,0x9c,0xa4,0x72,0xc0,
@@ -89,7 +86,7 @@ UINT8 AES_SBOX[16*16] =
 };
 
 
-void AES_MixColumn(UINT8 *r)
+static void AES_MixColumn(UINT8 *r)
 {
     unsigned char a[4];
     unsigned char b[4];
@@ -164,12 +161,12 @@ union _Wi
     UINT32 DoubleWord;
 };
 
-_Wi Wis[Nb * (Nr+1)];
+static _Wi Wis[Nb * (Nr+1)];
 
 /**
     SubWord the UINT32
 */
-void AES_SubWord(_Wi *wi)
+static void AES_SubWord(_Wi *wi)
 {
     wi->Bytes[0] = AES_SBOX[wi->Bytes[0]];
     wi->Bytes[1] = AES_SBOX[wi->Bytes[1]];
@@ -183,20 +180,20 @@ union _State
     UINT8 bCells[16];
 };
 
-void AES_SubBytes(_State *s)
+static void AES_SubBytes(_State *s)
 {
     for (int i=0; i< Nb * 4; i++)
         s->bCells[i] = AES_SBOX[s->bCells[i]];
 }
 
-void AES_MixColumns(_State *s)
+static void AES_MixColumns(_State *s)
 {
     for (int i =0; i< 4; i++)
         AES_MixColumn ((UINT8*)&s->dwColumns[i]);
 }
 
-UINT8 AES_Rcon[] = {0x00, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20 , 0x40, 0x80, 0x1b, 0x36};
-int AES_KeyExpansion(_Wi *Wi, UINT32 *Key)
+static UINT8 AES_Rcon[] = {0x00, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20 , 0x40, 0x80, 0x1b, 0x36};
+static int AES_KeyExpansion(_Wi *Wi, UINT32 *Key)
 {
     UINT32 temp;
     UINT8 i;
@@ -253,7 +250,7 @@ int AES_KeyExpansion(_Wi *Wi, UINT32 *Key)
     return PASS;
 }
 
-void AES_AddRoundKey(_State* State, int pos)
+static void AES_AddRoundKey(_State* State, int pos)
 {
     //add it to state
     //for (int row=0; row< 4; row++)
@@ -265,7 +262,7 @@ void AES_AddRoundKey(_State* State, int pos)
 
 }
 
-void AES_ShiftRows(_State *s)
+static void AES_ShiftRows(_State *s)
 {
     UINT8 man;
 
@@ -302,7 +299,7 @@ void AES_ShiftRows(_State *s)
     }
 }
 
-void AES_LoadPlainText(_State *s)
+static void AES_LoadPlainText(_State *s)
 {
     s->dwColumns[0] = UINT32_plaintext[0];
     s->dwColumns[1] = UINT32_plaintext[1];
@@ -310,7 +307,7 @@ void AES_LoadPlainText(_State *s)
     s->dwColumns[3] = UINT32_plaintext[3];
 }
 
-void AES_StoreCryptoText(_State *s)
+static void AES_StoreCryptoText(_State *s)
 {
     UINT32_cryptotext[0] = s->dwColumns[0];
     UINT32_cryptotext[1] = s->dwColumns[1];
@@ -318,7 +315,7 @@ void AES_StoreCryptoText(_State *s)
     UINT32_cryptotext[3] = s->dwColumns[3];
 }
 
-void print_AES_Plaintext()
+static void print_AES_Plaintext()
 {
     UINT32 *PlaintextContent = UINT32_plaintext;
     for (int i=0; i< AES_DATABLOCK_SIZE_IN_DWORDS; i++)
@@ -326,7 +323,7 @@ void print_AES_Plaintext()
     cout<<dec<<endl;
 }
 
-void print_AES_Cryptotext()
+static void print_AES_Cryptotext()
 {
     UINT32 *CryptotextContent = UINT32_cryptotext;
     for (int i=0; i< AES_DATABLOCK_SIZE_IN_DWORDS; i++)
@@ -334,19 +331,19 @@ void print_AES_Cryptotext()
     cout<<dec<<endl;
 }
 
-void print_AES_Wi()
+static void print_AES_Wi()
 {
     for (int i=0; i< WI_SIZE_IN_DWORDS; i++)
         cout<<hex<<Wis[i].DoubleWord<<" "<<dec<<endl;
 }
 
-void print_AES_State(_State *state)
+static void print_AES_State(_State *state)
 {
     for (int i=0; i< Nb; i++)
         cout<<hex<<state->dwColumns[i]<<" "<<dec<<endl;
 }
 
-void AES_Block_Encryption()
+static void AES_Block_Encryption()
 {
     _State State;
     AES_LoadPlainText(&State);
@@ -366,7 +363,7 @@ void AES_Block_Encryption()
     AES_StoreCryptoText(&State);
 }
 
-int AES_Encryption()
+static int AES_Encryption()
 {
     int TimeStart;
     cout<<"AES CPU encryption test: encryption of  "<< AES_TIMING_LOOPS<<" datablocks " <<endl;

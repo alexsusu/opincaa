@@ -48,9 +48,9 @@ struct SiftDescriptor
     float Orientation;
 };
 
-#define MAX_DESCRIPTORS 5000
+#define MAX_DESCRIPTORS 16384
 #define MAX_MATCHES (100*1000)
-#define MAX_REDUCES (8*1024* 1024) // can hold 8MiB reductions
+#define MAX_REDUCES (16*8*1024* 1024)
 
 struct SiftDescriptors
 {
@@ -59,18 +59,10 @@ struct SiftDescriptors
     UINT16 RealDescriptors;
 };
 
-struct SiftMatch
-{
-    float X1;
-    float Y1;
-    float X2;
-    float Y2;
-    UINT32 Score;
-};
-
 struct SiftMatches
 {
-    SiftMatch Matches[MAX_MATCHES];
+    int DescriptorIndexInSecondImage[MAX_MATCHES];
+    int Score[MAX_MATCHES];
     UINT16 RealMatches;
 };
 
@@ -107,9 +99,12 @@ static void PrintMatches(SiftMatches *SMs)
     for(MatchesIndex =0; MatchesIndex < SMs->RealMatches; MatchesIndex++)
     //for(MatchesIndex =0; MatchesIndex < 10; MatchesIndex++)
     {
+        printf("Matches[%d].DescriptorIndexInSecondImage = %d \n", SMs->DescriptorIndexInSecondImage[MatchesIndex]);
+        /*
         printf("Matches[%d].X1,Y1,X2,Y2,Sc= %f %f %f %f %d\n",
                MatchesIndex, SMs->Matches[MatchesIndex].X1, SMs->Matches[MatchesIndex].Y1,
                SMs->Matches[MatchesIndex].X2,SMs->Matches[MatchesIndex].Y2, SMs->Matches[MatchesIndex].Score);
+        */
     }
 }
 
@@ -119,12 +114,15 @@ static int CompareMatches(SiftMatches *SMs1, SiftMatches *SMs2)
     cout << "Comparing "<<CntMax<< " matches... "<<endl;
     if (CntMax != SMs2->RealMatches) return FAIL;
     for (int cnt = 0; cnt < CntMax; cnt++)
+        /*
         if ((SMs1->Matches[cnt].Score != SMs2->Matches[cnt].Score) ||
             (SMs1->Matches[cnt].X1 != SMs2->Matches[cnt].X1) ||
             (SMs1->Matches[cnt].X2 != SMs2->Matches[cnt].X2) ||
             (SMs1->Matches[cnt].Y1 != SMs2->Matches[cnt].Y1) ||
             (SMs1->Matches[cnt].Y2 != SMs2->Matches[cnt].Y2)
             )
+        */
+        if (SMs1->DescriptorIndexInSecondImage[cnt] != SMs2->DescriptorIndexInSecondImage[cnt])
             {
                 cout <<"Failed at index "<<cnt<<endl;
                 return FAIL;
@@ -181,37 +179,6 @@ static int LoadDescriptors(char *FileName, SiftDescriptors *SDs, int Limit)
     }
 }
 
-void FindMatches(SiftDescriptors *SDs1, SiftDescriptors *SDs2)
-{
-/*
-    if (SDs1->RealDescriptors > SDs2->RealDescriptors)
-    {
-        SiftDescriptors *SDsman = SDs1;
-        SDs1 = SDs2;
-        SDs2 = SDsman;
-    }
-*/
-	//for (int DescriptorIndex1 =0; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1++)
-	for (int DescriptorIndex1 =0; DescriptorIndex1 < 1; DescriptorIndex1++)
-    {
-        for (int DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
-        //for (int DescriptorIndex2 =0; DescriptorIndex2 < 10; DescriptorIndex2++)
-	    {
-            UINT32 Score = 0;
-			int FeatIndex;
-            for (FeatIndex = 0; FeatIndex < FEATURES_PER_DESCRIPTOR; FeatIndex++)
-            {
-                INT32 sq = (SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1][FeatIndex] -
-                            SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2][FeatIndex]);
-                Score += sq*sq;
-            }
-            //cout <<"Sc=["<<DescriptorIndex2<<"]= "<<Score<<" ";
-            //if ((DescriptorIndex2 & 3) == 3) cout<<endl;
-        }
-    }
-}
-
-
 void FindMatches(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatches* SMs)
 {
     SMs->RealMatches = 0;
@@ -227,89 +194,33 @@ void FindMatches(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatches* SMs)
 
 	for (DescriptorIndex1 =0; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1++)
     {
-        SMs->Matches[SMs->RealMatches].Score = (UINT32)-1;
 		int DescriptorIndex2;
+		UINT32 BestScore = (UINT32)-1;
+
         for (DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
 	    {
-            UINT32 Score = 0;
+            UINT32 LastScore = 0;
+
 			int FeatIndex;
             for (FeatIndex = 0; FeatIndex < FEATURES_PER_DESCRIPTOR; FeatIndex++)
             {
                 INT32 sq = (SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1][FeatIndex] -
                             SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2][FeatIndex]);
-                Score += sq*sq;
+                LastScore += sq*sq;
             }
 
             //if (DescriptorIndex1==0)
-            //{ cout<<Score<<" "; if ((DescriptorIndex2 % 8) == 0) cout<<endl; }
+            //{ cout<<LastScore<<" "; if ((DescriptorIndex2 % 8) == 0) cout<<endl; }
 
-            if (Score < SMs->Matches[SMs->RealMatches].Score)
+            if (LastScore < BestScore)
             {
-                SMs->Matches[SMs->RealMatches].X1 = SDs1->SD[DescriptorIndex1].X;
-                SMs->Matches[SMs->RealMatches].Y1 = SDs1->SD[DescriptorIndex1].Y;
-
-                SMs->Matches[SMs->RealMatches].X2 = SDs2->SD[DescriptorIndex2].X;
-                SMs->Matches[SMs->RealMatches].Y2 = SDs2->SD[DescriptorIndex2].Y;
-
-                SMs->Matches[SMs->RealMatches].Score = Score;
+                BestScore = LastScore;
+                SMs->DescriptorIndexInSecondImage[SMs->RealMatches] = DescriptorIndex2;
             }
         }
         SMs->RealMatches++;
     }
 }
-
-/*
-void FindMatches2T(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatches* SMs)
-{
-    pid_t childpid;
-    int status;
-
-    int RealMatches;
-    int DescriptorIndex1;
-
-    SMs->RealMatches = SDs1->RealDescriptors;
-
-    childpid = fork();
-    if (childpid >= 0) //fork success
-    {
-        if (childpid == 0) DescriptorIndex1 = 1;
-        else DescriptorIndex1 = 0;
-
-        for (; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1+=2)
-        {
-            SMs->Matches[SMs->RealMatches].Score = (UINT32)-1;
-            int DescriptorIndex2;
-            for (DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
-            {
-                UINT32 Score = 0;
-                int FeatIndex;
-                for (FeatIndex = 0; FeatIndex < FEATURES_PER_DESCRIPTOR; FeatIndex++)
-                {
-                    INT32 sq = (SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1][FeatIndex] -
-                                SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2][FeatIndex]);
-                    Score += sq*sq;
-                }
-
-                //if (DescriptorIndex1==0)
-                //{ cout<<Score<<" "; if ((DescriptorIndex2 % 8) == 0) cout<<endl; }
-
-                if (Score < SMs->Matches[RealMatches].Score)
-                {
-                    SMs->Matches[RealMatches].X1 = SDs1->SD[DescriptorIndex1].X;
-                    SMs->Matches[RealMatches].Y1 = SDs1->SD[DescriptorIndex1].Y;
-
-                    SMs->Matches[RealMatches].X2 = SDs2->SD[DescriptorIndex2].X;
-                    SMs->Matches[RealMatches].Y2 = SDs2->SD[DescriptorIndex2].Y;
-
-                    SMs->Matches[RealMatches].Score = Score;
-                }
-            }
-        }
-        if (childpid > 0) //parent
-            wait(&status);
-        else exit(0);//child
-    }
-}*/
 
 /*
     Out of 1024 LocalStore locations, each having 128 Bytes:
@@ -459,7 +370,7 @@ int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
         // After running, get reduced results
         //clear scores (set score to the max):
         for (int CntDescIm1 = 0; CntDescIm1 < SiftDescriptors1->RealDescriptors; CntDescIm1++)
-            SMs->Matches[CntDescIm1].Score = (UINT32)-1;
+            SMs->Score[CntDescIm1] = (UINT32)-1;
     }
     else // (RunningMode == MODE_EXECUTE_FIND_MATCHES)
     {
@@ -485,13 +396,10 @@ int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
                         {
                             int descIm2 = CurrentcnxvectorChunkImg2*VECTORS_CHUNK_IMAGE2 + (CurrentcnxvectorSubChunkImg2 * VECTORS_SUBCHUNK_IMAGE2) + x;
                             //if (descIm1 == 0) { cout<<RedCounter<<":"<<BasicMatchRedResults[RedCounter]<<" "; if ((descIm2 & 3) == 3) cout << endl;}
-                            if ((BasicMatchRedResults[RedCounter]) < SMs->Matches[descIm1].Score)
+                            if ((BasicMatchRedResults[RedCounter]) < SMs->Score[descIm1])
                             {
-                                SMs->Matches[descIm1].Score = BasicMatchRedResults[RedCounter];
-                                SMs->Matches[descIm1].X1 = SiftDescriptors1->SD[descIm1].X;
-                                SMs->Matches[descIm1].Y1 = SiftDescriptors1->SD[descIm1].Y;
-                                SMs->Matches[descIm1].X2 = SiftDescriptors2->SD[descIm2].X;
-                                SMs->Matches[descIm1].Y2 = SiftDescriptors2->SD[descIm2].Y;
+                                SMs->Score[descIm1] = BasicMatchRedResults[RedCounter];
+                                SMs->DescriptorIndexInSecondImage[descIm1] = descIm2;
                             }
                             RedCounter++;
                         }
@@ -556,10 +464,13 @@ int test_BasicMatching_All()
     LoadDescriptors((char*)"data/adam1.key", &SiftDescriptors1, 0);
     LoadDescriptors((char*)"data/adam2.key", &SiftDescriptors2, 0);
 
-    //FindMatches(&SiftDescriptors1, &SiftDescriptors2);
-    Start = GetMilliCount();
-    FindMatches(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm);
-    cout<<"armFindMatches ran in " << GetMilliSpan(Start)<< " ms"<<endl;
+    //LoadDescriptors((char*)"data/adam1_big_siftpp.key", &SiftDescriptors1, 0);
+    //LoadDescriptors((char*)"data/adam2_big_siftpp.key", &SiftDescriptors2, 0);
+
+    //LoadDescriptors((char*)"data/img3_siftpp.key", &SiftDescriptors1, 0);
+    //LoadDescriptors((char*)"data/img3_siftpp.key", &SiftDescriptors2, 0);
+    //LoadDescriptors((char*)"data/img1_siftpp.key", &SiftDescriptors1, 0);
+    //LoadDescriptors((char*)"data/img3_siftpp.key", &SiftDescriptors2, 0);
 
     //Start = GetMilliCount();
     //FindMatches2T(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm);
@@ -569,7 +480,7 @@ int test_BasicMatching_All()
     Start = GetMilliCount();
     connexFindMatchesPass1(MODE_CREATE_BATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArm);
     connexFindMatchesPass2(MODE_CREATE_BATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArm);
-    cout<<"Batches were created in " << GetMilliSpan(Start)<< " ms"<<endl;
+    cout<<"Batches were created in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
 
     //database
     /*
@@ -584,21 +495,26 @@ int test_BasicMatching_All()
     */
     //connexFM_CreateBatch(BASIC_MATCHING_BNR, 0);
     //connexFM_CreateBatch(BASIC_MATCHING_BNR+1, 1);
-
+    /*
     Start = GetMilliCount();
-    if (PASS != kernel_acc::loadKernel("database/BasicMatchingA.ker", BASIC_MATCHING_BNR+2))
+    if (PASS != kernel_acc::loadKernel((char*)"database/BasicMatchingA.ker", BASIC_MATCHING_BNR+2))
         cout<<"Could not load kernel "<<endl;
     if (PASS != kernel_acc::loadKernel("database/BasicMatchingB.ker", BASIC_MATCHING_BNR+3))
         cout<<"Could not load kernel "<<endl;
 
     cout<<"Batches were loaded in " << GetMilliSpan(Start)<< " ms"<<endl;
     //cout<<"Could not load batches "<<endl;
+    */
 
     Start = GetMilliCount();
-    connexFindMatchesPass1(MODE_EXECUTE_FIND_MATCHES, BASIC_MATCHING_BNR+2, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArm);
-    connexFindMatchesPass2(MODE_EXECUTE_FIND_MATCHES, BASIC_MATCHING_BNR+2, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArm);
-    cout<<"connexFindMatches ran in " << GetMilliSpan(Start)<< " ms"<<endl;
+    connexFindMatchesPass1(MODE_EXECUTE_FIND_MATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArm);
+    connexFindMatchesPass2(MODE_EXECUTE_FIND_MATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArm);
+    cout<<"connexFindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
     //PrintMatches(&SM_ConnexArm);
+
+    Start = GetMilliCount();
+    FindMatches(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm);
+    cout<<"armFindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
 
     if (PASS == CompareMatches(&SM_Arm,&SM_ConnexArm)) cout << "Matches are a ... match ;). Arm and Arm-Connex got the same results."<<endl;
     else cout << "Match test has FAILed. Arm and ConnexArm got different results !"<<endl;

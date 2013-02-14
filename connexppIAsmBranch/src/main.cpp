@@ -92,6 +92,7 @@
 #include "../include/test/max_tests.h"
 #include "../include/test/crypto/aes/aes_tests.h"
 #include "../include/test/crypto/aes/aes_cpu_tests.h"
+//#include "../include/test/crypto/aes/aes_cpu_neon_sse_tests.h"
 
 //#include "../include/test/crypto/bsDES/bs_des_tests.h"
 
@@ -244,9 +245,10 @@ int main(int argc, char *argv[])
 	//test_Max_All(true);
     //test_Speed_All();
     //test_Simple_IO_All(true);
-	//test_BasicMatching_All();
-	test_AES_All();
-	test_AES_CPU_All();
+	test_BasicMatching_All();
+	//test_AES_All();
+	//test_AES_CPU_All();
+	//test_AES_CPU_NEON_SSE_All();
 
     DEINIT();
 
