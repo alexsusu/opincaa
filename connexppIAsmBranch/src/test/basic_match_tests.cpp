@@ -50,7 +50,7 @@ struct SiftDescriptor
 
 #define MAX_DESCRIPTORS 16384
 #define MAX_MATCHES (100*1000)
-#define MAX_REDUCES (8*1024* 1024)
+#define MAX_REDUCES (64*1024* 1024)
 
 struct SiftDescriptors
 {
@@ -510,14 +510,14 @@ int test_BasicMatching_All()
     //const int MAX_IMG_2_DECRIPTORS = 330*3;//max 1196
     int Start;
 
-    //LoadDescriptors((char*)"data/adam1.key", &SiftDescriptors1, MAX_IMG_1_DECRIPTORS);
-    //LoadDescriptors((char*)"data/adam2.key", &SiftDescriptors2, MAX_IMG_2_DECRIPTORS);
+    LoadDescriptors((char*)"data/adam1.key", &SiftDescriptors1, 0);
+    LoadDescriptors((char*)"data/adam2.key", &SiftDescriptors2, 0);
 
-    //LoadDescriptors((char*)"data/adam1_big.png.key", &SiftDescriptors1, 0);
-    //LoadDescriptors((char*)"data/adam2_big.png.key", &SiftDescriptors2, 0);
+    //LoadDescriptors((char*)"data/adam1_big.png.key", &SiftDescriptors2, 0);
+    //LoadDescriptors((char*)"data/adam2_big.png.key", &SiftDescriptors1, 0);
 
-    LoadDescriptors((char*)"data/img1.png.key", &SiftDescriptors1, 0);
-    LoadDescriptors((char*)"data/img3.png.key", &SiftDescriptors2, 0);
+    //LoadDescriptors((char*)"data/img1.png.key", &SiftDescriptors1, 0);
+    //LoadDescriptors((char*)"data/img3.png.key", &SiftDescriptors2, 0);
 
     //LoadDescriptors((char*)"data/adam1_big_siftpp.key", &SiftDescriptors1, 0);
     //LoadDescriptors((char*)"data/adam2_big_siftpp.key", &SiftDescriptors2, 0);
