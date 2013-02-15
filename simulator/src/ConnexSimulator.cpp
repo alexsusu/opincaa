@@ -2,9 +2,7 @@
 #include <iostream>
 #include <thread>
 #include "ConnexSimulator.h"
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/stat.h>
+#include "NamedPipes.h"
 
 /*
  *	Structure holding information for a IO transfer
@@ -24,23 +22,23 @@ struct ConnexIoDescriptor
  * @param reductionDescriptorPath the path to the reduction FIFO on the file system
  * @param writeDescriptorPath the path to the write FIFO (ARM -> ARRAY) on the file system
  * @param readDescriptorPath the path to the read FIFO (ARRAY -> ARM) on the file system
- */	
-ConnexSimulator::ConnexSimulator(string distributionDescriptorPath, 
-						string reductionDescriptorPath, 
-						string writeDescriptorPath, 
+ */
+ConnexSimulator::ConnexSimulator(string distributionDescriptorPath,
+						string reductionDescriptorPath,
+						string writeDescriptorPath,
 						string readDescriptorPath)
 {
+	distributionDescriptor = openPipe(distributionDescriptorPath, RDONLY);
+	writeDescriptor = openPipe(writeDescriptorPath, RDONLY);
 
-	reductionDescriptor = openPipe(reductionDescriptorPath, O_RDWR);	
-	readDescriptor = openPipe(readDescriptorPath, O_RDWR);
-	distributionDescriptor = openPipe(distributionDescriptorPath, O_RDWR);
-	writeDescriptor = openPipe(writeDescriptorPath, O_RDWR);
-	
+    reductionDescriptor = openPipe(reductionDescriptorPath, WRONLY);
+	readDescriptor = openPipe(readDescriptorPath, WRONLY);
+
 	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
 	{
 		cells[i] = new Cell(i);
 	}
-	
+
 	cells[0]->connectLeft(cells[CONNEX_VECTOR_LENGTH - 1]);
 	cells[0]->connectRight(cells[1]);
 	for(int i=1; i<CONNEX_VECTOR_LENGTH - 1; i++)
@@ -50,7 +48,7 @@ ConnexSimulator::ConnexSimulator(string distributionDescriptorPath,
 	}
 	cells[CONNEX_VECTOR_LENGTH - 1]->connectLeft(cells[CONNEX_VECTOR_LENGTH - 2]);
 	cells[CONNEX_VECTOR_LENGTH - 1]->connectRight(cells[0]);
-	
+
 	initiateThreads();
 }
 
@@ -79,14 +77,14 @@ int ConnexSimulator::openPipe(string pipePath, int mode)
 	/* Try and create the pipe, if it already exists, this will return
 	 * -1, but we don't care
 	 */
-	mkfifo(path, 0666);
-	
+	pmake(path, 0666);
+
 	/* Try and attach to it */
-    if((fifoDescriptor = open(path, mode)) < 0)
-	{ 
+    if((fifoDescriptor = popen(path, mode)) < 0)
+	{
 		throw string("Unable to open FIFO ") + path;
     }
-	
+
 	cout << "FIFO " << pipePath << " succesfully opened!" << endl;
 	return fifoDescriptor;
 }
@@ -112,7 +110,7 @@ void ConnexSimulator::ioThreadHandler()
 	ConnexIoDescriptor ioDescriptor;
 	while(1)
 	{
-		read(writeDescriptor, &ioDescriptor, sizeof(ioDescriptor));
+        pread(writeDescriptor, &ioDescriptor, sizeof(ioDescriptor));
 		performIO(ioDescriptor);
 	}
 }
@@ -126,14 +124,14 @@ void ConnexSimulator::coreThreadHandler()
 	int instruction;
 	while(1)
 	{
-		read(distributionDescriptor, &instruction, sizeof(instruction));
+		pread(distributionDescriptor, &instruction, sizeof(instruction));
 		executeInstruction(Instruction(instruction));
 	}
 }
 
 /*
  * Performs an IO operation specified by the IO descriptor
- * 
+ *
  * @param ioDescriptor the descriptor for the IO operation
  */
 void ConnexSimulator::performIO(ConnexIoDescriptor ioDescriptor)
@@ -144,16 +142,16 @@ void ConnexSimulator::performIO(ConnexIoDescriptor ioDescriptor)
 		case IO_WRITE_OPERATION:
 			for(int i=0; i<ioDescriptor.vectorCount + 1; i++)
 			{
-				read(writeDescriptor, connexVector, 2 * CONNEX_VECTOR_LENGTH);
+				pread(writeDescriptor, connexVector, 2 * CONNEX_VECTOR_LENGTH);
 				for(int j=0; j<CONNEX_VECTOR_LENGTH; j++)
 				{
 					cells[j]->write(connexVector[j], ioDescriptor.lsAddress + i);
 				}
 			}
-			
+
 			// TODO: Write the ACK with the correct data
-			write(readDescriptor, connexVector, 4);
-			write(readDescriptor, NULL, 0);
+			pwrite(readDescriptor, connexVector, 4);
+			pwrite(readDescriptor, NULL, 0);
 			break;
 		case IO_READ_OPERATION:
 			for(int i=0; i<ioDescriptor.vectorCount + 1; i++)
@@ -162,9 +160,9 @@ void ConnexSimulator::performIO(ConnexIoDescriptor ioDescriptor)
 				{
 					connexVector[j] = cells[j]->read(ioDescriptor.lsAddress + i);
 				}
-				write(readDescriptor, connexVector, 2 * CONNEX_VECTOR_LENGTH);
+				pwrite(readDescriptor, connexVector, 2 * CONNEX_VECTOR_LENGTH);
 			}
-			write(readDescriptor, NULL, 0);
+			pwrite(readDescriptor, NULL, 0);
 			break;
 		default:
 			throw string("Unknown IO operation type in ConnexSimulator::performIO");
@@ -173,18 +171,18 @@ void ConnexSimulator::performIO(ConnexIoDescriptor ioDescriptor)
 
 /*
  * Executes the specified instruction on all active cells
- * 
+ *
  * @param instruction the instruction to execute
  */
 void ConnexSimulator::executeInstruction(Instruction instruction)
 {
 	switch(instruction.getOpcode())
 	{
-		case _REDUCE: 
-			handleReduction(instruction); 
+		case _REDUCE:
+			handleReduction(instruction);
 			break;
-		case _CELL_SHL: 
-        case _CELL_SHR: 
+		case _CELL_SHL:
+        case _CELL_SHR:
 			handleShift(instruction);
 			break;
 		default:
@@ -194,7 +192,7 @@ void ConnexSimulator::executeInstruction(Instruction instruction)
 
 /*
  * Executes a shit instruction on all active cells
- * 
+ *
  * @param instruction the shift instruction to execute
  */
 void ConnexSimulator::handleShift(Instruction instruction)
@@ -203,7 +201,7 @@ void ConnexSimulator::handleShift(Instruction instruction)
 	{
 		cells[i]->shiftInit(instruction.getLeft(), instruction.getRight());
 	}
-	
+
 	bool done;
 	do
 	{
@@ -233,7 +231,7 @@ void ConnexSimulator::handleShift(Instruction instruction)
 
 /*
  * Executes a reduction instruction
- * 
+ *
  * @param instruction the reduction instruction to execute
  */
 void ConnexSimulator::handleReduction(Instruction instruction)
@@ -243,16 +241,16 @@ void ConnexSimulator::handleReduction(Instruction instruction)
 	{
 		sum += cells[i]->readRegister(instruction.getLeft());
 	}
-	
-	write(reductionDescriptor, &sum, sizeof(sum));
-	write(reductionDescriptor, NULL, 0);
+
+	pwrite(reductionDescriptor, &sum, sizeof(sum));
+	pwrite(reductionDescriptor, NULL, 0);
 }
 
 /*
  * Executes a local (cell) instruction on all active cells
- * 
+ *
  * @param instruction the instruction to execute
- */	
+ */
 void ConnexSimulator::handleLocalInstruction(Instruction instruction)
 {
 	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
