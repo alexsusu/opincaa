@@ -9,6 +9,7 @@ using namespace std;
 
 int main()
 {
+    
 	try
 	{
         ConnexSimulator simulator("distributionFIFO", "reductionFIFO", "writeFIFO", "readFIFO");

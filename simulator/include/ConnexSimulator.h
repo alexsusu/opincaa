@@ -7,7 +7,7 @@
 #ifndef CONNEXSIMULATOR_H
 #define CONNEXSIMULATOR_H
 
-#include "Cell.h"
+#include "ConnexVector.h"
 #include "Instruction.h"
 #include "Architecture.h"
 #include <string>
@@ -44,10 +44,15 @@ class ConnexSimulator
 		
 	private:
 		
-		/*
-		 * The Array of Cells that make up this Connex Machine
-		 */
-		Cell* cells[CONNEX_VECTOR_LENGTH];
+        /*
+         * The register file for this simulator
+         */
+		ConnexVector registerFile[CONNEX_REG_COUNT];
+		
+        /*
+         * The local store for this simulator
+         */
+		ConnexVector localStore[CONNEX_MEM_SIZE];
 		
 		/*
 		 * The distribution FIFO descriptor
