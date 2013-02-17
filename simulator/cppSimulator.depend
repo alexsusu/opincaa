@@ -1,0 +1,48 @@
+# depslib dependency file v1.0
+1361090488 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\arch\src\instruction.cpp
+	"Instruction.h"
+	<string>
+	<stdio.h>
+	<sstream>
+
+1361090488 m:\xillinux\connexrepoarh\connex_sift\software\connex\arch\include\instruction.h
+	<string>
+
+1361095125 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\src\connexsimulator.cpp
+	<iostream>
+	<thread>
+	"ConnexSimulator.h"
+	"NamedPipes.h"
+
+1361090472 m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\include\connexsimulator.h
+	"ConnexVector.h"
+	"Instruction.h"
+	"Architecture.h"
+	<string>
+
+1361090472 m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\include\connexvector.h
+	"Architecture.h"
+
+1361090488 m:\xillinux\connexrepoarh\connex_sift\software\connex\arch\include\architecture.h
+
+1361090472 m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\include\namedpipes.h
+	<fcntl.h>
+	<unistd.h>
+	<sys/stat.h>
+
+1361090473 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\src\connexvector.cpp
+	"ConnexVector.h"
+	<string.h>
+
+1361090473 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\src\main.cpp
+	"ConnexSimulator.h"
+	<string>
+	<iostream>
+	<system_error>
+
+1361090472 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\src\namedpipes.cpp
+	"NamedPipes.h"
+	<windows.h>
+	<windows.h>
+	<stdio.h>
+

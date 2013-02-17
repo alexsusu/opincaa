@@ -2,9 +2,7 @@
 #include <iostream>
 #include <thread>
 #include "ConnexSimulator.h"
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/stat.h>
+#include "NamedPipes.h"
 
 /****************************************************************************
  *	Structure holding information for a IO transfer
@@ -24,18 +22,19 @@ struct ConnexIoDescriptor
  * @param reductionDescriptorPath the path to the reduction FIFO on the file system
  * @param writeDescriptorPath the path to the write FIFO (ARM -> ARRAY) on the file system
  * @param readDescriptorPath the path to the read FIFO (ARRAY -> ARM) on the file system
- */	
-ConnexSimulator::ConnexSimulator(string distributionDescriptorPath, 
-						string reductionDescriptorPath, 
-						string writeDescriptorPath, 
+ */
+ConnexSimulator::ConnexSimulator(string distributionDescriptorPath,
+						string reductionDescriptorPath,
+						string writeDescriptorPath,
 						string readDescriptorPath)
 {
 
-	reductionDescriptor = openPipe(reductionDescriptorPath, O_RDWR);	
-	readDescriptor = openPipe(readDescriptorPath, O_RDWR);
-	distributionDescriptor = openPipe(distributionDescriptorPath, O_RDWR);
-	writeDescriptor = openPipe(writeDescriptorPath, O_RDWR);
-	
+    distributionDescriptor = openPipe(distributionDescriptorPath, RDONLY);
+	writeDescriptor = openPipe(writeDescriptorPath, RDONLY);
+
+    reductionDescriptor = openPipe(reductionDescriptorPath, WRONLY);
+	readDescriptor = openPipe(readDescriptorPath, WRONLY);
+
 	initiateThreads();
 }
 
@@ -61,14 +60,14 @@ int ConnexSimulator::openPipe(string pipePath, int mode)
 	/* Try and create the pipe, if it already exists, this will return
 	 * -1, but we don't care
 	 */
-	mkfifo(path, 0666);
-	
+	pmake(path, 0666);
+
 	/* Try and attach to it */
-    if((fifoDescriptor = open(path, mode)) < 0)
-	{ 
+    if((fifoDescriptor = popen(path, mode)) < 0)
+	{
 		throw string("Unable to open FIFO ") + path;
     }
-	
+
 	cout << "FIFO " << pipePath << " succesfully opened!" << endl;
 	return fifoDescriptor;
 }
@@ -94,7 +93,7 @@ void ConnexSimulator::ioThreadHandler()
 	ConnexIoDescriptor ioDescriptor;
 	while(1)
 	{
-		read(writeDescriptor, &ioDescriptor, sizeof(ioDescriptor));
+		pread(writeDescriptor, &ioDescriptor, sizeof(ioDescriptor));
 		performIO(ioDescriptor);
 	}
 }
@@ -108,14 +107,14 @@ void ConnexSimulator::coreThreadHandler()
 	int instruction;
 	while(1)
 	{
-		read(distributionDescriptor, &instruction, sizeof(instruction));
+		pread(distributionDescriptor, &instruction, sizeof(instruction));
 		executeInstruction(Instruction(instruction));
 	}
 }
 
 /****************************************************************************
  * Performs an IO operation specified by the IO descriptor
- * 
+ *
  * @param ioDescriptor the descriptor for the IO operation
  */
 void ConnexSimulator::performIO(ConnexIoDescriptor ioDescriptor)
@@ -124,24 +123,24 @@ void ConnexSimulator::performIO(ConnexIoDescriptor ioDescriptor)
 	switch(ioDescriptor.type)
 	{
 		case IO_WRITE_OPERATION:
-			read(writeDescriptor, connexVectors, sizeof(connexVectors));
+			pread(writeDescriptor, connexVectors, sizeof(connexVectors));
 			for(int i=0; i<ioDescriptor.vectorCount + 1; i++)
 			{
 				localStore[ioDescriptor.lsAddress + i].write(connexVectors + i * CONNEX_VECTOR_LENGTH);
 			}
-			
+
 			// TODO: Write the ACK with the correct data
-			write(readDescriptor, connexVectors, 4);
-			write(readDescriptor, NULL, 0);
+			pwrite(readDescriptor, connexVectors, 4);
+			pwrite(readDescriptor, NULL, 0);
 			break;
 		case IO_READ_OPERATION:
 			for(int i=0; i<ioDescriptor.vectorCount + 1; i++)
 			{
-				write(readDescriptor, 
-					  localStore[ioDescriptor.lsAddress + i].read(), 
+				pwrite(readDescriptor,
+					  localStore[ioDescriptor.lsAddress + i].read(),
 					  2 * CONNEX_VECTOR_LENGTH);
 			}
-			write(readDescriptor, NULL, 0);
+			pwrite(readDescriptor, NULL, 0);
 			break;
 		default:
 			throw string("Unknown IO operation type in ConnexSimulator::performIO");
@@ -150,15 +149,15 @@ void ConnexSimulator::performIO(ConnexIoDescriptor ioDescriptor)
 
 /****************************************************************************
  * Executes the specified instruction on all active cells
- * 
+ *
  * @param instruction the instruction to execute
  */
 void ConnexSimulator::executeInstruction(Instruction instruction)
 {
-	
+
 	switch(instruction.getOpcode())
     {
-        case _ADD: 
+        case _ADD:
 			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] + registerFile[instruction.getRight()];
 			return;
         case _ADDC:
@@ -170,7 +169,7 @@ void ConnexSimulator::executeInstruction(Instruction instruction)
         case _SUBC:
 			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] - registerFile[instruction.getRight()] - ConnexVector::carryFlag;
 			return;
-        case _NOT: 
+        case _NOT:
 			registerFile[instruction.getDest()] = ~registerFile[instruction.getLeft()];
 			return;
         case _OR:
@@ -206,7 +205,7 @@ void ConnexSimulator::executeInstruction(Instruction instruction)
         case _ISHR:
 			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()].ishr(instruction.getRight());
 			return;
-        case _ISHRA: 
+        case _ISHRA:
 			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] >> instruction.getRight();
 			return;
         case _LDIX:
@@ -227,14 +226,14 @@ void ConnexSimulator::executeInstruction(Instruction instruction)
         case _END_WHERE:
 			ConnexVector::active = true;
 			return;
-        case _CELL_SHL: 
-        case _CELL_SHR: 
+        case _CELL_SHL:
+        case _CELL_SHR:
 			handleShift(instruction);
 			return;
-        case _READ: 
+        case _READ:
             registerFile[instruction.getDest()].loadFrom(localStore, registerFile[instruction.getRight()]);
 			return;
-        case _WRITE: 
+        case _WRITE:
             registerFile[instruction.getLeft()].storeTo(localStore, registerFile[instruction.getRight()]);
 			return;
         case _MULT:
@@ -243,15 +242,15 @@ void ConnexSimulator::executeInstruction(Instruction instruction)
         case _MULT_LO:
 			registerFile[instruction.getDest()] = ConnexVector::multLow;
 			return;
-        case _MULT_HI: 
+        case _MULT_HI:
 			registerFile[instruction.getDest()] = ConnexVector::multHigh;
 			return;
         case _REDUCE:
 			handleReduction(instruction);
 			return;
-        case _NOP: 
+        case _NOP:
 			return;
-        case _VLOAD: 
+        case _VLOAD:
 			registerFile[instruction.getDest()] = instruction.getValue();
 			return;
         case _IREAD:
@@ -266,7 +265,7 @@ void ConnexSimulator::executeInstruction(Instruction instruction)
 
 /****************************************************************************
  * Executes a shift instruction on all active cells
- * 
+ *
  * @param instruction the shift instruction to execute
  */
 void ConnexSimulator::handleShift(Instruction instruction)
@@ -279,13 +278,13 @@ void ConnexSimulator::handleShift(Instruction instruction)
 
 /****************************************************************************
  * Executes a reduction instruction
- * 
+ *
  * @param instruction the reduction instruction to execute
  */
 void ConnexSimulator::handleReduction(Instruction instruction)
 {
 	int sum = registerFile[instruction.getLeft()].reduce();
-	write(reductionDescriptor, &sum, sizeof(sum));
-	write(reductionDescriptor, NULL, 0);
+	pwrite(reductionDescriptor, &sum, sizeof(sum));
+	pwrite(reductionDescriptor, NULL, 0);
 }
 
