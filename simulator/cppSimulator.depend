@@ -5,22 +5,23 @@
 	<stdio.h>
 	<sstream>
 
-1361090488 m:\xillinux\connexrepoarh\connex_sift\software\connex\arch\include\instruction.h
+1361130323 m:\xillinux\connexrepoarh\connex_sift\software\connex\arch\include\instruction.h
 	<string>
 
-1361095125 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\src\connexsimulator.cpp
+1361145795 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\src\connexsimulator.cpp
 	<iostream>
 	<thread>
 	"ConnexSimulator.h"
 	"NamedPipes.h"
 
-1361090472 m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\include\connexsimulator.h
+1361139097 m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\include\connexsimulator.h
 	"ConnexVector.h"
 	"Instruction.h"
 	"Architecture.h"
 	<string>
+	<thread>
 
-1361090472 m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\include\connexvector.h
+1361145599 m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\include\connexvector.h
 	"Architecture.h"
 
 1361090488 m:\xillinux\connexrepoarh\connex_sift\software\connex\arch\include\architecture.h
@@ -30,12 +31,13 @@
 	<unistd.h>
 	<sys/stat.h>
 
-1361090473 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\src\connexvector.cpp
+1361145427 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\src\connexvector.cpp
 	"ConnexVector.h"
 	<string.h>
 
-1361090473 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\src\main.cpp
+1361139002 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\src\main.cpp
 	"ConnexSimulator.h"
+	"test.h"
 	<string>
 	<iostream>
 	<system_error>
@@ -45,4 +47,17 @@
 	<windows.h>
 	<windows.h>
 	<stdio.h>
+
+1361145842 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\arch\src\namedpipes.cpp
+	"NamedPipes.h"
+	<windows.h>
+	<windows.h>
+	<stdio.h>
+
+1361128511 m:\xillinux\connexrepoarh\connex_sift\software\connex\arch\include\namedpipes.h
+	<fcntl.h>
+	<unistd.h>
+	<sys/stat.h>
+
+1361131511 m:\xillinux\connexrepoarh\connex_sift\software\connex\test\include\test.h
 

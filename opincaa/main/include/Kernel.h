@@ -1,9 +1,9 @@
 /*
  * File:   Kernel.h
  *
- * This is the header file for a class containing a kernel 
+ * This is the header file for a class containing a kernel
  * (a vector of Instructions) for executing on the Connex Array
- * 
+ *
  */
 
 #ifndef KERNEL_H
@@ -67,15 +67,19 @@ using namespace std;
 
 #define EXECUTE_IN_ALL(code)        __kernel->append(Instruction(_END_WHERE, 0, 0, 0));     \
                                     code
-                                    
+
 #define EXECUTE_WHERE_EQ(code)      __kernel->append(Instruction(_WHERE_EQ, 0, 0, 0));      \
+                                    code                                                    \
+                                    __kernel->append(Instruction(_END_WHERE, 0, 0, 0));
+
+#define EXECUTE_WHERE_LT(code)      __kernel->append(Instruction(_WHERE_LT, 0, 0, 0));      \
                                     code                                                    \
                                     __kernel->append(Instruction(_END_WHERE, 0, 0, 0));
 
 #define EXECUTE_WHERE_CRY(code)     __kernel->append(Instruction(_WHERE_CRY, 0, 0, 0));     \
                                     code                                                    \
                                     __kernel->append(Instruction(_END_WHERE, 0, 0, 0));
-                                    
+
 #define NOP                         __kernel->append(Instruction(_NOP, 0, 0, 0));
 
 #define REDUCE(x)                   Operand::reduce(x);
@@ -97,70 +101,70 @@ class Kernel
     public:
         /*
         * Constructor for creating a new Kernel
-        * 
+        *
         * @param name the name of the new kernel
-        * 
+        *
         * @throws string if the name is invalid (NULL or empty)
-        */ 
+        */
         Kernel(string name);
-        
+
         /*
          * Destructor for the Kernel class
-         * 
+         *
          * Disposes of the buffer and the instruction vector
-         */ 
+         */
         ~Kernel();
-        
+
         /*
          * Appends an existing instruction to the kernel
-         * 
+         *
          * @param instruction the instruction to add
          */
         void append(Instruction instruction);
-        
+
         /*
          * Writes the kernel to a memory location
-         * 
+         *
          * @param buffer the memory location to write the kernel to
          */
         void writeTo(void * buffer);
-        
+
         /*
          * Writes the kernel to a file descriptor
-         * 
+         *
          * @param fileDescriptor the file descriptor to write the kernel to
          */
         void writeTo(int fileDescriptor);
-        
+
         /*
          * Returns the number of instructions in this kernel
-         * 
+         *
          * @return the number of instructions in this kernel
          */
         unsigned size();
-        
+
         /*
          * Returns the name of this kernel
-         * 
+         *
          * @return the name of this kernel
          */
         string getName();
-        
+
         /*
          * Returns a string representing the disassembled kernel, one
          * instruction per line.
-         * 
+         *
          * @return the disassembled kernel
          */
         string disassemble();
-        
+
     private:
 
         /*
          * The name of the kernel;
          */
         string name;
-        
+
         /*
          * The vector containing the instructions
          */

@@ -8,8 +8,8 @@
 #define NAMEDPIPES_H
 
 #ifdef _WIN32
-    #define WRONLY (1 << 0)
-    #define RDONLY (1 << 1)
+    #define O_WRONLY (1 << 0)
+    #define O_RDONLY (1 << 1)
 
     int pmake(const char *path, int permissions);
 

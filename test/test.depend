@@ -1,0 +1,72 @@
+# depslib dependency file v1.0
+1361096303 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\test\main.cpp
+	<iostream>
+	"ConnexMachine.h"
+	<sstream>
+	<string>
+
+1361148316 m:\xillinux\connexrepoarh\connex_sift\software\connex\opincaa\main\include\connexmachine.h
+	"Operand.h"
+	"Kernel.h"
+	<string>
+	<map>
+	<mutex>
+
+1361090474 m:\xillinux\connexrepoarh\connex_sift\software\connex\opincaa\main\include\operand.h
+	"Instruction.h"
+	"Kernel.h"
+
+1361146584 m:\xillinux\connexrepoarh\connex_sift\software\connex\opincaa\main\include\instruction.h
+	<string>
+
+1361148518 m:\xillinux\connexrepoarh\connex_sift\software\connex\opincaa\main\include\kernel.h
+	"Instruction.h"
+	"ConnexMachine.h"
+	<vector>
+	<string>
+
+1361149632 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\test\src\test.cpp
+	<iostream>
+	"ConnexMachine.h"
+	"ConnexSimulator.h"
+	"simple_tests.h"
+
+1361139097 m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\include\connexsimulator.h
+	"ConnexVector.h"
+	"Instruction.h"
+	"Architecture.h"
+	<string>
+	<thread>
+
+1361145599 m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\include\connexvector.h
+	"Architecture.h"
+
+1361090488 m:\xillinux\connexrepoarh\connex_sift\software\connex\arch\include\architecture.h
+
+1361149646 m:\xillinux\connexrepoarh\connex_sift\software\connex\test\include\simple_tests.h
+	"utils.h"
+
+1361149620 m:\xillinux\connexrepoarh\connex_sift\software\connex\test\include\util\utils.h
+	<iostream>
+
+1360233224 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\test\src\util\timing.cpp
+	<sys/timeb.h>
+	<stdio.h>
+
+1361149480 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\test\src\util\utils.cpp
+	"utils.h"
+	"timing.h"
+	<iostream>
+	<stdlib.h>
+	<sstream>
+	<string>
+
+1360233222 m:\xillinux\connexrepoarh\connex_sift\software\connex\test\include\util\timing.h
+
+1361150240 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\test\src\simple_tests.cpp
+	<iostream>
+	"ConnexMachine.h"
+	"ConnexSimulator.h"
+	"utils.h"
+	<iomanip>
+

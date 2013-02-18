@@ -11,6 +11,7 @@
 #include "Instruction.h"
 #include "Architecture.h"
 #include <string>
+#include <thread>
 
 using namespace std;
 
@@ -22,7 +23,7 @@ struct ConnexIoDescriptor;
 class ConnexSimulator
 {
 	public:
-		
+
 		/*
 		 *	Constructor for class ConnexSimulator
 		 *
@@ -31,48 +32,55 @@ class ConnexSimulator
 		 * @param writeDescriptorPath the path to the write FIFO (ARM -> ARRAY) on the file system
 		 * @param readDescriptorPath the path to the read FIFO (ARRAY -> ARM) on the file system
 		 */
-		ConnexSimulator(string distributionDescriptorPath, 
-						string reductionDescriptorPath, 
-						string writeDescriptorPath, 
+		ConnexSimulator(string distributionDescriptorPath,
+						string reductionDescriptorPath,
+						string writeDescriptorPath,
 						string readDescriptorPath);
-		
+
 		/*
 		 * Destructor for class ConnexSimulator
 		 */
 		~ConnexSimulator();
-		
-		
+
+        /* Waits for the threads for program and data transfer to end.
+		 * NB: They don't stop unless killed.
+		 */
+		void waitFinish();
+
 	private:
-		
+
         /*
          * The register file for this simulator
          */
 		ConnexVector registerFile[CONNEX_REG_COUNT];
-		
+
         /*
          * The local store for this simulator
          */
 		ConnexVector localStore[CONNEX_MEM_SIZE];
-		
+
 		/*
 		 * The distribution FIFO descriptor
 		 */
 		int distributionDescriptor;
-		
+
 		/*
 		 * The reduction FIFO descriptor
 		 */
 		int reductionDescriptor;
-		
+
 		/*
 		 * The read FIFO descriptor
 		 */
 		int readDescriptor;
-		
+
 		/*
 		 * The write FIFO descriptor
 		 */
 		int writeDescriptor;
+
+        thread ioThread;
+        thread coreThread;
 
 		/*
 		 * Opens the FIFO at the specified path in the specified mode
@@ -82,54 +90,54 @@ class ConnexSimulator
 		 * @return the FIFO descriptor
 		 */
 		int openPipe(string path, int mode);
-		
+
 		/*
 		 * Starts the threads for program and data transfer.
-		 * They don't stop unless killed.
+		 * NB: They don't stop unless killed.
 		 */
 		void initiateThreads();
-		
+
 		/*
 		 * Handler method for IO transfers
 		 */
 		void ioThreadHandler();
-		
+
 		/*
 		 * Handler method execution and reduction
 		 */
 		void coreThreadHandler();
-		
+
 		/*
 		 * Performs an IO operation specified by the IO descriptor
-		 * 
+		 *
 		 * @param ioDescriptor the descriptor for the IO operation
 		 */
 		void performIO(ConnexIoDescriptor ioDescriptor);
-		
+
 		/*
 		 * Executes the specified instruction on all active cells
-		 * 
+		 *
 		 * @param instruction the instruction to execute
 		 */
 		void executeInstruction(Instruction instruction);
-	
+
 		/*
 		 * Executes a shit instruction on all active cells
-		 * 
+		 *
 		 * @param instruction the shift instruction to execute
 		 */
 		void handleShift(Instruction instruction);
-		
+
 		/*
 		 * Executes a reduction instruction
-		 * 
+		 *
 		 * @param instruction the reduction instruction to execute
 		 */
 		void handleReduction(Instruction instruction);
-		
+
 		/*
 		 * Executes a local (cell) instruction on all active cells
-		 * 
+		 *
 		 * @param instruction the instruction to execute
 		 */
 		void handleLocalInstruction(Instruction instruction);

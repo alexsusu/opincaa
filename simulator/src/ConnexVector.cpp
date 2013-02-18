@@ -63,16 +63,16 @@ ConnexVector ConnexVector::shiftReg;
  * The remaining shifts required for each cells
  */
 ConnexVector ConnexVector::shiftCountReg;
-	
-/**************************************************************************** 
+
+/****************************************************************************
  * Constructor for creating a new ConnexVector
  */
 ConnexVector::ConnexVector()
 {
-	
+
 }
 
-/**************************************************************************** 
+/****************************************************************************
  * Destructor for the ConnexVector class
  */
 ConnexVector::~ConnexVector()
@@ -80,7 +80,7 @@ ConnexVector::~ConnexVector()
 
 }
 
-/**************************************************************************** 
+/****************************************************************************
  * Computes the reduction of this Vector
  *
  * @return the value of the reduction operation
@@ -95,7 +95,7 @@ int ConnexVector::reduce()
 	return sum;
 }
 
-/**************************************************************************** 
+/****************************************************************************
  * Loads each cell with its index in the array
  */
 void ConnexVector::loadIndex()
@@ -106,9 +106,9 @@ void ConnexVector::loadIndex()
 	}
 }
 
-/**************************************************************************** 
+/****************************************************************************
  * Loads the specified values in the vector's cells
- * 
+ *
  * @param data the array of shorts to load
  */
 void ConnexVector::write(short *data)
@@ -116,9 +116,9 @@ void ConnexVector::write(short *data)
     memcpy(cells, data, CONNEX_VECTOR_LENGTH * sizeof(short));
 }
 
-/**************************************************************************** 
+/****************************************************************************
  * Return the data contains in all cells as a short addat
- * 
+ *
  * @return the array of shorts taken from each cell
  */
 short* ConnexVector::read()
@@ -143,50 +143,64 @@ BINARY_OP(^)
 /****************************************************************************
  * Assignment operator, conditioned by active flags
  */
-void ConnexVector::operator=(ConnexVector anotherVector)               
-{       
-    for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)                       
-    {                                       
+void ConnexVector::operator=(ConnexVector anotherVector)
+{
+    for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+    {
         cells[i] = (active.cells[i] * anotherVector.cells[i]) | (!active.cells[i] * cells[i]);
-    }                                                               
+    }
+}
+
+/****************************************************************************
+ * Assignment operator (used only for reset of active)
+ */
+void ConnexVector::operator=(bool value)
+{
+	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+	{
+		if (value == true)
+            active.cells[i] = 1;
+		else
+            active.cells[i] = 0;
+	}
 }
 
 /****************************************************************************
  * Assignment operator (for vload insn), conditioned by active flags
  */
-void ConnexVector::operator=(short value)				
-{		
-	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)						
-	{										
+void ConnexVector::operator=(short value)
+{
+	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+	{
 		cells[i] = (active.cells[i] * value) | (!active.cells[i] * cells[i]);
-	}																
+	}
 }
 
 /****************************************************************************
  * Multiplication operator, not conditioned by active flags
  */
-void ConnexVector::operator*(ConnexVector anotherVector)				
-{		
+void ConnexVector::operator*(ConnexVector anotherVector)
+{
 	int result;
-	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)						
-	{																
+	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+	{
 		result = cells[i] * anotherVector.cells[i];
 		multLow.cells[i] = (short)result;
 		multHigh.cells[i] = (short)(result >> 16);
-	}																
+	}
 }
 
 /****************************************************************************
  * Unary negation operator, not conditioned by active flags
  */
-ConnexVector ConnexVector::operator~()				
-{		
+ConnexVector ConnexVector::operator~()
+{
 	ConnexVector result;
-	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)						
-	{																
+	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+	{
 		result.cells[i] = ~cells[i];
-	}																
-	return result;													
+	}
+	return result;
 }
 
 /****************************************************************************
@@ -195,10 +209,10 @@ ConnexVector ConnexVector::operator~()
 ConnexVector ConnexVector::ult(ConnexVector anotherVector)
 {
 	ConnexVector result;
-	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)						
-	{																
+	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+	{
 		result.cells[i] = (unsigned)cells[i] < (unsigned)anotherVector.cells[i];
-	}																
+	}
 	return result;
 }
 
@@ -208,10 +222,10 @@ ConnexVector ConnexVector::ult(ConnexVector anotherVector)
 ConnexVector ConnexVector::operator <<(short value)
 {
     ConnexVector result;
-    for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)                       
-    {                                                               
+    for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+    {
         result.cells[i] = cells[i] << value;
-    }                                                               
+    }
     return result;
 }
 
@@ -221,10 +235,10 @@ ConnexVector ConnexVector::operator <<(short value)
 ConnexVector ConnexVector::operator >>(short value)
 {
     ConnexVector result;
-    for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)                       
-    {                                                               
+    for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+    {
         result.cells[i] = cells[i] >> value;
-    }                                                               
+    }
     return result;
 }
 
@@ -234,10 +248,10 @@ ConnexVector ConnexVector::operator >>(short value)
 ConnexVector ConnexVector::shr(ConnexVector anotherVector)
 {
 	ConnexVector result;
-	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)						
-	{																
+	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+	{
 		result.cells[i] = (unsigned short)cells[i] >> anotherVector.cells[i];
-	}																
+	}
 	return result;
 }
 
@@ -248,20 +262,20 @@ ConnexVector ConnexVector::shr(ConnexVector anotherVector)
 ConnexVector ConnexVector::ishr(short value)
 {
 	ConnexVector result;
-	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)						
-	{																
+	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+	{
 		result.cells[i] = (unsigned short)cells[i] >> value;
-	}																
+	}
 	return result;
 }
 
 /****************************************************************************
  * Shift the vector in the specified direction, with the number
  * of cells specified by ConnexVector::shiftCount
- * 
+ *
  * @param direction the direction: -1 if the shift is right and
  *                                  1 if the shift is left
- * 
+ *
  */
 void ConnexVector::shift(int direction)
 {
@@ -278,7 +292,7 @@ void ConnexVector::shift(int direction)
                 tmp.cells[i] = cells[(i + direction) & (CONNEX_VECTOR_LENGTH - 1)];
                 ConnexVector::shiftCountReg.cells[i]--;
             }
-            
+
             done = done && (!ConnexVector::shiftCountReg.cells[i]);
         }
         memcpy(cells, tmp.cells, sizeof(cells));
@@ -288,7 +302,7 @@ void ConnexVector::shift(int direction)
 
 /****************************************************************************
  * Reads this vector from the localStore, using addresses vector for addresses
- * 
+ *
  * @param localStore the local store to read from
  * @param addresses the addresses to load from
  */
@@ -302,7 +316,7 @@ void ConnexVector::loadFrom(ConnexVector *localStore, ConnexVector addresses)
 
 /****************************************************************************
  * Writes this vector to the localStore, using addresses vector for addresses
- * 
+ *
  * @param localStore the local store to write to
  * @param addresses the addresses to write to
  */
@@ -313,4 +327,20 @@ void ConnexVector::storeTo(ConnexVector *localStore, ConnexVector addresses)
         short value = localStore[addresses.cells[i]].cells[i];
         localStore[addresses.cells[i]].cells[i] = cells[i] * active.cells[i] | value * !active.cells[i];
     }
+}
+
+void ConnexVector::Unconditioned_Setactive(ConnexVector anotherVector)
+{
+    for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+        active.cells[i] = anotherVector.cells[i];
+}
+
+void ConnexVector::Unconditioned_Setactive(bool value)
+{
+    if (value == true)
+        for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+            active.cells[i] = 1;
+    else
+        for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+            active.cells[i] = 0;
 }

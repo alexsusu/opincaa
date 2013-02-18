@@ -1,14 +1,13 @@
 /*
  * File:   ConnexMachine.cpp
  *
- * This is the class used to communicate 
+ * This is the class used to communicate
  * with the Connex Array
- * 
+ *
  */
 
 #include "ConnexMachine.h"
-#include <fcntl.h>
-#include <unistd.h>
+#include "NamedPipes.h"
 
 #define     VECTOR_LENGTH   128
 
@@ -25,7 +24,7 @@
 /*
  * This descriptor is written to the IO_WRITE_FIFO in
  * order to initiate a transfer.
- * 
+ *
  * Specification can be found in ConnexIOSpec.docx
  */
 static struct
@@ -46,10 +45,10 @@ map<string, Kernel*> ConnexMachine::kernels;
 mutex ConnexMachine::mapMutex;
 
 /*
- * Adds a kernel to the static kernel map. 
- * 
+ * Adds a kernel to the static kernel map.
+ *
  * @param kernel the new kernel to add
- * 
+ *
  * @throws string if the kernel already exists
  */
 void ConnexMachine::addKernel(Kernel *kernel)
@@ -62,16 +61,16 @@ void ConnexMachine::addKernel(Kernel *kernel)
 		mapMutex.unlock();
         throw string("Kernel ") + name + string(" already exists in ConnexMachine::addKernel");
     }
-    
+
     kernels.insert(map<string, Kernel*>::value_type(name, kernel));
 	mapMutex.unlock();
 }
 
 /*
  * Disassembles the specified kernel
- * 
+ *
  * @param kernelName the kernel to disassemble
- * 
+ *
  * @return the string representing the disassembled kernel,
  * one instruction per line
  */
@@ -86,26 +85,39 @@ string ConnexMachine::disassembleKernel(string kernelName)
 }
 
 /*
- * Constructor for creating a new ConnexMachine with the default FIFO
- * descriptors
- * 
- * @throws string if the descriptors can't be opened
- */ 
-ConnexMachine::ConnexMachine()
+ * Constructor for creating a new ConnexMachine
+ *
+ * @param  distributionDescriptorPath the file descriptor of the distribution FIFO (write only)
+ * @param  reductionDescriptorPath the file descriptor of the reduction FIFO (read only)
+ * @param  writeDescriptorPath the file descriptor of the IO write FIFO (write only)
+ * @param  readDescriptorPath the file descriptor of the IO read FIFO (read only)
+ *
+ */
+ConnexMachine::ConnexMachine(string distributionDescriptorPath = DEFAULT_DISTRIBUTION_FIFO,
+                                string reductionDescriptorPath = DEFAULT_REDUCTION_FIFO,
+                                string writeDescriptorPath = DEFAULT_IO_WRITE_FIFO,
+                                string readDescriptorPath = DEFAULT_IO_READ_FIFO)
 {
-    distributionFifo = open(DEFAULT_DISTRIBUTION_FIFO, O_WRONLY);
-    reductionFifo = open(DEFAULT_REDUCTION_FIFO, O_RDONLY);
-    ioWriteFifo = open(DEFAULT_IO_WRITE_FIFO, O_WRONLY);
-    ioReadFifo = open(DEFAULT_IO_READ_FIFO, O_RDONLY);
-    
+    const char* distpath = distributionDescriptorPath.c_str();
+    const char* redpath = reductionDescriptorPath.c_str();
+    const char* wiopath = writeDescriptorPath.c_str();
+    const char* riopath = readDescriptorPath.c_str();
+
+    distributionFifo = popen(distpath, O_WRONLY);
+    reductionFifo = popen(redpath, O_RDONLY);
+    ioWriteFifo = popen(wiopath, O_WRONLY);
+    ioReadFifo = popen(riopath, O_RDONLY);
+
     if(distributionFifo < 0 ||
         reductionFifo  <0 ||
         ioWriteFifo < 0 ||
         ioReadFifo < 0
-    )
+        )
     {
         throw string("Unable to open file descriptor");
     }
+
+    printf("ConnexMachine created !\n");
 }
 
 /*
@@ -115,8 +127,8 @@ ConnexMachine::ConnexMachine()
  * @param  reductionFifo the file descriptor of the reduction FIFO (read only)
  * @param  ioWriteFifo the file descriptor of the IO write FIFO (write only)
  * @param  ioReadFifo the file descriptor of the IO read FIFO (read only)
- * 
- */ 
+ *
+ */
 ConnexMachine::ConnexMachine(int distributionFifo, int reductionFifo, int ioWriteFifo, int ioReadFifo)
 {
     this->distributionFifo = distributionFifo;
@@ -127,23 +139,23 @@ ConnexMachine::ConnexMachine(int distributionFifo, int reductionFifo, int ioWrit
 
 /*
  * Destructor for the ConnexMachine class
- * 
+ *
  * Disposes of the kernel map and closes the associated file
  * descriptors
- */ 
+ */
 ConnexMachine::~ConnexMachine()
 {
-    if(distributionFifo > 0) close(distributionFifo);
-    if(reductionFifo > 0) close(reductionFifo);
-    if(ioWriteFifo > 0) close(ioWriteFifo);
-    if(ioReadFifo > 0) close(ioReadFifo);
-}        
+    if(distributionFifo > 0) pclose(distributionFifo);
+    if(reductionFifo > 0) pclose(reductionFifo);
+    if(ioWriteFifo > 0) pclose(ioWriteFifo);
+    if(ioReadFifo > 0) pclose(ioReadFifo);
+}
 
 /*
  * Executes the kernel on the current ConnexMachine
- * 
+ *
  * @param kernelName the name of the kernel to execute
- * 
+ *
  * @throws string if the kernel is not found
  */
 void ConnexMachine::executeKernel(string kernelName)
@@ -161,53 +173,53 @@ void ConnexMachine::executeKernel(string kernelName)
 
 /*
 * Writes the specified buffer to the array IO write FIFO
-* 
+*
 * @param buffer the buffer to be written to the FIFO, it should
 *   contain at least 2 * VECTOR_LENGTH * vectorCount bytes
 * @param vectorCount the number of vectors to fill
 * @param vectorIndex the vector with which to start the writing operation
-* 
+*
 * @return number of bytes written or -1 in case of error
 */
 int ConnexMachine::writeDataToArray(void *buffer, unsigned vectorCount, unsigned vectorIndex)
 {
 	threadMutex.lock();
-	
+
     connex_io_descriptor.type = IO_WRITE_OPERATION;
     /* Use LS_ADDRESS macro to mask the least significant 10 bits */
     connex_io_descriptor.lsAddress = LS_ADDRESS(vectorIndex);
     /* Use VECTOR_COUNT macro to mask the least significant 10 bits */
     connex_io_descriptor.vectorCount = VECTOR_COUNT(vectorCount);
-    
+
     /* Issue the command */
-    write(ioWriteFifo, &connex_io_descriptor, sizeof(connex_io_descriptor));
-    
+    pwrite(ioWriteFifo, &connex_io_descriptor, sizeof(connex_io_descriptor));
+
     /* Write the data */
-    int bytesWritten = write(ioWriteFifo, buffer, vectorCount * VECTOR_LENGTH * 2);
-    
+    int bytesWritten = pwrite(ioWriteFifo, buffer, vectorCount * VECTOR_LENGTH * 2);
+
     /* Flush the descriptor */
-    write(ioWriteFifo, NULL, 0);
-    
+    pwrite(ioWriteFifo, NULL, 0);
+
     /* Read the ACK, NOTE:this is blocking */
     int response;
-    read(ioReadFifo, &response, sizeof(int));
-    
+    pread(ioReadFifo, &response, sizeof(int));
+
     //TODO: verify response
-    
+
 	threadMutex.unlock();
-	
+
     return bytesWritten;
 }
 
 /*
-* Reads the specified amounf of bytes to the specified buffer 
+* Reads the specified amounf of bytes to the specified buffer
 * from the array IO read FIFO
-* 
+*
 * @param buffer the buffer to write the data to (if NULL, it will be created)
 * @param bufferSize the amount of bytes to read
-* 
+*
 * @return the buffer which the data was written to
-* 
+*
 * @throws string if unable to read
 */
 void* ConnexMachine::readDataFromArray(void *buffer, unsigned vectorCount, unsigned vectorIndex)
@@ -215,47 +227,47 @@ void* ConnexMachine::readDataFromArray(void *buffer, unsigned vectorCount, unsig
     if(buffer == NULL){
         buffer = new short[vectorCount * VECTOR_LENGTH];
     }
-    
+
 	threadMutex.lock();
-	
+
     connex_io_descriptor.type = IO_READ_OPERATION;
     /* Use LS_ADDRESS macro to mask the least significant 10 bits */
     connex_io_descriptor.lsAddress = LS_ADDRESS(vectorIndex);
     /* Use VECTOR_COUNT macro to mask the least significant 10 bits */
     connex_io_descriptor.vectorCount = VECTOR_COUNT(vectorCount);
-    
+
     /* Issue the command */
-    write(ioWriteFifo, &connex_io_descriptor, sizeof(connex_io_descriptor));
-    
+    pwrite(ioWriteFifo, &connex_io_descriptor, sizeof(connex_io_descriptor));
+
     /* Flush the descriptor */
-    write(ioWriteFifo, NULL, 0);
-    
+    pwrite(ioWriteFifo, NULL, 0);
+
     /* Read the data */
-    if(read(ioReadFifo, buffer, vectorCount * VECTOR_LENGTH * 2) < 0)
+    if(pread(ioReadFifo, buffer, vectorCount * VECTOR_LENGTH * 2) < 0)
     {
 		threadMutex.unlock();
         throw string("Error reading from memory FIFO");
     }
-    
+
 	threadMutex.unlock();
     return buffer;
 }
 
 /*
  * Reads one int from the reduction FIFO
- * 
+ *
  * @return the value read from the reduction FIFO
  */
 int ConnexMachine::readReduction()
 {
 	threadMutex.lock();
     int result;
-    if(read(reductionFifo, &result, sizeof(int)) < 0)
+    if(pread(reductionFifo, &result, sizeof(int)) < 0)
     {
 		threadMutex.unlock();
         throw string("Error reading from reduction FIFO");
     }
-	
+
     threadMutex.unlock();
     return result;
 }

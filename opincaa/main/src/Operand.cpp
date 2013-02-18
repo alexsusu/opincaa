@@ -9,24 +9,24 @@
 
 /*
  * Constructor for creating a new Operand
- * 
+ *
  * @param type the type of this operand (reg or local store)
- * @param index the index of the register or local store array that is 
+ * @param index the index of the register or local store array that is
  *   represented by this object
- * @param localStoreIndexImmediate Only applies for operands of type 
+ * @param localStoreIndexImmediate Only applies for operands of type
  *   TYPE_LOCAL_STORE and it specifies
  *   if the index is the actual index in the localStore (true) or if
  *   it is the register storing the index (false)
  * @param kernel the kernel for which this operand is used
  * @throws string if the index is out of bounds or if the associated kernel is NULL
- */ 
+ */
 Operand::Operand(int type, unsigned short index, bool localStoreIndexImmediate, Kernel *kernel)
 {
     if(kernel == NULL)
     {
         throw string("Invalid kernel reference in Operand constructor");
     }
-    
+
     switch(type)
     {
         case TYPE_REGISTER:
@@ -48,7 +48,7 @@ Operand::Operand(int type, unsigned short index, bool localStoreIndexImmediate, 
         default:
             throw string("Unknown operand type in Operand constructor");
     }
-    
+
     this->type = type;
     this->index = index;
     this->kernel = kernel;
@@ -57,20 +57,20 @@ Operand::Operand(int type, unsigned short index, bool localStoreIndexImmediate, 
 
 /*
  * Constructor for creating a new Operand with default localStoreIndexImmediate == false
- * 
+ *
  * @param type the type of this operand (reg or local store)
- * @param index the index of the register or local store array that is 
+ * @param index the index of the register or local store array that is
  *   represented by this object
  * @param kernel the kernel for which this operand is used
  * @throws string if the index is out of bounds or if the associated kernel is NULL
- */ 
+ */
 Operand::Operand(int type, unsigned short index, Kernel *kernel)
 {
     if(kernel == NULL)
     {
         throw string("Invalid kernel reference in Operand constructor");
     }
-    
+
     switch(type)
     {
         case TYPE_REGISTER:
@@ -86,7 +86,7 @@ Operand::Operand(int type, unsigned short index, Kernel *kernel)
         default:
             throw string("Unknown operand type in Operand constructor");
     }
-    
+
     this->type = type;
     this->index = index;
     this->kernel = kernel;
@@ -174,14 +174,14 @@ void Operand::operator=(Operand op)
     {
         switch(op.type)
         {
-            case TYPE_REGISTER: 
+            case TYPE_REGISTER:
                 /* Use an ISHL operation with 0 shift to simulate move */
                 kernel->append(Instruction(_ISHL, 0, op.index, index));
                 break;
             case TYPE_LOCAL_STORE:
                 kernel->append(Instruction(op.localStoreIndexImmediate ? _IREAD : _READ,
-                                            op.index, 
-                                            0, 
+                                            op.index,
+                                            0,
                                             index));
                 break;
             case TYPE_INDEX_REG:
@@ -200,10 +200,10 @@ void Operand::operator=(Operand op)
     {
         switch(op.type)
         {
-            case TYPE_REGISTER: 
-                kernel->append(Instruction(localStoreIndexImmediate ? _IWRITE : _WRITE, 
-                                          index, 
-                                          op.index, 
+            case TYPE_REGISTER:
+                kernel->append(Instruction(localStoreIndexImmediate ? _IWRITE : _WRITE,
+                                          index,
+                                          op.index,
                                           0));
                 break;
             case TYPE_LOCAL_STORE:
@@ -236,7 +236,7 @@ void Operand::operator=(Instruction insn)
         insn.setDest(index);
         kernel->append(insn);
     }
-        
+
 }
 
 /* Logical */

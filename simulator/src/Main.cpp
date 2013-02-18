@@ -1,6 +1,7 @@
 
 
 #include "ConnexSimulator.h"
+#include "test.h"
 #include <string>
 #include <iostream>
 #include <system_error>
@@ -9,10 +10,12 @@ using namespace std;
 
 int main()
 {
-    
+
 	try
 	{
         ConnexSimulator simulator("distributionFIFO", "reductionFIFO", "writeFIFO", "readFIFO");
+        RunAll();
+        simulator.waitFinish();
 	}
 	catch(string ex)
 	{

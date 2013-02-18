@@ -28,12 +28,17 @@ ConnexSimulator::ConnexSimulator(string distributionDescriptorPath,
 						string writeDescriptorPath,
 						string readDescriptorPath)
 {
+    //cout<<"Opening simu:"<<distributionDescriptorPath<<endl;
+    distributionDescriptor = openPipe(distributionDescriptorPath, O_RDONLY);
 
-    distributionDescriptor = openPipe(distributionDescriptorPath, RDONLY);
-	writeDescriptor = openPipe(writeDescriptorPath, RDONLY);
+	//cout<<"Opening simu:"<<writeDescriptorPath<<endl;
+	writeDescriptor = openPipe(writeDescriptorPath, O_RDONLY);
 
-    reductionDescriptor = openPipe(reductionDescriptorPath, WRONLY);
-	readDescriptor = openPipe(readDescriptorPath, WRONLY);
+    //cout<<"Opening simu:"<<reductionDescriptorPath<<endl;
+    reductionDescriptor = openPipe(reductionDescriptorPath, O_WRONLY);
+
+	//cout<<"Opening simu:"<<readDescriptorPath<<endl;
+	readDescriptor = openPipe(readDescriptorPath, O_WRONLY);
 
 	initiateThreads();
 }
@@ -78,8 +83,12 @@ int ConnexSimulator::openPipe(string pipePath, int mode)
  */
 void ConnexSimulator::initiateThreads()
 {
-    thread ioThread = thread(&ConnexSimulator::ioThreadHandler, this);
-    thread coreThread = thread(&ConnexSimulator::coreThreadHandler, this);
+    ioThread = thread(&ConnexSimulator::ioThreadHandler, this);
+    coreThread = thread(&ConnexSimulator::coreThreadHandler, this);
+}
+
+void ConnexSimulator::waitFinish()
+{
     ioThread.join();
     coreThread.join();
 }
@@ -124,7 +133,7 @@ void ConnexSimulator::performIO(ConnexIoDescriptor ioDescriptor)
 	{
 		case IO_WRITE_OPERATION:
 			pread(writeDescriptor, connexVectors, sizeof(connexVectors));
-			for(int i=0; i<ioDescriptor.vectorCount + 1; i++)
+			for(unsigned int i=0; i<ioDescriptor.vectorCount + 1; i++)
 			{
 				localStore[ioDescriptor.lsAddress + i].write(connexVectors + i * CONNEX_VECTOR_LENGTH);
 			}
@@ -134,7 +143,7 @@ void ConnexSimulator::performIO(ConnexIoDescriptor ioDescriptor)
 			pwrite(readDescriptor, NULL, 0);
 			break;
 		case IO_READ_OPERATION:
-			for(int i=0; i<ioDescriptor.vectorCount + 1; i++)
+			for(unsigned int i=0; i<ioDescriptor.vectorCount + 1; i++)
 			{
 				pwrite(readDescriptor,
 					  localStore[ioDescriptor.lsAddress + i].read(),
@@ -215,16 +224,16 @@ void ConnexSimulator::executeInstruction(Instruction instruction)
 			registerFile[instruction.getDest()] = ConnexVector::shiftReg;
 			return;
 		case _WHERE_CRY:
-			ConnexVector::active = ConnexVector::carryFlag;
+			ConnexVector::Unconditioned_Setactive(ConnexVector::carryFlag);
 			return;
         case _WHERE_EQ:
-			ConnexVector::active = ConnexVector::eqFlag;
+			ConnexVector::Unconditioned_Setactive(ConnexVector::eqFlag);
 			return;
         case _WHERE_LT:
-			ConnexVector::active = ConnexVector::ltFlag;
+			ConnexVector::Unconditioned_Setactive(ConnexVector::ltFlag);
 			return;
         case _END_WHERE:
-			ConnexVector::active = true;
+			ConnexVector::Unconditioned_Setactive(1);
 			return;
         case _CELL_SHL:
         case _CELL_SHR:
@@ -251,7 +260,7 @@ void ConnexSimulator::executeInstruction(Instruction instruction)
         case _NOP:
 			return;
         case _VLOAD:
-			registerFile[instruction.getDest()] = instruction.getValue();
+			registerFile[instruction.getDest()] = (short int)instruction.getValue();
 			return;
         case _IREAD:
 			registerFile[instruction.getDest()] = localStore[instruction.getValue()];
@@ -285,6 +294,7 @@ void ConnexSimulator::handleReduction(Instruction instruction)
 {
 	int sum = registerFile[instruction.getLeft()].reduce();
 	pwrite(reductionDescriptor, &sum, sizeof(sum));
+	//printf(" reduced sum = %d\n", sum);
 	pwrite(reductionDescriptor, NULL, 0);
 }
 
