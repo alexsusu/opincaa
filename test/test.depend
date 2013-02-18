@@ -5,7 +5,7 @@
 	<sstream>
 	<string>
 
-1361212293 m:\xillinux\connexrepoarh\connex_sift\software\connex\opincaa\main\include\connexmachine.h
+1361218549 m:\xillinux\connexrepoarh\connex_sift\software\connex\opincaa\main\include\connexmachine.h
 	"Operand.h"
 	"Kernel.h"
 	<string>
@@ -25,12 +25,14 @@
 	<vector>
 	<string>
 
-1361216359 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\test\src\test.cpp
+1361226417 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\test\src\test.cpp
 	<iostream>
 	"ConnexMachine.h"
 	"ConnexSimulator.h"
 	"simple_tests.h"
+	"icc_simple_tests.h"
 	"simple_io_tests.h"
+	"basic_match_tests.h"
 
 1361139097 m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\include\connexsimulator.h
 	"ConnexVector.h"
@@ -54,17 +56,18 @@
 	<sys/timeb.h>
 	<stdio.h>
 
-1361149480 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\test\src\util\utils.cpp
+1361228631 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\test\src\util\utils.cpp
 	"utils.h"
 	"timing.h"
 	<iostream>
 	<stdlib.h>
+	<stdio.h>
 	<sstream>
 	<string>
 
 1360233222 m:\xillinux\connexrepoarh\connex_sift\software\connex\test\include\util\timing.h
 
-1361217562 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\test\src\simple_tests.cpp
+1361218164 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\test\src\simple_tests.cpp
 	<iostream>
 	"ConnexMachine.h"
 	"ConnexSimulator.h"
@@ -79,4 +82,23 @@
 	<iomanip>
 
 1361187836 m:\xillinux\connexrepoarh\connex_sift\software\connex\test\include\simple_io_tests.h
+
+1361221390 m:\xillinux\connexrepoarh\connex_sift\software\connex\test\include\icc_simple_tests.h
+
+1361224023 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\test\src\icc_simple_tests.cpp
+	<iostream>
+	"ConnexMachine.h"
+	"ConnexSimulator.h"
+	"utils.h"
+	<iomanip>
+
+1361226414 m:\xillinux\connexrepoarh\connex_sift\software\connex\test\include\basic_match_tests.h
+
+1361228102 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\test\src\basic_match_tests.cpp
+	<iostream>
+	"ConnexMachine.h"
+	"ConnexSimulator.h"
+	"utils.h"
+	"timing.h"
+	<iomanip>
 

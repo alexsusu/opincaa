@@ -4,6 +4,7 @@
 using namespace std;
 #include <iostream>
 #include <stdlib.h>
+#include <stdio.h>  /* defines FILENAME_MAX */
 
 #ifdef __MINGW32__
 #include <sstream>

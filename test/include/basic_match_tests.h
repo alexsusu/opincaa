@@ -5,4 +5,4 @@
  *
  */
 
-int test_BasicMatching_All();
+int test_BasicMatching_All(ConnexMachine *connex, bool RunFully);

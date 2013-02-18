@@ -48,11 +48,10 @@
 	<windows.h>
 	<stdio.h>
 
-1361215756 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\arch\src\namedpipes.cpp
+1361218505 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\arch\src\namedpipes.cpp
 	"NamedPipes.h"
 	<windows.h>
 	<stdio.h>
-	<mutex>
 
 1361128511 m:\xillinux\connexrepoarh\connex_sift\software\connex\arch\include\namedpipes.h
 	<fcntl.h>

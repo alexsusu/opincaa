@@ -46,6 +46,7 @@
 					<Add directory="../arch/include" />
 					<Add directory="include" />
 					<Add directory="../simulator/include" />
+					<Add directory="include/util" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -69,6 +70,8 @@
 		<Unit filename="include/util/kernel_acc.h" />
 		<Unit filename="include/util/timing.h" />
 		<Unit filename="include/util/utils.h" />
+		<Unit filename="src/basic_match_tests.cpp" />
+		<Unit filename="src/icc_simple_tests.cpp" />
 		<Unit filename="src/simple_io_tests.cpp" />
 		<Unit filename="src/simple_tests.cpp" />
 		<Unit filename="src/test.cpp" />

@@ -3,7 +3,9 @@
 #include "ConnexSimulator.h"
 
 #include "simple_tests.h"
+#include "icc_simple_tests.h"
 #include "simple_io_tests.h"
+#include "basic_match_tests.h"
 using namespace std;
 
 void initKernelDemo(int val, int shift)
@@ -59,6 +61,8 @@ int RunAll(bool stress)
         ConnexMachine *connex = new ConnexMachine("distributionFIFO", "reductionFIFO", "writeFIFO", "readFIFO");
 
         result = test_Simple_All(connex, stress);
+        //result += icc_test_Simple_All(connex, stress);
+        result +=  test_BasicMatching_All(connex, false);
         result += test_Simple_IO_All(connex, stress);
         delete connex;
     }
