@@ -69,16 +69,16 @@ using namespace std;
                                     code
 
 #define EXECUTE_WHERE_EQ(code)      __kernel->append(Instruction(_WHERE_EQ, 0, 0, 0));      \
-                                    code                                                    \
-                                    __kernel->append(Instruction(_END_WHERE, 0, 0, 0));
+                                    code
+                                    //__kernel->append(Instruction(_END_WHERE, 0, 0, 0));
 
 #define EXECUTE_WHERE_LT(code)      __kernel->append(Instruction(_WHERE_LT, 0, 0, 0));      \
-                                    code                                                    \
-                                    __kernel->append(Instruction(_END_WHERE, 0, 0, 0));
+                                    code
+                                    //__kernel->append(Instruction(_END_WHERE, 0, 0, 0));
 
 #define EXECUTE_WHERE_CRY(code)     __kernel->append(Instruction(_WHERE_CRY, 0, 0, 0));     \
-                                    code                                                    \
-                                    __kernel->append(Instruction(_END_WHERE, 0, 0, 0));
+                                    code
+                                    //__kernel->append(Instruction(_END_WHERE, 0, 0, 0));
 
 #define NOP                         __kernel->append(Instruction(_NOP, 0, 0, 0));
 
@@ -91,8 +91,8 @@ using namespace std;
 #define CELL_SHL(x,y)               Operand::cellshl(x,y);
 #define CELL_SHR(x,y)               Operand::cellshr(x,y);
 
-#define LOW()                       Operand::multlo()
-#define HIGH()                      Operand::multhi()
+#define MULT_LOW()                       Operand::multlo()
+#define MULT_HIGH()                      Operand::multhi()
 
 #define END_KERNEL(x)               ConnexMachine::addKernel(__kernel);}
 

@@ -1,6 +1,9 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#define _BEGIN_KERNEL(x) BEGIN_KERNEL("simpleTest_" + to_string(x))
+#define _END_KERNEL(x) END_KERNEL("simpleTest_" + to_string(x))
+
 using namespace std;
 #ifdef __MINGW32__
 #include <iostream>
@@ -38,6 +41,7 @@ std::string to_string(int val);
 #define UINT_INSTRUCTION UINT32 // how long an instruction is
 #define UINT_RED_REG_VAL UINT32 //actually 16+ log2(128) = 23 bits are enough for RedAdd
 #define UINT_REGISTER_VAL UINT16
+#define UINT_PARAM UINT16
 #define BYTES_IN_DWORD 4
 
 #define REDUCTION_SIZE      (7 + REGISTER_SIZE) // 7 = log2(NUMBER_OF_MACHINES)

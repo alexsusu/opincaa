@@ -3,6 +3,7 @@
 #include "ConnexSimulator.h"
 
 #include "simple_tests.h"
+#include "simple_io_tests.h"
 using namespace std;
 
 void initKernelDemo(int val, int shift)
@@ -58,6 +59,7 @@ int RunAll()
         ConnexMachine *connex = new ConnexMachine("distributionFIFO", "reductionFIFO", "writeFIFO", "readFIFO");
 
         result = test_Simple_All(connex, false);
+        result += test_Simple_IO_All(connex, false);
         delete connex;
     }
 

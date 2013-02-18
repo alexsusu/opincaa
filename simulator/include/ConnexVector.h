@@ -81,14 +81,14 @@ class ConnexVector
          *
          * @param data the array of shorts to load
          */
-		void write(short *data);
+		void write(unsigned short *data);
 
         /*
          * Return the data contains in all cells as a short addat
          *
          * @return the array of shorts taken from each cell
          */
-		short* read();
+		unsigned short* read();
 
         /*
          * List of operators
@@ -97,10 +97,10 @@ class ConnexVector
 		ConnexVector operator-(ConnexVector anotherVector);
 		ConnexVector operator<<(ConnexVector anotherVector);
 		ConnexVector operator>>(ConnexVector anotherVector);
-		ConnexVector operator<<(short value);
-		ConnexVector operator>>(short value);
+		ConnexVector operator<<(unsigned short value);
+		ConnexVector operator>>(unsigned short value);
 		void operator=(ConnexVector anotherVector);
-		void operator=(short value);
+		void operator=(unsigned short value);
 		void operator=(bool value);
 		void operator*(ConnexVector anotherVector);
 		ConnexVector operator==(ConnexVector anotherVector);
@@ -123,7 +123,7 @@ class ConnexVector
         /*
          * Shift right, arithmetic, with immediate value
          */
-		ConnexVector ishr(short value);
+		ConnexVector ishra(unsigned short value);
 
         /*
          * Shift the vector in the specified direction, with the number
@@ -159,7 +159,7 @@ class ConnexVector
         /*
          * The cell data for this vector
          */
-		short cells[CONNEX_VECTOR_LENGTH];
+		unsigned short cells[CONNEX_VECTOR_LENGTH];
 };
 
 #endif // CONNEX_VECTOR_H

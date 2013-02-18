@@ -118,6 +118,7 @@ ConnexMachine::ConnexMachine(string distributionDescriptorPath = DEFAULT_DISTRIB
     }
 
     printf("ConnexMachine created !\n");
+    fflush(stdout);
 }
 
 /*
@@ -177,17 +178,17 @@ void ConnexMachine::executeKernel(string kernelName)
 * @param buffer the buffer to be written to the FIFO, it should
 *   contain at least 2 * VECTOR_LENGTH * vectorCount bytes
 * @param vectorCount the number of vectors to fill
-* @param vectorIndex the vector with which to start the writing operation
+* @param startVectorIndex the vector with which to start the writing operation
 *
 * @return number of bytes written or -1 in case of error
 */
-int ConnexMachine::writeDataToArray(void *buffer, unsigned vectorCount, unsigned vectorIndex)
+int ConnexMachine::writeDataToArray(void *buffer, unsigned vectorCount, unsigned startVectorIndex)
 {
 	threadMutex.lock();
 
     connex_io_descriptor.type = IO_WRITE_OPERATION;
     /* Use LS_ADDRESS macro to mask the least significant 10 bits */
-    connex_io_descriptor.lsAddress = LS_ADDRESS(vectorIndex);
+    connex_io_descriptor.lsAddress = LS_ADDRESS(startVectorIndex);
     /* Use VECTOR_COUNT macro to mask the least significant 10 bits */
     connex_io_descriptor.vectorCount = VECTOR_COUNT(vectorCount);
 

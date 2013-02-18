@@ -108,7 +108,7 @@ Instruction Operand::operator+(Operand op)
     return Instruction(_ADD, index, op.index, 0);
 }
 //-----------------------------------------------------------
-Instruction Operand::operator+(short value)
+Instruction Operand::operator+(unsigned short value)
 {
     throw string("Unsuported operation +value ");
 }
@@ -133,7 +133,7 @@ Instruction Operand::operator-(Operand op)
     return Instruction(_SUB, op.index, index, 0);
 }
 //-----------------------------------------------------------
-Instruction Operand::operator-(short value)
+Instruction Operand::operator-(unsigned short value)
 {
     throw string("Unsuported operation -value ");
 }
@@ -160,7 +160,7 @@ Instruction Operand::operator*(Operand op)
     return instruction;
 }
 //-----------------------------------------------------------
-Instruction Operand::operator*(short value)
+Instruction Operand::operator*(unsigned short value)
 {
     throw string("Unsuported operation *value ");
 }
@@ -220,7 +220,7 @@ void Operand::operator=(Operand op)
     }
 }
 //-----------------------------------------------------------
-void Operand::operator=(short value)
+void Operand::operator=(unsigned short value)
 {
     kernel->append(Instruction(_VLOAD, value, 0, index));
 }
@@ -259,7 +259,7 @@ Instruction Operand::operator|(Operand op)
     return Instruction(_OR, op.index, index, 0);
 }
 //-----------------------------------------------------------
-Instruction Operand::operator|(short value)
+Instruction Operand::operator|(unsigned short value)
 {
     throw string("Unsuported operation |value ");
 }
@@ -282,7 +282,7 @@ Instruction Operand::operator&(Operand op)
     return Instruction(_AND, op.index, index, 0);
 }
 //-----------------------------------------------------------
-Instruction Operand::operator&(short value)
+Instruction Operand::operator&(unsigned short value)
 {
     throw string("Unsuported operation &value ");
 }
@@ -305,7 +305,7 @@ Instruction Operand::operator==(Operand op)
     return Instruction(_EQ, op.index, index, 0);
 }
 //-----------------------------------------------------------
-Instruction Operand::operator==(short value)
+Instruction Operand::operator==(unsigned short value)
 {
     throw string("Unsuported operation ==value ");
 }
@@ -319,7 +319,7 @@ Instruction Operand::operator<(Operand op)
     return Instruction(_LT, op.index, index, 0);
 }
 //-----------------------------------------------------------
-Instruction Operand::operator<(short value)
+Instruction Operand::operator<(unsigned short value)
 {
     throw string("Unsuported operation <value ");
 }
@@ -333,7 +333,7 @@ Instruction Operand::operator^(Operand op)
     return Instruction(_XOR, op.index, index, 0);
 }
 //-----------------------------------------------------------
-Instruction Operand::operator^(short value)
+Instruction Operand::operator^(unsigned short value)
 {
     throw string("Unsuported operation ^value ");
 }
@@ -344,7 +344,7 @@ void Operand::operator^=(Operand op)
     {
         throw string("Invalid operand type for ^= operator");
     }
-    kernel->append(Instruction(_AND, op.index, index, index));
+    kernel->append(Instruction(_XOR, op.index, index, index));
 }
 //-----------------------------------------------------------
 Operand Operand::operator[](Operand op)
@@ -356,7 +356,7 @@ Operand Operand::operator[](Operand op)
     return Operand(TYPE_LOCAL_STORE, op.index, false /*immediate*/, kernel);
 }
 //-----------------------------------------------------------
-Operand Operand::operator[](short value)
+Operand Operand::operator[](unsigned short value)
 {
     if(type != TYPE_LS_DESCRIPTOR)
     {
@@ -378,7 +378,7 @@ Instruction Operand::operator<<(Operand op)
     return Instruction(_SHL, op.index, index, 0);
 }
 //-----------------------------------------------------------
-Instruction Operand::operator<<(short value)
+Instruction Operand::operator<<(unsigned short value)
 {
     if(type != TYPE_REGISTER)
     {
@@ -396,7 +396,7 @@ Instruction Operand::operator>>(Operand op)
     return Instruction(_SHR, op.index, index, 0);
 }
 //-----------------------------------------------------------
-Instruction Operand::operator>>(short value)
+Instruction Operand::operator>>(unsigned short value)
 {
     if(type != TYPE_REGISTER)
     {
@@ -414,7 +414,7 @@ Instruction Operand::addc(Operand op1, Operand op2)
     return Instruction(_ADDC, op1.index, op2.index, 0);
 }
 //-----------------------------------------------------------
-Instruction Operand::addc(Operand op1, short value)
+Instruction Operand::addc(Operand op1, unsigned short value)
 {
     throw string("Unsuported operation addc(operand, value) ");
 }
@@ -428,7 +428,7 @@ Instruction Operand::subc(Operand op1, Operand op2)
     return Instruction(_SUBC, op2.index, op1.index, 0);
 }
 //-----------------------------------------------------------
-Instruction Operand::subc(Operand op1, short value)
+Instruction Operand::subc(Operand op1, unsigned short value)
 {
     throw string("Unsuported operation subc(operand, value) ");
 }
@@ -442,7 +442,7 @@ Instruction Operand::shra(Operand op1, Operand op2)
     return Instruction(_SHRA, op2.index, op1.index, 0);
 }
 //-----------------------------------------------------------
-Instruction Operand::ishra(Operand op1, short value)
+Instruction Operand::ishra(Operand op1, unsigned short value)
 {
     if(op1.type != TYPE_REGISTER)
     {
@@ -488,7 +488,7 @@ Instruction Operand::ult(Operand op1, Operand op2)
     return Instruction(_ULT, op2.index, op1.index, 0);
 }
 //-----------------------------------------------------------
-Instruction Operand::ult(Operand op1, short value)
+Instruction Operand::ult(Operand op1, unsigned short value)
 {
     throw string("Unsuported operation ult (operand, value)");
 }

@@ -15,9 +15,12 @@
 #include <map>
 #include <mutex>
 
+/* to be moved in architecture.h */
 #define CONNEX_MAX_REGS     32
 #define CONNEX_MAX_MEMORY   1024
-#define NUMBER_OF_MACHINES  128 //to be moved in architecture
+#define NUMBER_OF_MACHINES  128
+//#define CONNEX_VECTOR_SIZE_IN_BYTES (2 * NUMBER_OF_MACHINES)
+//#define CNXVECTOR_SIZE_IN_WORDS
 
 using namespace std;
 

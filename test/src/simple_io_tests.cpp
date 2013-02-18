@@ -5,16 +5,15 @@
  * Simple io tests for io unit of connex machine.
  *
  */
-#include "../../include/core/cnxvector_registers.h"
-#include "../../include/core/cnxvector.h"
-#include "../../include/core/io_unit.h"
-#include "../../include/c_simu/c_simulator.h"
-#include "../../include/util/utils.h"
 
-#include <time.h>
+
 #include <iostream>
-#include <iomanip>
+#include "ConnexMachine.h"
+#include "ConnexSimulator.h"
+#include "utils.h"
 using namespace std;
+#include <iomanip>
+
 
 enum SimpleIoBatchNumbers
 {
@@ -29,10 +28,10 @@ enum SimpleIoBatchNumbers
 
     PRINT_LS_BNR = 98,
     CLEAR_LS_BNR = 99,
-    MAX_BNR = NUMBER_OF_BATCHES
+    MAX_BNR = 100
 };
 
-static UINT16 data[NUMBER_OF_MACHINES * MAX_CNXVECTORS];
+static UINT16 data[NUMBER_OF_MACHINES * CONNEX_MAX_MEMORY];
 
 /**
     Param 1: Number of cnxvectors to be written.
@@ -40,7 +39,7 @@ static UINT16 data[NUMBER_OF_MACHINES * MAX_CNXVECTORS];
     Warning: Test assumes that InitKernel is called right before Iowrite test is executed
 
 */
-static int testIowrite(int BatchNumber,INT32 Param1, INT32 Param2)
+static int testIowrite(ConnexMachine *connex, int BatchNumber,INT32 Param1, INT32 Param2)
 {
     UINT32 cnt;
     const int num_cnxvectors = Param1;
@@ -48,16 +47,9 @@ static int testIowrite(int BatchNumber,INT32 Param1, INT32 Param2)
     UINT16 testResult;
 
     for (cnt = 0; cnt < NUMBER_OF_MACHINES*num_cnxvectors; cnt++) data[cnt] = cnt;
-    {
-        io_unit IOU;
-        IOU.preWritecnxvectors(Param2,data,num_cnxvectors);
-        if (PASS != IO_WRITE_NOW(&IOU))
-        {
-            printf("Writing to IO pipe, FAILED !");
-            return FAIL;
-            //c_simulator::printLS(Param2);
-        }
-    }
+
+    connex->writeDataToArray(data, num_cnxvectors, Param2);
+
     testResult = PASS;
 
     //printf("Reading IO-wrote data, via Regs \n");
@@ -65,7 +57,7 @@ static int testIowrite(int BatchNumber,INT32 Param1, INT32 Param2)
         for (cnt = 0; cnt < NUMBER_OF_MACHINES; cnt++)
         // write data to local store
         {
-            BEGIN_BATCH(BatchNumber);
+            _BEGIN_KERNEL(BatchNumber);
                 EXECUTE_IN_ALL(
                                 R1 = INDEX;
                                 R2 = cnt;
@@ -75,13 +67,15 @@ static int testIowrite(int BatchNumber,INT32 Param1, INT32 Param2)
                               )
                 EXECUTE_WHERE_EQ ( R3 = LS[cnxvectorIndex + Param2];)
                 EXECUTE_IN_ALL ( REDUCE(R3);)
-            END_BATCH(BatchNumber);
+            _END_KERNEL(BatchNumber);
 
             //DEASM_KERNEL(BatchNumber);
-            if (data[cnxvectorIndex * CNXVECTOR_SIZE_IN_WORDS + cnt] != EXECUTE_BATCH_RED(BatchNumber))
+            connex->executeKernel("simpleIoTest_" + to_string(BatchNumber));
+            int result = connex->readReduction();
+            if (data[cnxvectorIndex * NUMBER_OF_MACHINES + cnt] != result)
             {
                 testResult = FAIL;
-                //cout<<cnxvectorIndex << " "<<cnt << " "<< EXECUTE_KERNEL_RED(BatchNumber)<< " "<<data[cnxvectorIndex * CNXVECTOR_SIZE_IN_WORDS + cnt]<<endl;
+                //cout<<cnxvectorIndex << " "<<cnt << " "<< EXECUTE_KERNEL_RED(BatchNumber)<< " "<<data[cnxvectorIndex * NUMBER_OF_MACHINES + cnt]<<endl;
             }
         }
    return  testResult;
@@ -94,7 +88,7 @@ Param1 = Number of cnxvectors to be read.
 Param2 = Location in local store where we read from.
 
 */
-static int testIoread(int BatchNumber,INT32 Param1, INT32 Param2)
+static int testIoread(ConnexMachine *connex, int BatchNumber,INT32 Param1, INT32 Param2)
 {
     UINT32 cnt;
     UINT16 cnxvectorIndex;
@@ -109,30 +103,27 @@ static int testIoread(int BatchNumber,INT32 Param1, INT32 Param2)
         for (cnt = 0; cnt < NUMBER_OF_MACHINES; cnt++)
         // write data to local store
         {
-            BEGIN_BATCH(BatchNumber);
+            _BEGIN_KERNEL(BatchNumber);
                 EXECUTE_IN_ALL(
                                 R1 = INDEX;
                                 R2 = cnt;
                                 R4 = (R1 == R2);
-                                R3 = data[cnxvectorIndex * CNXVECTOR_SIZE_IN_WORDS + cnt];// ensured 1 slot between == and where_eq !
+                                R3 = data[cnxvectorIndex * NUMBER_OF_MACHINES + cnt];// ensured 1 slot between == and where_eq !
                               )
                 EXECUTE_WHERE_EQ ( LS[cnxvectorIndex + Param2] = R3;)
-            END_BATCH(BatchNumber);
-            EXECUTE_BATCH(BatchNumber);
+            _END_KERNEL(BatchNumber);
+            connex->executeKernel("simpleIoTest_" + to_string(BatchNumber));
         }
         //c_simulator::printLS(Param2+1);
     // read data from local store
     {
-        io_unit IOU;
-        IOU.preReadcnxvectors(Param2,num_cnxvectors);
-        IO_READ_NOW(&IOU);
-        //c_simulator::printLS(Param2);
+        static UINT16 Content[NUMBER_OF_MACHINES * CONNEX_MAX_MEMORY];
+        connex->readDataFromArray(Content, num_cnxvectors, Param2);
 
-        UINT16* Content = (UINT16*)(IOU.getIO_UNIT_CORE())->Content;
         testResult = PASS;
         for (cnxvectorIndex = 0; cnxvectorIndex < num_cnxvectors; cnxvectorIndex++)
             for (cnt = 0; cnt < NUMBER_OF_MACHINES; cnt++)
-                if (data[cnxvectorIndex * CNXVECTOR_SIZE_IN_WORDS + cnt] != Content[cnxvectorIndex * CNXVECTOR_SIZE_IN_WORDS + cnt])
+                if (data[cnxvectorIndex * NUMBER_OF_MACHINES + cnt] != Content[cnxvectorIndex * NUMBER_OF_MACHINES + cnt])
                 {
                     //cout<<cnxvectorIndex << " "<<cnt << " "<< " "<<data[cnxvectorIndex * CNXVECTOR_SIZE_IN_WORDS + cnt]<<endl;
                     testResult = FAIL;
@@ -152,7 +143,7 @@ struct TestIoFunction
 {
    int BatchNumber;
    const char *TestName;
-   int (*runTest)(int BatchNumber,INT32 Param1,INT32 Param2);
+   int (*runTest)(ConnexMachine *connex, int BatchNumber,INT32 Param1,INT32 Param2);
    Dataset ds;
 };
 
@@ -167,9 +158,9 @@ TestIoFunction TestIoFunctionTable[] =
     {IO_WRITE3_BNR,"IO_WRITE_3.1   ",testIowrite,{3,1}},
     {IO_READ3_BNR, "IO_READ_3.1    ",testIoread,{3,1}},
 
-    {IO_WRITE4_BNR,"IO_WRITE_1024.0",testIowrite,{MAX_CNXVECTORS,0}},
-    {IO_READ4_BNR, "IO_READ_1024.0 ",testIoread,{MAX_CNXVECTORS,0}},
-    {IO_WRITE4_BNR,"IO_WRITE_1024.0",testIowrite,{MAX_CNXVECTORS,0}},
+    {IO_WRITE4_BNR,"IO_WRITE_1024.0",testIowrite,{CONNEX_MAX_MEMORY,0}},
+    {IO_READ4_BNR, "IO_READ_1024.0 ",testIoread,{CONNEX_MAX_MEMORY,0}},
+    {IO_WRITE4_BNR,"IO_WRITE_1024.0",testIowrite,{CONNEX_MAX_MEMORY,0}},
 };
 
 static int getIndexTestIoFunctionTable(int BatchNumber)
@@ -188,27 +179,27 @@ static void UpdateDatasetTable(int BatchNumber)
     switch(BatchNumber)
     {
         case IO_WRITE1_BNR:
-        case IO_READ1_BNR      :{TestIoFunctionTable[i].ds.Param2 = randPar(MAX_CNXVECTORS-1);break;}
+        case IO_READ1_BNR      :{TestIoFunctionTable[i].ds.Param2 = randPar(CONNEX_MAX_MEMORY-1);break;}
 
         case IO_WRITE2_BNR:
-        case IO_READ2_BNR      :{TestIoFunctionTable[i].ds.Param2 = randPar(MAX_CNXVECTORS-2);break;}
+        case IO_READ2_BNR      :{TestIoFunctionTable[i].ds.Param2 = randPar(CONNEX_MAX_MEMORY-2);break;}
 
         case IO_WRITE3_BNR:
-        case IO_READ3_BNR      :{TestIoFunctionTable[i].ds.Param2 = randPar(MAX_CNXVECTORS-3);break;}
+        case IO_READ3_BNR      :{TestIoFunctionTable[i].ds.Param2 = randPar(CONNEX_MAX_MEMORY-3);break;}
 
         case IO_WRITE4_BNR:
         case IO_READ4_BNR      :{
-                                    TestIoFunctionTable[i].ds.Param2 = randPar(MAX_CNXVECTORS);
+                                    TestIoFunctionTable[i].ds.Param2 = randPar(CONNEX_MAX_MEMORY);
                                     do
                                     {
-                                        TestIoFunctionTable[i].ds.Param1 = randPar(MAX_CNXVECTORS-1)+1;
-                                    }while (TestIoFunctionTable[i].ds.Param2 + TestIoFunctionTable[i].ds.Param1 > MAX_CNXVECTORS);
+                                        TestIoFunctionTable[i].ds.Param1 = randPar(CONNEX_MAX_MEMORY-1)+1;
+                                    }while (TestIoFunctionTable[i].ds.Param2 + TestIoFunctionTable[i].ds.Param1 > CONNEX_MAX_MEMORY);
 									//cout<<endl<<"  IO test running with params "<< TestIoFunctionTable[i].ds.Param1 << " " << TestIoFunctionTable[i].ds.Param2;
 					break;
                                 }
     }
 }
-int test_Simple_IO_All(bool stress)
+int test_Simple_IO_All(ConnexMachine *connex, bool stress)
 {
     //simpleClearLS();
     int testFails = 0;
@@ -224,7 +215,7 @@ int test_Simple_IO_All(bool stress)
         do
         {
             //simpleClearLS();
-            if (PASS != TestIoFunctionTable[i].runTest(TestIoFunctionTable[i].BatchNumber,
+            if (PASS != TestIoFunctionTable[i].runTest(connex, TestIoFunctionTable[i].BatchNumber,
                                                             TestIoFunctionTable[i].ds.Param1,
                                                             TestIoFunctionTable[i].ds.Param2))
             {

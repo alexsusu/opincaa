@@ -73,7 +73,7 @@ int ConnexSimulator::openPipe(string pipePath, int mode)
 		throw string("Unable to open FIFO ") + path;
     }
 
-	cout << "FIFO " << pipePath << " succesfully opened!" << endl;
+	cout << "FIFO " << pipePath << " succesfully opened!" << endl<<flush;
 	return fifoDescriptor;
 }
 
@@ -98,7 +98,7 @@ void ConnexSimulator::waitFinish()
  */
 void ConnexSimulator::ioThreadHandler()
 {
-	cout << "Starting IO Thread..." <<  endl;
+	cout << "Starting IO Thread..." << endl << flush;
 	ConnexIoDescriptor ioDescriptor;
 	while(1)
 	{
@@ -112,7 +112,7 @@ void ConnexSimulator::ioThreadHandler()
  */
 void ConnexSimulator::coreThreadHandler()
 {
-	cout << "Starting Core Thread..." <<  endl;
+	cout << "Starting Core Thread..." << endl << flush;
 	int instruction;
 	while(1)
 	{
@@ -128,7 +128,7 @@ void ConnexSimulator::coreThreadHandler()
  */
 void ConnexSimulator::performIO(ConnexIoDescriptor ioDescriptor)
 {
-	short connexVectors[CONNEX_VECTOR_LENGTH * ioDescriptor.vectorCount + 1];
+	unsigned short connexVectors[CONNEX_VECTOR_LENGTH * ioDescriptor.vectorCount + 1];
 	switch(ioDescriptor.type)
 	{
 		case IO_WRITE_OPERATION:
@@ -212,10 +212,10 @@ void ConnexSimulator::executeInstruction(Instruction instruction)
 			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] << instruction.getRight();
 			return;
         case _ISHR:
-			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()].ishr(instruction.getRight());
+			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] >> instruction.getRight();
 			return;
         case _ISHRA:
-			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] >> instruction.getRight();
+			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()].ishra(instruction.getRight());
 			return;
         case _LDIX:
 			registerFile[instruction.getDest()].loadIndex();
@@ -260,7 +260,7 @@ void ConnexSimulator::executeInstruction(Instruction instruction)
         case _NOP:
 			return;
         case _VLOAD:
-			registerFile[instruction.getDest()] = (short int)instruction.getValue();
+			registerFile[instruction.getDest()] = (unsigned short int)instruction.getValue();
 			return;
         case _IREAD:
 			registerFile[instruction.getDest()] = localStore[instruction.getValue()];

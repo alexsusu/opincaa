@@ -7,4 +7,4 @@
  *
  */
 
-int test_Simple_IO_All(bool);
+int test_Simple_IO_All(ConnexMachine *connex,bool stress);

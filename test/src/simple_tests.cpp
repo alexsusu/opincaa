@@ -15,11 +15,6 @@
 using namespace std;
 #include <iomanip>
 
-#define UINT_PARAM UINT16
-
-#define _BEGIN_KERNEL(x) BEGIN_KERNEL("simpleTest_" + to_string(x))
-#define _END_KERNEL(x) END_KERNEL("simpleTest_" + to_string(x))
-
 struct Dataset
 {
    INT32 Param1;
@@ -91,8 +86,6 @@ static void InitKernel_Read(int BatchNumber,INT32 Param1, INT32 Param2)
                         R2 = LS[R1];
                         REDUCE(R2);
                         )
-
-
     _END_KERNEL(BatchNumber);
 }
 
@@ -108,8 +101,8 @@ static void InitKernel_Add(int BatchNumber,INT32 Param1, INT32 Param2)
         EXECUTE_IN_ALL(
                         R1 = (UINT_PARAM)Param1;
                         R2 = (UINT_PARAM)Param2;
-                        R3 = R1 + R2;
-                        REDUCE(R3);
+                        R4 = R1 + R2;
+                        REDUCE(R4);
                      )
 
     _END_KERNEL(BatchNumber);
@@ -119,10 +112,10 @@ static void InitKernel_pAdd(int BatchNumber,INT32 Param1, INT32 Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
-                        R1 = (UINT_PARAM)Param1;
-                        R2 = R1 + (UINT_PARAM)Param2;
+                        R3 = (UINT_PARAM)Param1;
+                        R7 = R3 + (UINT_PARAM)Param2;
                         //R3 = Param2 + R1;
-                        REDUCE(R2);
+                        REDUCE(R7);
                      )
 
     _END_KERNEL(BatchNumber);
@@ -613,15 +606,17 @@ static void InitKernel_Cellshr(int BatchNumber, INT32 Param1, INT32 Param2)
         EXECUTE_IN_ALL( REDUCE(R3);)
     _END_KERNEL(BatchNumber);
 }
-/*
+
 static void InitKernel_Multlo(int BatchNumber, INT32 Param1, INT32 Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R0 = Param1;
                         R1 = Param2;
-                        MULT = R1*R0;
-                        R2 = _LOW(MULT);
+                        //MULT = R1*R0;
+                        //R2 = _LOW(MULT);
+                        R1 * R0;
+                        R2 = MULT_LOW();
                         REDUCE(R2);
                     )
     _END_KERNEL(BatchNumber);
@@ -639,6 +634,7 @@ static void InitKernel_pMultlo(int BatchNumber, INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
+/*
 static void InitKernel_p2Multlo(int BatchNumber, INT32 Param1, INT32 Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
@@ -660,20 +656,22 @@ static void InitKernel_p2zMultlo(int BatchNumber, INT32 Param1, INT32 Param2)
                     )
     _END_KERNEL(BatchNumber);
 }
-
+*/
 static void InitKernel_Multhi(int BatchNumber, INT32 Param1, INT32 Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R0 = Param1;
                         R1 = Param2;
-                        MULT = R1*R0;
-                        R2 = _HIGH(MULT);
+                        //MULT = R1*R0;
+                        //R2 = _HIGH(MULT);
+                        R1 * R0;
+                        R2 = MULT_HIGH();
                         REDUCE(R2);
                         )
     _END_KERNEL(BatchNumber);
 }
-*/
+
 static void InitKernel_Whereq(int BatchNumber, INT32 Param1, INT32 Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
@@ -803,12 +801,12 @@ enum SimpleBatchNumbers
 
 static TestFunction TestFunctionTable[] =
 {
-
     {NOP_BNR,"NOP",InitKernel_Nop,{0x00,0x00,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
     {IWRITE_BNR,"IWRITE",InitKernel_Iwrite,{0x01,0x02,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
     {IREAD_BNR,"IREAD",InitKernel_Iread,{0x01,0x02,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
 
     {WRITE_BNR,"WRITE",InitKernel_Write,{0x01,0x02,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
+
     {READ_BNR,"READ",InitKernel_Read,{0x01,0x02,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
 
     {VLOAD_BNR,"VLOAD",InitKernel_Vload,{0x01,0x02,3*NUMBER_OF_MACHINES}},
@@ -863,18 +861,18 @@ static TestFunction TestFunctionTable[] =
     {ISHRA_BNR,"ISHRA",InitKernel_Ishra,{0xabcd,4,((0xfabcUL)*NUMBER_OF_MACHINES)}},
     //{PMOV_BNR,"pMOV",InitKernel_pMov,{0xabcd,4,(0xabcd + 4)*NUMBER_OF_MACHINES}},
 
-/*
     {MULTLO_BNR,"MULTLO",InitKernel_Multlo,{0x2,0x3,(0x2UL * 0x3UL)*NUMBER_OF_MACHINES}},
     {pMULTLO_BNR,"pMULTLO",InitKernel_pMultlo,{0x2,0x3,(0x2UL * 0x3UL)*NUMBER_OF_MACHINES}},
-    {p2MULTLO_BNR,"p2MULTLO",InitKernel_p2Multlo,{0x2,0x3,(0x2UL * 0x3UL)*NUMBER_OF_MACHINES}},
-    {p2zMULTLO_BNR,"p2zMULTLO",InitKernel_p2zMultlo,{0x2,0x3,0}},
+//    {p2MULTLO_BNR,"p2MULTLO",InitKernel_p2Multlo,{0x2,0x3,(0x2UL * 0x3UL)*NUMBER_OF_MACHINES}},
+//    {p2zMULTLO_BNR,"p2zMULTLO",InitKernel_p2zMultlo,{0x2,0x3,0}},
 
     {MULTHI_BNR,"MULTHI",InitKernel_Multhi,{0x8000,0x2,((0x8000UL * 0x2UL) >> 16)*NUMBER_OF_MACHINES}},
-*/
 
     {WHERE_EQ_BNR,"WHEREQ",InitKernel_Whereq,{27,50,50}},
+
     {WHERE_LT_BNR,"WHERELT",InitKernel_Wherelt,{27,50,27*50}},
     {WHERE_CARRY_BNR,"WHERECRY",InitKernel_Wherecry,{(0x10000UL-10),50,118*50}},
+
 	{CELL_SHL_BNR,"CELLSHL",InitKernel_Cellshl,{2,5,5-2}},
     {CELL_SHR_BNR,"CELLSHR",InitKernel_Cellshr,{2,5,5+2}},
     {CELL_SHLROL_BNR,"CELLSHLROL",InitKernel_Cellshlrol,{NUMBER_OF_MACHINES,0,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
@@ -1086,6 +1084,7 @@ int test_Simple_All(ConnexMachine *connex, bool stress)
     UINT16 testFails = 0;
 
     if (stress == true) { stressLoops = 10;} else stressLoops = 0;
+    cout<< "\nStarting SimpleTests: "<<endl;
 
     for (i = 0; i < sizeof (TestFunctionTable) / sizeof (TestFunction); i++)
     {
@@ -1104,6 +1103,7 @@ int test_Simple_All(ConnexMachine *connex, bool stress)
                cout<< "Test "<< setw(8) << left << TestFunctionTable[i].OperationName <<" FAILED with result "
                <<result << " (expected " <<TestFunctionTable[i].ds.ExpectedResult<<" ) !" << " params are "
                << TestFunctionTable[i].ds.Param1 << " and " << TestFunctionTable[i].ds.Param2 <<endl;
+               cout<<connex->disassembleKernel("simpleTest_" + to_string(TestFunctionTable[i].BatchNumber));
                testFails++;
                if (j == 0) break;
                //return testFails;
