@@ -2,7 +2,10 @@
 #include "NamedPipes.h"
 #ifdef _WIN32
     #include <windows.h>
+    #include <stdio.h>
+
     #define MAX_PIPES 8
+
     struct Pipe
     {
         HANDLE handle;
@@ -12,9 +15,7 @@
 
     static Pipe pipes[MAX_PIPES];
     static int pipe_index;
-    #include <windows.h>
-    #include <stdio.h>
-
+    
 	int pmake(const char *path, int permissions)
 	{
         return 0;
@@ -36,8 +37,13 @@
         }
 
         //printf("Create client file %s \n",pipeName);
+        int access;
+
+        if (flags == (O_RDONLY | O_WRONLY)) access = GENERIC_WRITE | GENERIC_READ;
+        else if (flags & O_WRONLY) access = GENERIC_WRITE;
+        else access = GENERIC_READ;
         pipes[pipe_index].handle = CreateFile(pipeName,
-                                                GENERIC_READ | GENERIC_WRITE,
+                                                access,
                                                 0,
                                                 NULL,
                                                 OPEN_EXISTING,
@@ -47,14 +53,14 @@
         //printf("Create client file %s done \n",pipeName);
         if (pipes[pipe_index].handle == INVALID_HANDLE_VALUE)
         {
-            printf("CreateFile failed with error %lu\n", GetLastError());
+            //printf("CreateFile failed with error %lu\n", GetLastError());
             return -1;
         }
 
         //else:
         strcpy(pipes[pipe_index].name, path);//no name
         pipes[pipe_index].accessType = flags;
-        //printf("%s is linked to index %d handle %d", pipeName, pipe_index, pipes[pipe_index].handle);
+        //printf("%s is linked to index %d handle %lu \n", pipeName, pipe_index, pipes[pipe_index].handle);
         pipe_index++;
         return pipe_index-1;
     }
@@ -62,13 +68,19 @@
     static int CreateServer(const char* pipeName, const char *path, int flags)
     {
         //printf("Create server named pipe %s ... \n",pipeName);
+        int access;
+
+        if (flags == (O_RDONLY | O_WRONLY)) access = PIPE_ACCESS_DUPLEX | WRITE_DAC;
+        else if (flags & O_RDONLY) access = PIPE_ACCESS_INBOUND | WRITE_DAC;
+        else access = PIPE_ACCESS_OUTBOUND | WRITE_DAC;
+
         pipes[pipe_index].handle = CreateNamedPipe(pipeName, 	// Name
-                                                    PIPE_ACCESS_DUPLEX | WRITE_DAC, // OpenMode
+                                                    access, // OpenMode
                                                     PIPE_TYPE_BYTE | PIPE_NOWAIT, // PipeMode
                                                     1, // MaxInstances
                                                     1024*1024, // OutBufferSize
                                                     1024*1024, // InBuffersize
-                                                    2000, // TimeOut
+                                                    200, // TimeOut
                                                     NULL); // Security
         //printf("Create server named pipe %s done \n",pipeName);
         if (pipes[pipe_index].handle == INVALID_HANDLE_VALUE)
@@ -81,7 +93,7 @@
         pipes[pipe_index].accessType = flags;
 
         ConnectNamedPipe(pipes[pipe_index].handle, NULL);
-        //printf("%s is linked to index %d handle %d", pipeName, pipe_index, pipes[pipe_index].handle);
+        printf("%s is linked to index %d handle %lu \n", pipeName, pipe_index, pipes[pipe_index].handle);
         pipe_index++;
         return pipe_index-1;
     }
@@ -111,24 +123,26 @@
         long unsigned int dwWritten;
         if (Buffsrc == NULL)
         {
+            //printf("about to flush handle %lu\n", pipes[Descriptor].handle);
+            //fflush(stdout);
             FlushFileBuffers(pipes[Descriptor].handle);
             return 0;
         }
 
         if (!WriteFile(pipes[Descriptor].handle, Buffsrc, BytesToWrite, &dwWritten, NULL))
 		{
-			printf("WriteFile failed to pipe handle %d (error = %lu)\n", Descriptor, GetLastError());
+			//printf("WriteFile failed to pipe handle %d (error = %lu)\n", Descriptor, GetLastError());
 			return -1;
 		}
 
-		//printf("Write of %d bytes in handle %d\n", dwWritten, pipes[Descriptor].handle);
+		//printf("Write of %d bytes in handle %d\n", BytesToWrite, pipes[Descriptor].handle);
+		//fflush(stdout);
 		return dwWritten;
     }
 
     int pread(int Descriptor, void* Buffdest, unsigned int BytesToRead)
     {
         long unsigned int dwBytesRead = 0;
-
         while (dwBytesRead < BytesToRead)
 		{
 		    ReadFile(pipes[Descriptor].handle, Buffdest, BytesToRead, &dwBytesRead, NULL);

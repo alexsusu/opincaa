@@ -5,7 +5,7 @@
 	<sstream>
 	<string>
 
-1361187242 m:\xillinux\connexrepoarh\connex_sift\software\connex\opincaa\main\include\connexmachine.h
+1361212293 m:\xillinux\connexrepoarh\connex_sift\software\connex\opincaa\main\include\connexmachine.h
 	"Operand.h"
 	"Kernel.h"
 	<string>
@@ -25,11 +25,12 @@
 	<vector>
 	<string>
 
-1361149632 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\test\src\test.cpp
+1361216359 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\test\src\test.cpp
 	<iostream>
 	"ConnexMachine.h"
 	"ConnexSimulator.h"
 	"simple_tests.h"
+	"simple_io_tests.h"
 
 1361139097 m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\include\connexsimulator.h
 	"ConnexVector.h"
@@ -46,7 +47,7 @@
 1361149646 m:\xillinux\connexrepoarh\connex_sift\software\connex\test\include\simple_tests.h
 	"utils.h"
 
-1361187066 m:\xillinux\connexrepoarh\connex_sift\software\connex\test\include\util\utils.h
+1361202267 m:\xillinux\connexrepoarh\connex_sift\software\connex\test\include\util\utils.h
 	<iostream>
 
 1360233224 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\test\src\util\timing.cpp
@@ -63,17 +64,19 @@
 
 1360233222 m:\xillinux\connexrepoarh\connex_sift\software\connex\test\include\util\timing.h
 
-1361187033 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\test\src\simple_tests.cpp
+1361217562 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\test\src\simple_tests.cpp
 	<iostream>
 	"ConnexMachine.h"
 	"ConnexSimulator.h"
 	"utils.h"
 	<iomanip>
 
-1361187713 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\test\src\simple_io_tests.cpp
+1361203679 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\test\src\simple_io_tests.cpp
 	<iostream>
 	"ConnexMachine.h"
 	"ConnexSimulator.h"
 	"utils.h"
 	<iomanip>
+
+1361187836 m:\xillinux\connexrepoarh\connex_sift\software\connex\test\include\simple_io_tests.h
 

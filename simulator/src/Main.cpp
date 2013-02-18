@@ -14,7 +14,7 @@ int main()
 	try
 	{
         ConnexSimulator simulator("distributionFIFO", "reductionFIFO", "writeFIFO", "readFIFO");
-        RunAll();
+        RunAll(true);
         simulator.waitFinish();
 	}
 	catch(string ex)

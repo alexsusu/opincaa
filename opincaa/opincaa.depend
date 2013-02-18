@@ -1,9 +1,9 @@
 # depslib dependency file v1.0
-1361186885 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\opincaa\main\src\connexmachine.cpp
+1361213970 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\opincaa\main\src\connexmachine.cpp
 	"ConnexMachine.h"
 	"NamedPipes.h"
 
-1361187242 m:\xillinux\connexrepoarh\connex_sift\software\connex\opincaa\main\include\connexmachine.h
+1361212293 m:\xillinux\connexrepoarh\connex_sift\software\connex\opincaa\main\include\connexmachine.h
 	"Operand.h"
 	"Kernel.h"
 	<string>
@@ -45,9 +45,9 @@
 	<unistd.h>
 	<sys/stat.h>
 
-1361145842 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\arch\src\namedpipes.cpp
+1361215756 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\arch\src\namedpipes.cpp
 	"NamedPipes.h"
 	<windows.h>
-	<windows.h>
 	<stdio.h>
+	<mutex>
 

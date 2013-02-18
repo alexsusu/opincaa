@@ -14,6 +14,9 @@
 using namespace std;
 #include <iomanip>
 
+#define TEST_PREFIX "simpleIoTest_allowOverwrite"
+#define _BEGIN_KERNEL(x) BEGIN_KERNEL(TEST_PREFIX + to_string(x))
+#define _END_KERNEL(x) END_KERNEL(TEST_PREFIX + to_string(x))
 
 enum SimpleIoBatchNumbers
 {
@@ -70,7 +73,7 @@ static int testIowrite(ConnexMachine *connex, int BatchNumber,INT32 Param1, INT3
             _END_KERNEL(BatchNumber);
 
             //DEASM_KERNEL(BatchNumber);
-            connex->executeKernel("simpleIoTest_" + to_string(BatchNumber));
+            connex->executeKernel(TEST_PREFIX + to_string(BatchNumber));
             int result = connex->readReduction();
             if (data[cnxvectorIndex * NUMBER_OF_MACHINES + cnt] != result)
             {
@@ -112,7 +115,7 @@ static int testIoread(ConnexMachine *connex, int BatchNumber,INT32 Param1, INT32
                               )
                 EXECUTE_WHERE_EQ ( LS[cnxvectorIndex + Param2] = R3;)
             _END_KERNEL(BatchNumber);
-            connex->executeKernel("simpleIoTest_" + to_string(BatchNumber));
+            connex->executeKernel(TEST_PREFIX + to_string(BatchNumber));
         }
         //c_simulator::printLS(Param2+1);
     // read data from local store

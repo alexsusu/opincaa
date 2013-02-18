@@ -48,7 +48,7 @@ int RunDemo()
 
 }
 
-int RunAll()
+int RunAll(bool stress)
 {
     int result = 1;//fail
     try
@@ -58,8 +58,8 @@ int RunAll()
          */
         ConnexMachine *connex = new ConnexMachine("distributionFIFO", "reductionFIFO", "writeFIFO", "readFIFO");
 
-        result = test_Simple_All(connex, false);
-        result += test_Simple_IO_All(connex, false);
+        result = test_Simple_All(connex, stress);
+        result += test_Simple_IO_All(connex, stress);
         delete connex;
     }
 

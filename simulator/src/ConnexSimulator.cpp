@@ -102,8 +102,12 @@ void ConnexSimulator::ioThreadHandler()
 	ConnexIoDescriptor ioDescriptor;
 	while(1)
 	{
+
+		//cout<<"Simu: Waiting for receive "<<endl<<flush;
 		pread(writeDescriptor, &ioDescriptor, sizeof(ioDescriptor));
+		//cout<<"Simu: Received "<<sizeof(ioDescriptor)<<" Bytes"<<endl<<flush;
 		performIO(ioDescriptor);
+		//cout<<"Simu: Perform IO "<<endl<<flush;
 	}
 }
 
@@ -128,7 +132,7 @@ void ConnexSimulator::coreThreadHandler()
  */
 void ConnexSimulator::performIO(ConnexIoDescriptor ioDescriptor)
 {
-	unsigned short connexVectors[CONNEX_VECTOR_LENGTH * ioDescriptor.vectorCount + 1];
+	unsigned short connexVectors[CONNEX_VECTOR_LENGTH * (ioDescriptor.vectorCount + 1)];
 	switch(ioDescriptor.type)
 	{
 		case IO_WRITE_OPERATION:
@@ -142,6 +146,7 @@ void ConnexSimulator::performIO(ConnexIoDescriptor ioDescriptor)
 			pwrite(readDescriptor, connexVectors, 4);
 			pwrite(readDescriptor, NULL, 0);
 			break;
+
 		case IO_READ_OPERATION:
 			for(unsigned int i=0; i<ioDescriptor.vectorCount + 1; i++)
 			{
@@ -151,6 +156,7 @@ void ConnexSimulator::performIO(ConnexIoDescriptor ioDescriptor)
 			}
 			pwrite(readDescriptor, NULL, 0);
 			break;
+
 		default:
 			throw string("Unknown IO operation type in ConnexSimulator::performIO");
 	}

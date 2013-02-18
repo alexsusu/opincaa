@@ -15,6 +15,10 @@
 using namespace std;
 #include <iomanip>
 
+#define TEST_PREFIX "simpleTest_allowOverwrite"
+#define _BEGIN_KERNEL(x) BEGIN_KERNEL(TEST_PREFIX + to_string(x))
+#define _END_KERNEL(x) END_KERNEL(TEST_PREFIX + to_string(x))
+
 struct Dataset
 {
    INT32 Param1;
@@ -152,7 +156,7 @@ static void InitKernel_Addc(int BatchNumber,INT32 Param1, INT32 Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
-                        R4 = 0xFF;
+                        R4 = 0x1;
                         R5 = 0xFFFF;
                         R6 = R4 + R5;
                         R1 = Param1;
@@ -168,7 +172,7 @@ static void InitKernel_pAddc(int BatchNumber,INT32 Param1, INT32 Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
-                        R4 = 0xFF;
+                        R4 = 0x1;
                         R5 = 0xFFFF;
                         R6 = R4 + R5;
                         R1 = Param1;
@@ -221,7 +225,7 @@ static void InitKernel_Subc(int BatchNumber,INT32 Param1, INT32 Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
-                        R1 = 0xff;
+                        R1 = 0x1;
                         R2 = 0xffff;
                         R3 = R1 - R2;
 
@@ -812,18 +816,23 @@ static TestFunction TestFunctionTable[] =
     {VLOAD_BNR,"VLOAD",InitKernel_Vload,{0x01,0x02,3*NUMBER_OF_MACHINES}},
 
     {ADD_BNR,"ADD",InitKernel_Add,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
+    {ADD_BNR,"ADD2",InitKernel_Add,{0xffff,0xffff,((UINT16)(0xffff + 0xffff))*NUMBER_OF_MACHINES}},
     //{pADD_BNR,"pADD",InitKernel_pAdd,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
     //{pzADD_BNR,"pzADD",InitKernel_pzAdd,{0,0,(0 + 0)*NUMBER_OF_MACHINES}},
     {sADD_BNR,"sADD",InitKernel_sAdd,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
 
     {ADDC_BNR,"ADDC",InitKernel_Addc,{0xf0,0x1,(0xf0 + 1 + 1)*NUMBER_OF_MACHINES}},
+    {ADDC_BNR,"ADDC2",InitKernel_Addc,{0xffff,0xffff,((UINT16)(0xffff + 0xffff + 1))*NUMBER_OF_MACHINES}},
+    {ADDC_BNR,"ADDC3",InitKernel_Addc,{0xfffe,0xffff,(UINT16)((0xffff + 0xfffe + 1))*NUMBER_OF_MACHINES}},
     //{pADDC_BNR,"pADDC",InitKernel_pAddc,{0xf0,0x1,(0xf0 + 1 + 1)*NUMBER_OF_MACHINES}},
 
     {SUB_BNR,"SUB",InitKernel_Sub,{0xffff,0xff8f, (0xffff - 0xff8f)*NUMBER_OF_MACHINES}},
+    {SUB_BNR,"SUB",InitKernel_Sub,{0x0,0xffff, ((UINT16)(0 - 0xffff))*NUMBER_OF_MACHINES}},
     //{pSUB_BNR,"pSUB",InitKernel_pSub,{0xffff,0xff8f, (0xffff - 0xff8f)*NUMBER_OF_MACHINES}},
     {sSUB_BNR,"sSUB",InitKernel_sSub,{0xffff,0xff8f, (0xffff - 0xff8f)*NUMBER_OF_MACHINES}},
 
     {SUBC_BNR,"SUBC",InitKernel_Subc,{0xffff,0xff8f,(0xffff - 0xff8f -1)*NUMBER_OF_MACHINES}},
+    {SUBC_BNR,"SUBC2",InitKernel_Subc,{0,0xffff,((UINT16)(0 - 0xffff -1))*NUMBER_OF_MACHINES}},
     //{pSUBC_BNR,"pSUBC",InitKernel_pSubc,{0xffff,0xff8f,(0xffff - 0xff8f -1)*NUMBER_OF_MACHINES}},
 
     {NOT_BNR,"NOT",InitKernel_Not,{0xfff0,0x00,(0xf)*NUMBER_OF_MACHINES}},
@@ -894,7 +903,7 @@ static int getIndexTestFunctionTable(int BatchNumber)
     return -1;
 }
 
-static void UpdateDatasetTable(int BatchNumber)
+static void UpdateDatasetTable(int BatchNumber, int loop)
 {
     int i = getIndexTestFunctionTable(BatchNumber);
     if (i>0)
@@ -1083,41 +1092,39 @@ int test_Simple_All(ConnexMachine *connex, bool stress)
 
     UINT16 testFails = 0;
 
-    if (stress == true) { stressLoops = 10;} else stressLoops = 0;
+    if (stress == true) { stressLoops = 10;} else stressLoops = 1;
     cout<< "\nStarting SimpleTests: "<<endl;
 
     for (i = 0; i < sizeof (TestFunctionTable) / sizeof (TestFunction); i++)
     {
-        j = stressLoops;
-        do
+        for (j = 0; j < stressLoops; j++)
         {
             TestFunctionTable[i].initKernel
                 ( TestFunctionTable[i].BatchNumber,
                   TestFunctionTable[i].ds.Param1,
                   TestFunctionTable[i].ds.Param2);
 
-            connex->executeKernel("simpleTest_" + to_string(TestFunctionTable[i].BatchNumber));
+            connex->executeKernel(TEST_PREFIX + to_string(TestFunctionTable[i].BatchNumber));
             result = connex->readReduction();
             if (result != TestFunctionTable[i].ds.ExpectedResult)
             {
                cout<< "Test "<< setw(8) << left << TestFunctionTable[i].OperationName <<" FAILED with result "
                <<result << " (expected " <<TestFunctionTable[i].ds.ExpectedResult<<" ) !" << " params are "
                << TestFunctionTable[i].ds.Param1 << " and " << TestFunctionTable[i].ds.Param2 <<endl;
-               cout<<connex->disassembleKernel("simpleTest_" + to_string(TestFunctionTable[i].BatchNumber));
+               cout<<connex->disassembleKernel(TEST_PREFIX + to_string(TestFunctionTable[i].BatchNumber));
                testFails++;
-               if (j == 0) break;
+               if (j == (stressLoops - 1)) break;
                //return testFails;
             }
             else
             {
-                if (j == stressLoops)
+                if (j == 0)
                     cout<< "Test "<< setw(10) << left << TestFunctionTable[i].OperationName;
-                if ((j > 0) && (j <= stressLoops)) cout<<".";
-                if (j == 0) {cout << " PASSED"<<endl;break;}
+                if ((j >= 0) && (j < stressLoops)) cout<<".";
+                if (j == (stressLoops -1)) {cout << " PASSED"<<endl;break;}
             }
-            UpdateDatasetTable(TestFunctionTable[i].BatchNumber);
+            UpdateDatasetTable(TestFunctionTable[i].BatchNumber,j);
         }
-        while (j-- >= 0);
     }
         cout<<"================================"<<endl;
     if (testFails ==0)

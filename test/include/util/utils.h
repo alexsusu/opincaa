@@ -1,9 +1,6 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#define _BEGIN_KERNEL(x) BEGIN_KERNEL("simpleTest_" + to_string(x))
-#define _END_KERNEL(x) END_KERNEL("simpleTest_" + to_string(x))
-
 using namespace std;
 #ifdef __MINGW32__
 #include <iostream>

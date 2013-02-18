@@ -54,12 +54,19 @@ mutex ConnexMachine::mapMutex;
 void ConnexMachine::addKernel(Kernel *kernel)
 {
     string name = kernel->getName();
-
+    const string allowOverwrite = "allowOverwrite";
 	mapMutex.lock();
     if(kernels.count(name) > 0)
     {
-		mapMutex.unlock();
-        throw string("Kernel ") + name + string(" already exists in ConnexMachine::addKernel");
+        if (name.find(allowOverwrite) == std::string::npos) //no explicit request for overwrite
+        {
+            mapMutex.unlock();
+            throw string("Kernel ") + name + string(" already exists in ConnexMachine::addKernel");
+        }
+        else
+        {
+            kernels.erase(name);
+        }
     }
 
     kernels.insert(map<string, Kernel*>::value_type(name, kernel));

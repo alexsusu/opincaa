@@ -8,7 +8,7 @@
 1361130323 m:\xillinux\connexrepoarh\connex_sift\software\connex\arch\include\instruction.h
 	<string>
 
-1361186508 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\src\connexsimulator.cpp
+1361215440 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\src\connexsimulator.cpp
 	<iostream>
 	<thread>
 	"ConnexSimulator.h"
@@ -31,11 +31,11 @@
 	<unistd.h>
 	<sys/stat.h>
 
-1361186307 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\src\connexvector.cpp
+1361218057 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\src\connexvector.cpp
 	"ConnexVector.h"
 	<string.h>
 
-1361139002 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\src\main.cpp
+1361202190 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\simulator\src\main.cpp
 	"ConnexSimulator.h"
 	"test.h"
 	<string>
@@ -48,16 +48,16 @@
 	<windows.h>
 	<stdio.h>
 
-1361145842 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\arch\src\namedpipes.cpp
+1361215756 source:m:\xillinux\connexrepoarh\connex_sift\software\connex\arch\src\namedpipes.cpp
 	"NamedPipes.h"
 	<windows.h>
-	<windows.h>
 	<stdio.h>
+	<mutex>
 
 1361128511 m:\xillinux\connexrepoarh\connex_sift\software\connex\arch\include\namedpipes.h
 	<fcntl.h>
 	<unistd.h>
 	<sys/stat.h>
 
-1361131511 m:\xillinux\connexrepoarh\connex_sift\software\connex\test\include\test.h
+1361202160 m:\xillinux\connexrepoarh\connex_sift\software\connex\test\include\test.h
 

@@ -44,12 +44,12 @@ ConnexVector ConnexVector::operator op(ConnexVector anotherVector)	\
         else ltFlag.cells[i] = 0;
 
 #define BINARY_OP_FLAGS_CARRY_ADD(op)                               \
-        if (REG_MAX_VAL - cells[i] < anotherVector.cells[i])        \
+        if (((unsigned)cells[i]) + ((unsigned)anotherVector.cells[i]) > REG_MAX_VAL) \
             carryFlag.cells[i] = 1;                                 \
         else carryFlag.cells[i] = 0;
 
 #define BINARY_OP_FLAGS_CARRY_ADDC(op)                              \
-        if (REG_MAX_VAL - cells[i] - carryFlag.cells[i] < anotherVector.cells[i])        \
+        if (((unsigned)cells[i]) + ((unsigned)carryFlag.cells[i]) + ((unsigned)anotherVector.cells[i]) > REG_MAX_VAL) \
             carryFlag.cells[i] = 1;                                 \
         else                                                        \
             carryFlag.cells[i] = 0;
@@ -60,7 +60,7 @@ ConnexVector ConnexVector::operator op(ConnexVector anotherVector)	\
         else carryFlag.cells[i] = 0;
 
 #define BINARY_OP_FLAGS_CARRY_SUBC(op)                               \
-        if (cells[i] + anotherVector.cells[i] > REG_MAX_VAL)        \
+        if (((unsigned)cells[i]) + ((unsigned)carryFlag.cells[i]) + ((unsigned)anotherVector.cells[i]) > REG_MAX_VAL) \
             carryFlag.cells[i] = 1;                                 \
         else carryFlag.cells[i] = 0;
 
