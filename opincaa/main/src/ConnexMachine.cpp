@@ -65,8 +65,6 @@ void ConnexMachine::addKernel(Kernel *kernel)
         }
         else
         {
-            Kernel *kernelToRemove = kernels.find(name)->second;
-            delete(kernelToRemove);
             kernels.erase(name);
         }
     }

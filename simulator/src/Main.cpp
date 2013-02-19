@@ -1,7 +1,6 @@
 
 
 #include "ConnexSimulator.h"
-#include "test.h"
 #include <string>
 #include <iostream>
 #include <system_error>
@@ -14,7 +13,6 @@ int main()
 	try
 	{
         ConnexSimulator simulator("distributionFIFO", "reductionFIFO", "writeFIFO", "readFIFO");
-        RunAll(true);
         simulator.waitFinish();
 	}
 	catch(string ex)

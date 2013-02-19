@@ -29,16 +29,16 @@ ConnexSimulator::ConnexSimulator(string distributionDescriptorPath,
 						string readDescriptorPath)
 {
     //cout<<"Opening simu:"<<distributionDescriptorPath<<endl;
-    distributionDescriptor = openPipe(distributionDescriptorPath, O_RDONLY);
+    distributionDescriptor = openPipe(distributionDescriptorPath, O_RDWR);
 
 	//cout<<"Opening simu:"<<writeDescriptorPath<<endl;
-	writeDescriptor = openPipe(writeDescriptorPath, O_RDONLY);
+	writeDescriptor = openPipe(writeDescriptorPath, O_RDWR);
 
     //cout<<"Opening simu:"<<reductionDescriptorPath<<endl;
-    reductionDescriptor = openPipe(reductionDescriptorPath, O_WRONLY);
+    reductionDescriptor = openPipe(reductionDescriptorPath, O_RDWR);
 
 	//cout<<"Opening simu:"<<readDescriptorPath<<endl;
-	readDescriptor = openPipe(readDescriptorPath, O_WRONLY);
+	readDescriptor = openPipe(readDescriptorPath, O_RDWR);
 
 	initiateThreads();
 }

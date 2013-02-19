@@ -38,10 +38,10 @@ $(BUILD_DIR)/ConnexVector.o: $(SRC_DIR)/ConnexVector.cpp
 	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../arch/include -c $(SRC_DIR)/ConnexVector.cpp -o $(BUILD_DIR)/ConnexVector.o
 
 $(BUILD_DIR)/ConnexSimulator.o: $(SRC_DIR)/ConnexSimulator.cpp
-	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../arch/include -c $(SRC_DIR)/ConnexSimulator.cpp -o $(BUILD_DIR)/ConnexSimulator.o
+	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../arch/include -I../utils/include -c $(SRC_DIR)/ConnexSimulator.cpp -o $(BUILD_DIR)/ConnexSimulator.o
 
-$(BUILD_DIR)/NamedPipes.o: $(SRC_DIR)/NamedPipes.cpp
-	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../arch/include -c $(SRC_DIR)/NamedPipes.cpp -o $(BUILD_DIR)/NamedPipes.o
+$(BUILD_DIR)/NamedPipes.o: ../utils/src/NamedPipes.cpp
+	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../utils/include -c ../utils/src/NamedPipes.cpp -o $(BUILD_DIR)/NamedPipes.o
 	
 clean: 
 	rm -rf $(BUILD_DIR)

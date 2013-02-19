@@ -22,33 +22,27 @@ TEST_OBJ = $(TEST_BUILD_DIR)/api_test
 
 lib: make_paths build_lib
 
-#test: lib build_tests run_tests
-
-#build_tests:
-#	$(CXX) -O3 -std=c++0x $(TEST_DIR)/api_test.cpp -o $(TEST_BUILD_DIR)/api_test -L$(LIB_DIR) -lopincaa -I$(INC_DIR)
-
-#run_tests:
-#	./$(TEST_BUILD_DIR)/api_test
-	
-make_paths: 
+make_paths:
 	test -d $(BUILD_DIR) || mkdir -p $(BUILD_DIR)
 	test -d $(LIB_DIR) || mkdir -p $(LIB_DIR)
-#	test -d $(TEST_BUILD_DIR) || mkdir -p $(TEST_BUILD_DIR)
 
 build_lib: $(OBJ)
 	$(CXX) $(CFLAGS) $(OBJ) -lc -shared -Wl,-soname,libopincaa.so -o $(LIB_DIR)/libopincaa.so
 
 $(BUILD_DIR)/Instruction.o: ../../arch/src/Instruction.cpp
-	$(CXX) $(CFLAGS) -I$(INC_DIR) -c ../../arch/src//Instruction.cpp -o $(BUILD_DIR)/Instruction.o
+	$(CXX) $(CFLAGS) -I$(INC_DIR) -c ../../arch/src/Instruction.cpp -o $(BUILD_DIR)/Instruction.o
 
 $(BUILD_DIR)/Kernel.o: $(SRC_DIR)/Kernel.cpp
-	$(CXX) $(CFLAGS) -I$(INC_DIR) -c $(SRC_DIR)/Kernel.cpp -o $(BUILD_DIR)/Kernel.o
+	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../../utils/include -c $(SRC_DIR)/Kernel.cpp -o $(BUILD_DIR)/Kernel.o
 
 $(BUILD_DIR)/Operand.o: $(SRC_DIR)/Operand.cpp
 	$(CXX) $(CFLAGS) -I$(INC_DIR) -c $(SRC_DIR)/Operand.cpp -o $(BUILD_DIR)/Operand.o
 
 $(BUILD_DIR)/ConnexMachine.o: $(SRC_DIR)/ConnexMachine.cpp
-	$(CXX) $(CFLAGS) -I$(INC_DIR) -c $(SRC_DIR)/ConnexMachine.cpp -o $(BUILD_DIR)/ConnexMachine.o
+	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../../utils/include -c $(SRC_DIR)/ConnexMachine.cpp -o $(BUILD_DIR)/ConnexMachine.o
+
+$(BUILD_DIR)/NamedPipes.o: ../../utils/src/NamedPipes.cpp
+	$(CXX) $(CFLAGS) -I$(INC_DIR) -c ../../utils/src/NamedPipes.cpp -o $(BUILD_DIR)/NamedPipes.o
 
 install: lib
 	cp $(LIB_DIR)/libopincaa.so /usr/local/lib
@@ -57,7 +51,6 @@ install: lib
 
 clean: 
 	rm -rf $(BUILD_DIR)
-#	rm -rf $(TEST_BUILD_DIR)
 	rm -rf $(LIB_DIR)
 
 

@@ -10,7 +10,6 @@
 
 #include <iostream>
 #include "ConnexMachine.h"
-#include "ConnexSimulator.h"
 #include "utils.h"
 using namespace std;
 #include <iomanip>

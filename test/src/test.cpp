@@ -1,11 +1,8 @@
 #include <iostream>
 #include "ConnexMachine.h"
-#include "ConnexSimulator.h"
-
 #include "simple_tests.h"
-#include "icc_simple_tests.h"
 #include "simple_io_tests.h"
-#include "basic_match_tests.h"
+
 using namespace std;
 
 void initKernelDemo(int val, int shift)
@@ -30,14 +27,15 @@ int RunDemo()
         cout << "Success in opening the connex machine" << endl;
 
         for(int i=0;i<7;i++)
-        for(int j=0;j<7;j++)
-        {
-            initKernelDemo(i,j);
-            connex->executeKernel("test_" + to_string(i)+"_" + to_string(j));
-            //cout << "Expected " << 128*(i<<j) << " got " << connex->readReduction() << endl;
-            if (connex->readReduction() != CONNEX_MAX_REGS*(i << j))
-                cout<<"Demo failed with params "<<i<<" "<<j<<endl;
-        }
+            for(int j=0;j<7;j++)
+            {
+                initKernelDemo(i,j);
+                connex->executeKernel("test_" + to_string(i)+"_" + to_string(j));
+                //cout << "Expected " << 128*(i<<j) << " got " << connex->readReduction() << endl;
+                if (connex->readReduction() != CONNEX_MAX_REGS*(i << j))
+                    cout<<"Demo failed with params "<<i<<" "<<j<<endl;
+            }
+            
         delete connex;
     }
 
@@ -61,8 +59,6 @@ int RunAll(bool stress)
         ConnexMachine *connex = new ConnexMachine("distributionFIFO", "reductionFIFO", "writeFIFO", "readFIFO");
 
         result = test_Simple_All(connex, stress);
-        //result += icc_test_Simple_All(connex, stress);
-        result +=  test_BasicMatching_All(connex, false);
         result += test_Simple_IO_All(connex, stress);
         delete connex;
     }
@@ -75,3 +71,8 @@ int RunAll(bool stress)
     return result;
 
 }
+
+int main(){
+    RunAll(false);
+}
+
