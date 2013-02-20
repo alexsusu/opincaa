@@ -1,10 +1,10 @@
 
 /*
  *
- * File: basic_match_tests.cpp
+ * File: basic_match_tests_sad.cpp
  *
  * Basic_match_tests tests.
- * Computes distance between two images' descriptors, as d = Sum[(xi - xj)^2 +(yi-yj)^2 ...]
+ * Computes distance between two images' descriptors, as d = Sum[|xi - xj| + |yi-yj| + ...]
  *
  *
  */
@@ -118,6 +118,14 @@ static int CompareMatches(SiftMatches *SMs1, SiftMatches *SMs2)
     cout << "Comparing "<<CntMax<< " matches... "<<endl;
     if (CntMax != SMs2->RealMatches) {cout << "FAIL: not the same number of matches "<<SMs1->RealMatches<<" != "<<SMs2->RealMatches <<endl;return FAIL;}
     for (int cnt = 0; cnt < CntMax; cnt++)
+        /*
+        if ((SMs1->Matches[cnt].Score != SMs2->Matches[cnt].Score) ||
+            (SMs1->Matches[cnt].X1 != SMs2->Matches[cnt].X1) ||
+            (SMs1->Matches[cnt].X2 != SMs2->Matches[cnt].X2) ||
+            (SMs1->Matches[cnt].Y1 != SMs2->Matches[cnt].Y1) ||
+            (SMs1->Matches[cnt].Y2 != SMs2->Matches[cnt].Y2)
+            )
+        */
         if (SMs1->DescIx2ndImgMin[cnt] != SMs2->DescIx2ndImgMin[cnt])
             {
                 cout <<"Failed at index "<<cnt<<endl;
@@ -213,9 +221,16 @@ static void FindMatches(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatche
 			int FeatIndex;
             for (FeatIndex = 0; FeatIndex < FEATURES_PER_DESCRIPTOR; FeatIndex++)
             {
+                /*
                 INT32 sq = (SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1][FeatIndex] -
                             SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2][FeatIndex]);
                 dsq += sq*sq;
+                */
+
+                INT32 sq = (SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1][FeatIndex] -
+                            SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2][FeatIndex]);
+                if (sq >= 0) dsq += sq;
+                else dsq += -sq;
             }
 
             //if (DescriptorIndex1==0)
@@ -246,44 +261,16 @@ static void FindMatches(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatche
     Out of 1024 LocalStore locations, each having 128 Bytes:
     (fortunately a SIFT descriptor also has 128 features of 1 Bytes each)
 */
-#define VECTORS_CHUNK_IMAGE1 364  //  364 cnxvectors - reserved for img1 (cnxvectorS_CHUNK_IMG1)
-#define VECTORS_CHUNK_IMAGE2 330 // 330 cnxvectors - reserved for img2 - work (cnxvectorS_CHUNK_IMG2)
-//another 330 cnxvectors - reserved for img2 - transfer with IO
+#define VECTORS_CHUNK_IMAGE1 386  //  386 cnxvectors - reserved for img1 (cnxvectorS_CHUNK_IMG1)
+#define VECTORS_CHUNK_IMAGE2 319 // 319 cnxvectors - reserved for img2 - work (cnxvectorS_CHUNK_IMG2)
+//another 319 cnxvectors - reserved for img2 - transfer with IO
 
-#define VECTORS_SUBCHUNK_IMAGE2 30 // 30 cnxvectors from VECTORS_CHUNK_IMAGE2 to be cached for inner loop of distance calculation
+#define VECTORS_SUBCHUNK_IMAGE2 29 // 29 cnxvectors from VECTORS_CHUNK_IMAGE2 to be cached for inner loop of distance calculation
 
 static io_unit IOU_CVCI1;
 static io_unit IOU_CVCI2;
 #define MODE_CREATE_BATCHES 0
 #define MODE_EXECUTE_FIND_MATCHES 1
-
-static int connexFM_CreateBatch(int LoadToRxBatchNumber, int UsingBuffer0or1)
-{
-    int TotalcnxvectorSubChunksImg2 = VECTORS_CHUNK_IMAGE2 / VECTORS_SUBCHUNK_IMAGE2;
-    BEGIN_BATCH(LoadToRxBatchNumber);
-        //forall subchunks of chunk of img 2
-        for(int CurrentcnxvectorSubChunkImg2 = 0; CurrentcnxvectorSubChunkImg2 < TotalcnxvectorSubChunksImg2; CurrentcnxvectorSubChunkImg2++)
-        {
-            //forall cnxvectors in subchunk of chunk of img (~30 cnxvectors) load cnxvector x to Rx
-            for(int x = 0; x < 30; x++)
-                R[x] = LS[VECTORS_CHUNK_IMAGE1 + UsingBuffer0or1*VECTORS_CHUNK_IMAGE2 +
-                            CurrentcnxvectorSubChunkImg2 * VECTORS_SUBCHUNK_IMAGE2 + x];
-            //forall 364 cnxvectors "y" in chunk of image 1
-            for (int y = 0; y < VECTORS_CHUNK_IMAGE1; y++)
-            {
-                R[30] = LS[y]; //load cnxvector y to R30 ; cout <<" LS[" <<y<<"] ====== "<<endl;
-                //forall registers with cnxvector-subchunk of img 2 (~30 cnxvectors in 30 registers)
-                for(int x = 0; x < 30; x++)
-                {
-                    R31 = R30 - R[x];
-                    R31 = R31 * R31;
-                    REDUCE(R31);
-                }
-            }
-        }
-    END_BATCH();
-    return PASS;
-}
 
 static int connexFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
                                     SiftDescriptors *SiftDescriptors1, SiftDescriptors *SiftDescriptors2)
@@ -348,26 +335,30 @@ static int connexFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
             else// (RunningMode == MODE_CREATE_BATCHES)
             {
                 BEGIN_BATCH(LoadToRxBatchNumber + UsingBuffer0or1);
+                EXECUTE_IN_ALL
+                (
                     //forall subchunks of chunk of img 2
                     for(int CurrentcnxvectorSubChunkImg2 = 0; CurrentcnxvectorSubChunkImg2 < TotalcnxvectorSubChunksImg2; CurrentcnxvectorSubChunkImg2++)
                     {
                         //forall cnxvectors in subchunk of chunk of img (~30 cnxvectors) load cnxvector x to Rx
-                        for(int x = 0; x < 30; x++)
+                        for(int x = 0; x < VECTORS_SUBCHUNK_IMAGE2; x++)
                             R[x] = LS[VECTORS_CHUNK_IMAGE1 + UsingBuffer0or1*VECTORS_CHUNK_IMAGE2 +
                                         CurrentcnxvectorSubChunkImg2 * VECTORS_SUBCHUNK_IMAGE2 + x];
                         //forall 364 cnxvectors "y" in chunk of image 1
                         for (int y = 0; y < VECTORS_CHUNK_IMAGE1; y++)
                         {
-                            R[30] = LS[y]; //load cnxvector y to R30 ; cout <<" LS[" <<y<<"] ====== "<<endl;
+                            R[VECTORS_SUBCHUNK_IMAGE2] = LS[y]; //load cnxvector y to R~29 ; cout <<" LS[" <<y<<"] ====== "<<endl;
                             //forall registers with cnxvector-subchunk of img 2 (~30 cnxvectors in 30 registers)
-                            for(int x = 0; x < 30; x++)
+                            for(int x = 0; x < VECTORS_SUBCHUNK_IMAGE2; x++)
                             {
-                                R31 = R30 - R[x];
-                                R31 = R31 * R31;
-                                REDUCE(R31);
+                                R30 = R29 - R[x];
+                                R31 = (R30 < 0);
+                                EXECUTE_WHERE_LT(R30 = R[x] - R29;)
+                                EXECUTE_IN_ALL(REDUCE(R30);)
                             }
                         }
                     }
+                )
                 END_BATCH();
                 if (UsingBuffer0or1 == 1) return PASS; //no need to create more than 2 batches
             }
@@ -417,7 +408,7 @@ static int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
                         int descIm1 = VECTORS_CHUNK_IMAGE1*CurrentcnxvectorChunkImg1 + CntDescIm1;
 
                         //forall registers with cnxvector-subchunk of img 2 (~30 cnxvectors in 30 registers)
-                        for(int x = 0; x < 30; x++)
+                        for(int x = 0; x < VECTORS_SUBCHUNK_IMAGE2; x++)
                         {
                             int descIm2 = CurrentcnxvectorChunkImg2*VECTORS_CHUNK_IMAGE2 + (CurrentcnxvectorSubChunkImg2 * VECTORS_SUBCHUNK_IMAGE2) + x;
                             //if (descIm1 == 0) { cout<<RedCounter<<":"<<BasicMatchRedResults[RedCounter]<<" "; if ((descIm2 & 3) == 3) cout << endl;}
@@ -444,7 +435,7 @@ static int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
          }
 
         for (int i = 0; i < SiftDescriptors1->RealDescriptors; i++)
-        if (SMs->ScoreMin[i] < (FACTOR1 * SMs->ScoreNextToMin[i]) >> FACTOR2)
+        if (SMs->ScoreMin[i] <= (FACTOR1 * SMs->ScoreNextToMin[i]) >> FACTOR2)
         {
             SMsFinal->DescIx2ndImgMin[SMsFinal->RealMatches++] = SMs->DescIx2ndImgMin[i];
         }
@@ -453,9 +444,33 @@ static int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
 
     return PASS;
 }
+#define LOAD_VECTOR(VECT_ADDRESS, MEMORY_ADDRESS) \
+
+#define FOR_ALL(Items) {for(int Items = 0; Items <
+#define ITEMS
+#define IN
+//#define
+
+//FORALL(x,_OF_TYPE,VECTORS_CHUNK_IMAGE1,_IN, SiftDescriptors1->RealDescriptors)
+
+//#define FORALL(items,_OF_SIZE(sz)_IN(collection))
+//for (int x = 0; x < (SiftDescriptors1->RealDescriptors + VECTORS_CHUNK_IMAGE1 -1)/VECTORS_CHUNK_IMAGE1; x++)
+
+//for (int x = 0; x < (SiftDescriptors1->RealDescriptors + VECTORS_CHUNK_IMAGE1 -1)/VECTORS_CHUNK_IMAGE1; x++)
+//forall(SiftDescriptorsIn(SiftDescriptors1))
+
+//void forall(int VECTORS_CHUNK_IMAGE1, int SiftDescriptors1->RealDescriptors)
+
+#define PRESTORE_VECTORS(IO_OBJ,CNXVECT_ADDRESS, MEM_ADDRESS)\
+    IO_OBJ.preWritecnxvectors(CNXVECT_ADDRESS,\
+        SiftDescriptors1->SiftDescriptorsBasicFeatures[VECTORS_CHUNK_IMAGE1*CurrentcnxvectorChunkImg1],\
+        VECTORS_CHUNK_IMAGE1);
+
+#define LOAD_VECTORS_NOW(IO_OBJ) \
+if (PASS != IO_WRITE_NOW(&IO_OBJ)) {printf("Writing next object to IO pipe, FAILED !"); return FAIL;}
 
 #define BASIC_MATCHING_BNR 0
-int test_BasicMatching_All()
+int test_BasicMatching_SAD_All()
 {
     //forcing descriptors to have proper size: multiple of 364 for 1, multiple of 330 for second
     //const int MAX_IMG_1_DECRIPTORS = 364*5;//max 2306
@@ -500,18 +515,6 @@ int test_BasicMatching_All()
 
     cout<<"Kernels were stored in " << GetMilliSpan(Start)<< " ms"<<endl;
     */
-    //connexFM_CreateBatch(BASIC_MATCHING_BNR, 0);
-    //connexFM_CreateBatch(BASIC_MATCHING_BNR+1, 1);
-    /*
-    Start = GetMilliCount();
-    if (PASS != kernel_acc::loadKernel((char*)"database/BasicMatchingA.ker", BASIC_MATCHING_BNR+2))
-        cout<<"Could not load kernel "<<endl;
-    if (PASS != kernel_acc::loadKernel("database/BasicMatchingB.ker", BASIC_MATCHING_BNR+3))
-        cout<<"Could not load kernel "<<endl;
-
-    cout<<"Batches were loaded in " << GetMilliSpan(Start)<< " ms"<<endl;
-    //cout<<"Could not load batches "<<endl;
-    */
 
     Start = GetMilliCount();
     connexFindMatchesPass1(MODE_EXECUTE_FIND_MATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);
@@ -526,16 +529,6 @@ int test_BasicMatching_All()
     if (PASS == CompareMatches(&SM_Arm,&SM_ConnexArm)) cout << "Matches are a ... match ;). Arm and Arm-Connex got the same results."<<endl;
     else cout << "Match test has FAILed. Arm and ConnexArm got different results !"<<endl;
 
-    //cout<< "IBC = "<<cnxvector::dwInBatchCounter[0]<<endl;
-    //if (PASS == VERIFY_BATCH(0)) cout << "Verification is PASS"<<endl;
-    //else cout << "Verification is FAIL"<<endl;
-    //if (PASS == DEASM_BATCH(0)) cout << "Verification is PASS"<<endl;
-    //else cout << "Verification is FAIL"<<endl;
-
-    //TestBatch();
-    //DEASM_BATCH(0);
-    //PrintMatches(&SM);
-    //PrintDescriptors(&SiftDescriptors1);
 /*
     if (testFails ==0)
         cout<<endl<< " All SimpleTests PASSED." <<endl;

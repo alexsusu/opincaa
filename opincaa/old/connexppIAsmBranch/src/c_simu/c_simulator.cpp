@@ -106,7 +106,7 @@ struct OpCodeDeAsm
     const char* opcodeName;
 };
 
-OpCodeDeAsm OpCodeDeAsms[] =
+static OpCodeDeAsm OpCodeDeAsms[] =
 {
     {_ADD,"+"},
     {_ADDC,"+ CARRY +"},

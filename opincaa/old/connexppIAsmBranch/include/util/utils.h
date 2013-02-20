@@ -1,13 +1,34 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#ifndef UINT8
 #define UINT8 unsigned char
+#endif
+
+#ifndef UINT16
 #define UINT16 unsigned short int
+#endif
+
+#ifndef INT16
 #define INT16 short int
+#endif
+
+#ifndef UINT32
 #define UINT32 unsigned int
+#endif
+
+#ifndef INT32
 #define INT32  int
+#endif
+
+#ifndef INT64
 #define UINT64 unsigned long long int
+#endif
+
+#ifndef INT64
 #define INT64  long long int
+#endif
+
 #define UINT_INSTRUCTION UINT32 // how long an instruction is
 #define UINT_RED_REG_VAL UINT32 //actually 16+ log2(128) = 23 bits are enough for RedAdd
 #define UINT_REGISTER_VAL UINT16
@@ -28,6 +49,7 @@
 #define FAIL_ON_READ    -3
 #define FAIL_ON_OPEN    -4
 
+#define CPPAMP_EMULATION_MODE	3
 #define C_SIMULATION_MODE       2
 #define VERILOG_SIMULATION_MODE 1
 #define REAL_HARDWARE_MODE      0

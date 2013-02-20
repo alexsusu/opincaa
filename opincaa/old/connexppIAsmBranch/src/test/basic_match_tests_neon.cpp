@@ -1,7 +1,7 @@
 
 /*
  *
- * File: basic_match_tests.cpp
+ * File: basic_match_tests_neon.cpp
  *
  * Basic_match_tests tests.
  * Computes distance between two images' descriptors, as d = Sum[(xi - xj)^2 +(yi-yj)^2 ...]
@@ -16,6 +16,8 @@
 #include "../../include/util/timing.h"
 #include "../../include/util/kernel_acc.h"
 
+#include <stdio.h>
+//#include "../../include/core/neonvssse.h"
 
 //#include <unistd.h>     /* Symbolic Constants */
 //#include <sys/types.h>  /* Primitive System Data Types */
@@ -54,8 +56,8 @@ struct SiftDescriptor
 
 struct SiftDescriptors
 {
-    SiftDescriptor SD[MAX_DESCRIPTORS];
     UINT16 SiftDescriptorsBasicFeatures[MAX_DESCRIPTORS][FEATURES_PER_DESCRIPTOR];
+    SiftDescriptor SD[MAX_DESCRIPTORS];
     UINT16 RealDescriptors;
 };
 
@@ -69,9 +71,10 @@ struct SiftMatches
     UINT16 RealMatches;
 };
 
-static SiftDescriptors SiftDescriptors1;
-static SiftDescriptors SiftDescriptors2;
+static SiftDescriptors SiftDescriptors1 __declspec(align(32));
+static SiftDescriptors SiftDescriptors2 __declspec(align(32));
 static SiftMatches SM_Arm;
+static SiftMatches SM_Arm_SSE;
 static SiftMatches SM_ConnexArm;
 static SiftMatches SM_ConnexArmMan;
 static UINT_RED_REG_VAL BasicMatchRedResults[MAX_REDUCES];
@@ -209,20 +212,12 @@ static void FindMatches(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatche
         for (DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
 	    {
             UINT32 dsq = 0;
-
-			int FeatIndex;
-            for (FeatIndex = 0; FeatIndex < FEATURES_PER_DESCRIPTOR; FeatIndex++)
+            for (int FeatIndex = 0; FeatIndex < FEATURES_PER_DESCRIPTOR; FeatIndex++)
             {
-                INT32 sq = (SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1][FeatIndex] -
-                            SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2][FeatIndex]);
-                dsq += sq*sq;
+                dsq += (SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1][FeatIndex] - SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2][FeatIndex])
+                        *(SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1][FeatIndex] - SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2][FeatIndex]);
             }
 
-            //if (DescriptorIndex1==0)
-            //{ cout<<LastScore<<" "; if ((DescriptorIndex2 % 8) == 0) cout<<endl; }
-
-            //BestScore = LastScore;
-            //SMs->DescriptorIndexInSecondImage[SMs->RealMatches] = DescriptorIndex2;
             if (dsq < distsq1)
                 {
                     distsq2 = distsq1;
@@ -455,63 +450,30 @@ static int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
 }
 
 #define BASIC_MATCHING_BNR 0
-int test_BasicMatching_All()
+static void FindMatchesSSE(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatches* SMs);
+int test_BasicMatching_All_NeonSSE()
 {
-    //forcing descriptors to have proper size: multiple of 364 for 1, multiple of 330 for second
-    //const int MAX_IMG_1_DECRIPTORS = 364*5;//max 2306
-    //const int MAX_IMG_2_DECRIPTORS = 330*3;//max 1196
     int Start;
 
     LoadDescriptors((char*)"data/adam1.key", &SiftDescriptors1, 0);
     LoadDescriptors((char*)"data/adam2.key", &SiftDescriptors2, 0);
 
-    //LoadDescriptors((char*)"data/adam1_big.png.key", &SiftDescriptors1, 0);
-    //LoadDescriptors((char*)"data/adam2_big.png.key", &SiftDescriptors2, 0);
+    Start = GetMilliCount();
+    FindMatches(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm);
+    cout<<"CPU-only FindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
 
-    //LoadDescriptors((char*)"data/img1.png.key", &SiftDescriptors1, 0);
-    //LoadDescriptors((char*)"data/img3.png.key", &SiftDescriptors2, 0);
+    Start = GetMilliCount();
+    FindMatchesSSE(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm_SSE);
+    cout<<"CPU-Only + SSE/NEON FindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
 
-    //LoadDescriptors((char*)"data/adam1_big_siftpp.key", &SiftDescriptors1, 0);
-    //LoadDescriptors((char*)"data/adam2_big_siftpp.key", &SiftDescriptors2, 0);
+    if (PASS == CompareMatches(&SM_Arm,&SM_Arm_SSE)) cout << "Matches are a ... match ;). CPU and CPU-SSE/NEON got the same results."<<endl;
+    else cout << "Match test has FAILed. CPU and CPU_SSE/NEON got different results !"<<endl;
 
-    //LoadDescriptors((char*)"data/img3_siftpp.key", &SiftDescriptors1, 0);
-    //LoadDescriptors((char*)"data/img3_siftpp.key", &SiftDescriptors2, 0);
-    //LoadDescriptors((char*)"data/img1_siftpp.key", &SiftDescriptors1, 0);
-    //LoadDescriptors((char*)"data/img3_siftpp.key", &SiftDescriptors2, 0);
 
-    //Start = GetMilliCount();
-    //FindMatches2T(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm);
-    //cout<<"armFindMatches (2 threads) ran in " << GetMilliSpan(Start)<< " ms"<<endl;
-
-    //PrintMatches(&SM_Arm);
     Start = GetMilliCount();
     connexFindMatchesPass1(MODE_CREATE_BATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);
     connexFindMatchesPass2(MODE_CREATE_BATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan, &SM_ConnexArm);
     cout<<"Batches were created in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
-
-    //database
-    /*
-    Start = GetMilliCount();
-    if (PASS != kernel_acc::storeKernel("database/BasicMatchingA.ker", BASIC_MATCHING_BNR))
-        cout<<"Could not store kernel "<<endl;
-
-    if (PASS != kernel_acc::storeKernel("database/BasicMatchingB.ker", BASIC_MATCHING_BNR+1))
-        cout<<"Could not store kernel "<<endl;
-
-    cout<<"Kernels were stored in " << GetMilliSpan(Start)<< " ms"<<endl;
-    */
-    //connexFM_CreateBatch(BASIC_MATCHING_BNR, 0);
-    //connexFM_CreateBatch(BASIC_MATCHING_BNR+1, 1);
-    /*
-    Start = GetMilliCount();
-    if (PASS != kernel_acc::loadKernel((char*)"database/BasicMatchingA.ker", BASIC_MATCHING_BNR+2))
-        cout<<"Could not load kernel "<<endl;
-    if (PASS != kernel_acc::loadKernel("database/BasicMatchingB.ker", BASIC_MATCHING_BNR+3))
-        cout<<"Could not load kernel "<<endl;
-
-    cout<<"Batches were loaded in " << GetMilliSpan(Start)<< " ms"<<endl;
-    //cout<<"Could not load batches "<<endl;
-    */
 
     Start = GetMilliCount();
     connexFindMatchesPass1(MODE_EXECUTE_FIND_MATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);
@@ -519,30 +481,348 @@ int test_BasicMatching_All()
     cout<<"connexFindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
     //PrintMatches(&SM_ConnexArm);
 
-    Start = GetMilliCount();
-    FindMatches(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm);
-    cout<<"armFindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
-
     if (PASS == CompareMatches(&SM_Arm,&SM_ConnexArm)) cout << "Matches are a ... match ;). Arm and Arm-Connex got the same results."<<endl;
     else cout << "Match test has FAILed. Arm and ConnexArm got different results !"<<endl;
 
-    //cout<< "IBC = "<<cnxvector::dwInBatchCounter[0]<<endl;
-    //if (PASS == VERIFY_BATCH(0)) cout << "Verification is PASS"<<endl;
-    //else cout << "Verification is FAIL"<<endl;
-    //if (PASS == DEASM_BATCH(0)) cout << "Verification is PASS"<<endl;
-    //else cout << "Verification is FAIL"<<endl;
-
-    //TestBatch();
-    //DEASM_BATCH(0);
-    //PrintMatches(&SM);
-    //PrintDescriptors(&SiftDescriptors1);
-/*
-    if (testFails ==0)
-        cout<<endl<< " All SimpleTests PASSED." <<endl;
-    else
-        cout<< testFails << " SimpleTests failed." <<endl;
-    return testFails;
-*/
 	return 0;
 }
 
+//SSSE3: needed for _mm_maddubs
+#ifdef __ARM_NEON__
+    #include <arm_neon.h>
+#else //SSE
+    #include <tmmintrin.h>
+
+    //AVX:
+    //#include <immintrin.h>
+
+    //extern void printv(__m128 m);
+
+    #define cpuid(func,ax,bx,cx,dx)\
+        __asm__ __volatile__ ("cpuid":\
+        "=a" (ax), "=b" (bx), "=c" (cx), "=d" (dx) : "a" (func));
+
+    #define UINT64 long long int
+    #define INT8 char
+    #define XMM_DIFF(x,y) x = _mm_sub_epi8(x, y)
+    #define XMM_ABS(x) x = _mm_abs_epi8(x)
+    #define XMM_MULT_REDUCTION_ADD(x) x =  _mm_maddubs_epi16(x, x)
+#endif // __ARM_NEON__
+
+
+
+
+#ifdef __ARM_NEON__
+int MainNeonSSE()
+{
+
+
+
+}
+#else
+int MainNeonSSE()
+{
+    UINT16 dataU16[8] __declspec(align(16));
+    UINT8 dataU8[16] __declspec(align(16));
+    INT8 dataI8[16] __declspec(align(16));
+
+    UINT32 Vendor[3];
+    char VendorString[13];
+
+    unsigned int maxFunc;
+    cpuid(0, maxFunc, Vendor[0], Vendor[2], Vendor[1]);
+
+    for (int i=0; i < 3; i++)
+    {
+        VendorString[4*i] = Vendor[i];
+        VendorString[4*i + 1] = Vendor[i] >> 8;
+        VendorString[4*i + 2] = Vendor[i] >> 16;
+        VendorString[4*i + 3] = Vendor[i] >> 24;
+    }
+    VendorString[12]=0;
+
+    cout<<maxFunc<<flush<<endl;
+    cout<<VendorString<<flush<<endl;
+
+    UINT8 data1[] __declspec(align(16)) = {0, 1, 0,   255, 255, 255,   6,7, 0,1,2,3,4,5,6,7};
+    UINT8 data2[] __declspec(align(16)) = {1, 3, 255, 0, 255, 255,   7,6, 1,3,1,5,5,3,7,6};
+    UINT8 datamaskadd[] __declspec(align(16)) = {0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F, 0x7F};
+
+	__m128i m1 = _mm_load_si128((__m128i*)data1);
+	__m128i m2 = _mm_load_si128((__m128i*)data2);
+	//__m128i maskadd = _mm_load_si128((__m128i*)datamaskadd);
+
+    XMM_DIFF(m1,m2);
+    _mm_stream_si128((__m128i*)dataU8, m1);
+    cout<<"DIFF = ";
+    for (int i = 0; i < 16; i++)
+    {
+        cout<<(UINT16)dataU8[i]<<" ";
+    }
+    cout<<endl;
+
+    m2 = _mm_sign_epi8 (m1, m2);
+    //m2 = m1;
+	//XMM_ABS(m2);
+	//m1 = _mm_and_si128(m1, maskadd);
+    _mm_stream_si128((__m128i*)dataU8, m2);
+    cout<<"m2 = ";
+    for (int i = 0; i < 16; i++)
+    {
+        cout<<(UINT16)dataU8[i]<<" ";
+    }
+    cout<<endl;
+
+	XMM_MULT_REDUCTION_ADD(m1);
+	m1 = _mm_maddubs_epi16(m1, m1);
+
+    _mm_stream_si128((__m128i*)dataI8, m1);
+    UINT32 sum = 0;
+    for (int i = 0; i < 16; i++)
+    {
+        sum += dataI8[i];
+        cout<<(INT16)dataI8[i]<<" ";
+    }
+    cout<<" SSD = "<<sum<<endl;
+
+    sum =0;
+    for (int i = 0; i < 16; i++)
+        sum += (data1[i] - data2[i])*(data1[i] - data2[i]);
+    cout<<" SSD = "<<sum<<endl;
+	return 0;
+}
+#endif
+
+#define __ARM_NEON__
+#ifdef __ARM_NEON__
+static void FindMatchesSSE(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatches* SMs)
+{
+    SMs->RealMatches = 0;
+    int DescriptorIndex1;
+	for (DescriptorIndex1 =0; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1++)
+    {
+		int DescriptorIndex2;
+		int minIndex;
+		int nexttominIndex;
+		UINT32 dsq, distsq1, distsq2;
+		distsq1 = (UINT32)-1;
+		distsq2 = (UINT32)-1;
+
+        //load 128 bits as 16x 8 bits. Optimized for cache line of 64 Bytes = 512 bits (Intel SandyBridge)
+
+            UINT64 *src1 = (UINT64*)__builtin_assume_aligned((SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1]), 16);
+            //load 128 Bytes of data (8 x (16x8) bits )
+            __m128i m0 = _mm_load_si128((__m128i*)(src1));
+            __m128i m1 = _mm_load_si128((__m128i*)(src1 + 2));
+            __m128i m2 = _mm_load_si128((__m128i*)(src1 + 4));
+            __m128i m3 = _mm_load_si128((__m128i*)(src1 + 6));
+            __m128i m4 = _mm_load_si128((__m128i*)(src1 + 8));
+            __m128i m5 = _mm_load_si128((__m128i*)(src1 + 10));
+            __m128i m6 = _mm_load_si128((__m128i*)(src1 + 12));
+            __m128i m7 = _mm_load_si128((__m128i*)(src1 + 14));
+
+
+        for (DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
+	    {
+	        dsq = 0;
+            UINT64 *src2 = (UINT64*)__builtin_assume_aligned((SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]), 16);
+/*
+            //load 128 Bytes of data (8 x (16x8) bits )
+            __m128i m8 = _mm_load_si128((__m128i*)(src1));
+            __m128i m9 = _mm_load_si128((__m128i*)(src1 + 2));
+            __m128i m10 = _mm_load_si128((__m128i*)(src1 + 4));
+            __m128i m11 = _mm_load_si128((__m128i*)(src1 + 6));
+            __m128i m12 = _mm_load_si128((__m128i*)(src1 + 8));
+            __m128i m13 = _mm_load_si128((__m128i*)(src1 + 10));
+            __m128i m14 = _mm_load_si128((__m128i*)(src1 + 12));
+            __m128i m15 = _mm_load_si128((__m128i*)(src1 + 14));
+
+
+            XMM_DIFF(m8,m0);
+            XMM_DIFF(m9,m1);
+            XMM_DIFF(m10,m2);
+            XMM_DIFF(m11,m3);
+
+            XMM_DIFF(m12,m4);
+            XMM_DIFF(m13,m5);
+            XMM_DIFF(m14,m6);
+            XMM_DIFF(m15,m7);
+
+
+            XMM_ABS(m8);
+            XMM_ABS(m9);
+            XMM_ABS(m10);
+            XMM_ABS(m11);
+            XMM_ABS(m12);
+            XMM_ABS(m13);
+            XMM_ABS(m14);
+            XMM_ABS(m15);
+
+            XMM_MULT_REDUCTION_ADD(m8);
+            XMM_MULT_REDUCTION_ADD(m9);
+            XMM_MULT_REDUCTION_ADD(m10);
+            XMM_MULT_REDUCTION_ADD(m11);
+            XMM_MULT_REDUCTION_ADD(m12);
+            XMM_MULT_REDUCTION_ADD(m13);
+            XMM_MULT_REDUCTION_ADD(m14);
+            XMM_MULT_REDUCTION_ADD(m15);
+
+*/
+            UINT16 mults[8*8] __declspec(align(16));
+/*
+            _mm_store_si128((__m128i*)&mults[0], m8);
+            _mm_store_si128((__m128i*)&mults[8], m9);
+            _mm_store_si128((__m128i*)&mults[16], m10);
+            _mm_store_si128((__m128i*)&mults[24], m11);
+
+            _mm_store_si128((__m128i*)&mults[32], m12);
+            _mm_store_si128((__m128i*)&mults[40], m13);
+            _mm_store_si128((__m128i*)&mults[48], m14);
+            _mm_store_si128((__m128i*)&mults[56], m15);
+*/
+            for (int i = 0; i < 64; i++)
+                dsq += mults[i];
+            /*
+            for (FeatIndex = 0; FeatIndex < FEATURES_PER_DESCRIPTOR; FeatIndex+= 8)
+            {
+                INT32 sq = (SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1][FeatIndex] -
+                            SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2][FeatIndex]);
+                dsq += sq*sq;
+            }
+            */
+
+            if (dsq < distsq1)
+                {
+                    distsq2 = distsq1;
+                    distsq1 = dsq;
+                    nexttominIndex = minIndex;
+                    minIndex = DescriptorIndex2;
+                }
+            else if (dsq < distsq2)
+                {
+                    distsq2 = dsq;
+                    nexttominIndex = DescriptorIndex2;
+                }
+        }
+        if (distsq1 < (FACTOR1 * distsq2) >> FACTOR2)
+            SMs->DescIx2ndImgMin[SMs->RealMatches++] = minIndex;
+        //otherwise overwrite it next image1 descriptor
+    }
+}
+
+#else
+static void FindMatchesSSE(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatches* SMs)
+{
+    SMs->RealMatches = 0;
+    int DescriptorIndex1;
+	for (DescriptorIndex1 =0; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1++)
+    {
+		int DescriptorIndex2;
+		int minIndex;
+		int nexttominIndex;
+		UINT32 dsq, distsq1, distsq2;
+		distsq1 = (UINT32)-1;
+		distsq2 = (UINT32)-1;
+
+        //load 128 bits as 16x 8 bits. Optimized for cache line of 64 Bytes = 512 bits (Intel SandyBridge)
+
+            UINT64 *src1 = (UINT64*)__builtin_assume_aligned((SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1]), 16);
+            //load 128 Bytes of data (8 x (16x8) bits )
+            __m128i m0 = _mm_load_si128((__m128i*)(src1));
+            __m128i m1 = _mm_load_si128((__m128i*)(src1 + 2));
+            __m128i m2 = _mm_load_si128((__m128i*)(src1 + 4));
+            __m128i m3 = _mm_load_si128((__m128i*)(src1 + 6));
+            __m128i m4 = _mm_load_si128((__m128i*)(src1 + 8));
+            __m128i m5 = _mm_load_si128((__m128i*)(src1 + 10));
+            __m128i m6 = _mm_load_si128((__m128i*)(src1 + 12));
+            __m128i m7 = _mm_load_si128((__m128i*)(src1 + 14));
+
+
+        for (DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
+	    {
+	        dsq = 0;
+            UINT64 *src2 = (UINT64*)__builtin_assume_aligned((SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]), 16);
+/*
+            //load 128 Bytes of data (8 x (16x8) bits )
+            __m128i m8 = _mm_load_si128((__m128i*)(src1));
+            __m128i m9 = _mm_load_si128((__m128i*)(src1 + 2));
+            __m128i m10 = _mm_load_si128((__m128i*)(src1 + 4));
+            __m128i m11 = _mm_load_si128((__m128i*)(src1 + 6));
+            __m128i m12 = _mm_load_si128((__m128i*)(src1 + 8));
+            __m128i m13 = _mm_load_si128((__m128i*)(src1 + 10));
+            __m128i m14 = _mm_load_si128((__m128i*)(src1 + 12));
+            __m128i m15 = _mm_load_si128((__m128i*)(src1 + 14));
+
+
+            XMM_DIFF(m8,m0);
+            XMM_DIFF(m9,m1);
+            XMM_DIFF(m10,m2);
+            XMM_DIFF(m11,m3);
+
+            XMM_DIFF(m12,m4);
+            XMM_DIFF(m13,m5);
+            XMM_DIFF(m14,m6);
+            XMM_DIFF(m15,m7);
+
+
+            XMM_ABS(m8);
+            XMM_ABS(m9);
+            XMM_ABS(m10);
+            XMM_ABS(m11);
+            XMM_ABS(m12);
+            XMM_ABS(m13);
+            XMM_ABS(m14);
+            XMM_ABS(m15);
+
+            XMM_MULT_REDUCTION_ADD(m8);
+            XMM_MULT_REDUCTION_ADD(m9);
+            XMM_MULT_REDUCTION_ADD(m10);
+            XMM_MULT_REDUCTION_ADD(m11);
+            XMM_MULT_REDUCTION_ADD(m12);
+            XMM_MULT_REDUCTION_ADD(m13);
+            XMM_MULT_REDUCTION_ADD(m14);
+            XMM_MULT_REDUCTION_ADD(m15);
+
+*/
+            UINT16 mults[8*8] __declspec(align(16));
+/*
+            _mm_store_si128((__m128i*)&mults[0], m8);
+            _mm_store_si128((__m128i*)&mults[8], m9);
+            _mm_store_si128((__m128i*)&mults[16], m10);
+            _mm_store_si128((__m128i*)&mults[24], m11);
+
+            _mm_store_si128((__m128i*)&mults[32], m12);
+            _mm_store_si128((__m128i*)&mults[40], m13);
+            _mm_store_si128((__m128i*)&mults[48], m14);
+            _mm_store_si128((__m128i*)&mults[56], m15);
+*/
+            for (int i = 0; i < 64; i++)
+                dsq += mults[i];
+            /*
+            for (FeatIndex = 0; FeatIndex < FEATURES_PER_DESCRIPTOR; FeatIndex+= 8)
+            {
+                INT32 sq = (SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1][FeatIndex] -
+                            SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2][FeatIndex]);
+                dsq += sq*sq;
+            }
+            */
+
+            if (dsq < distsq1)
+                {
+                    distsq2 = distsq1;
+                    distsq1 = dsq;
+                    nexttominIndex = minIndex;
+                    minIndex = DescriptorIndex2;
+                }
+            else if (dsq < distsq2)
+                {
+                    distsq2 = dsq;
+                    nexttominIndex = DescriptorIndex2;
+                }
+        }
+        if (distsq1 < (FACTOR1 * distsq2) >> FACTOR2)
+            SMs->DescIx2ndImgMin[SMs->RealMatches++] = minIndex;
+        //otherwise overwrite it next image1 descriptor
+    }
+}
+#endif // __SSE__

@@ -7,6 +7,7 @@
 
 #include "../../include/core/io_unit.h"
 #include "../../include/c_simu/c_simulator.h"
+#include "../../include/cppamp_emu/cppamp_emulator.h"
 
 using namespace std;
 #include <iostream>
@@ -56,7 +57,13 @@ int deinitialize()
                 c_simulator::deinitialize();
                 break;
             }
+		case CPPAMP_EMULATION_MODE:
+            {
+                cppamp_emulator::deinitialize();
+                break;
+            }
     }
+
     cnxvector::deinitialize();
     io_unit::deinitialize();
     return result;
@@ -126,6 +133,20 @@ int initialize(UINT8 RunningMode)
 
         IO_READ_NOW = c_simulator::vread;
         c_simulator::initialize();
+    }
+	else if (RunningMode == CPPAMP_EMULATION_MODE)
+    {
+		EXECUTE_BATCH = cppamp_emulator::executeBatchOneReduce;
+        EXECUTE_BATCH_RED = cppamp_emulator::executeBatchOneReduce;
+        GET_MULTIRED_RESULT = cppamp_emulator::getMultiRedResult;
+
+        IO_WRITE_NOW = cppamp_emulator::vwrite;
+        IO_WRITE_BEGIN = cppamp_emulator::vwriteNonBlocking;
+        IO_WRITE_IS_ENDED = cppamp_emulator::vwriteIsEnded;
+        IO_WRITE_WAIT_END = cppamp_emulator::vwriteWaitEnd;
+
+        IO_READ_NOW = cppamp_emulator::vread;
+        cppamp_emulator::initialize();
     }
     else
     {

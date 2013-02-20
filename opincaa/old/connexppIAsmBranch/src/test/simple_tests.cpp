@@ -1068,6 +1068,7 @@ int test_ExtendedSimpleAll()
                 cout<<"ISHL2 failed: expected ("<<i<<" << "<<j<<") = NUMBER_OF_MACHINES* "<<(i<<j)<<" but received "<<val<<endl;
             else cout<<"ISHL2 PASS: ("<<i<<" << "<<j<<") = NUMBER_OF_MACHINES * "<<(i<<j)<<endl;
         }
+	return 0;
 }
 
 int test_Simple_All(bool stress)

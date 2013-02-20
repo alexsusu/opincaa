@@ -89,6 +89,8 @@
 #include "../include/test/speed_tests.h"
 #include "../include/test/simple_io_tests.h"
 #include "../include/test/basic_match_tests.h"
+#include "../include/test/basic_match_tests_neon.h"
+#include "../include/test/basic_match_tests_sad.h"
 #include "../include/test/max_tests.h"
 #include "../include/test/crypto/aes/aes_tests.h"
 #include "../include/test/crypto/aes/aes_cpu_tests.h"
@@ -97,78 +99,6 @@
 //#include "../include/test/crypto/bsDES/bs_des_tests.h"
 
 using namespace std;
-
-// Make sure that batches do not overlap !
-// BNR = Batch NumBer
-
-enum BatchNumbers
-{
-    RADU_BNR = 0,
-    REDUCE_BNR = 1,
-    MAX_BNR = 99
-};
-
-void InitKernel_Radu()
-{
-    BEGIN_BATCH(RADU_BNR);
-
-        EXECUTE_IN_ALL(
-                        NOP;
-                        LS[100] = R4;
-                        R10 = LS[0x32];
-                        R0 = 0x140;
-                        REDUCE(R3);
-                        MULT = R1 * R2;
-                        CELL_SHR(R2,R3);
-                        CELL_SHL(R3,R5);
-                        LS[R1] = R7;)
-        EXECUTE_WHERE_CARRY();
-        EXECUTE_WHERE_EQ(;);
-        EXECUTE_WHERE_LT();
-        EXECUTE_IN_ALL(
-                        R1 = INDEX;
-                        R3 = LS[R6];
-                        R3 = _LOW(MULT);
-                        R15 = SHIFT_REG;
-                        R31 = _HIGH(MULT);
-                        R29 = R31 << R29;
-                        R20 = R14 << 8;
-                        R2 = R1 + R2;
-                        R5 = (R3 == R4);
-                        R1 = ~R3;
-                        R3 = R1 >> R2;
-                        R5 = R3 >> 5;
-                        R3 = R3 - R3;
-                        R5 = R3 < R4;
-                        R1 = R1 | R1;
-                        R3 = SHRA(R3, R3);
-                        R3 = ISHRA(R4, 9);
-                        R4 = ADDC(R1, R2);
-                        R2 = ULT(R4, R3);
-                        R10 = R6 & R5;
-                        R4 = SUBC(R4, R4);
-                        R1 = R1 ^ R1;
-                        )
-    END_BATCH(RADU_BNR);
-}
-
-
-void InitKernel_Reduce()
-{
-    BEGIN_BATCH(REDUCE_BNR);
-
-        R0 = R1 + R2;
-        R1 = 13;
-        /* ... */
-        REDUCE(R0);
-
-    END_BATCH(REDUCE_BNR);
-}
-
-enum errorCodes
-{
-    INIT_FAILED
-};
 
 int main(int argc, char *argv[])
 {
@@ -188,6 +118,11 @@ int main(int argc, char *argv[])
             run_mode = C_SIMULATION_MODE;
         }
         else if(strcmp(argv[i],"--hemulation") == 0)
+		{
+		    cout << "Running in cppamp hardware emulation mode" << endl;
+			run_mode = CPPAMP_EMULATION_MODE;
+		}
+		else if(strcmp(argv[i],"--hardware") == 0)
         {
             cout << "Running in hardware mode" << endl;
             run_mode = REAL_HARDWARE_MODE;
@@ -208,6 +143,7 @@ int main(int argc, char *argv[])
              cout<<"        --vsimulation (for Verilog Simulation)" << endl;
              cout<<"        --csimulation (for C++ Simulation)" << endl;
              cout<<"        --hemulation (for Hardware emulation)" << endl;
+			 cout<<"        --hardware (for Hardware )" << endl;
              return -1;
         }
 
@@ -232,7 +168,7 @@ int main(int argc, char *argv[])
     {
         if (0 == strcmp(argv[i+1],"--icctests"))
         {
-            icc_test_Simple_All(true);
+            //icc_test_Simple_All(true);
             DEINIT();
 
             cout << "Press ENTER to continue...";
@@ -245,7 +181,10 @@ int main(int argc, char *argv[])
 	//test_Max_All(true);
     //test_Speed_All();
     //test_Simple_IO_All(true);
-	test_BasicMatching_All();
+	//test_BasicMatching_SAD_All();
+    //test_BasicMatching_All();
+    MainNeonSSE();
+    test_BasicMatching_All_NeonSSE();
 	//test_AES_All();
 	//test_AES_CPU_All();
 	//test_AES_CPU_NEON_SSE_All();
