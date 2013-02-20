@@ -19,7 +19,7 @@ LIB =
 LDFLAGS = 
 
 INC_DEBUG =  $(INC) -Iinclude -Iinclude/util
-CFLAGS_DEBUG =  $(CFLAGS) -g
+CFLAGS_DEBUG =  $(CFLAGS) -march=core2 -g -msse4.2 -march=corei7-avx
 RESINC_DEBUG =  $(RESINC)
 RCFLAGS_DEBUG =  $(RCFLAGS)
 LIBDIR_DEBUG =  $(LIBDIR) -LM:/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/lib/
@@ -29,7 +29,7 @@ OBJDIR_DEBUG = obj/Debug
 DEP_DEBUG = 
 OUT_DEBUG = bin/Debug/connexppAsm
 
-OBJ_DEBUG = $(OBJDIR_DEBUG)/src/test/max_tests.o $(OBJDIR_DEBUG)/src/test/icc_simple_tests.o $(OBJDIR_DEBUG)/src/test/crypto/AES/aes_tests.o $(OBJDIR_DEBUG)/src/test/crypto/AES/aes_cpu_tests.o $(OBJDIR_DEBUG)/src/test/basic_match_tests.o $(OBJDIR_DEBUG)/src/main.o
+OBJ_DEBUG = $(OBJDIR_DEBUG)/src/test/max_tests.o $(OBJDIR_DEBUG)/src/test/icc_simple_tests.o $(OBJDIR_DEBUG)/src/test/crypto/AES/aes_tests.o $(OBJDIR_DEBUG)/src/test/crypto/AES/aes_cpu_tests.o $(OBJDIR_DEBUG)/src/test/basic_match_tests_neon.o $(OBJDIR_DEBUG)/src/test/basic_match_tests.o $(OBJDIR_DEBUG)/src/main.o $(OBJDIR_DEBUG)/src/cppamp_emulator/cppamp_emulator.o
 
 all: debug
 
@@ -40,6 +40,7 @@ before_debug:
 	test -d $(OBJDIR_DEBUG)/src/test || mkdir -p $(OBJDIR_DEBUG)/src/test
 	test -d $(OBJDIR_DEBUG)/src/test/crypto/AES || mkdir -p $(OBJDIR_DEBUG)/src/test/crypto/AES
 	test -d $(OBJDIR_DEBUG)/src || mkdir -p $(OBJDIR_DEBUG)/src
+	test -d $(OBJDIR_DEBUG)/src/cppamp_emulator || mkdir -p $(OBJDIR_DEBUG)/src/cppamp_emulator
 
 after_debug: 
 
@@ -60,11 +61,17 @@ $(OBJDIR_DEBUG)/src/test/crypto/AES/aes_tests.o: src/test/crypto/AES/aes_tests.c
 $(OBJDIR_DEBUG)/src/test/crypto/AES/aes_cpu_tests.o: src/test/crypto/AES/aes_cpu_tests.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/crypto/AES/aes_cpu_tests.cpp -o $(OBJDIR_DEBUG)/src/test/crypto/AES/aes_cpu_tests.o
 
+$(OBJDIR_DEBUG)/src/test/basic_match_tests_neon.o: src/test/basic_match_tests_neon.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/basic_match_tests_neon.cpp -o $(OBJDIR_DEBUG)/src/test/basic_match_tests_neon.o
+
 $(OBJDIR_DEBUG)/src/test/basic_match_tests.o: src/test/basic_match_tests.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/basic_match_tests.cpp -o $(OBJDIR_DEBUG)/src/test/basic_match_tests.o
 
 $(OBJDIR_DEBUG)/src/main.o: src/main.cpp
 	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/main.cpp -o $(OBJDIR_DEBUG)/src/main.o
+
+$(OBJDIR_DEBUG)/src/cppamp_emulator/cppamp_emulator.o: src/cppamp_emulator/cppamp_emulator.cpp
+	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/cppamp_emulator/cppamp_emulator.cpp -o $(OBJDIR_DEBUG)/src/cppamp_emulator/cppamp_emulator.o
 
 clean_debug: 
 	rm -f $(OBJ_DEBUG) $(OUT_DEBUG)
@@ -72,6 +79,7 @@ clean_debug:
 	rm -rf $(OBJDIR_DEBUG)/src/test
 	rm -rf $(OBJDIR_DEBUG)/src/test/crypto/AES
 	rm -rf $(OBJDIR_DEBUG)/src
+	rm -rf $(OBJDIR_DEBUG)/src/cppamp_emulator
 
 .PHONY: before_debug after_debug clean_debug
 

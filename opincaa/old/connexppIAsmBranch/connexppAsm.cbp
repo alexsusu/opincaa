@@ -13,7 +13,9 @@
 				<Option compiler="gcc" />
 				<Option parameters="--csimulation" />
 				<Compiler>
+					<Add option="-march=core2" />
 					<Add option="-g" />
+					<Add option="-msse4.2 -march=corei7-avx" />
 					<Add directory="include" />
 					<Add directory="include/util" />
 				</Compiler>
@@ -30,6 +32,23 @@
 				<Option parameters="--csimulation" />
 				<Compiler>
 					<Add option="-O3" />
+					<Add option="-msse4.2  -march=corei7-avx" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add library="lib\opincaa.a" />
+					<Add directory="M:/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/lib/" />
+				</Linker>
+			</Target>
+			<Target title="ReleaseNEON">
+				<Option output="bin/Release/connexppAsm" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="--csimulation" />
+				<Compiler>
+					<Add option="-O3" />
+					<Add option="-march=armv7 -mcpu=cortex-a9" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -42,13 +61,13 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="ideascode.txt" />
 		<Unit filename="include/core/cnxvector.h" />
 		<Unit filename="include/core/cnxvector_errors.h" />
 		<Unit filename="include/core/cnxvector_registers.h" />
 		<Unit filename="include/core/io_unit.h" />
 		<Unit filename="include/core/opcodes.h" />
 		<Unit filename="include/test/basic_match_tests.h" />
+		<Unit filename="include/test/basic_match_tests_neon.h" />
 		<Unit filename="include/test/crypto/aes/aes_cpu_tests.h" />
 		<Unit filename="include/test/crypto/aes/aes_tests.h" />
 		<Unit filename="include/test/icc_simple_tests.h" />
@@ -57,10 +76,13 @@
 		<Unit filename="include/test/simple_tests.h" />
 		<Unit filename="include/test/speed_tests.h" />
 		<Unit filename="include/util/kernel_acc.h" />
+		<Unit filename="include/util/neonvssse.h" />
 		<Unit filename="include/util/timing.h" />
 		<Unit filename="include/util/utils.h" />
+		<Unit filename="src/cppamp_emulator/cppamp_emulator.cpp" />
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/test/basic_match_tests.cpp" />
+		<Unit filename="src/test/basic_match_tests_neon.cpp" />
 		<Unit filename="src/test/crypto/AES/aes_cpu_tests.cpp" />
 		<Unit filename="src/test/crypto/AES/aes_tests.cpp" />
 		<Unit filename="src/test/icc_simple_tests.cpp" />

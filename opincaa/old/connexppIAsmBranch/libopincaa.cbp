@@ -58,6 +58,7 @@
 		<Unit filename="src/core/cnxvector_errors.cpp" />
 		<Unit filename="src/core/cnxvector_registers.cpp" />
 		<Unit filename="src/core/io_unit.cpp" />
+		<Unit filename="src/cppamp_emulator/cppamp_emulator.cpp" />
 		<Unit filename="src/test/simple_io_tests.cpp" />
 		<Unit filename="src/test/simple_tests.cpp" />
 		<Unit filename="src/test/speed_tests.cpp" />

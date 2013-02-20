@@ -29,7 +29,7 @@ OBJDIR_RELEASELIB = obj/ReleaseLib
 DEP_RELEASELIB = 
 OUT_RELEASELIB = lib/opincaa.a
 
-OBJ_RELEASELIB = $(OBJDIR_RELEASELIB)/src/util/utils.o $(OBJDIR_RELEASELIB)/src/util/timing.o $(OBJDIR_RELEASELIB)/src/util/kernel_acc.o $(OBJDIR_RELEASELIB)/src/test/speed_tests.o $(OBJDIR_RELEASELIB)/src/test/simple_tests.o $(OBJDIR_RELEASELIB)/src/test/simple_io_tests.o $(OBJDIR_RELEASELIB)/src/core/io_unit.o $(OBJDIR_RELEASELIB)/src/core/cnxvector_registers.o $(OBJDIR_RELEASELIB)/src/core/cnxvector_errors.o $(OBJDIR_RELEASELIB)/src/core/cnxvector.o $(OBJDIR_RELEASELIB)/src/c_simu/c_simulator.o $(OBJDIR_RELEASELIB)/src/api/wrapper/Image.o
+OBJ_RELEASELIB = $(OBJDIR_RELEASELIB)/src/util/utils.o $(OBJDIR_RELEASELIB)/src/util/timing.o $(OBJDIR_RELEASELIB)/src/util/kernel_acc.o $(OBJDIR_RELEASELIB)/src/test/speed_tests.o $(OBJDIR_RELEASELIB)/src/test/simple_tests.o $(OBJDIR_RELEASELIB)/src/test/simple_io_tests.o $(OBJDIR_RELEASELIB)/src/cppamp_emulator/cppamp_emulator.o $(OBJDIR_RELEASELIB)/src/core/io_unit.o $(OBJDIR_RELEASELIB)/src/core/cnxvector_registers.o $(OBJDIR_RELEASELIB)/src/core/cnxvector_errors.o $(OBJDIR_RELEASELIB)/src/core/cnxvector.o $(OBJDIR_RELEASELIB)/src/c_simu/c_simulator.o $(OBJDIR_RELEASELIB)/src/api/wrapper/Image.o
 
 all: releaselib
 
@@ -39,6 +39,7 @@ before_releaselib:
 	test -d lib || mkdir -p lib
 	test -d $(OBJDIR_RELEASELIB)/src/util || mkdir -p $(OBJDIR_RELEASELIB)/src/util
 	test -d $(OBJDIR_RELEASELIB)/src/test || mkdir -p $(OBJDIR_RELEASELIB)/src/test
+	test -d $(OBJDIR_RELEASELIB)/src/cppamp_emulator || mkdir -p $(OBJDIR_RELEASELIB)/src/cppamp_emulator
 	test -d $(OBJDIR_RELEASELIB)/src/core || mkdir -p $(OBJDIR_RELEASELIB)/src/core
 	test -d $(OBJDIR_RELEASELIB)/src/c_simu || mkdir -p $(OBJDIR_RELEASELIB)/src/c_simu
 	test -d $(OBJDIR_RELEASELIB)/src/api/wrapper || mkdir -p $(OBJDIR_RELEASELIB)/src/api/wrapper
@@ -68,6 +69,9 @@ $(OBJDIR_RELEASELIB)/src/test/simple_tests.o: src/test/simple_tests.cpp
 $(OBJDIR_RELEASELIB)/src/test/simple_io_tests.o: src/test/simple_io_tests.cpp
 	$(CXX) $(CFLAGS_RELEASELIB) $(INC_RELEASELIB) -c src/test/simple_io_tests.cpp -o $(OBJDIR_RELEASELIB)/src/test/simple_io_tests.o
 
+$(OBJDIR_RELEASELIB)/src/cppamp_emulator/cppamp_emulator.o: src/cppamp_emulator/cppamp_emulator.cpp
+	$(CXX) $(CFLAGS_RELEASELIB) $(INC_RELEASELIB) -c src/cppamp_emulator/cppamp_emulator.cpp -o $(OBJDIR_RELEASELIB)/src/cppamp_emulator/cppamp_emulator.o
+
 $(OBJDIR_RELEASELIB)/src/core/io_unit.o: src/core/io_unit.cpp
 	$(CXX) $(CFLAGS_RELEASELIB) $(INC_RELEASELIB) -c src/core/io_unit.cpp -o $(OBJDIR_RELEASELIB)/src/core/io_unit.o
 
@@ -91,6 +95,7 @@ clean_releaselib:
 	rm -rf lib
 	rm -rf $(OBJDIR_RELEASELIB)/src/util
 	rm -rf $(OBJDIR_RELEASELIB)/src/test
+	rm -rf $(OBJDIR_RELEASELIB)/src/cppamp_emulator
 	rm -rf $(OBJDIR_RELEASELIB)/src/core
 	rm -rf $(OBJDIR_RELEASELIB)/src/c_simu
 	rm -rf $(OBJDIR_RELEASELIB)/src/api/wrapper
