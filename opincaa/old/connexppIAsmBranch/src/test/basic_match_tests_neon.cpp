@@ -610,77 +610,68 @@ static void FindMatchesSSE(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMat
 
         //load 128 bits as 16x 8 bits. Optimized for cache line of 64 Bytes = 512 bits (Intel SandyBridge)
 
-            UINT64 *src1 = (UINT64*)__builtin_assume_aligned((SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1]), 16);
+            uint8x16x2_t point1[4] __declspec(align(16));
+            uint8x16x2_t *src1 = (uint8x16x2_t*)__builtin_assume_aligned((SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1]), 16);
             //load 128 Bytes of data (8 x (16x8) bits )
-            __m128i m0 = _mm_load_si128((__m128i*)(src1));
-            __m128i m1 = _mm_load_si128((__m128i*)(src1 + 2));
-            __m128i m2 = _mm_load_si128((__m128i*)(src1 + 4));
-            __m128i m3 = _mm_load_si128((__m128i*)(src1 + 6));
-            __m128i m4 = _mm_load_si128((__m128i*)(src1 + 8));
-            __m128i m5 = _mm_load_si128((__m128i*)(src1 + 10));
-            __m128i m6 = _mm_load_si128((__m128i*)(src1 + 12));
-            __m128i m7 = _mm_load_si128((__m128i*)(src1 + 14));
-
+            point1[0] = vld2q_u8(src1[0]);
+            point1[1] = vld2q_u8(src1[1]);
+            point1[2] = vld2q_u8(src1[2]);
+            point1[3] = vld2q_u8(src1[3]);
 
         for (DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
 	    {
 	        dsq = 0;
-            UINT64 *src2 = (UINT64*)__builtin_assume_aligned((SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]), 16);
-/*
+            uint8x16x2_t point2[4] __declspec(align(16));
+
+            uint8x16x2_t *src2 = (uint8x16x2_t*)__builtin_assume_aligned((SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]), 16);
+
             //load 128 Bytes of data (8 x (16x8) bits )
-            __m128i m8 = _mm_load_si128((__m128i*)(src1));
-            __m128i m9 = _mm_load_si128((__m128i*)(src1 + 2));
-            __m128i m10 = _mm_load_si128((__m128i*)(src1 + 4));
-            __m128i m11 = _mm_load_si128((__m128i*)(src1 + 6));
-            __m128i m12 = _mm_load_si128((__m128i*)(src1 + 8));
-            __m128i m13 = _mm_load_si128((__m128i*)(src1 + 10));
-            __m128i m14 = _mm_load_si128((__m128i*)(src1 + 12));
-            __m128i m15 = _mm_load_si128((__m128i*)(src1 + 14));
+            point2[0] = vld2q_u8(src2[0]);
+            point2[1] = vld2q_u8(src2[1]);
+            point2[2] = vld2q_u8(src2[2]);
+            point2[3] = vld2q_u8(src2[3]);
 
+            //uint8x8_t   vabd_u8(uint8x8_t a, uint8x8_t b);
+            point2[0].val[0] = vabd_u8(point2[0].val[0], point1[0].val[0]);
+            point2[0].val[1] = vabd_u8(point2[0].val[1], point1[0].val[1]);
 
-            XMM_DIFF(m8,m0);
-            XMM_DIFF(m9,m1);
-            XMM_DIFF(m10,m2);
-            XMM_DIFF(m11,m3);
+            point2[1].val[0] = vabd_u8(point2[1].val[0], point1[1].val[0]);
+            point2[1].val[1] = vabd_u8(point2[1].val[1], point1[1].val[1]);
 
-            XMM_DIFF(m12,m4);
-            XMM_DIFF(m13,m5);
-            XMM_DIFF(m14,m6);
-            XMM_DIFF(m15,m7);
+            point2[2].val[0] = vabd_u8(point2[2].val[0], point1[2].val[0]);
+            point2[2].val[1] = vabd_u8(point2[2].val[1], point1[2].val[1]);
 
+            point2[3].val[0] = vabd_u8(point2[3].val[0], point1[3].val[0]);
+            point2[3].val[1] = vabd_u8(point2[3].val[1], point1[3].val[1]);
 
-            XMM_ABS(m8);
-            XMM_ABS(m9);
-            XMM_ABS(m10);
-            XMM_ABS(m11);
-            XMM_ABS(m12);
-            XMM_ABS(m13);
-            XMM_ABS(m14);
-            XMM_ABS(m15);
+            uint16x8x2_t point3[8] __declspec(align(16));
+            //set to zero !
 
-            XMM_MULT_REDUCTION_ADD(m8);
-            XMM_MULT_REDUCTION_ADD(m9);
-            XMM_MULT_REDUCTION_ADD(m10);
-            XMM_MULT_REDUCTION_ADD(m11);
-            XMM_MULT_REDUCTION_ADD(m12);
-            XMM_MULT_REDUCTION_ADD(m13);
-            XMM_MULT_REDUCTION_ADD(m14);
-            XMM_MULT_REDUCTION_ADD(m15);
+            point3[0].val[0] = vmlal_u8(point3[0].val[0], point2[0].val[0], point2[0].val[0]);
+            point3[0].val[1] = vmlal_u8(point3[0].val[1], point2[0].val[1], point2[0].val[1]);
 
-*/
-            UINT16 mults[8*8] __declspec(align(16));
-/*
-            _mm_store_si128((__m128i*)&mults[0], m8);
-            _mm_store_si128((__m128i*)&mults[8], m9);
-            _mm_store_si128((__m128i*)&mults[16], m10);
-            _mm_store_si128((__m128i*)&mults[24], m11);
+            point3[1].val[0] = vmlal_u8(point3[1].val[0], point2[2].val[0], point2[1].val[0]);
+            point3[1].val[1] = vmlal_u8(point3[1].val[1], point2[2].val[1], point2[1].val[1]);
 
-            _mm_store_si128((__m128i*)&mults[32], m12);
-            _mm_store_si128((__m128i*)&mults[40], m13);
-            _mm_store_si128((__m128i*)&mults[48], m14);
-            _mm_store_si128((__m128i*)&mults[56], m15);
-*/
-            for (int i = 0; i < 64; i++)
+            point3[2].val[0] = vmlal_u8(point3[2].val[0], point2[3].val[0], point2[2].val[0]);
+            point3[2].val[1] = vmlal_u8(point3[2].val[1], point2[3].val[1], point2[2].val[1]);
+
+            point3[3].val[0] = vmlal_u8(point3[3].val[0], point2[3].val[0], point2[3].val[0]);
+            point3[3].val[1] = vmlal_u8(point3[3].val[1], point2[3].val[1], point2[3].val[1]);
+
+            UINT16 mults[8] __declspec(align(16));
+
+            vst1q_u16(&mults[0], point3[0].val[0]);
+            vst1q_u16(&mults[1], point3[0].val[1]);
+            vst1q_u16(&mults[2], point3[1].val[0]);
+            vst1q_u16(&mults[3], point3[1].val[0]);
+
+            vst1q_u16(&mults[4], point3[2].val[0]);
+            vst1q_u16(&mults[5], point3[2].val[1]);
+            vst1q_u16(&mults[6], point3[3].val[0]);
+            vst1q_u16(&mults[7], point3[3].val[1]);
+
+            for (int i = 0; i < 8; i++)
                 dsq += mults[i];
             /*
             for (FeatIndex = 0; FeatIndex < FEATURES_PER_DESCRIPTOR; FeatIndex+= 8)
