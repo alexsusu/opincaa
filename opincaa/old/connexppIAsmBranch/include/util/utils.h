@@ -21,12 +21,16 @@
 #define INT32  int
 #endif
 
-#ifndef INT64
+#ifndef UINT64
 #define UINT64 unsigned long long int
 #endif
 
 #ifndef INT64
 #define INT64  long long int
+#endif
+
+#ifndef FLOAT32
+#define FLOAT32 float
 #endif
 
 #define UINT_INSTRUCTION UINT32 // how long an instruction is

@@ -178,6 +178,7 @@ static int LoadDescriptors(char *FileName, SiftDescriptors *SDs, int Limit)
 
 #define FACTOR1 46
 #define FACTOR2 7 // that is (1 << 7)
+
 /* We have to compare x/y with 0.36 ; if it is less, we have a true match
 
 x/y < 0.36 is eqv with x < 0.36*y

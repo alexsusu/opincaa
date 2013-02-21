@@ -5,5 +5,5 @@
  *
  */
 
-int test_BasicMatching_All_NeonSSE();
+int test_BasicMatching_All_NeonSSE(char*, char*);
 int MainNeonSSE();
