@@ -35,6 +35,9 @@
     #define GET_OPCODE_6BITS(x) ((x >> OPCODE_6BITS_POS) & ((1 << OPCODE_6BITS_SIZE)-1))
     #define GET_OPCODE_9BITS(x) ((x >> OPCODE_9BITS_POS) & ((1 << OPCODE_9BITS_SIZE)-1))
 
+    #define LOOPS_VAL_MAX IMMEDIATE_VALUE_MASK
+    #define DELTAJMP_VAL_MAX 1022
+
     /* 9-bit invalid opcodes (to cause error on verify)
         This is used to mark invalid parameres */
     // cannot use this: problem is in subscript operator: in case of write it does not return a value !
@@ -87,6 +90,9 @@
     #define _VLOAD     0b110101
     #define _IREAD     0b110100
     #define _IWRITE    0b110010
+
+    #define _SETLC     0b010101
+    #define _IJMPNZ    0b010011
 #else
 	#include "../../ms_visual_c/vc_opcodes.h"
 #endif

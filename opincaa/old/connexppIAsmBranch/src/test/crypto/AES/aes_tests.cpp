@@ -236,6 +236,7 @@ static void CnxPreprareTransferSbox(UINT_REGISTER_VAL *CS)
 static int AES_CnxTransferSbox()
 {
     if (PASS != IO_WRITE_NOW(&IOU_Sbox)){printf("Writing to IO pipe, FAILED !"); return FAIL;}
+    return PASS;
 }
 
 static UINT_REGISTER_VAL CnxKeys[NUMBER_OF_MACHINES * AES_KEY_SIZE_IN_BYTES];
@@ -262,6 +263,7 @@ static void CnxPreprareTransferKeys(UINT_REGISTER_VAL *CK)
 static int AES_CnxTransferKeys()
 {
     if (PASS != IO_WRITE_NOW(&IOU_Keys)){printf("Writing to IO pipe, FAILED !"); return FAIL;}
+    return PASS;
 }
 
 
@@ -300,6 +302,7 @@ static void CnxPreprareTransferOutputDataBlocks(int datablocks)
 static int AES_CnxTransferOutputDataBlocks()
 {
     if (PASS != IO_READ_NOW(&IOU_CnxDataOutput)){printf("Reading from IO pipe, FAILED !"); return FAIL;}
+    return PASS;
 }
 
 #define USING4REGS(a,b,c,d) a,b,c,d
@@ -366,7 +369,6 @@ static void AES_CnxXorWiWimNk(cnxvector Rx, cnxvector Ry, cnxvector Rz, cnxvecto
 
 static int AES_CnxKeyExpansion()
 {
-    UINT32 temp;
     UINT8 i = Nk;
 
     /* copy w0...w3 from localstore (key) to localstore (wi)
@@ -727,6 +729,7 @@ static int AES_ConnexSEncryption()
 
 
     cout<<endl<<"PASS"<<endl;
+    return PASS;
 }
 
 int test_AES_All()

@@ -26,9 +26,9 @@
 #define LOCAL_STORE_SIZE 1024
 #define REGISTER_FILE_SIZE 32
 
-#define VERIFY_BATCH(Batch)         cppamp_emulator::verifyBatch(Batch)
-#define DEASM_BATCH(Batch)          cppamp_emulator::printDeAsmBatch(Batch)
-#define PRINT_SHIFT_REGS()           cppamp_emulator::printSHIFT_REGS()
+//#define VERIFY_BATCH(Batch)         cppamp_emulator::verifyBatch(Batch)
+//#define DEASM_BATCH(Batch)          cppamp_emulator::printDeAsmBatch(Batch)
+//#define PRINT_SHIFT_REGS()           cppamp_emulator::printSHIFT_REGS()
 //#define FOUND_ERROR()                cppamp_emulator::foundError()
 //#define GET_NUM_ERRORS()             cppamp_emulator::getNumErrors()
 

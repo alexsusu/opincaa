@@ -27,7 +27,8 @@
         int cnxvector::pipe_read_32;\
         int cnxvector::pipe_write_32;\
         int cnxvector::dwErrorCounter;\
-        unsigned char cnxvector::bEstimationMode;
+        unsigned char cnxvector::bEstimationMode;\
+        int cnxvector::dwLastJmpLabel;
 
 #else
 	#define STATIC_cnxvector_DEFINITIONS\
@@ -37,7 +38,8 @@
         int cnxvector::pipe_read_32;\
         int cnxvector::pipe_write_32;\
         int cnxvector::dwErrorCounter;\
-        unsigned char cnxvector::bEstimationMode;
+        unsigned char cnxvector::bEstimationMode;\
+        int cnxvector::dwLastJmpLabel;
 
 #endif
 
@@ -47,6 +49,14 @@
   see implementation of function appendInstruction(...)
 
 */
+#define JMP_MODE_SET_LABEL 0
+#define JMP_MODE_PERFORM 1
+#define SET_JMP_LABEL(x) cnxvector::jmp(JMP_MODE_SET_LABEL,0)
+#define JMP_TIMES_TO_LABEL(times,label) cnxvector::jmp(JMP_MODE_PERFORM, times)
+#define REPEAT_X_TIMES(times, instructions_to_repeat) \
+    if (times > 1) {SET_JMP_LABEL(0); instructions_to_repeat; JMP_TIMES_TO_LABEL(times-1,0);}\
+    else if (times == 1) {instructions_to_repeat}
+
 
 #define BEGIN_BATCH(x) {unsigned char BatchLoopTimes = 2;\
                         while (BatchLoopTimes-- > 0)\
@@ -137,9 +147,11 @@ class cnxvector
         static UINT8 bEstimationMode;
         static int pipe_read_32, pipe_write_32;
         static int dwErrorCounter;
+        static int dwLastJmpLabel;
 
         //methods: static
         static void appendInstruction(UINT_INSTRUCTION instr);
+        static void replaceInstruction(UINT_INSTRUCTION instr, int index);
 
         static cnxvector addc(cnxvector other_left, cnxvector other_right);
         static cnxvector addc(cnxvector other_left, UINT_PARAM value);
@@ -161,6 +173,7 @@ class cnxvector
         static cnxvector ult(cnxvector other_left, UINT_PARAM value);
 
         static void onlyOpcode(UINT_INSTRUCTION opcode);
+        static void jmp(int mode, int Loops);
 
         static void nop();
         static void WhereCry();

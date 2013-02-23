@@ -90,7 +90,6 @@ static void AES_MixColumn(UINT8 *r)
 {
     unsigned char a[4];
     unsigned char b[4];
-    unsigned char c;
     unsigned char h;
     /* The array 'a' is simply a copy of the input array 'r'
      * The array 'b' is each element of the array 'a' multiplied by 2
@@ -195,7 +194,6 @@ static void AES_MixColumns(_State *s)
 static UINT8 AES_Rcon[] = {0x00, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20 , 0x40, 0x80, 0x1b, 0x36};
 static int AES_KeyExpansion(_Wi *Wi, UINT32 *Key)
 {
-    UINT32 temp;
     UINT8 i;
     for (i=0; i < Nk; i++)
         Wi[i].DoubleWord = Key[i];

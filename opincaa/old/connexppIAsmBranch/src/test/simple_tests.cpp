@@ -93,6 +93,37 @@ static void InitKernel_Read(int BatchNumber,INT32 Param1, INT32 Param2)
     END_BATCH(BatchNumber);
 }
 
+static void InitKernel_Jump(int BatchNumber,INT32 Param1, INT32 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        EXECUTE_IN_ALL(
+                        R1 = 1;
+                        R0 = Param1;
+                        SET_JMP_LABEL(99);
+                        R0 = R0 - R1;
+                        JMP_TIMES_TO_LABEL(Param2,99);// times, label
+                        REDUCE(R0);
+                       )
+
+
+    END_BATCH(BatchNumber);
+}
+
+static void InitKernel_Jump2(int BatchNumber,INT32 Param1, INT32 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        EXECUTE_IN_ALL(
+                        R1 = 1;
+                        R0 = Param1;
+                        REPEAT_X_TIMES
+                        (Param2,
+                            R0 = R0 - R1;
+                        )
+                        REDUCE(R0);
+                       )
+    END_BATCH(BatchNumber);
+}
+
 static void InitKernel_Add(int BatchNumber,INT32 Param1, INT32 Param2);
 static void InitKernel_Vload(int BatchNumber,INT32 Param1, INT32 Param2)
 {
@@ -444,6 +475,7 @@ static void InitKernel_Ult(int BatchNumber,INT32 Param1, INT32 Param2)
     END_BATCH(BatchNumber);
 }
 
+/*
 static void InitKernel_Ult2(int BatchNumber,INT32 Param1, INT32 Param2)
 {
     BEGIN_BATCH(BatchNumber);
@@ -456,6 +488,7 @@ static void InitKernel_Ult2(int BatchNumber,INT32 Param1, INT32 Param2)
 
     END_BATCH(BatchNumber);
 }
+*/
 
 static void InitKernel_pUlt(int BatchNumber,INT32 Param1, INT32 Param2)
 {
@@ -793,6 +826,9 @@ enum SimpleBatchNumbers
     IO_WRITE_BNR    ,
     IO_READ_BNR     ,
 
+    IJMP_BNR        ,
+    IJMP2_BNR       ,
+
     PRINT_LS_BNR = 98,
     CLEAR_LS_BNR = 99,
     MAX_BNR = NUMBER_OF_BATCHES
@@ -872,6 +908,10 @@ static TestFunction TestFunctionTable[] =
     {WHERE_EQ_BNR,"WHEREQ",InitKernel_Whereq,{27,50,50}},
     {WHERE_LT_BNR,"WHERELT",InitKernel_Wherelt,{27,50,27*50}},
     {WHERE_CARRY_BNR,"WHERECRY",InitKernel_Wherecry,{(0x10000UL-10),50,118*50}},
+
+    {IJMP_BNR,"IJMP",InitKernel_Jump,{(10), 2, (10-1 - 2)*NUMBER_OF_MACHINES}},
+    {IJMP2_BNR,"IJMP2",InitKernel_Jump2,{(10), 2, (10-2)*NUMBER_OF_MACHINES}},
+
 	{CELL_SHL_BNR,"CELLSHL",InitKernel_Cellshl,{2,5,5-2}},
     {CELL_SHR_BNR,"CELLSHR",InitKernel_Cellshr,{2,5,5+2}},
     {CELL_SHLROL_BNR,"CELLSHLROL",InitKernel_Cellshlrol,{NUMBER_OF_MACHINES,0,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
@@ -1100,6 +1140,9 @@ int test_Simple_All(bool stress)
                <<result << " (expected " <<TestFunctionTable[i].ds.ExpectedResult<<" ) !" << " params are "
                << TestFunctionTable[i].ds.Param1 << " and " << TestFunctionTable[i].ds.Param2 <<endl;
                testFails++;
+
+               DEASM_BATCH(TestFunctionTable[i].BatchNumber);
+
                if (j == 0) break;
                //return testFails;
             }

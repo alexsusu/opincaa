@@ -14,6 +14,8 @@
 #define IMM_VAL_SIGNED_MIN -32768
 #define IMM_SHIFT_VAL_MAX 0x1F
 
+#define ERR_LOOPS_TIMES_OUT_OF_RANGE "Too many jumps"
+#define ERR_LOOP_LENGTH_OUT_OF_RANGE "Jump is too long"
 #define ERR_SUBSCRIPT_OUT_OF_RANGE "Subscript operation failed: immediate value too large !"
 #define ERR_SHIFT_OUT_OF_RANGE "Shift operation failed: too long !"
 #define ERR_MULT_LO_HI_PARAM "Mult lo/hi operation failed: parameter not MULT !"

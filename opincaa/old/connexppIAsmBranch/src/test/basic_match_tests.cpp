@@ -103,7 +103,7 @@ static void PrintMatches(SiftMatches *SMs)
     for(MatchesIndex =0; MatchesIndex < SMs->RealMatches; MatchesIndex++)
     //for(MatchesIndex =0; MatchesIndex < 10; MatchesIndex++)
     {
-        printf("Matches[%d].DescriptorIndexInSecondImage = %d \n", SMs->DescIx2ndImgMin[MatchesIndex]);
+        printf("Matches[%d].DescriptorIndexInSecondImage = %d \n", MatchesIndex, SMs->DescIx2ndImgMin[MatchesIndex]);
         /*
         printf("Matches[%d].X1,Y1,X2,Y2,Sc= %f %f %f %f %d\n",
                MatchesIndex, SMs->Matches[MatchesIndex].X1, SMs->Matches[MatchesIndex].Y1,
@@ -151,7 +151,7 @@ static int LoadDescriptors(char *FileName, SiftDescriptors *SDs, int Limit)
             fscanf(fp,"%f",&SDs->SD[DescriptorIndex].Orientation);
 
             for (FeatIndex = 0; FeatIndex < FEATURES_PER_DESCRIPTOR; FeatIndex++)
-                result = fscanf(fp,"%d",&SDs->SiftDescriptorsBasicFeatures[DescriptorIndex][FeatIndex]);
+                result = fscanf(fp,"%hu",&SDs->SiftDescriptorsBasicFeatures[DescriptorIndex][FeatIndex]);
 
             if (result == 1) SDs->RealDescriptors++;
             else
@@ -201,9 +201,9 @@ static void FindMatches(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatche
 	for (DescriptorIndex1 =0; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1++)
     {
 		int DescriptorIndex2;
-		int minIndex;
-		int nexttominIndex;
-		UINT32 dsq, distsq1, distsq2;
+		int minIndex=0;
+		//int nexttominIndex;
+		UINT32 distsq1, distsq2;
 		distsq1 = (UINT32)-1;
 		distsq2 = (UINT32)-1;
 
@@ -219,22 +219,17 @@ static void FindMatches(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatche
                 dsq += sq*sq;
             }
 
-            //if (DescriptorIndex1==0)
-            //{ cout<<LastScore<<" "; if ((DescriptorIndex2 % 8) == 0) cout<<endl; }
-
-            //BestScore = LastScore;
-            //SMs->DescriptorIndexInSecondImage[SMs->RealMatches] = DescriptorIndex2;
             if (dsq < distsq1)
                 {
                     distsq2 = distsq1;
                     distsq1 = dsq;
-                    nexttominIndex = minIndex;
+                    //nexttominIndex = minIndex;
                     minIndex = DescriptorIndex2;
                 }
             else if (dsq < distsq2)
                 {
                     distsq2 = dsq;
-                    nexttominIndex = DescriptorIndex2;
+                    //nexttominIndex = DescriptorIndex2;
                 }
         }
         if (distsq1 < (FACTOR1 * distsq2) >> FACTOR2)
@@ -384,7 +379,6 @@ static int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
                                     SiftDescriptors *SiftDescriptors1, SiftDescriptors *SiftDescriptors2,
                                         SiftMatches* SMs, SiftMatches* SMsFinal)
 {
-    int TrueMatches = 0;
     if (RunningMode == MODE_CREATE_BATCHES)
     {
         // After running, get reduced results
@@ -423,7 +417,7 @@ static int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
                             int descIm2 = CurrentcnxvectorChunkImg2*VECTORS_CHUNK_IMAGE2 + (CurrentcnxvectorSubChunkImg2 * VECTORS_SUBCHUNK_IMAGE2) + x;
                             //if (descIm1 == 0) { cout<<RedCounter<<":"<<BasicMatchRedResults[RedCounter]<<" "; if ((descIm2 & 3) == 3) cout << endl;}
 
-                            int dsq = BasicMatchRedResults[RedCounter];
+                            UINT_RED_REG_VAL dsq = BasicMatchRedResults[RedCounter];
                             if (dsq < SMs->ScoreMin[descIm1])
                             {
                                 SMs->ScoreNextToMin[descIm1] = SMs->ScoreMin[descIm1];

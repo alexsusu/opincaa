@@ -32,6 +32,7 @@
     int cnxvector::pipe_write_32;
     int cnxvector::dwErrorCounter;
     unsigned char cnxvector::bEstimationMode;
+    int cnxvector::dwLastJmpLabel;
 
 
 cnxvector::cnxvector(UINT_INSTRUCTION MainVal)
@@ -78,8 +79,11 @@ void cnxvector::appendInstruction(UINT_INSTRUCTION instr)
     if (bEstimationMode == 0)
         dwBatch[dwBatchIndex][dwInBatchCounter[dwBatchIndex]++] = instr;
     else dwInBatchCounter[dwBatchIndex]++;
-    //if ((dwInBatchCounter[dwBatchIndex] % 1000) ==0)
-      //  printf("%d ",dwInBatchCounter[dwBatchIndex]);
+}
+
+void cnxvector::replaceInstruction(UINT_INSTRUCTION instr, int index)
+{
+    dwBatch[dwBatchIndex][index] = instr;
 }
 
 
@@ -383,15 +387,11 @@ UINT_RED_REG_VAL cnxvector::executeBatch(UINT16 dwBatchNumber)
 
 UINT_RED_REG_VAL cnxvector::executeBatchRed(UINT16 dwBatchNumber)
 {
-    unsigned char data_read[4];
+    UINT_RED_REG_VAL data_read;
     executeBatch(dwBatchNumber);
 
-    read(pipe_read_32,data_read,1);
-    read(pipe_read_32,data_read+1,1);
-    read(pipe_read_32,data_read+2,1);
-    read(pipe_read_32,data_read+3,1);
-
-    return *((UINT_RED_REG_VAL *)data_read);
+    read(pipe_read_32, &data_read,4);
+    return data_read;
 }
 
 UINT32 cnxvector::getMultiRedResult(UINT_RED_REG_VAL* RedResults, UINT32 Limit)
@@ -401,5 +401,36 @@ UINT32 cnxvector::getMultiRedResult(UINT_RED_REG_VAL* RedResults, UINT32 Limit)
         return read(pipe_read_32,RedResults,MAX_MULTIRED_DWORDS);
     else
         return read(pipe_read_32,RedResults,Limit);
+}
+
+void cnxvector::jmp(int mode, int Loops)
+{
+    if (mode == JMP_MODE_SET_LABEL)
+    {
+        if (bEstimationMode == 0)
+            nop();//add a nop here, will be overwritten
+        else
+        {
+            cnxvector::dwLastJmpLabel = getInBatchCounter(dwBatchIndex);
+            nop();
+        }
+    }
+    else
+    {
+        if (bEstimationMode == 0)
+        {
+            int DeltaJump = getInBatchCounter(dwBatchIndex) - cnxvector::dwLastJmpLabel;
+            if (Loops > LOOPS_VAL_MAX) cnxvectorError(ERR_LOOPS_TIMES_OUT_OF_RANGE);
+            if (DeltaJump > DELTAJMP_VAL_MAX) cnxvectorError(ERR_LOOP_LENGTH_OUT_OF_RANGE);
+            replaceInstruction((_SETLC << OPCODE_6BITS_POS) + (Loops << IMMEDIATE_VALUE_POS), cnxvector::dwLastJmpLabel);
+            appendInstruction((_IJMPNZ << OPCODE_6BITS_POS) + (DeltaJump << IMMEDIATE_VALUE_POS));
+        }
+        else nop();
+    }
+
+    //if (imm_val < IMM_VAL_SIGNED_MIN) cnxvectorError(ERR_IMM_VALUE_OUT_OF_RANGE);
+    //imm_val = imm_val & IMMEDIATE_VALUE_MASK;
+
+
 }
 

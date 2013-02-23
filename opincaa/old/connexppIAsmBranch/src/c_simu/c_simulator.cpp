@@ -187,6 +187,10 @@ void printVLOAD(UINT_INSTRUCTION instr) {    printf("R%u = %u (zis si 0x%x)\n", 
 void printIREAD(UINT_INSTRUCTION instr) {    printf("R%d = LS [%d]\n", GET_DEST(instr), GET_IMM(instr));}
 void printIWRITE(UINT_INSTRUCTION instr) {    printf("LS [%d] = R%d\n", GET_IMM(instr), GET_LEFT(instr));}
 
+void printSETLC(UINT_INSTRUCTION instr)  {   printf("SETLC (loop counter) to %d \n", GET_IMM(instr));}
+void printIJMPNZ(UINT_INSTRUCTION instr) {   printf("IJMPNZ (backwards) %d slots \n", GET_IMM(instr));}
+
+
 /* LRD = Left Right Destination
     P = paranthesis
     I = immediate
@@ -233,6 +237,9 @@ int c_simulator::printDeAsmBatch(UINT16 dwBatchNumber)
                 case _VLOAD: {printVLOAD(CurrentInstruction);continue;}
                 case _IREAD: {printIREAD(CurrentInstruction);continue;}
                 case _IWRITE: {printIWRITE(CurrentInstruction);continue;}
+
+                case _SETLC:{printSETLC(CurrentInstruction);continue;}
+                case _IJMPNZ:{printIJMPNZ(CurrentInstruction);continue;}
             }
 
         switch (((CurrentInstruction) >> OPCODE_9BITS_POS) & ((1 << OPCODE_9BITS_SIZE)-1))
@@ -318,6 +325,7 @@ int c_simulator::DeAsmBatch(UINT16 dwBatchNumber)
     int result = 0;
     UINT_INSTRUCTION CI; //current instruction
     UINT32 InstructionIndex = 0;
+    UINT32 LocalLoop = 0;
     CSimuRedCnt = 0;
 
     UINT32 InstructionIndexMax = cnxvector::getInBatchCounter(dwBatchNumber);
@@ -329,6 +337,16 @@ int c_simulator::DeAsmBatch(UINT16 dwBatchNumber)
                 case _VLOAD: {FOR_ALL_ACTIVE_MACHINES( CSimuRegs[MACHINE][GET_DEST(CI)] = GET_IMM(CI));continue;}
                 case _IREAD: {FOR_ALL_ACTIVE_MACHINES( CSimuRegs[MACHINE][GET_DEST(CI)] = CSimuLocalStore[MACHINE][GET_IMM(CI)]);continue;}
                 case _IWRITE: {FOR_ALL_ACTIVE_MACHINES( CSimuLocalStore[MACHINE][GET_IMM(CI)] = CSimuRegs[MACHINE][GET_LEFT(CI)]);continue;}
+
+                case _SETLC: {  LocalLoop = GET_IMM(CI);continue;}
+                case _IJMPNZ: {
+                                if (LocalLoop > 0)
+                                {
+                                    InstructionIndex = InstructionIndex - GET_IMM(CI);
+                                    LocalLoop--;
+                                }
+                                continue;
+                            }
             }
 
         switch (((CI) >> OPCODE_9BITS_POS) & ((1 << OPCODE_9BITS_SIZE)-1))
@@ -462,7 +480,7 @@ int c_simulator::DeAsmBatch(UINT16 dwBatchNumber)
                                         FOR_ALL_MACHINES(
                                                         if ( CSimuRotationMagnitude[MACHINE] > 0)
                                                         {
-                                                            UINT_REGVALUE man;
+                                                            UINT_REGVALUE man = 0;
                                                             rotation_existed = true;
 
                                                             if (MACHINE == 0) man = CSimuShiftRegs[NUMBER_OF_MACHINES -1];
@@ -489,7 +507,7 @@ int c_simulator::DeAsmBatch(UINT16 dwBatchNumber)
                                         FOR_ALL_MACHINES(
                                                         if ( CSimuRotationMagnitude[MACHINE] > 0)
                                                         {
-                                                            UINT_REGVALUE man;
+                                                            UINT_REGVALUE man = 0;
                                                             rotation_existed = true;
 
                                                             if (MACHINE == NUMBER_OF_MACHINES -2) man = CSimuShiftRegs[NUMBER_OF_MACHINES-1];
