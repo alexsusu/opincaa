@@ -91,14 +91,17 @@ struct SiftMatches
     UINT16 RealMatches;
 };
 
-static SiftDescriptorsF32 SiftDescriptorsF32_1 __attribute__ ((aligned(32)));
-static SiftDescriptorsF32 SiftDescriptorsF32_2 __attribute__ ((aligned(32)));
-
+/* only UINT16 is implemented on Connex-S */
 static SiftDescriptors16 SiftDescriptors16_1 __attribute__ ((aligned(32)));
 static SiftDescriptors16 SiftDescriptors16_2 __attribute__ ((aligned(32)));
 
+#ifndef __ARM_NEON__
+static SiftDescriptorsF32 SiftDescriptorsF32_1 __attribute__ ((aligned(32)));
+static SiftDescriptorsF32 SiftDescriptorsF32_2 __attribute__ ((aligned(32)));
+
 static SiftDescriptors8 SiftDescriptors8_1 __attribute__ ((aligned(32)));
 static SiftDescriptors8 SiftDescriptors8_2 __attribute__ ((aligned(32)));
+#endif
 
 static SiftMatches SM_Arm;
 static SiftMatches SM_Arm_SSE;
