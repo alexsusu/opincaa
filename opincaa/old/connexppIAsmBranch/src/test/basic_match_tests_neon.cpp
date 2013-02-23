@@ -453,8 +453,8 @@ static void SAD_FindMatchesF32(SiftDescriptorsF32* SDs1, SiftDescriptorsF32* SDs
 		int minIndex = 0;
 		//int nexttominIndex;
 		FLOAT32 distsq1, distsq2;
-		distsq1 = (FLOAT32)ULONG_MAX;
-		distsq2 = (FLOAT32)ULONG_MAX;
+		distsq1 = (FLOAT32)UINT_MAX;
+		distsq2 = (FLOAT32)UINT_MAX;
 
         for (int DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
 	    {
@@ -490,8 +490,8 @@ static void SSD_FindMatchesF32(SiftDescriptorsF32 *SDs1, SiftDescriptorsF32 *SDs
 		int minIndex = 0;
 		//int nexttominIndex;
 		FLOAT32 distsq1, distsq2;
-		distsq1 = (FLOAT32)ULONG_MAX;
-		distsq2 = (FLOAT32)ULONG_MAX;
+		distsq1 = (FLOAT32)UINT_MAX;
+		distsq2 = (FLOAT32)UINT_MAX;
 
         for (int DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
 	    {
@@ -950,8 +950,8 @@ static void SSD_FindMatchesF32_SSE(SiftDescriptorsF32 *SDs1, SiftDescriptorsF32 
 		int minIndex = 0;
 		//int nexttominIndex;
 		FLOAT32 dsq, distsq1, distsq2;
-        distsq1 = (FLOAT32)ULONG_MAX;
-		distsq2 = (FLOAT32)ULONG_MAX;
+        distsq1 = (FLOAT32)UINT_MAX;
+		distsq2 = (FLOAT32)UINT_MAX;
 
             FLOAT32 *src1 = (FLOAT32*)__builtin_assume_aligned((SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1]), 32);
             //load 128 Bytes of data (8 x (16x8) bits )
@@ -1151,8 +1151,8 @@ static void SAD_FindMatchesF32_SSE(SiftDescriptorsF32 *SDs1, SiftDescriptorsF32 
 		int minIndex = 0;
 		//int nexttominIndex;
 		FLOAT32 dsq, distsq1, distsq2;
-		distsq1 = (FLOAT32)ULONG_MAX;
-		distsq2 = (FLOAT32)ULONG_MAX;
+		distsq1 = (FLOAT32)UINT_MAX;
+		distsq2 = (FLOAT32)UINT_MAX;
 
             FLOAT32 *src1 = (FLOAT32*)__builtin_assume_aligned((SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1]), 32);
             //load 128 Bytes of data (8 x (16x8) bits )
