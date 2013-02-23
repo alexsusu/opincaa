@@ -732,150 +732,8 @@ static int SSD_connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
 }
 
 #define BASIC_MATCHING_BNR 0
-static void SSD_FindMatches16_SSE(SiftDescriptors16 *SDs1, SiftDescriptors16 *SDs2, SiftMatches* SMs);
-static void SSD_FindMatchesF32_SSE(SiftDescriptorsF32*, SiftDescriptorsF32* , SiftMatches* SMs);
-
-static void SAD_FindMatches8_SSE(SiftDescriptors8 *SDs1, SiftDescriptors8 *SDs2, SiftMatches* SMs);
-static void SAD_FindMatches16_SSE(SiftDescriptors16 *SDs1, SiftDescriptors16 *SDs2, SiftMatches* SMs);
-static void SAD_FindMatchesF32_SSE(SiftDescriptorsF32* SDs1, SiftDescriptorsF32* SDs2, SiftMatches* SMs);
 
 
-
-
-static void SAD8_Benchmark(char* fileName1, char* fileName2)
-{
-    /* 8-bit matching */
-    int Start;
-
-    cout<<"Starting SAD 8-bit... " <<flush<<endl;
-    cout<<"---------------------- " <<flush<<endl;
-    LoadDescriptors8(fileName1, &SiftDescriptors8_1, 0);
-    LoadDescriptors8(fileName2, &SiftDescriptors8_2, 0);
-
-    Start = GetMilliCount();
-    SAD_FindMatches8(&SiftDescriptors8_1, &SiftDescriptors8_2, &SM_Arm);
-    cout<<"CPU-only FindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
-
-    Start = GetMilliCount();
-    SAD_FindMatches8_SSE(&SiftDescriptors8_1, &SiftDescriptors8_2, &SM_Arm_SSE);
-    cout<<"CPU-Only + SSE/NEON FindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
-
-    if (PASS == CompareMatches(&SM_Arm,&SM_Arm_SSE)) cout << "Matches are a ... match ;). CPU and CPU-SSE/NEON got the same results."<<endl<<endl;
-    else cout << "Match test has FAILed. CPU and CPU_SSE/NEON got different results !"<<endl<<endl;
-}
-
-static void SAD16_Benchmark(char* fileName1, char* fileName2)
-{
-    int Start;
-    cout<<"Starting SAD 16-bit... " <<flush<<endl;
-    cout<<"---------------------- " <<flush<<endl;
-    LoadDescriptors16(fileName1, &SiftDescriptors16_1, 0);
-    LoadDescriptors16(fileName2, &SiftDescriptors16_2, 0);
-
-    Start = GetMilliCount();
-    SAD_FindMatches16(&SiftDescriptors16_1, &SiftDescriptors16_2, &SM_Arm);
-    cout<<"CPU-only FindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
-
-    Start = GetMilliCount();
-    SAD_FindMatches16_SSE(&SiftDescriptors16_1, &SiftDescriptors16_2, &SM_Arm_SSE);
-    cout<<"CPU-Only + SSE/NEON FindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
-
-    if (PASS == CompareMatches(&SM_Arm,&SM_Arm_SSE)) cout << "Matches are a ... match ;). CPU and CPU-SSE/NEON got the same results."<<endl<<endl;
-    else cout << "Match test has FAILed. CPU and CPU_SSE/NEON got different results !"<<endl<<endl;
-}
-
-static void SSD16_Benchmark(char* fileName1, char* fileName2)
-{
-    int Start;
-    cout<<"\n\nStarting SSD 16-bit... " <<flush<<endl;
-    cout<<"---------------------- " <<flush<<endl;
-
-    LoadDescriptors16(fileName1, &SiftDescriptors16_1, 0);
-    LoadDescriptors16(fileName2, &SiftDescriptors16_2, 0);
-
-    Start = GetMilliCount();
-    SSD_FindMatches16(&SiftDescriptors16_1, &SiftDescriptors16_2, &SM_Arm);
-    cout<<"CPU-only FindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
-
-    Start = GetMilliCount();
-    SSD_FindMatches16_SSE(&SiftDescriptors16_1, &SiftDescriptors16_2, &SM_Arm_SSE);
-    cout<<"CPU-Only + SSE/NEON FindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
-
-    if (PASS == CompareMatches(&SM_Arm,&SM_Arm_SSE)) cout << "Matches are a ... match ;). CPU and CPU-SSE/NEON got the same results."<<endl<<endl;
-    else cout << "Match test has FAILed. CPU and CPU_SSE/NEON got different results !"<<endl<<endl;
-}
-
-static void SAD32F_Benchmark(char* fileName1, char* fileName2)
-{
-    int Start;
-    cout<<"\n\nStarting SAD 32-bit float ... " <<flush<<endl;
-    cout<<"---------------------- " <<flush<<endl;
-
-    LoadDescriptorsF32(fileName1, &SiftDescriptorsF32_1, 0);
-    LoadDescriptorsF32(fileName2, &SiftDescriptorsF32_2, 0);
-
-    Start = GetMilliCount();
-    SAD_FindMatchesF32(&SiftDescriptorsF32_1, &SiftDescriptorsF32_2, &SM_Arm);
-    cout<<"CPU-only FindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
-
-    Start = GetMilliCount();
-    SAD_FindMatchesF32_SSE(&SiftDescriptorsF32_1, &SiftDescriptorsF32_2, &SM_Arm_SSE);
-    cout<<"CPU-Only + SSE/NEON FindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
-
-    if (PASS == CompareMatches(&SM_Arm,&SM_Arm_SSE)) cout << "Matches are a ... match ;). CPU and CPU-SSE/NEON got the same results."<<endl<<endl;
-    else cout << "Match test has FAILed. CPU and CPU_SSE/NEON got different results !"<<endl<<endl;
-}
-
-static void SSD32F_Benchmark(char* fileName1, char* fileName2)
-{
-    int Start;
-    cout<<"\n\nStarting SSD 32-bit float ... " <<flush<<endl;
-    cout<<"---------------------- " <<flush<<endl;
-
-    LoadDescriptorsF32(fileName1, &SiftDescriptorsF32_1, 0);
-    LoadDescriptorsF32(fileName2, &SiftDescriptorsF32_2, 0);
-
-    Start = GetMilliCount();
-    SSD_FindMatchesF32(&SiftDescriptorsF32_1, &SiftDescriptorsF32_2, &SM_Arm);
-    cout<<"CPU-only FindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
-
-    Start = GetMilliCount();
-    SSD_FindMatchesF32_SSE(&SiftDescriptorsF32_1, &SiftDescriptorsF32_2, &SM_Arm_SSE);
-    cout<<"CPU-Only + SSE/NEON FindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
-
-    if (PASS == CompareMatches(&SM_Arm,&SM_Arm_SSE)) cout << "Matches are a ... match ;). CPU and CPU-SSE/NEON got the same results."<<endl<<endl;
-    else cout << "Match test has FAILed. CPU and CPU_SSE/NEON got different results !"<<endl<<endl;
-}
-
-int test_BasicMatching_All_NeonSSE(char* fileName1, char* fileName2)
-{
-    int Start;
-
-    SAD8_Benchmark(fileName1, fileName2);
-    SAD16_Benchmark(fileName1, fileName2);
-    SAD32F_Benchmark(fileName1, fileName2);
-
-    SSD32F_Benchmark(fileName1, fileName2);
-
-    SSD16_Benchmark(fileName1, fileName2);
-    cout<<"\n\nStarting SSD 16-bit on Connex-S... " <<flush<<endl;
-    cout<<"---------------------- " <<flush<<endl;
-    Start = GetMilliCount();
-    SSD_connexFindMatchesPass1(MODE_CREATE_BATCHES, BASIC_MATCHING_BNR, &SiftDescriptors16_1, &SiftDescriptors16_2);
-    SSD_connexFindMatchesPass2(MODE_CREATE_BATCHES, BASIC_MATCHING_BNR, &SiftDescriptors16_1, &SiftDescriptors16_2, &SM_ConnexArmMan, &SM_ConnexArm);
-    cout<<"Batches were created in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
-
-    Start = GetMilliCount();
-    SSD_connexFindMatchesPass1(MODE_EXECUTE_FIND_MATCHES, BASIC_MATCHING_BNR, &SiftDescriptors16_1, &SiftDescriptors16_2);
-    SSD_connexFindMatchesPass2(MODE_EXECUTE_FIND_MATCHES, BASIC_MATCHING_BNR, &SiftDescriptors16_1, &SiftDescriptors16_2, &SM_ConnexArmMan, &SM_ConnexArm);
-    cout<<"connexFindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
-    //PrintMatches(&SM_ConnexArm);
-
-    if (PASS == CompareMatches(&SM_Arm,&SM_ConnexArm)) cout << "Matches are a ... match ;). Arm and Arm-Connex got the same results."<<endl;
-    else cout << "Match test has FAILed. Arm and ConnexArm got different results !"<<endl;
-
-	return 0;
-}
 
 //SSSE3: needed for _mm_maddubs
 #ifdef __ARM_NEON__
@@ -1481,3 +1339,175 @@ int MainNeonSSE_Int()
 }
 */
 #endif
+
+
+static void SAD8_Benchmark(char* fileName1, char* fileName2)
+{
+    #ifdef __ARM_NEON__
+
+    cout<<" SAD 8-bit not implemented with NEON " <<flush<<endl;
+
+    #else
+    /* 8-bit matching */
+    int Start;
+
+    cout<<"Starting SAD 8-bit... " <<flush<<endl;
+    cout<<"---------------------- " <<flush<<endl;
+    LoadDescriptors8(fileName1, &SiftDescriptors8_1, 0);
+    LoadDescriptors8(fileName2, &SiftDescriptors8_2, 0);
+
+    Start = GetMilliCount();
+    SAD_FindMatches8(&SiftDescriptors8_1, &SiftDescriptors8_2, &SM_Arm);
+    cout<<"CPU-only FindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
+
+    Start = GetMilliCount();
+    SAD_FindMatches8_SSE(&SiftDescriptors8_1, &SiftDescriptors8_2, &SM_Arm_SSE);
+    cout<<"CPU-Only + SSE/NEON FindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
+
+    if (PASS == CompareMatches(&SM_Arm,&SM_Arm_SSE)) cout << "Matches are a ... match ;). CPU and CPU-SSE/NEON got the same results."<<endl<<endl;
+    else cout << "Match test has FAILed. CPU and CPU_SSE/NEON got different results !"<<endl<<endl;
+
+    #endif // __ARM_NEON__
+
+}
+
+static void SAD16_Benchmark(char* fileName1, char* fileName2)
+{
+    #ifdef __ARM_NEON__
+
+    cout<<" SAD 16-bit not implemented with NEON " <<flush<<endl;
+
+    #else
+
+        int Start;
+        cout<<"Starting SAD 16-bit... " <<flush<<endl;
+        cout<<"---------------------- " <<flush<<endl;
+        LoadDescriptors16(fileName1, &SiftDescriptors16_1, 0);
+        LoadDescriptors16(fileName2, &SiftDescriptors16_2, 0);
+
+        Start = GetMilliCount();
+        SAD_FindMatches16(&SiftDescriptors16_1, &SiftDescriptors16_2, &SM_Arm);
+        cout<<"CPU-only FindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
+
+        Start = GetMilliCount();
+        SAD_FindMatches16_SSE(&SiftDescriptors16_1, &SiftDescriptors16_2, &SM_Arm_SSE);
+        cout<<"CPU-Only + SSE/NEON FindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
+
+        if (PASS == CompareMatches(&SM_Arm,&SM_Arm_SSE)) cout << "Matches are a ... match ;). CPU and CPU-SSE/NEON got the same results."<<endl<<endl;
+        else cout << "Match test has FAILed. CPU and CPU_SSE/NEON got different results !"<<endl<<endl;
+    #endif
+}
+
+static void SSD16_Benchmark(char* fileName1, char* fileName2)
+{
+    #ifdef __ARM_NEON__
+
+    cout<<" SSD 16-bit not implemented with NEON " <<flush<<endl;
+
+    #else
+
+        int Start;
+        cout<<"\n\nStarting SSD 16-bit... " <<flush<<endl;
+        cout<<"---------------------- " <<flush<<endl;
+
+        LoadDescriptors16(fileName1, &SiftDescriptors16_1, 0);
+        LoadDescriptors16(fileName2, &SiftDescriptors16_2, 0);
+
+        Start = GetMilliCount();
+        SSD_FindMatches16(&SiftDescriptors16_1, &SiftDescriptors16_2, &SM_Arm);
+        cout<<"CPU-only FindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
+
+        Start = GetMilliCount();
+        SSD_FindMatches16_SSE(&SiftDescriptors16_1, &SiftDescriptors16_2, &SM_Arm_SSE);
+        cout<<"CPU-Only + SSE/NEON FindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
+
+        if (PASS == CompareMatches(&SM_Arm,&SM_Arm_SSE)) cout << "Matches are a ... match ;). CPU and CPU-SSE/NEON got the same results."<<endl<<endl;
+        else cout << "Match test has FAILed. CPU and CPU_SSE/NEON got different results !"<<endl<<endl;
+    #endif
+}
+
+static void SAD32F_Benchmark(char* fileName1, char* fileName2)
+{
+    int Start;
+    #ifdef __ARM_NEON__
+
+    cout<<" SAD 8-bit not implemented with NEON " <<flush<<endl;
+
+    #else
+
+        cout<<"\n\nStarting SAD 32-bit float ... " <<flush<<endl;
+        cout<<"---------------------- " <<flush<<endl;
+
+        LoadDescriptorsF32(fileName1, &SiftDescriptorsF32_1, 0);
+        LoadDescriptorsF32(fileName2, &SiftDescriptorsF32_2, 0);
+
+        Start = GetMilliCount();
+        SAD_FindMatchesF32(&SiftDescriptorsF32_1, &SiftDescriptorsF32_2, &SM_Arm);
+        cout<<"CPU-only FindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
+
+        Start = GetMilliCount();
+        SAD_FindMatchesF32_SSE(&SiftDescriptorsF32_1, &SiftDescriptorsF32_2, &SM_Arm_SSE);
+        cout<<"CPU-Only + SSE/NEON FindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
+
+        if (PASS == CompareMatches(&SM_Arm,&SM_Arm_SSE)) cout << "Matches are a ... match ;). CPU and CPU-SSE/NEON got the same results."<<endl<<endl;
+        else cout << "Match test has FAILed. CPU and CPU_SSE/NEON got different results !"<<endl<<endl;
+    #endif
+}
+
+static void SSD32F_Benchmark(char* fileName1, char* fileName2)
+{
+    #ifdef __ARM_NEON__
+
+        cout<<" SSD 32-bit not implemented with NEON " <<flush<<endl;
+
+    #else
+        int Start;
+
+        cout<<"\n\nStarting SSD 32-bit float ... " <<flush<<endl;
+        cout<<"---------------------- " <<flush<<endl;
+
+        LoadDescriptorsF32(fileName1, &SiftDescriptorsF32_1, 0);
+        LoadDescriptorsF32(fileName2, &SiftDescriptorsF32_2, 0);
+
+        Start = GetMilliCount();
+        SSD_FindMatchesF32(&SiftDescriptorsF32_1, &SiftDescriptorsF32_2, &SM_Arm);
+        cout<<"CPU-only FindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
+
+        Start = GetMilliCount();
+        SSD_FindMatchesF32_SSE(&SiftDescriptorsF32_1, &SiftDescriptorsF32_2, &SM_Arm_SSE);
+        cout<<"CPU-Only + SSE/NEON FindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
+
+        if (PASS == CompareMatches(&SM_Arm,&SM_Arm_SSE)) cout << "Matches are a ... match ;). CPU and CPU-SSE/NEON got the same results."<<endl<<endl;
+        else cout << "Match test has FAILed. CPU and CPU_SSE/NEON got different results !"<<endl<<endl;
+    #endif
+}
+
+int test_BasicMatching_All_NeonSSE(char* fileName1, char* fileName2)
+{
+    int Start;
+
+    SAD8_Benchmark(fileName1, fileName2);
+    SAD16_Benchmark(fileName1, fileName2);
+    SAD32F_Benchmark(fileName1, fileName2);
+
+    SSD32F_Benchmark(fileName1, fileName2);
+
+    SSD16_Benchmark(fileName1, fileName2);
+    cout<<"\n\nStarting SSD 16-bit on Connex-S... " <<flush<<endl;
+    cout<<"---------------------- " <<flush<<endl;
+    Start = GetMilliCount();
+    SSD_connexFindMatchesPass1(MODE_CREATE_BATCHES, BASIC_MATCHING_BNR, &SiftDescriptors16_1, &SiftDescriptors16_2);
+    SSD_connexFindMatchesPass2(MODE_CREATE_BATCHES, BASIC_MATCHING_BNR, &SiftDescriptors16_1, &SiftDescriptors16_2, &SM_ConnexArmMan, &SM_ConnexArm);
+    cout<<"Batches were created in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
+
+    Start = GetMilliCount();
+    SSD_connexFindMatchesPass1(MODE_EXECUTE_FIND_MATCHES, BASIC_MATCHING_BNR, &SiftDescriptors16_1, &SiftDescriptors16_2);
+    SSD_connexFindMatchesPass2(MODE_EXECUTE_FIND_MATCHES, BASIC_MATCHING_BNR, &SiftDescriptors16_1, &SiftDescriptors16_2, &SM_ConnexArmMan, &SM_ConnexArm);
+    cout<<"connexFindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
+    //PrintMatches(&SM_ConnexArm);
+
+    if (PASS == CompareMatches(&SM_Arm,&SM_ConnexArm)) cout << "Matches are a ... match ;). Arm and Arm-Connex got the same results."<<endl;
+    else cout << "Match test has FAILed. Arm and ConnexArm got different results !"<<endl;
+
+	return 0;
+}
