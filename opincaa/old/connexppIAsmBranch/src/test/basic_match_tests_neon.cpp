@@ -17,6 +17,7 @@
 #include "../../include/util/kernel_acc.h"
 
 #include <stdio.h>
+
 //#include "../../include/core/neonvssse.h"
 
 //#include <unistd.h>     /* Symbolic Constants */
@@ -29,6 +30,9 @@
 #include <iostream>
 #include <iomanip>
 
+#ifndef UINT_MAX
+    #define UINT_MAX ((UINT32)-1)
+#endif // UINT_MAX
 using namespace std;
 
 /* About descriptor file:
@@ -1137,7 +1141,7 @@ static void SAD_FindMatches16_SSE(SiftDescriptors16 *SDs1, SiftDescriptors16 *SD
 #endif // __SSE__
 
 #ifdef __ARM_NEON__
-static void SSD_FindMatchesF32_SSE(SiftDescriptorsF32 *SDs1, SiftDescriptorsF32 *SDs2, SiftMatches* SMs) {};
+static void SAD_FindMatchesF32_SSE(SiftDescriptorsF32 *SDs1, SiftDescriptorsF32 *SDs2, SiftMatches* SMs) {};
 #else
 static void SAD_FindMatchesF32_SSE(SiftDescriptorsF32 *SDs1, SiftDescriptorsF32 *SDs2, SiftMatches* SMs)
 {
