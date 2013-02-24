@@ -1,4 +1,4 @@
-/*
+/************************************************************
  * File:   Instruction.h
  *
  * This is the header file for a class containing one Connex
@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <sstream>
 
-/*
+/************************************************************
 * Returns a string representation of specified opcode
 */
 string Instruction::mnemonic(int opcode)
@@ -77,7 +77,7 @@ string Instruction::registerName(int register_index)
     return string(reg);
 }
         
-/*
+/************************************************************
 * Constructor for creating a new Instruction
 * 
 * @param instruction the 32 bits used to create the instruction
@@ -110,7 +110,7 @@ Instruction::Instruction(unsigned instruction)
     dest = GET_DEST(instruction);
 }
         
-/*
+/************************************************************
 * Constructor for creating a new Instruction
 * 
 * @param opcode the 9 or 6 bits opcode
@@ -140,7 +140,7 @@ Instruction::Instruction(int opcode, int rightOrValue, int left, int dest)
     this->dest = dest & ((1 << DEST_SIZE) - 1);
 }
         
-/*
+/************************************************************
 * Returns the 32bit word representing the assembled instruction
 * 
 * @return the 32bit word representing the assembled instruction
@@ -166,7 +166,7 @@ unsigned Instruction::assemble()
     return instruction;
 }
 
-/*
+/************************************************************
  * Returns the string representing the disassembled instruction in 
  * OPINCAA format
  * 
@@ -223,7 +223,7 @@ string Instruction::disassemble()
     return stream.str();
 }
 
-/*
+/************************************************************
 * Returns a string representation of this instruction
 * 
 * @return the 32bit word representing the assembled instruction
@@ -244,7 +244,7 @@ string Instruction::toString()
     return mnemonic(opcode) + string(desc);
 }
 
-/*
+/************************************************************
  * Getter for type
  */
 int Instruction::getType()
@@ -252,14 +252,14 @@ int Instruction::getType()
     return type;
 }
 
-/*
+/************************************************************
  * Getter for opcode
  */
 int Instruction::getOpcode()
 {
     return opcode;
 }
-/*
+/************************************************************
  * Getter for left
  */
 int Instruction::getLeft()
@@ -267,7 +267,7 @@ int Instruction::getLeft()
     return left;
 }
 
-/*
+/************************************************************
  * Getter for right
  */
 int Instruction::getRight()
@@ -275,7 +275,7 @@ int Instruction::getRight()
     return right;
 }
 
-/*
+/************************************************************
  * Getter for dest
  */
 int Instruction::getDest()
@@ -283,7 +283,7 @@ int Instruction::getDest()
     return dest;
 }
 
-/*
+/************************************************************
  * Getter for value
  */
 int Instruction::getValue()
@@ -291,7 +291,7 @@ int Instruction::getValue()
     return value;
 }
 
-/*
+/************************************************************
  * Setter for left
  */
 void Instruction::setLeft(int left)
@@ -299,7 +299,7 @@ void Instruction::setLeft(int left)
     this->left = left;
 }
 
-/*
+/************************************************************
  * Setter for opcode
  */
 void Instruction::setRight(int right)
@@ -307,7 +307,7 @@ void Instruction::setRight(int right)
     this->right = right;
 }
 
-/*
+/************************************************************
  * Setter for opcode
  */
 void Instruction::setDest(int dest)
@@ -315,7 +315,7 @@ void Instruction::setDest(int dest)
     this->dest = dest;
 }
 
-/*
+/************************************************************
  * Setter for opcode
  */
 void Instruction::setValue(int value)

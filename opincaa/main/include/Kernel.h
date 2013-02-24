@@ -70,15 +70,12 @@ using namespace std;
 
 #define EXECUTE_WHERE_EQ(code)      __kernel->append(Instruction(_WHERE_EQ, 0, 0, 0));      \
                                     code
-                                    //__kernel->append(Instruction(_END_WHERE, 0, 0, 0));
 
 #define EXECUTE_WHERE_LT(code)      __kernel->append(Instruction(_WHERE_LT, 0, 0, 0));      \
                                     code
-                                    //__kernel->append(Instruction(_END_WHERE, 0, 0, 0));
 
 #define EXECUTE_WHERE_CRY(code)     __kernel->append(Instruction(_WHERE_CRY, 0, 0, 0));     \
                                     code
-                                    //__kernel->append(Instruction(_END_WHERE, 0, 0, 0));
 
 #define NOP                         __kernel->append(Instruction(_NOP, 0, 0, 0));
 
@@ -91,8 +88,13 @@ using namespace std;
 #define CELL_SHL(x,y)               Operand::cellshl(x,y);
 #define CELL_SHR(x,y)               Operand::cellshr(x,y);
 
-#define MULT_LOW()                       Operand::multlo()
-#define MULT_HIGH()                      Operand::multhi()
+#define MULT_LOW()                  Operand::multlo()
+#define MULT_HIGH()                 Operand::multhi()
+
+#define REPEAT(x)					__kernel->append(Instruction(_SETLC, x, 0, 0));	\\
+									__kernel->resetLoopDestination();
+									
+#define END_REPEAT					__kernel->appendLoopInstruction();
 
 #define END_KERNEL(x)               ConnexMachine::addKernel(__kernel);}
 
@@ -158,6 +160,19 @@ class Kernel
          */
         string disassemble();
 
+		/*
+		 * Resets the loop size counter so each appended instruction
+		 * after this one increments it with 1. It is used to determine
+		 * where the jump needs to be made
+		 */
+		void resetLoopDestination();
+		
+		/*
+		 * This will append the jump instruction to the kernel by
+		 * using the loop destination
+		 */
+		void appendLoopInstruction();
+		
     private:
 
         /*
@@ -169,6 +184,12 @@ class Kernel
          * The vector containing the instructions
          */
         vector<unsigned> instructions;
+		
+		/*
+		 *	The counter used for the loop
+		 * NOTE: This will become a queue when we support nested loops
+		 */
+		 unsigned short loopDestination;
 };
 
 #endif // BATCH_H
