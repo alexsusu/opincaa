@@ -40,6 +40,11 @@ ConnexSimulator::ConnexSimulator(string distributionDescriptorPath,
 	//cout<<"Opening simu:"<<readDescriptorPath<<endl;
 	readDescriptor = openPipe(readDescriptorPath, O_RDWR);
 
+	instructionQueue = new InstructionQueue(INSTRUCTION_QUEUE_LENGTH);
+	
+	codeInLoop = false;
+	repeatCounter = 0;
+	
 	initiateThreads();
 }
 
@@ -48,7 +53,7 @@ ConnexSimulator::ConnexSimulator(string distributionDescriptorPath,
  */
 ConnexSimulator::~ConnexSimulator()
 {
-
+	delete instructionQueue;
 }
 
 /****************************************************************************
@@ -120,8 +125,17 @@ void ConnexSimulator::coreThreadHandler()
 	int instruction;
 	while(1)
 	{
-		pread(distributionDescriptor, &instruction, sizeof(instruction));
-		executeInstruction(Instruction(instruction));
+		if(codeInLoop)
+		{
+			executeInstruction(*(instructionQueue->read()));
+		}
+		else
+		{
+			pread(distributionDescriptor, &instruction, sizeof(instruction));
+			Instruction *compiledInstruction = new Instruction(instruction);
+			instructionQueue->push(compiledInstruction);
+			executeInstruction(*compiledInstruction);
+		}
 	}
 }
 
@@ -169,7 +183,6 @@ void ConnexSimulator::performIO(ConnexIoDescriptor ioDescriptor)
  */
 void ConnexSimulator::executeInstruction(Instruction instruction)
 {
-
 	switch(instruction.getOpcode())
     {
         case _ADD:
@@ -274,6 +287,21 @@ void ConnexSimulator::executeInstruction(Instruction instruction)
         case _IWRITE:
 			localStore[instruction.getValue()] = registerFile[instruction.getLeft()];
 			return;
+		case _SETLC:
+			repeatCounter = instruction.getValue();
+			return;
+        case _IJMPNZ:
+			if(!repeatCounter)
+			{
+				codeInLoop = false;
+			}
+			else
+			{
+				repeatCounter--;
+				codeInLoop = true;
+				instructionQueue->displaceReadPointer(instruction.getValue());
+			}
+			return;	
         default: throw string("Invalid instruction opcode!");
     }
 }

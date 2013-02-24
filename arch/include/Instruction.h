@@ -119,6 +119,8 @@ enum{
 #define _VLOAD      0x35        /* 0b110101 */
 #define _IREAD      0x34        /* 0b110100 */
 #define _IWRITE     0x32        /* 0b110010 */
+#define _SETLC		0x15		/* 0b010101 */
+#define _IJMPNZ		0x13		/* 0b010011 */
 
 /* INSTRUCTION_TYPE_UNKNOWN if opcode is not valid,
  * INSTRUCTION_TYPE_NO_VALUE if it's type 1,
@@ -127,7 +129,7 @@ enum{
 
 static const int type_for_opcode[1 << OPCODE_9BITS_SIZE] = {
     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  //   0 -  15
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  //  16 -  31
+    0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  //  16 -  31
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  //  32 -  47
     0, 0, 2, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  //  48 -  63
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  //  64 -  79

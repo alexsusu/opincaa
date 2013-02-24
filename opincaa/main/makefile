@@ -30,16 +30,16 @@ build_lib: $(OBJ)
 	$(CXX) $(CFLAGS) $(OBJ) -lc -shared -Wl,-soname,libopincaa.so -o $(LIB_DIR)/libopincaa.so
 
 $(BUILD_DIR)/Instruction.o: ../../arch/src/Instruction.cpp
-	$(CXX) $(CFLAGS) -I$(INC_DIR) -c ../../arch/src/Instruction.cpp -o $(BUILD_DIR)/Instruction.o
+	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../../arch/include -c ../../arch/src/Instruction.cpp -o $(BUILD_DIR)/Instruction.o
 
 $(BUILD_DIR)/Kernel.o: $(SRC_DIR)/Kernel.cpp
-	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../../utils/include -c $(SRC_DIR)/Kernel.cpp -o $(BUILD_DIR)/Kernel.o
+	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../../utils/include -I../../arch/include -c $(SRC_DIR)/Kernel.cpp -o $(BUILD_DIR)/Kernel.o
 
 $(BUILD_DIR)/Operand.o: $(SRC_DIR)/Operand.cpp
-	$(CXX) $(CFLAGS) -I$(INC_DIR) -c $(SRC_DIR)/Operand.cpp -o $(BUILD_DIR)/Operand.o
+	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../../arch/include -c $(SRC_DIR)/Operand.cpp -o $(BUILD_DIR)/Operand.o
 
 $(BUILD_DIR)/ConnexMachine.o: $(SRC_DIR)/ConnexMachine.cpp
-	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../../utils/include -c $(SRC_DIR)/ConnexMachine.cpp -o $(BUILD_DIR)/ConnexMachine.o
+	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../../utils/include -I../../arch/include -c $(SRC_DIR)/ConnexMachine.cpp -o $(BUILD_DIR)/ConnexMachine.o
 
 $(BUILD_DIR)/NamedPipes.o: ../../utils/src/NamedPipes.cpp
 	$(CXX) $(CFLAGS) -I$(INC_DIR) -c ../../utils/src/NamedPipes.cpp -o $(BUILD_DIR)/NamedPipes.o

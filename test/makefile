@@ -26,13 +26,13 @@ build: $(OBJ)
 	$(CXX) -O3 $(CFLAGS) -I$(INC_DIR) $(OBJ) -L../opincaa/main/libs -o $(BUILD_DIR)/test -lopincaa
 
 $(BUILD_DIR)/test.o: $(SRC_DIR)/test.cpp
-	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../opincaa/main/include -I../utils/include -c $(SRC_DIR)/test.cpp -o $(BUILD_DIR)/test.o
+	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../opincaa/main/include -I../utils/include -I../arch/include -c $(SRC_DIR)/test.cpp -o $(BUILD_DIR)/test.o
 
 $(BUILD_DIR)/simple_tests.o: $(SRC_DIR)/simple_tests.cpp
-	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../opincaa/main/include -I../utils/include -c $(SRC_DIR)/simple_tests.cpp -o $(BUILD_DIR)/simple_tests.o
+	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../opincaa/main/include -I../utils/include -I../arch/include -c $(SRC_DIR)/simple_tests.cpp -o $(BUILD_DIR)/simple_tests.o
 	
 $(BUILD_DIR)/simple_io_tests.o: $(SRC_DIR)/simple_io_tests.cpp
-	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../opincaa/main/include -I../utils/include -c $(SRC_DIR)/simple_io_tests.cpp -o $(BUILD_DIR)/simple_io_tests.o
+	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../opincaa/main/include -I../utils/include -I../arch/include -c $(SRC_DIR)/simple_io_tests.cpp -o $(BUILD_DIR)/simple_io_tests.o
 
 $(BUILD_DIR)/utils.o: ../utils/src/utils.cpp
 	$(CXX) $(CFLAGS) -I../utils/include -c ../utils/src/utils.cpp -o $(BUILD_DIR)/utils.o

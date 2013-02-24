@@ -60,6 +60,9 @@ string Instruction::mnemonic(int opcode)
         case _IREAD:    return string("iread");
         case _IWRITE:   return string("iwrite");
         
+		case _SETLC:    return string("setlc");
+        case _IJMPNZ:   return string("ijmpnz");
+		
         default: throw string("Unknown opcode in Instruction::mnemonic");
     }
 }
@@ -209,7 +212,9 @@ string Instruction::disassemble()
         case _NOP: stream << "NOP"; break;
         case _VLOAD: stream << registerName(dest) << " = " << value; break;
         case _IREAD: stream << registerName(dest) << " = LS[" << value << "]"; break;
-        case _IWRITE:   stream << "LS[" << value << "] = " << registerName(left); break;
+        case _IWRITE: stream << "LS[" << value << "] = " << registerName(left); break;
+		case _SETLC: stream << "REPEAT(" << value << ")"; break;
+        case _IJMPNZ: stream << "END_REPEAT"; break;
         default: throw string("Invalid instruction opcode!");
     }
     

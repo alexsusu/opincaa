@@ -9,7 +9,9 @@
 
 #include "ConnexVector.h"
 #include "Instruction.h"
+#include "InstructionQueue.h"
 #include "Architecture.h"
+
 #include <string>
 #include <thread>
 
@@ -59,6 +61,23 @@ class ConnexSimulator
          */
 		ConnexVector localStore[CONNEX_MEM_SIZE];
 
+		/*
+         * The controller instruction queue
+         */
+		InstructionQueue *instructionQueue;
+		
+		/*
+         * The controller loop repeat Counter
+         */
+		unsigned short repeatCounter;
+		
+		/*
+         * A flag which is true when the array is executing a loop, 
+		 * meaning the instructions are read from the local queue,
+		 * rather then the Named Pipe
+         */
+		bool codeInLoop;
+		
 		/*
 		 * The distribution FIFO descriptor
 		 */

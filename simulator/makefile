@@ -15,7 +15,7 @@ LIB_DIR = libs
 CFLAGS = -fPIC -std=c++0x
 LDFLAGS_DEBUG =  $(LDFLAGS)
 
-OBJ = $(BUILD_DIR)/ConnexVector.o $(BUILD_DIR)/ConnexSimulator.o $(BUILD_DIR)/NamedPipes.o $(BUILD_DIR)/Instruction.o
+OBJ = $(BUILD_DIR)/ConnexVector.o $(BUILD_DIR)/ConnexSimulator.o $(BUILD_DIR)/NamedPipes.o $(BUILD_DIR)/Instruction.o $(BUILD_DIR)/InstructionQueue.o
 
 all: make_paths build
 
@@ -42,6 +42,9 @@ $(BUILD_DIR)/ConnexSimulator.o: $(SRC_DIR)/ConnexSimulator.cpp
 
 $(BUILD_DIR)/NamedPipes.o: ../utils/src/NamedPipes.cpp
 	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../utils/include -c ../utils/src/NamedPipes.cpp -o $(BUILD_DIR)/NamedPipes.o
+
+$(BUILD_DIR)/InstructionQueue.o:  $(SRC_DIR)/InstructionQueue.cpp
+	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../arch/include -c  $(SRC_DIR)/InstructionQueue.cpp -o $(BUILD_DIR)/InstructionQueue.o
 	
 clean: 
 	rm -rf $(BUILD_DIR)
