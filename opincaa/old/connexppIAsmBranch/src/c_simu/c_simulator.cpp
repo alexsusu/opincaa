@@ -342,7 +342,7 @@ int c_simulator::DeAsmBatch(UINT16 dwBatchNumber)
                 case _IJMPNZ: {
                                 if (LocalLoop > 0)
                                 {
-                                    InstructionIndex = InstructionIndex - GET_IMM(CI);
+                                    InstructionIndex = InstructionIndex - GET_IMM(CI) -1;
                                     LocalLoop--;
                                 }
                                 continue;

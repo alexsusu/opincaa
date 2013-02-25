@@ -419,7 +419,7 @@ void cnxvector::jmp(int mode, int Loops)
     {
         if (bEstimationMode == 0)
         {
-            int DeltaJump = getInBatchCounter(dwBatchIndex) - cnxvector::dwLastJmpLabel;
+            int DeltaJump = getInBatchCounter(dwBatchIndex) - cnxvector::dwLastJmpLabel - 1;//do not count set lc label
             if (Loops > LOOPS_VAL_MAX) cnxvectorError(ERR_LOOPS_TIMES_OUT_OF_RANGE);
             if (DeltaJump > DELTAJMP_VAL_MAX) cnxvectorError(ERR_LOOP_LENGTH_OUT_OF_RANGE);
             replaceInstruction((_SETLC << OPCODE_6BITS_POS) + (Loops << IMMEDIATE_VALUE_POS), cnxvector::dwLastJmpLabel);
