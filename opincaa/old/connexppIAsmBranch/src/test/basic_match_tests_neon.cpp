@@ -1009,9 +1009,30 @@ static void SAD_FindMatchesF32_SSE(SiftDescriptorsF32 *SDs1, SiftDescriptorsF32 
 
 
 #ifdef __ARM_NEON__
+//#include <arm_neon.h>
+/*
+ <type><size>x<number of lanes>_t
+ <type><size>x<number of lanes>x<length of array>_t
+struct uint16x4x2_t
+{
+   uint16x4_t val[2];
+};
+*/
 int MainNeonSSE()
 {
-    cout << "MainNeonSSE not implemented for arm "<<endl;
+    //cout << "MainNeonSSE not implemented for arm "<<endl;
+    UINT16 dataIn[] __attribute__ ((aligned(32))) = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+    uint16x4x4_t data __attribute__ ((aligned(32)))
+    UINT16 dataOut[16] __attribute__ ((aligned(32)));
+
+    //load 4 chuncks each having
+    uint16x4x4_t data = vld4_u16(dataIn);
+
+    //void vst4_u16 (uint16_t *, uint16x4x4_t)
+    vst4_u16(dataOut, data);
+    for (int i = 0; i < 16l i++)
+        cout<<dataOut[i]<<" ";
+    cout<<endl;
 }
 #else
 

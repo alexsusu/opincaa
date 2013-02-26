@@ -192,7 +192,7 @@ int main(int argc, char *argv[])
 	//test_AES_All();
 	//test_AES_CPU_All();
 	//test_AES_CPU_NEON_SSE_All();
-
+    MainNeonSSE();
     DEINIT();
 
     cout << "Press ENTER to continue...";
