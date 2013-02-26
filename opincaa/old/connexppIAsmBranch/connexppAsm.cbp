@@ -67,7 +67,13 @@
 		<Unit filename="include/core/io_unit.h" />
 		<Unit filename="include/core/opcodes.h" />
 		<Unit filename="include/test/basic_match_tests.h" />
+		<Unit filename="include/test/basic_match_tests_commons.h" />
 		<Unit filename="include/test/basic_match_tests_neon.h" />
+		<Unit filename="include/test/basic_match_tests_sad16.h" />
+		<Unit filename="include/test/basic_match_tests_sad32.h" />
+		<Unit filename="include/test/basic_match_tests_sad8.h" />
+		<Unit filename="include/test/basic_match_tests_ssd16.h" />
+		<Unit filename="include/test/basic_match_tests_ssd32.h" />
 		<Unit filename="include/test/crypto/aes/aes_cpu_tests.h" />
 		<Unit filename="include/test/crypto/aes/aes_tests.h" />
 		<Unit filename="include/test/icc_simple_tests.h" />
@@ -82,7 +88,13 @@
 		<Unit filename="src/cppamp_emulator/cppamp_emulator.cpp" />
 		<Unit filename="src/main.cpp" />
 		<Unit filename="src/test/basic_match_tests.cpp" />
+		<Unit filename="src/test/basic_match_tests_commons.cpp" />
 		<Unit filename="src/test/basic_match_tests_neon.cpp" />
+		<Unit filename="src/test/basic_match_tests_sad16.cpp" />
+		<Unit filename="src/test/basic_match_tests_sad32.cpp" />
+		<Unit filename="src/test/basic_match_tests_sad8.cpp" />
+		<Unit filename="src/test/basic_match_tests_ssd16.cpp" />
+		<Unit filename="src/test/basic_match_tests_ssd32.cpp" />
 		<Unit filename="src/test/crypto/AES/aes_cpu_tests.cpp" />
 		<Unit filename="src/test/crypto/AES/aes_tests.cpp" />
 		<Unit filename="src/test/icc_simple_tests.cpp" />

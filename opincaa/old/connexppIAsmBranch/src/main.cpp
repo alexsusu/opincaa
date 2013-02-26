@@ -90,7 +90,6 @@
 #include "../include/test/simple_io_tests.h"
 #include "../include/test/basic_match_tests.h"
 #include "../include/test/basic_match_tests_neon.h"
-#include "../include/test/basic_match_tests_sad.h"
 #include "../include/test/max_tests.h"
 #include "../include/test/crypto/aes/aes_tests.h"
 #include "../include/test/crypto/aes/aes_cpu_tests.h"
@@ -185,7 +184,7 @@ int main(int argc, char *argv[])
     //test_BasicMatching_All();
     //MainNeonSSE();
     //test_BasicMatching_All_NeonSSE("data/adam2_big.png.key", "data/adam1_big.png.key");
-    //test_BasicMatching_All_NeonSSE("data/adam1.key", "data/adam2.key");
+    test_BasicMatching_All_NeonSSE("data/adam1.key", "data/adam2.key");
     //test_BasicMatching_All_NeonSSE((char*)"data/img1.png.key", (char*)"data/img3.png.key");
     //test_BasicMatching_All_NeonSSE("data/img1_siftpp.key", "data/img3_siftpp.key");
     //test_BasicMatching_All_NeonSSE("data/img1.key", "data/img3.key");

@@ -19,7 +19,7 @@ LIB =
 LDFLAGS = 
 
 INC_RELEASE =  $(INC)
-CFLAGS_RELEASE =  $(CFLAGS) -O3 -msse4.2  -march=corei7-avx
+CFLAGS_RELEASE =  $(CFLAGS) -O3 -msse4.2  -march=corei7-avx -ftree-vectorize
 RESINC_RELEASE =  $(RESINC)
 RCFLAGS_RELEASE =  $(RCFLAGS)
 LIBDIR_RELEASE =  $(LIBDIR) -LM:/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/lib/
@@ -29,7 +29,7 @@ OBJDIR_RELEASE = obj/Release
 DEP_RELEASE = 
 OUT_RELEASE = bin/Release/connexppAsm
 
-OBJ_RELEASE = $(OBJDIR_RELEASE)/src/test/max_tests.o $(OBJDIR_RELEASE)/src/test/icc_simple_tests.o $(OBJDIR_RELEASE)/src/test/crypto/AES/aes_tests.o $(OBJDIR_RELEASE)/src/test/crypto/AES/aes_cpu_tests.o $(OBJDIR_RELEASE)/src/test/basic_match_tests_neon.o $(OBJDIR_RELEASE)/src/test/basic_match_tests.o $(OBJDIR_RELEASE)/src/main.o $(OBJDIR_RELEASE)/src/cppamp_emulator/cppamp_emulator.o
+OBJ_RELEASE = $(OBJDIR_RELEASE)/src/cppamp_emulator/cppamp_emulator.o $(OBJDIR_RELEASE)/src/main.o $(OBJDIR_RELEASE)/src/test/basic_match_tests.o $(OBJDIR_RELEASE)/src/test/basic_match_tests_commons.o $(OBJDIR_RELEASE)/src/test/basic_match_tests_neon.o $(OBJDIR_RELEASE)/src/test/basic_match_tests_sad16.o $(OBJDIR_RELEASE)/src/test/basic_match_tests_sad32.o $(OBJDIR_RELEASE)/src/test/basic_match_tests_sad8.o $(OBJDIR_RELEASE)/src/test/basic_match_tests_ssd16.o $(OBJDIR_RELEASE)/src/test/basic_match_tests_ssd32.o $(OBJDIR_RELEASE)/src/test/crypto/AES/aes_cpu_tests.o $(OBJDIR_RELEASE)/src/test/crypto/AES/aes_tests.o $(OBJDIR_RELEASE)/src/test/icc_simple_tests.o $(OBJDIR_RELEASE)/src/test/max_tests.o
 
 all: release
 
@@ -37,10 +37,10 @@ clean: clean_release
 
 before_release: 
 	test -d bin/Release || mkdir -p bin/Release
+	test -d $(OBJDIR_RELEASE)/src/cppamp_emulator || mkdir -p $(OBJDIR_RELEASE)/src/cppamp_emulator
+	test -d $(OBJDIR_RELEASE)/src || mkdir -p $(OBJDIR_RELEASE)/src
 	test -d $(OBJDIR_RELEASE)/src/test || mkdir -p $(OBJDIR_RELEASE)/src/test
 	test -d $(OBJDIR_RELEASE)/src/test/crypto/AES || mkdir -p $(OBJDIR_RELEASE)/src/test/crypto/AES
-	test -d $(OBJDIR_RELEASE)/src || mkdir -p $(OBJDIR_RELEASE)/src
-	test -d $(OBJDIR_RELEASE)/src/cppamp_emulator || mkdir -p $(OBJDIR_RELEASE)/src/cppamp_emulator
 
 after_release: 
 
@@ -49,37 +49,55 @@ release: before_release out_release after_release
 out_release: $(OBJ_RELEASE) $(DEP_RELEASE)
 	$(LD) $(LDFLAGS_RELEASE) $(LIBDIR_RELEASE) $(OBJ_RELEASE) $(LIB_RELEASE) -o $(OUT_RELEASE)
 
-$(OBJDIR_RELEASE)/src/test/max_tests.o: src/test/max_tests.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/test/max_tests.cpp -o $(OBJDIR_RELEASE)/src/test/max_tests.o
-
-$(OBJDIR_RELEASE)/src/test/icc_simple_tests.o: src/test/icc_simple_tests.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/test/icc_simple_tests.cpp -o $(OBJDIR_RELEASE)/src/test/icc_simple_tests.o
-
-$(OBJDIR_RELEASE)/src/test/crypto/AES/aes_tests.o: src/test/crypto/AES/aes_tests.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/test/crypto/AES/aes_tests.cpp -o $(OBJDIR_RELEASE)/src/test/crypto/AES/aes_tests.o
-
-$(OBJDIR_RELEASE)/src/test/crypto/AES/aes_cpu_tests.o: src/test/crypto/AES/aes_cpu_tests.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/test/crypto/AES/aes_cpu_tests.cpp -o $(OBJDIR_RELEASE)/src/test/crypto/AES/aes_cpu_tests.o
-
-$(OBJDIR_RELEASE)/src/test/basic_match_tests_neon.o: src/test/basic_match_tests_neon.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/test/basic_match_tests_neon.cpp -o $(OBJDIR_RELEASE)/src/test/basic_match_tests_neon.o
-
-$(OBJDIR_RELEASE)/src/test/basic_match_tests.o: src/test/basic_match_tests.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/test/basic_match_tests.cpp -o $(OBJDIR_RELEASE)/src/test/basic_match_tests.o
+$(OBJDIR_RELEASE)/src/cppamp_emulator/cppamp_emulator.o: src/cppamp_emulator/cppamp_emulator.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/cppamp_emulator/cppamp_emulator.cpp -o $(OBJDIR_RELEASE)/src/cppamp_emulator/cppamp_emulator.o
 
 $(OBJDIR_RELEASE)/src/main.o: src/main.cpp
 	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/main.cpp -o $(OBJDIR_RELEASE)/src/main.o
 
-$(OBJDIR_RELEASE)/src/cppamp_emulator/cppamp_emulator.o: src/cppamp_emulator/cppamp_emulator.cpp
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/cppamp_emulator/cppamp_emulator.cpp -o $(OBJDIR_RELEASE)/src/cppamp_emulator/cppamp_emulator.o
+$(OBJDIR_RELEASE)/src/test/basic_match_tests.o: src/test/basic_match_tests.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/test/basic_match_tests.cpp -o $(OBJDIR_RELEASE)/src/test/basic_match_tests.o
+
+$(OBJDIR_RELEASE)/src/test/basic_match_tests_commons.o: src/test/basic_match_tests_commons.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/test/basic_match_tests_commons.cpp -o $(OBJDIR_RELEASE)/src/test/basic_match_tests_commons.o
+
+$(OBJDIR_RELEASE)/src/test/basic_match_tests_neon.o: src/test/basic_match_tests_neon.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/test/basic_match_tests_neon.cpp -o $(OBJDIR_RELEASE)/src/test/basic_match_tests_neon.o
+
+$(OBJDIR_RELEASE)/src/test/basic_match_tests_sad16.o: src/test/basic_match_tests_sad16.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/test/basic_match_tests_sad16.cpp -o $(OBJDIR_RELEASE)/src/test/basic_match_tests_sad16.o
+
+$(OBJDIR_RELEASE)/src/test/basic_match_tests_sad32.o: src/test/basic_match_tests_sad32.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/test/basic_match_tests_sad32.cpp -o $(OBJDIR_RELEASE)/src/test/basic_match_tests_sad32.o
+
+$(OBJDIR_RELEASE)/src/test/basic_match_tests_sad8.o: src/test/basic_match_tests_sad8.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/test/basic_match_tests_sad8.cpp -o $(OBJDIR_RELEASE)/src/test/basic_match_tests_sad8.o
+
+$(OBJDIR_RELEASE)/src/test/basic_match_tests_ssd16.o: src/test/basic_match_tests_ssd16.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/test/basic_match_tests_ssd16.cpp -o $(OBJDIR_RELEASE)/src/test/basic_match_tests_ssd16.o
+
+$(OBJDIR_RELEASE)/src/test/basic_match_tests_ssd32.o: src/test/basic_match_tests_ssd32.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/test/basic_match_tests_ssd32.cpp -o $(OBJDIR_RELEASE)/src/test/basic_match_tests_ssd32.o
+
+$(OBJDIR_RELEASE)/src/test/crypto/AES/aes_cpu_tests.o: src/test/crypto/AES/aes_cpu_tests.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/test/crypto/AES/aes_cpu_tests.cpp -o $(OBJDIR_RELEASE)/src/test/crypto/AES/aes_cpu_tests.o
+
+$(OBJDIR_RELEASE)/src/test/crypto/AES/aes_tests.o: src/test/crypto/AES/aes_tests.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/test/crypto/AES/aes_tests.cpp -o $(OBJDIR_RELEASE)/src/test/crypto/AES/aes_tests.o
+
+$(OBJDIR_RELEASE)/src/test/icc_simple_tests.o: src/test/icc_simple_tests.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/test/icc_simple_tests.cpp -o $(OBJDIR_RELEASE)/src/test/icc_simple_tests.o
+
+$(OBJDIR_RELEASE)/src/test/max_tests.o: src/test/max_tests.cpp
+	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c src/test/max_tests.cpp -o $(OBJDIR_RELEASE)/src/test/max_tests.o
 
 clean_release: 
 	rm -f $(OBJ_RELEASE) $(OUT_RELEASE)
 	rm -rf bin/Release
+	rm -rf $(OBJDIR_RELEASE)/src/cppamp_emulator
+	rm -rf $(OBJDIR_RELEASE)/src
 	rm -rf $(OBJDIR_RELEASE)/src/test
 	rm -rf $(OBJDIR_RELEASE)/src/test/crypto/AES
-	rm -rf $(OBJDIR_RELEASE)/src
-	rm -rf $(OBJDIR_RELEASE)/src/cppamp_emulator
 
 .PHONY: before_release after_release clean_release
 
