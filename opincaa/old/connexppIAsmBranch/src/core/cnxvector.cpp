@@ -408,10 +408,12 @@ void cnxvector::jmp(int mode, int Loops)
     if (mode == JMP_MODE_SET_LABEL)
     {
         if (bEstimationMode == 0)
-            nop();//add a nop here, will be overwritten
+        {
+           cnxvector::dwLastJmpLabel = getInBatchCounter(dwBatchIndex);
+           nop();//add a nop here, will be overwritten
+        }
         else
         {
-            cnxvector::dwLastJmpLabel = getInBatchCounter(dwBatchIndex);
             nop();
         }
     }
@@ -420,8 +422,8 @@ void cnxvector::jmp(int mode, int Loops)
         if (bEstimationMode == 0)
         {
             int DeltaJump = getInBatchCounter(dwBatchIndex) - cnxvector::dwLastJmpLabel - 1;//do not count set lc label
-            if (Loops > LOOPS_VAL_MAX) cnxvectorError(ERR_LOOPS_TIMES_OUT_OF_RANGE);
-            if (DeltaJump > DELTAJMP_VAL_MAX) cnxvectorError(ERR_LOOP_LENGTH_OUT_OF_RANGE);
+            if (Loops > LOOPS_VAL_MAX) {cnxvectorError(ERR_LOOPS_TIMES_OUT_OF_RANGE); printf(" %d \n",Loops); }
+            if (DeltaJump > DELTAJMP_VAL_MAX) {cnxvectorError(ERR_LOOP_LENGTH_OUT_OF_RANGE); printf(" %d \n",DeltaJump); }
             replaceInstruction((_SETLC << OPCODE_6BITS_POS) + (Loops << IMMEDIATE_VALUE_POS), cnxvector::dwLastJmpLabel);
             appendInstruction((_IJMPNZ << OPCODE_6BITS_POS) + (DeltaJump << IMMEDIATE_VALUE_POS));
         }
