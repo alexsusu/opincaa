@@ -1203,6 +1203,7 @@ int test_Simple_All(bool stress)
         cout<< "=="<< testFails << " SimpleTests FAILED ! " <<endl;
         cout<<"================================"<<endl<<endl;
 
+    if (TestJmpMultiRed(2,1)==FAIL) testFails++;
     if (TestJmpMultiRed(2,3)==FAIL) testFails++;
     if (TestJmpMultiRed(2,13)==FAIL) testFails++;
     if (TestJmpMultiRed(2,133)==FAIL) testFails++;
@@ -1214,7 +1215,7 @@ static int TestJmpMultiRed(int RedValue, int SquareReds)
 {
     InitKernel_Jump3(IJMP3_BNR, RedValue,SquareReds);
     EXECUTE_BATCH(IJMP3_BNR);
-    int ExpectedBytesOfReductions = SquareReds*SquareReds;
+    int ExpectedBytesOfReductions = SquareReds*SquareReds*BYTES_IN_DWORD;
     static UINT_RED_REG_VAL *BasicMatchRedResults;
     BasicMatchRedResults = (UINT_RED_REG_VAL*)malloc(8192*1024 * sizeof(UINT_RED_REG_VAL));
     if (BasicMatchRedResults == NULL) {cout<<"Could not allocate memory for reductions "<<endl;return 0;};
@@ -1223,7 +1224,7 @@ static int TestJmpMultiRed(int RedValue, int SquareReds)
                                         ExpectedBytesOfReductions
                                         );
     int i;
-    for (i=0; i < ExpectedBytesOfReductions; i++)
+    for (i=0; i < ExpectedBytesOfReductions / BYTES_IN_DWORD; i++)
     {
         if (BasicMatchRedResults[i] != RedValue* NUMBER_OF_MACHINES)
         {
@@ -1232,11 +1233,15 @@ static int TestJmpMultiRed(int RedValue, int SquareReds)
         }
     }
     free(BasicMatchRedResults);
-    if ((i == ExpectedBytesOfReductions) && (RealBytesOfReductions == ExpectedBytesOfReductions))
+    if ((i == ExpectedBytesOfReductions/BYTES_IN_DWORD) && (RealBytesOfReductions == ExpectedBytesOfReductions))
         cout<<"Test JMP-MultiRed PASSED "<<endl;
     else
     {
         cout<<"Test JMP-MultiRed FAILED with args "<<RedValue<<" "<<SquareReds<<endl;
+        if (RealBytesOfReductions != ExpectedBytesOfReductions)
+            cout<<"Test JMP-MultiRed FAILED with different number of reductions"<<endl;
+        else
+            cout<<"Test JMP-MultiRed FAILED with different value of reduction"<<endl;
         DEASM_BATCH(IJMP3_BNR);
         cout << "Press ENTER to continue...";
         cin.ignore( numeric_limits <streamsize> ::max(), '\n' );
