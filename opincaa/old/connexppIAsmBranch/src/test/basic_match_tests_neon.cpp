@@ -76,21 +76,87 @@ struct uint16x4x2_t
    uint16x4_t val[2];
 };
 */
+
 int MainNeonSSE()
 {
     //cout << "MainNeonSSE not implemented for arm "<<endl;
-    UINT16 dataIn[] __attribute__ ((aligned(32))) = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+    UINT16 dataIn1[32] __attribute__ ((aligned(32)));
+    UINT16 dataIn2[32] __attribute__ ((aligned(32)));
+    for (int i=0; i<32; i++) dataIn1[i]=i;
+    for (int i=0; i<32; i++) dataIn2[i]=i+1;
+
     uint16x4x4_t data __attribute__ ((aligned(32)));
     UINT16 dataOut[16] __attribute__ ((aligned(32)));
 
     //load 4 chuncks each having
-    data = vld4_u16(dataIn);
+    data = vld4_u16(dataIn1);
 
     //void vst4_u16 (uint16_t *, uint16x4x4_t)
     vst4_u16(dataOut, data);
-    for (int i = 0; i < 16; i++)
+    for (int i = 0; i < 32; i++)
         cout<<dataOut[i]<<" ";
     cout<<endl;
+
+    uint16x8_t data_4;
+    data_4 = vld1q_u16(dataIn2);
+
+    cout<<"dataIn2: "<<
+    vst1q_u16(dataOut, data);
+    for (int i = 0; i < 8; i++)
+        cout<<dataOut[i]<<" ";
+    cout<<endl;
+
+    data_4 = vsubq_u16(data.val[0], data_4);
+    cout<<"datasub: "<<
+    vst1q_u16(dataOut, data);
+    for (int i = 0; i < 8; i++)
+        cout<<dataOut[i]<<" ";
+    cout<<endl;
+
+    data_4 = vmulq_u16(data_4, data_4);
+    cout<<"datamult: "<<
+    vst1q_u16(dataOut, data);
+    for (int i = 0; i < 8; i++)
+        cout<<dataOut[i]<<" ";
+    cout<<endl;
+
+    cout<<"Final result "<<endl;
+    vst1q_u16(multsUI16, data_4);
+    for (int i = 0; i < 8; i++)
+        cout<<multsUI16[i]<<" ";
+    cout<<endl;
+
+/*
+
+                #define LOAD_512_bits(x) vld4q_u16(x)
+
+            //uint16x8_t  vld1q_u16(__transfersize(8) uint16_t const * ptr); // VLD1.16 {d0, d1}, [r0]
+            #define LOAD_128_bits(x) vld1q_u16(x)
+            #define LOAD_SSD_FindMatches16_NEON(x) uint16x8x4_t data_##x __attribute__ ((aligned(32))) = LOAD_512_bits(src1 + 32 * x);
+            LOAD_SSD_FindMatches16_NEON(0);
+            LOAD_SSD_FindMatches16_NEON(1);
+            LOAD_SSD_FindMatches16_NEON(2);
+            LOAD_SSD_FindMatches16_NEON(3);
+
+	        dsq = 0;
+            UINT16 *src2 = (UINT16*)__builtin_assume_aligned((SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]), 16);
+            // uint16x8_t  vsubq_u16(uint16x8_t a, uint16x8_t b);   // VSUB.I16 q0,q0,q0
+            // uint16x8_t  vmulq_u16(uint16x8_t a, uint16x8_t b);   // VMUL.I16 q0,q0,q0
+            // void  vst1q_u16(__transfersize(8) uint16_t * ptr, uint16x8_t val); // VST1.16 {d0, d1}, [r0]
+
+            uint16x8_t data_4;
+            #define PARTIAL_SSD_NEON(x,y,z) \
+            data_4 = LOAD_128_bits(src2+x*8);\
+            data_4 = vsubq_u16(data_##y.val[z], data_4);\
+            data_4 = vmulq_u16(data_4, data_4);\
+            vst1q_u16(multsUI16 + x*8, data_4);
+
+            PARTIAL_SSD_NEON(0,0,0);           PARTIAL_SSD_NEON(1,0,1);            PARTIAL_SSD_NEON(2,0,2);         PARTIAL_SSD_NEON(3,0,3);
+            PARTIAL_SSD_NEON(4,1,0);           PARTIAL_SSD_NEON(5,1,1);            PARTIAL_SSD_NEON(6,1,2);         PARTIAL_SSD_NEON(7,1,3);
+            PARTIAL_SSD_NEON(8,2,0);           PARTIAL_SSD_NEON(9,2,1);            PARTIAL_SSD_NEON(10,2,2);        PARTIAL_SSD_NEON(11,2,3);
+            PARTIAL_SSD_NEON(12,3,0);          PARTIAL_SSD_NEON(13,3,1);           PARTIAL_SSD_NEON(14,3,2);        PARTIAL_SSD_NEON(15,3,3);
+*/
+
 }
 #else
 

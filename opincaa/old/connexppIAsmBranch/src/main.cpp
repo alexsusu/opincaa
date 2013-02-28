@@ -184,7 +184,7 @@ int main(int argc, char *argv[])
 	//test_BasicMatching_SAD_All();
     //test_BasicMatching_All();
     //test_BasicMatching_All_SAD();
-    //MainNeonSSE();
+    MainNeonSSE();
     //test_BasicMatching_All_NeonSSE("data/adam2_big.png.key", "data/adam1_big.png.key");
     //test_BasicMatching_All_NeonSSE("data/adam1.key", "data/adam2.key");
     //test_BasicMatching_All_NeonSSE((char*)"data/img1.png.key", (char*)"data/img3.png.key");
