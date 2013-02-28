@@ -124,6 +124,22 @@ static void InitKernel_Jump2(int BatchNumber,INT32 Param1, INT32 Param2)
     END_BATCH(BatchNumber);
 }
 
+static void InitKernel_Jump3(int BatchNumber,INT32 Param1, INT32 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        EXECUTE_IN_ALL(
+                        R0 = Param1;
+                        for (int x=0; x< Param2; x++)
+                        REPEAT_X_TIMES
+                        (Param2,
+                            REDUCE(R0);
+                        )
+                       )
+    END_BATCH(BatchNumber);
+}
+
+
+
 static void InitKernel_Add(int BatchNumber,INT32 Param1, INT32 Param2);
 static void InitKernel_Vload(int BatchNumber,INT32 Param1, INT32 Param2)
 {
@@ -846,6 +862,7 @@ enum SimpleBatchNumbers
 
     IJMP_BNR        ,
     IJMP2_BNR       ,
+    IJMP3_BNR       ,
 
     PRINT_LS_BNR = 98,
     CLEAR_LS_BNR = 99,
@@ -930,6 +947,7 @@ static TestFunction TestFunctionTable[] =
 
     {IJMP_BNR,"IJMP",InitKernel_Jump,{(10), 2, (10-1 - 2)*NUMBER_OF_MACHINES}},
     {IJMP2_BNR,"IJMP2",InitKernel_Jump2,{(10), 2, (10-2)*NUMBER_OF_MACHINES}},
+    //{IJMP3_BNR,"IJMP3",InitKernel_Jump3,{(10), 2, (10-2)*NUMBER_OF_MACHINES}},
 
 	{CELL_SHL_BNR,"CELLSHL",InitKernel_Cellshl,{2,5,5-2}},
     {CELL_SHR_BNR,"CELLSHR",InitKernel_Cellshr,{2,5,5+2}},
@@ -1130,6 +1148,7 @@ int test_ExtendedSimpleAll()
 	return 0;
 }
 
+static int TestJmpMultiRed(int RedValue, int SquareReds);
 int test_Simple_All(bool stress)
 {
     UINT16 i = 0;
@@ -1183,6 +1202,36 @@ int test_Simple_All(bool stress)
         cout<< "=="<< testFails << " SimpleTests FAILED ! " <<endl;
         cout<<"================================"<<endl<<endl;
 
+    if (TestJmpMultiRed(2,13)==FAIL) testFails++;
+    if (TestJmpMultiRed(2,133)==FAIL) testFails++;
+    if (TestJmpMultiRed(2,1333)==FAIL) testFails++;
     return testFails;
+}
+
+static int TestJmpMultiRed(int RedValue, int SquareReds)
+{
+    InitKernel_Jump3(IJMP3_BNR, RedValue,SquareReds);
+    EXECUTE_BATCH(IJMP3_BNR);
+    int ExpectedBytesOfReductions = SquareReds*SquareReds;
+    static UINT_RED_REG_VAL *BasicMatchRedResults;
+    BasicMatchRedResults = (UINT_RED_REG_VAL*)malloc(8192*1024 * sizeof(UINT_RED_REG_VAL));
+    if (BasicMatchRedResults == NULL) {cout<<"Could not allocate memory for reductions "<<endl;return 0;};
+
+    int RealBytesOfReductions = GET_MULTIRED_RESULT(BasicMatchRedResults ,
+                                        ExpectedBytesOfReductions
+                                        );
+    int i;
+    for (i=0; i < ExpectedBytesOfReductions; i++)
+    {
+        if (BasicMatchRedResults[i] != RedValue* NUMBER_OF_MACHINES)
+        {
+            cout <<"  Unexpected red result "<<BasicMatchRedResults[i]<<endl;
+            break;
+        }
+    }
+    free(BasicMatchRedResults);
+    if (i == ExpectedBytesOfReductions)
+        cout<<"Test JMP-MultiRed PASSED "<<endl;
+    else cout<<"Test JMP-MultiRed FAILED with args "<<RedValue<<" "<<SquareReds<<endl;
 }
 
