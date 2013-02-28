@@ -135,6 +135,7 @@ static void InitKernel_Jump3(int BatchNumber,INT32 Param1, INT32 Param2)
                         (Param2,
                             REDUCE(R0);
                         )
+                        NOP;//hardware bug workaround
                        )
     END_BATCH(BatchNumber);
 }
