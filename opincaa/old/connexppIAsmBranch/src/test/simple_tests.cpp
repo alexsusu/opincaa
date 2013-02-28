@@ -1239,7 +1239,9 @@ static int TestJmpMultiRed(int RedValue, int SquareReds)
     {
         cout<<"Test JMP-MultiRed FAILED with args "<<RedValue<<" "<<SquareReds<<endl;
         if (RealBytesOfReductions != ExpectedBytesOfReductions)
-            cout<<"Test JMP-MultiRed FAILED with different number of reductions"<<endl;
+            cout<<"Test JMP-MultiRed FAILED with different number of reductions "
+            <<RealBytesOfReductions/BYTES_IN_DWORD<<" instead of "
+            <<ExpectedBytesOfReductions/BYTES_IN_DWORD<<endl;
         else
             cout<<"Test JMP-MultiRed FAILED with different value of reduction"<<endl;
         DEASM_BATCH(IJMP3_BNR);
