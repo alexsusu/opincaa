@@ -13,7 +13,6 @@
 				<Option compiler="gcc" />
 				<Option parameters="--csimulation" />
 				<Compiler>
-					<Add option="-march=core2" />
 					<Add option="-g" />
 					<Add option="-msse4.2 -march=corei7-avx -fopenmp" />
 					<Add directory="include" />
@@ -47,7 +46,6 @@
 				<Option compiler="gcc" />
 				<Option parameters="--csimulation" />
 				<Compiler>
-					<Add option="-march=core2" />
 					<Add option="-g" />
 					<Add option="-mfpu=neon -mcpu=cortex-a9 -ftree-vectorize" />
 					<Add directory="include" />
