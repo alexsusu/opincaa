@@ -82,6 +82,7 @@ int MainNeonSSE()
     //cout << "MainNeonSSE not implemented for arm "<<endl;
     UINT16 dataIn1[32] __attribute__ ((aligned(32)));
     UINT16 dataIn2[32] __attribute__ ((aligned(32)));
+    UINT16 multsUI16[128] __attribute__ ((aligned(32)));
     for (int i=0; i<32; i++) dataIn1[i]=i;
     for (int i=0; i<32; i++) dataIn2[i]=i+1;
 
