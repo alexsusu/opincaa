@@ -398,9 +398,20 @@ UINT32 cnxvector::getMultiRedResult(UINT_RED_REG_VAL* RedResults, UINT32 Limit)
 {
     //return number of actually read bytes
     if (Limit == 0)
+    {
         return read(pipe_read_32,RedResults,MAX_MULTIRED_DWORDS);
+    }
     else
-        return read(pipe_read_32,RedResults,Limit);
+    {
+        int totalReadBytes = 0;
+        int readBytes = 0;
+        do
+        {
+            readBytes = read(pipe_read_32,RedResults + totalReadBytes,Limit - totalReadBytes);
+            if (readBytes > 0) totalReadBytes+= readBytes;
+        }
+        while (readBytes != -1);
+    }
 }
 
 void cnxvector::jmp(int mode, int Loops)
