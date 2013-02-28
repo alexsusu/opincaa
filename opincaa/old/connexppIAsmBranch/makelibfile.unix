@@ -18,87 +18,87 @@ LIBDIR =
 LIB = 
 LDFLAGS = 
 
-INC_DEBUGLIB =  $(INC)
-CFLAGS_DEBUGLIB =  $(CFLAGS) -O3 -O2 -O1 -O -Wall -g
-RESINC_DEBUGLIB =  $(RESINC)
-RCFLAGS_DEBUGLIB =  $(RCFLAGS)
-LIBDIR_DEBUGLIB =  $(LIBDIR)
-LIB_DEBUGLIB = $(LIB)
-LDFLAGS_DEBUGLIB =  $(LDFLAGS)
-OBJDIR_DEBUGLIB = obj/DebugLib
-DEP_DEBUGLIB = 
-OUT_DEBUGLIB = lib/opincaa.a
+INC_DEBUGLIBARM =  $(INC)
+CFLAGS_DEBUGLIBARM =  $(CFLAGS) -O3 -O2 -O1 -O -Wall -g -mfpu=neon -mcpu=cortex-a9 -ftree-vectorize
+RESINC_DEBUGLIBARM =  $(RESINC)
+RCFLAGS_DEBUGLIBARM =  $(RCFLAGS)
+LIBDIR_DEBUGLIBARM =  $(LIBDIR)
+LIB_DEBUGLIBARM = $(LIB)
+LDFLAGS_DEBUGLIBARM =  $(LDFLAGS)
+OBJDIR_DEBUGLIBARM = obj/DebugLib
+DEP_DEBUGLIBARM = 
+OUT_DEBUGLIBARM = lib/opincaa.a
 
-OBJ_DEBUGLIB = $(OBJDIR_DEBUGLIB)/src/util/utils.o $(OBJDIR_DEBUGLIB)/src/util/timing.o $(OBJDIR_DEBUGLIB)/src/util/kernel_acc.o $(OBJDIR_DEBUGLIB)/src/test/speed_tests.o $(OBJDIR_DEBUGLIB)/src/test/simple_tests.o $(OBJDIR_DEBUGLIB)/src/test/simple_io_tests.o $(OBJDIR_DEBUGLIB)/src/cppamp_emulator/cppamp_emulator.o $(OBJDIR_DEBUGLIB)/src/core/io_unit.o $(OBJDIR_DEBUGLIB)/src/core/cnxvector_registers.o $(OBJDIR_DEBUGLIB)/src/core/cnxvector_errors.o $(OBJDIR_DEBUGLIB)/src/core/cnxvector.o $(OBJDIR_DEBUGLIB)/src/c_simu/c_simulator.o $(OBJDIR_DEBUGLIB)/src/api/wrapper/Image.o
+OBJ_DEBUGLIBARM = $(OBJDIR_DEBUGLIBARM)/src/util/utils.o $(OBJDIR_DEBUGLIBARM)/src/util/timing.o $(OBJDIR_DEBUGLIBARM)/src/util/kernel_acc.o $(OBJDIR_DEBUGLIBARM)/src/test/speed_tests.o $(OBJDIR_DEBUGLIBARM)/src/test/simple_tests.o $(OBJDIR_DEBUGLIBARM)/src/test/simple_io_tests.o $(OBJDIR_DEBUGLIBARM)/src/cppamp_emulator/cppamp_emulator.o $(OBJDIR_DEBUGLIBARM)/src/core/io_unit.o $(OBJDIR_DEBUGLIBARM)/src/core/cnxvector_registers.o $(OBJDIR_DEBUGLIBARM)/src/core/cnxvector_errors.o $(OBJDIR_DEBUGLIBARM)/src/core/cnxvector.o $(OBJDIR_DEBUGLIBARM)/src/c_simu/c_simulator.o $(OBJDIR_DEBUGLIBARM)/src/api/wrapper/Image.o
 
-all: debuglib
+all: debuglibarm
 
-clean: clean_debuglib
+clean: clean_debuglibarm
 
-before_debuglib: 
+before_debuglibarm: 
 	test -d lib || mkdir -p lib
-	test -d $(OBJDIR_DEBUGLIB)/src/util || mkdir -p $(OBJDIR_DEBUGLIB)/src/util
-	test -d $(OBJDIR_DEBUGLIB)/src/test || mkdir -p $(OBJDIR_DEBUGLIB)/src/test
-	test -d $(OBJDIR_DEBUGLIB)/src/cppamp_emulator || mkdir -p $(OBJDIR_DEBUGLIB)/src/cppamp_emulator
-	test -d $(OBJDIR_DEBUGLIB)/src/core || mkdir -p $(OBJDIR_DEBUGLIB)/src/core
-	test -d $(OBJDIR_DEBUGLIB)/src/c_simu || mkdir -p $(OBJDIR_DEBUGLIB)/src/c_simu
-	test -d $(OBJDIR_DEBUGLIB)/src/api/wrapper || mkdir -p $(OBJDIR_DEBUGLIB)/src/api/wrapper
+	test -d $(OBJDIR_DEBUGLIBARM)/src/util || mkdir -p $(OBJDIR_DEBUGLIBARM)/src/util
+	test -d $(OBJDIR_DEBUGLIBARM)/src/test || mkdir -p $(OBJDIR_DEBUGLIBARM)/src/test
+	test -d $(OBJDIR_DEBUGLIBARM)/src/cppamp_emulator || mkdir -p $(OBJDIR_DEBUGLIBARM)/src/cppamp_emulator
+	test -d $(OBJDIR_DEBUGLIBARM)/src/core || mkdir -p $(OBJDIR_DEBUGLIBARM)/src/core
+	test -d $(OBJDIR_DEBUGLIBARM)/src/c_simu || mkdir -p $(OBJDIR_DEBUGLIBARM)/src/c_simu
+	test -d $(OBJDIR_DEBUGLIBARM)/src/api/wrapper || mkdir -p $(OBJDIR_DEBUGLIBARM)/src/api/wrapper
 
-after_debuglib: 
+after_debuglibarm: 
 
-debuglib: before_debuglib out_debuglib after_debuglib
+debuglibarm: before_debuglibarm out_debuglibarm after_debuglibarm
 
-out_debuglib: $(OBJ_DEBUGLIB) $(DEP_DEBUGLIB)
-	$(AR) rcs $(OUT_DEBUGLIB) $(OBJ_DEBUGLIB)
+out_debuglibarm: $(OBJ_DEBUGLIBARM) $(DEP_DEBUGLIBARM)
+	$(AR) rcs $(OUT_DEBUGLIBARM) $(OBJ_DEBUGLIBARM)
 
-$(OBJDIR_DEBUGLIB)/src/util/utils.o: src/util/utils.cpp
-	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/util/utils.cpp -o $(OBJDIR_DEBUGLIB)/src/util/utils.o
+$(OBJDIR_DEBUGLIBARM)/src/util/utils.o: src/util/utils.cpp
+	$(CXX) $(CFLAGS_DEBUGLIBARM) $(INC_DEBUGLIBARM) -c src/util/utils.cpp -o $(OBJDIR_DEBUGLIBARM)/src/util/utils.o
 
-$(OBJDIR_DEBUGLIB)/src/util/timing.o: src/util/timing.cpp
-	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/util/timing.cpp -o $(OBJDIR_DEBUGLIB)/src/util/timing.o
+$(OBJDIR_DEBUGLIBARM)/src/util/timing.o: src/util/timing.cpp
+	$(CXX) $(CFLAGS_DEBUGLIBARM) $(INC_DEBUGLIBARM) -c src/util/timing.cpp -o $(OBJDIR_DEBUGLIBARM)/src/util/timing.o
 
-$(OBJDIR_DEBUGLIB)/src/util/kernel_acc.o: src/util/kernel_acc.cpp
-	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/util/kernel_acc.cpp -o $(OBJDIR_DEBUGLIB)/src/util/kernel_acc.o
+$(OBJDIR_DEBUGLIBARM)/src/util/kernel_acc.o: src/util/kernel_acc.cpp
+	$(CXX) $(CFLAGS_DEBUGLIBARM) $(INC_DEBUGLIBARM) -c src/util/kernel_acc.cpp -o $(OBJDIR_DEBUGLIBARM)/src/util/kernel_acc.o
 
-$(OBJDIR_DEBUGLIB)/src/test/speed_tests.o: src/test/speed_tests.cpp
-	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/test/speed_tests.cpp -o $(OBJDIR_DEBUGLIB)/src/test/speed_tests.o
+$(OBJDIR_DEBUGLIBARM)/src/test/speed_tests.o: src/test/speed_tests.cpp
+	$(CXX) $(CFLAGS_DEBUGLIBARM) $(INC_DEBUGLIBARM) -c src/test/speed_tests.cpp -o $(OBJDIR_DEBUGLIBARM)/src/test/speed_tests.o
 
-$(OBJDIR_DEBUGLIB)/src/test/simple_tests.o: src/test/simple_tests.cpp
-	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/test/simple_tests.cpp -o $(OBJDIR_DEBUGLIB)/src/test/simple_tests.o
+$(OBJDIR_DEBUGLIBARM)/src/test/simple_tests.o: src/test/simple_tests.cpp
+	$(CXX) $(CFLAGS_DEBUGLIBARM) $(INC_DEBUGLIBARM) -c src/test/simple_tests.cpp -o $(OBJDIR_DEBUGLIBARM)/src/test/simple_tests.o
 
-$(OBJDIR_DEBUGLIB)/src/test/simple_io_tests.o: src/test/simple_io_tests.cpp
-	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/test/simple_io_tests.cpp -o $(OBJDIR_DEBUGLIB)/src/test/simple_io_tests.o
+$(OBJDIR_DEBUGLIBARM)/src/test/simple_io_tests.o: src/test/simple_io_tests.cpp
+	$(CXX) $(CFLAGS_DEBUGLIBARM) $(INC_DEBUGLIBARM) -c src/test/simple_io_tests.cpp -o $(OBJDIR_DEBUGLIBARM)/src/test/simple_io_tests.o
 
-$(OBJDIR_DEBUGLIB)/src/cppamp_emulator/cppamp_emulator.o: src/cppamp_emulator/cppamp_emulator.cpp
-	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/cppamp_emulator/cppamp_emulator.cpp -o $(OBJDIR_DEBUGLIB)/src/cppamp_emulator/cppamp_emulator.o
+$(OBJDIR_DEBUGLIBARM)/src/cppamp_emulator/cppamp_emulator.o: src/cppamp_emulator/cppamp_emulator.cpp
+	$(CXX) $(CFLAGS_DEBUGLIBARM) $(INC_DEBUGLIBARM) -c src/cppamp_emulator/cppamp_emulator.cpp -o $(OBJDIR_DEBUGLIBARM)/src/cppamp_emulator/cppamp_emulator.o
 
-$(OBJDIR_DEBUGLIB)/src/core/io_unit.o: src/core/io_unit.cpp
-	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/core/io_unit.cpp -o $(OBJDIR_DEBUGLIB)/src/core/io_unit.o
+$(OBJDIR_DEBUGLIBARM)/src/core/io_unit.o: src/core/io_unit.cpp
+	$(CXX) $(CFLAGS_DEBUGLIBARM) $(INC_DEBUGLIBARM) -c src/core/io_unit.cpp -o $(OBJDIR_DEBUGLIBARM)/src/core/io_unit.o
 
-$(OBJDIR_DEBUGLIB)/src/core/cnxvector_registers.o: src/core/cnxvector_registers.cpp
-	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/core/cnxvector_registers.cpp -o $(OBJDIR_DEBUGLIB)/src/core/cnxvector_registers.o
+$(OBJDIR_DEBUGLIBARM)/src/core/cnxvector_registers.o: src/core/cnxvector_registers.cpp
+	$(CXX) $(CFLAGS_DEBUGLIBARM) $(INC_DEBUGLIBARM) -c src/core/cnxvector_registers.cpp -o $(OBJDIR_DEBUGLIBARM)/src/core/cnxvector_registers.o
 
-$(OBJDIR_DEBUGLIB)/src/core/cnxvector_errors.o: src/core/cnxvector_errors.cpp
-	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/core/cnxvector_errors.cpp -o $(OBJDIR_DEBUGLIB)/src/core/cnxvector_errors.o
+$(OBJDIR_DEBUGLIBARM)/src/core/cnxvector_errors.o: src/core/cnxvector_errors.cpp
+	$(CXX) $(CFLAGS_DEBUGLIBARM) $(INC_DEBUGLIBARM) -c src/core/cnxvector_errors.cpp -o $(OBJDIR_DEBUGLIBARM)/src/core/cnxvector_errors.o
 
-$(OBJDIR_DEBUGLIB)/src/core/cnxvector.o: src/core/cnxvector.cpp
-	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/core/cnxvector.cpp -o $(OBJDIR_DEBUGLIB)/src/core/cnxvector.o
+$(OBJDIR_DEBUGLIBARM)/src/core/cnxvector.o: src/core/cnxvector.cpp
+	$(CXX) $(CFLAGS_DEBUGLIBARM) $(INC_DEBUGLIBARM) -c src/core/cnxvector.cpp -o $(OBJDIR_DEBUGLIBARM)/src/core/cnxvector.o
 
-$(OBJDIR_DEBUGLIB)/src/c_simu/c_simulator.o: src/c_simu/c_simulator.cpp
-	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/c_simu/c_simulator.cpp -o $(OBJDIR_DEBUGLIB)/src/c_simu/c_simulator.o
+$(OBJDIR_DEBUGLIBARM)/src/c_simu/c_simulator.o: src/c_simu/c_simulator.cpp
+	$(CXX) $(CFLAGS_DEBUGLIBARM) $(INC_DEBUGLIBARM) -c src/c_simu/c_simulator.cpp -o $(OBJDIR_DEBUGLIBARM)/src/c_simu/c_simulator.o
 
-$(OBJDIR_DEBUGLIB)/src/api/wrapper/Image.o: src/api/wrapper/Image.cpp
-	$(CXX) $(CFLAGS_DEBUGLIB) $(INC_DEBUGLIB) -c src/api/wrapper/Image.cpp -o $(OBJDIR_DEBUGLIB)/src/api/wrapper/Image.o
+$(OBJDIR_DEBUGLIBARM)/src/api/wrapper/Image.o: src/api/wrapper/Image.cpp
+	$(CXX) $(CFLAGS_DEBUGLIBARM) $(INC_DEBUGLIBARM) -c src/api/wrapper/Image.cpp -o $(OBJDIR_DEBUGLIBARM)/src/api/wrapper/Image.o
 
-clean_debuglib: 
-	rm -f $(OBJ_DEBUGLIB) $(OUT_DEBUGLIB)
+clean_debuglibarm: 
+	rm -f $(OBJ_DEBUGLIBARM) $(OUT_DEBUGLIBARM)
 	rm -rf lib
-	rm -rf $(OBJDIR_DEBUGLIB)/src/util
-	rm -rf $(OBJDIR_DEBUGLIB)/src/test
-	rm -rf $(OBJDIR_DEBUGLIB)/src/cppamp_emulator
-	rm -rf $(OBJDIR_DEBUGLIB)/src/core
-	rm -rf $(OBJDIR_DEBUGLIB)/src/c_simu
-	rm -rf $(OBJDIR_DEBUGLIB)/src/api/wrapper
+	rm -rf $(OBJDIR_DEBUGLIBARM)/src/util
+	rm -rf $(OBJDIR_DEBUGLIBARM)/src/test
+	rm -rf $(OBJDIR_DEBUGLIBARM)/src/cppamp_emulator
+	rm -rf $(OBJDIR_DEBUGLIBARM)/src/core
+	rm -rf $(OBJDIR_DEBUGLIBARM)/src/c_simu
+	rm -rf $(OBJDIR_DEBUGLIBARM)/src/api/wrapper
 
-.PHONY: before_debuglib after_debuglib clean_debuglib
+.PHONY: before_debuglibarm after_debuglibarm clean_debuglibarm
 

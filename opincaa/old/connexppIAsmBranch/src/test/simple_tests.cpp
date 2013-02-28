@@ -732,6 +732,23 @@ static void InitKernel_Wherelt(int BatchNumber, INT32 Param1, INT32 Param2)
     END_BATCH(BatchNumber);
 }
 
+
+static void InitKernel_Wherelt2(int BatchNumber, INT32 Param1, INT32 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        EXECUTE_IN_ALL(
+                        R0 = INDEX;
+                        R1 = Param1;
+                        R2 = 0;
+                        R0 = R0 - R1;
+                        R3 = (R0 < R2);
+                        R4 = 0;
+                      )
+        EXECUTE_WHERE_LT( R4 = Param2;)
+        EXECUTE_IN_ALL( REDUCE(R4);)
+    END_BATCH(BatchNumber);
+}
+
 static void InitKernel_Wherecry(int BatchNumber, INT32 Param1, INT32 Param2)
 {
     BEGIN_BATCH(BatchNumber);
@@ -761,6 +778,7 @@ enum SimpleBatchNumbers
     WHERE_CARRY_BNR ,
     WHERE_EQ_BNR    ,
     WHERE_LT_BNR    ,
+    WHERE_LT2_BNR   ,
     ENDWHERE_BNR    ,
     LDIX_BNR        ,
     READ_BNR        ,
@@ -907,6 +925,7 @@ static TestFunction TestFunctionTable[] =
 
     {WHERE_EQ_BNR,"WHEREQ",InitKernel_Whereq,{27,50,50}},
     {WHERE_LT_BNR,"WHERELT",InitKernel_Wherelt,{27,50,27*50}},
+    {WHERE_LT2_BNR,"WHERELT2",InitKernel_Wherelt2,{27,50,27*50}},
     {WHERE_CARRY_BNR,"WHERECRY",InitKernel_Wherecry,{(0x10000UL-10),50,118*50}},
 
     {IJMP_BNR,"IJMP",InitKernel_Jump,{(10), 2, (10-1 - 2)*NUMBER_OF_MACHINES}},

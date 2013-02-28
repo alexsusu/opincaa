@@ -403,7 +403,7 @@ int c_simulator::DeAsmBatch(UINT16 dwBatchNumber)
                                                    continue;}
                 case _LT:
                     {
-                        FOR_ALL_ACTIVE_MACHINES( if(CSimuRegs[MACHINE][GET_LEFT(CI)] < CSimuRegs[MACHINE][GET_RIGHT(CI)])
+                        FOR_ALL_ACTIVE_MACHINES( if((INT16)CSimuRegs[MACHINE][GET_LEFT(CI)] < (INT16)CSimuRegs[MACHINE][GET_RIGHT(CI)])
                                                     { CSimuRegs[MACHINE][GET_DEST(CI)] = 1; CSimuLtFlags[MACHINE] = 1; }
                                                 else { CSimuRegs[MACHINE][GET_DEST(CI)] = 0; CSimuLtFlags[MACHINE] = 0; };  );
                         continue;}

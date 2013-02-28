@@ -76,7 +76,7 @@ static SiftMatches SM_ConnexArm;
 static SiftMatches SM_ConnexArm2;
 static SiftMatches SM_ConnexArmMan;
 static SiftMatches SM_ConnexArmMan2;
-static UINT_RED_REG_VAL BasicMatchRedResults[MAX_REDUCES];
+static UINT_RED_REG_VAL *BasicMatchRedResults;
 
 static void PrintDescriptors(SiftDescriptors *SDs)
 {
@@ -117,7 +117,7 @@ static void PrintMatches(SiftMatches *SMs)
 static int CompareMatches(SiftMatches *SMs1, SiftMatches *SMs2)
 {
     int CntMax = SMs1->RealMatches;
-    cout << "Comparing "<<CntMax<< " matches... "<<endl;
+    cout << "  ...comparing "<<CntMax<< " matches... "<<endl;
     if (CntMax != SMs2->RealMatches) {cout << "FAIL: not the same number of matches "<<SMs1->RealMatches<<" != "<<SMs2->RealMatches <<endl;return FAIL;}
     for (int cnt = 0; cnt < CntMax; cnt++)
         if (SMs1->DescIx2ndImgMin[cnt] != SMs2->DescIx2ndImgMin[cnt])
@@ -371,9 +371,12 @@ static int connexFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
             }
         }
     }
-    cout<<"Total IO time is "<<TotalIOTime<<" ms"<<endl;
-    cout<<"Total BatchExecution time is "<<TotalBatchTime<<" ms"<<endl;
-    cout<<"Total TotalReductionTime time is "<<TotalReductionTime<<" ms"<<endl;
+
+    cout<<"   ___"<<endl;
+    cout<<"  |___ Total IO time is "<<TotalIOTime<<" ms"<<endl;
+    cout<<"  |___ Total BatchExecution time is "<<TotalBatchTime<<" ms"<<endl;
+    cout<<"  |    Total TotalReductionTime time is "<<TotalReductionTime<<" ms"<<endl;
+
     return PASS;
 }
 
@@ -418,22 +421,23 @@ static int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
                         {
                             int descIm2 = CurrentcnxvectorChunkImg2*VECTORS_CHUNK_IMAGE2 + (CurrentcnxvectorSubChunkImg2 * VECTORS_SUBCHUNK_IMAGE2) + x;
                             //if (descIm1 == 0) { cout<<RedCounter<<":"<<BasicMatchRedResults[RedCounter]<<" "; if ((descIm2 & 3) == 3) cout << endl;}
-
-                            UINT_RED_REG_VAL dsq = BasicMatchRedResults[RedCounter];
-                            if (dsq < SMs->ScoreMin[descIm1])
+                            if ((descIm1 < SiftDescriptors1->RealDescriptors) && (descIm2 < SiftDescriptors2->RealDescriptors))
                             {
-                                SMs->ScoreNextToMin[descIm1] = SMs->ScoreMin[descIm1];
-                                SMs->ScoreMin[descIm1] = dsq;
+                                UINT_RED_REG_VAL dsq = BasicMatchRedResults[RedCounter];
+                                if (dsq < SMs->ScoreMin[descIm1])
+                                {
+                                    SMs->ScoreNextToMin[descIm1] = SMs->ScoreMin[descIm1];
+                                    SMs->ScoreMin[descIm1] = dsq;
 
-                                SMs->DescIx2ndImgNextToMin[descIm1] = SMs->DescIx2ndImgMin[descIm1];
-                                SMs->DescIx2ndImgMin[descIm1] = descIm2;
+                                    SMs->DescIx2ndImgNextToMin[descIm1] = SMs->DescIx2ndImgMin[descIm1];
+                                    SMs->DescIx2ndImgMin[descIm1] = descIm2;
+                                }
+                                else if (dsq < SMs->ScoreNextToMin[descIm1])
+                                {
+                                    SMs->ScoreNextToMin[descIm1] = dsq;
+                                    SMs->DescIx2ndImgNextToMin[descIm1] = descIm2;
+                                }
                             }
-                            else if (dsq < SMs->ScoreNextToMin[descIm1])
-                            {
-                                SMs->ScoreNextToMin[descIm1] = dsq;
-                                SMs->DescIx2ndImgNextToMin[descIm1] = descIm2;
-                            }
-
                             RedCounter++;
                         }
                     }
@@ -559,9 +563,11 @@ static int connexJmpFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
         }
     }
     //DEASM_BATCH(0);
-    cout<<"Total IO time is "<<TotalIOTime<<" ms"<<endl;
-    cout<<"Total BatchExecution time is "<<TotalBatchTime<<" ms"<<endl;
-    cout<<"Total TotalReductionTime time is "<<TotalReductionTime<<" ms"<<endl;
+    cout<<"   ___"<<endl;
+    cout<<"  |___ Total IO time is "<<TotalIOTime<<" ms"<<endl;
+    cout<<"  |___ Total BatchExecution time is "<<TotalBatchTime<<" ms"<<endl;
+    cout<<"  |    Total TotalReductionTime time is "<<TotalReductionTime<<" ms"<<endl;
+
     return PASS;
 }
 
@@ -607,8 +613,6 @@ void IntProofConcept()
     int RealBytesOfReductions = GET_MULTIRED_RESULT(BasicMatchRedResults, ExpectedBytesOfReductions);
     cout<<"RealBytesOfReductions = "<<RealBytesOfReductions<<endl;
     cout<<"ExpectedBytesOfReductions = "<<ExpectedBytesOfReductions<<endl;
-
-
 }
 
 static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
@@ -688,6 +692,7 @@ static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
 
 #define BASIC_MATCHING_BNR 0
 #define JMP_BASIC_MATCHING_BNR 2
+
 int test_BasicMatching_All()
 {
     //forcing descriptors to have proper size: multiple of 364 for 1, multiple of 330 for second
@@ -697,6 +702,9 @@ int test_BasicMatching_All()
 
     LoadDescriptors((char*)"data/adam1.key", &SiftDescriptors1, 0);
     LoadDescriptors((char*)"data/adam2.key", &SiftDescriptors2, 0);
+
+    BasicMatchRedResults = (UINT_RED_REG_VAL*)malloc(MAX_REDUCES * sizeof(UINT_RED_REG_VAL));
+    if (BasicMatchRedResults == NULL) {cout<<"Could not allocate memory for reductions "<<endl;return 0;};
 
     //LoadDescriptors((char*)"data/adam1_big.png.key", &SiftDescriptors1, 0);
     //LoadDescriptors((char*)"data/adam2_big.png.key", &SiftDescriptors2, 0);
@@ -719,6 +727,7 @@ int test_BasicMatching_All()
     //PrintMatches(&SM_Arm);
     //database
 
+    /*
     Start = GetMilliCount();
     if (PASS != kernel_acc::storeKernel("database/BasicMatchingA.ker", BASIC_MATCHING_BNR))
         cout<<"Could not store kernel "<<endl;
@@ -727,6 +736,7 @@ int test_BasicMatching_All()
         cout<<"Could not store kernel "<<endl;
 
     cout<<"Kernels were stored in " << GetMilliSpan(Start)<< " ms"<<endl;
+    */
 
     //connexFM_CreateBatch(BASIC_MATCHING_BNR, 0);
     //connexFM_CreateBatch(BASIC_MATCHING_BNR+1, 1);
@@ -741,34 +751,34 @@ int test_BasicMatching_All()
     //cout<<"Could not load batches "<<endl;
     */
 
+    cout<<endl<<"Starting SSD16: "<<endl;
     Start = GetMilliCount();
     connexFindMatchesPass1(MODE_CREATE_BATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);
     connexFindMatchesPass2(MODE_CREATE_BATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan, &SM_ConnexArm);
-    cout<<"Batches were created in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
+    cout<<"> ConnexS-unrolled batches were created in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
 
     Start = GetMilliCount();
     connexFindMatchesPass1(MODE_EXECUTE_FIND_MATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);
     connexFindMatchesPass2(MODE_EXECUTE_FIND_MATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan, &SM_ConnexArm);
-    cout<<"connexFindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
+    cout<<"> ConnexS-unrolled connexFindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl<<endl;
     //PrintMatches(&SM_ConnexArm);
 
     Start = GetMilliCount();
     FindMatches(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm);
-    cout<<"armFindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
+    cout<<"> armFindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
 
-    if (PASS == CompareMatches(&SM_Arm,&SM_ConnexArm)) cout << "Matches are a ... match ;). Arm and Arm-Connex got the same results."<<endl;
-    else cout << "Match test has FAILed. Arm and ConnexArm got different results !"<<endl;
-
+    if (PASS == CompareMatches(&SM_Arm,&SM_ConnexArm)) cout << "Matches are a ... match ;). Arm and Arm-Connex got the same results."<<endl<<endl;
+    else cout << "Match test has FAILed. Arm and ConnexArm got different results !"<<endl<<endl;
 
     Start = GetMilliCount();
     connexJmpFindMatchesPass1(MODE_CREATE_BATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);
     connexJmpFindMatchesPass2(MODE_CREATE_BATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan2, &SM_ConnexArm2);
-    cout<<"JMP Batches were created in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
+    cout<<"> ConnexS-JMP Batches were created in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
 
     Start = GetMilliCount();
     connexJmpFindMatchesPass1(MODE_EXECUTE_FIND_MATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);
     connexJmpFindMatchesPass2(MODE_EXECUTE_FIND_MATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan2, &SM_ConnexArm2);
-    cout<<"JMP connexFindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
+    cout<<"> ConnexS-JMP connexFindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
     //PrintMatches(&SM_ConnexArm);
 
     Start = GetMilliCount();
@@ -794,6 +804,7 @@ int test_BasicMatching_All()
         cout<< testFails << " SimpleTests failed." <<endl;
     return testFails;
 */
+    free(BasicMatchRedResults);
 	return 0;
 }
 

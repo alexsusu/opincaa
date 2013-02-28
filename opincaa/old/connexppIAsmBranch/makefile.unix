@@ -18,86 +18,89 @@ LIBDIR =
 LIB = 
 LDFLAGS = 
 
-INC_DEBUG =  $(INC) -Iinclude -Iinclude/util
-CFLAGS_DEBUG =  $(CFLAGS) -march=core2 -g -msse4.2 -march=corei7-avx -fopenmp
-RESINC_DEBUG =  $(RESINC)
-RCFLAGS_DEBUG =  $(RCFLAGS)
-LIBDIR_DEBUG =  $(LIBDIR) -LM:/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/lib/
-LIB_DEBUG = $(LIB) lib/opincaa.a
-LDFLAGS_DEBUG =  $(LDFLAGS)
-OBJDIR_DEBUG = obj/Debug
-DEP_DEBUG = 
-OUT_DEBUG = bin/Debug/connexppAsm
+INC_DEBUGARM =  $(INC) -Iinclude -Iinclude/util
+CFLAGS_DEBUGARM =  $(CFLAGS) -march=core2 -g -mfpu=neon -mcpu=cortex-a9 -ftree-vectorize
+RESINC_DEBUGARM =  $(RESINC)
+RCFLAGS_DEBUGARM =  $(RCFLAGS)
+LIBDIR_DEBUGARM =  $(LIBDIR) -LM:/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/lib/
+LIB_DEBUGARM = $(LIB) lib/opincaa.a
+LDFLAGS_DEBUGARM =  $(LDFLAGS)
+OBJDIR_DEBUGARM = obj/Debug
+DEP_DEBUGARM = 
+OUT_DEBUGARM = bin/Debug/connexppAsm
 
-OBJ_DEBUG = $(OBJDIR_DEBUG)/src/cppamp_emulator/cppamp_emulator.o $(OBJDIR_DEBUG)/src/main.o $(OBJDIR_DEBUG)/src/test/basic_match_tests.o $(OBJDIR_DEBUG)/src/test/basic_match_tests_commons.o $(OBJDIR_DEBUG)/src/test/basic_match_tests_neon.o $(OBJDIR_DEBUG)/src/test/basic_match_tests_sad16.o $(OBJDIR_DEBUG)/src/test/basic_match_tests_sad32.o $(OBJDIR_DEBUG)/src/test/basic_match_tests_sad8.o $(OBJDIR_DEBUG)/src/test/basic_match_tests_ssd16.o $(OBJDIR_DEBUG)/src/test/basic_match_tests_ssd32.o $(OBJDIR_DEBUG)/src/test/crypto/AES/aes_cpu_tests.o $(OBJDIR_DEBUG)/src/test/crypto/AES/aes_tests.o $(OBJDIR_DEBUG)/src/test/icc_simple_tests.o $(OBJDIR_DEBUG)/src/test/max_tests.o
+OBJ_DEBUGARM = $(OBJDIR_DEBUGARM)/src/cppamp_emulator/cppamp_emulator.o $(OBJDIR_DEBUGARM)/src/main.o $(OBJDIR_DEBUGARM)/src/test/basic_match_tests.o $(OBJDIR_DEBUGARM)/src/test/basic_match_tests_commons.o $(OBJDIR_DEBUGARM)/src/test/basic_match_tests_neon.o $(OBJDIR_DEBUGARM)/src/test/basic_match_tests_sad16.o $(OBJDIR_DEBUGARM)/src/test/basic_match_tests_sad32.o $(OBJDIR_DEBUGARM)/src/test/basic_match_tests_sad8.o $(OBJDIR_DEBUGARM)/src/test/basic_match_tests_sad_connex.o $(OBJDIR_DEBUGARM)/src/test/basic_match_tests_ssd16.o $(OBJDIR_DEBUGARM)/src/test/basic_match_tests_ssd32.o $(OBJDIR_DEBUGARM)/src/test/crypto/AES/aes_cpu_tests.o $(OBJDIR_DEBUGARM)/src/test/crypto/AES/aes_tests.o $(OBJDIR_DEBUGARM)/src/test/icc_simple_tests.o $(OBJDIR_DEBUGARM)/src/test/max_tests.o
 
-all: debug
+all: debugarm
 
-clean: clean_debug
+clean: clean_debugarm
 
-before_debug: 
+before_debugarm: 
 	test -d bin/Debug || mkdir -p bin/Debug
-	test -d $(OBJDIR_DEBUG)/src/cppamp_emulator || mkdir -p $(OBJDIR_DEBUG)/src/cppamp_emulator
-	test -d $(OBJDIR_DEBUG)/src || mkdir -p $(OBJDIR_DEBUG)/src
-	test -d $(OBJDIR_DEBUG)/src/test || mkdir -p $(OBJDIR_DEBUG)/src/test
-	test -d $(OBJDIR_DEBUG)/src/test/crypto/AES || mkdir -p $(OBJDIR_DEBUG)/src/test/crypto/AES
+	test -d $(OBJDIR_DEBUGARM)/src/cppamp_emulator || mkdir -p $(OBJDIR_DEBUGARM)/src/cppamp_emulator
+	test -d $(OBJDIR_DEBUGARM)/src || mkdir -p $(OBJDIR_DEBUGARM)/src
+	test -d $(OBJDIR_DEBUGARM)/src/test || mkdir -p $(OBJDIR_DEBUGARM)/src/test
+	test -d $(OBJDIR_DEBUGARM)/src/test/crypto/AES || mkdir -p $(OBJDIR_DEBUGARM)/src/test/crypto/AES
 
-after_debug: 
+after_debugarm: 
 
-debug: before_debug out_debug after_debug
+debugarm: before_debugarm out_debugarm after_debugarm
 
-out_debug: $(OBJ_DEBUG) $(DEP_DEBUG)
-	$(LD) $(LDFLAGS_DEBUG) $(LIBDIR_DEBUG) $(OBJ_DEBUG) $(LIB_DEBUG) -o $(OUT_DEBUG)
+out_debugarm: $(OBJ_DEBUGARM) $(DEP_DEBUGARM)
+	$(LD) $(LDFLAGS_DEBUGARM) $(LIBDIR_DEBUGARM) $(OBJ_DEBUGARM) $(LIB_DEBUGARM) -o $(OUT_DEBUGARM)
 
-$(OBJDIR_DEBUG)/src/cppamp_emulator/cppamp_emulator.o: src/cppamp_emulator/cppamp_emulator.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/cppamp_emulator/cppamp_emulator.cpp -o $(OBJDIR_DEBUG)/src/cppamp_emulator/cppamp_emulator.o
+$(OBJDIR_DEBUGARM)/src/cppamp_emulator/cppamp_emulator.o: src/cppamp_emulator/cppamp_emulator.cpp
+	$(CXX) $(CFLAGS_DEBUGARM) $(INC_DEBUGARM) -c src/cppamp_emulator/cppamp_emulator.cpp -o $(OBJDIR_DEBUGARM)/src/cppamp_emulator/cppamp_emulator.o
 
-$(OBJDIR_DEBUG)/src/main.o: src/main.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/main.cpp -o $(OBJDIR_DEBUG)/src/main.o
+$(OBJDIR_DEBUGARM)/src/main.o: src/main.cpp
+	$(CXX) $(CFLAGS_DEBUGARM) $(INC_DEBUGARM) -c src/main.cpp -o $(OBJDIR_DEBUGARM)/src/main.o
 
-$(OBJDIR_DEBUG)/src/test/basic_match_tests.o: src/test/basic_match_tests.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/basic_match_tests.cpp -o $(OBJDIR_DEBUG)/src/test/basic_match_tests.o
+$(OBJDIR_DEBUGARM)/src/test/basic_match_tests.o: src/test/basic_match_tests.cpp
+	$(CXX) $(CFLAGS_DEBUGARM) $(INC_DEBUGARM) -c src/test/basic_match_tests.cpp -o $(OBJDIR_DEBUGARM)/src/test/basic_match_tests.o
 
-$(OBJDIR_DEBUG)/src/test/basic_match_tests_commons.o: src/test/basic_match_tests_commons.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/basic_match_tests_commons.cpp -o $(OBJDIR_DEBUG)/src/test/basic_match_tests_commons.o
+$(OBJDIR_DEBUGARM)/src/test/basic_match_tests_commons.o: src/test/basic_match_tests_commons.cpp
+	$(CXX) $(CFLAGS_DEBUGARM) $(INC_DEBUGARM) -c src/test/basic_match_tests_commons.cpp -o $(OBJDIR_DEBUGARM)/src/test/basic_match_tests_commons.o
 
-$(OBJDIR_DEBUG)/src/test/basic_match_tests_neon.o: src/test/basic_match_tests_neon.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/basic_match_tests_neon.cpp -o $(OBJDIR_DEBUG)/src/test/basic_match_tests_neon.o
+$(OBJDIR_DEBUGARM)/src/test/basic_match_tests_neon.o: src/test/basic_match_tests_neon.cpp
+	$(CXX) $(CFLAGS_DEBUGARM) $(INC_DEBUGARM) -c src/test/basic_match_tests_neon.cpp -o $(OBJDIR_DEBUGARM)/src/test/basic_match_tests_neon.o
 
-$(OBJDIR_DEBUG)/src/test/basic_match_tests_sad16.o: src/test/basic_match_tests_sad16.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/basic_match_tests_sad16.cpp -o $(OBJDIR_DEBUG)/src/test/basic_match_tests_sad16.o
+$(OBJDIR_DEBUGARM)/src/test/basic_match_tests_sad16.o: src/test/basic_match_tests_sad16.cpp
+	$(CXX) $(CFLAGS_DEBUGARM) $(INC_DEBUGARM) -c src/test/basic_match_tests_sad16.cpp -o $(OBJDIR_DEBUGARM)/src/test/basic_match_tests_sad16.o
 
-$(OBJDIR_DEBUG)/src/test/basic_match_tests_sad32.o: src/test/basic_match_tests_sad32.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/basic_match_tests_sad32.cpp -o $(OBJDIR_DEBUG)/src/test/basic_match_tests_sad32.o
+$(OBJDIR_DEBUGARM)/src/test/basic_match_tests_sad32.o: src/test/basic_match_tests_sad32.cpp
+	$(CXX) $(CFLAGS_DEBUGARM) $(INC_DEBUGARM) -c src/test/basic_match_tests_sad32.cpp -o $(OBJDIR_DEBUGARM)/src/test/basic_match_tests_sad32.o
 
-$(OBJDIR_DEBUG)/src/test/basic_match_tests_sad8.o: src/test/basic_match_tests_sad8.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/basic_match_tests_sad8.cpp -o $(OBJDIR_DEBUG)/src/test/basic_match_tests_sad8.o
+$(OBJDIR_DEBUGARM)/src/test/basic_match_tests_sad8.o: src/test/basic_match_tests_sad8.cpp
+	$(CXX) $(CFLAGS_DEBUGARM) $(INC_DEBUGARM) -c src/test/basic_match_tests_sad8.cpp -o $(OBJDIR_DEBUGARM)/src/test/basic_match_tests_sad8.o
 
-$(OBJDIR_DEBUG)/src/test/basic_match_tests_ssd16.o: src/test/basic_match_tests_ssd16.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/basic_match_tests_ssd16.cpp -o $(OBJDIR_DEBUG)/src/test/basic_match_tests_ssd16.o
+$(OBJDIR_DEBUGARM)/src/test/basic_match_tests_sad_connex.o: src/test/basic_match_tests_sad_connex.cpp
+	$(CXX) $(CFLAGS_DEBUGARM) $(INC_DEBUGARM) -c src/test/basic_match_tests_sad_connex.cpp -o $(OBJDIR_DEBUGARM)/src/test/basic_match_tests_sad_connex.o
 
-$(OBJDIR_DEBUG)/src/test/basic_match_tests_ssd32.o: src/test/basic_match_tests_ssd32.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/basic_match_tests_ssd32.cpp -o $(OBJDIR_DEBUG)/src/test/basic_match_tests_ssd32.o
+$(OBJDIR_DEBUGARM)/src/test/basic_match_tests_ssd16.o: src/test/basic_match_tests_ssd16.cpp
+	$(CXX) $(CFLAGS_DEBUGARM) $(INC_DEBUGARM) -c src/test/basic_match_tests_ssd16.cpp -o $(OBJDIR_DEBUGARM)/src/test/basic_match_tests_ssd16.o
 
-$(OBJDIR_DEBUG)/src/test/crypto/AES/aes_cpu_tests.o: src/test/crypto/AES/aes_cpu_tests.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/crypto/AES/aes_cpu_tests.cpp -o $(OBJDIR_DEBUG)/src/test/crypto/AES/aes_cpu_tests.o
+$(OBJDIR_DEBUGARM)/src/test/basic_match_tests_ssd32.o: src/test/basic_match_tests_ssd32.cpp
+	$(CXX) $(CFLAGS_DEBUGARM) $(INC_DEBUGARM) -c src/test/basic_match_tests_ssd32.cpp -o $(OBJDIR_DEBUGARM)/src/test/basic_match_tests_ssd32.o
 
-$(OBJDIR_DEBUG)/src/test/crypto/AES/aes_tests.o: src/test/crypto/AES/aes_tests.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/crypto/AES/aes_tests.cpp -o $(OBJDIR_DEBUG)/src/test/crypto/AES/aes_tests.o
+$(OBJDIR_DEBUGARM)/src/test/crypto/AES/aes_cpu_tests.o: src/test/crypto/AES/aes_cpu_tests.cpp
+	$(CXX) $(CFLAGS_DEBUGARM) $(INC_DEBUGARM) -c src/test/crypto/AES/aes_cpu_tests.cpp -o $(OBJDIR_DEBUGARM)/src/test/crypto/AES/aes_cpu_tests.o
 
-$(OBJDIR_DEBUG)/src/test/icc_simple_tests.o: src/test/icc_simple_tests.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/icc_simple_tests.cpp -o $(OBJDIR_DEBUG)/src/test/icc_simple_tests.o
+$(OBJDIR_DEBUGARM)/src/test/crypto/AES/aes_tests.o: src/test/crypto/AES/aes_tests.cpp
+	$(CXX) $(CFLAGS_DEBUGARM) $(INC_DEBUGARM) -c src/test/crypto/AES/aes_tests.cpp -o $(OBJDIR_DEBUGARM)/src/test/crypto/AES/aes_tests.o
 
-$(OBJDIR_DEBUG)/src/test/max_tests.o: src/test/max_tests.cpp
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c src/test/max_tests.cpp -o $(OBJDIR_DEBUG)/src/test/max_tests.o
+$(OBJDIR_DEBUGARM)/src/test/icc_simple_tests.o: src/test/icc_simple_tests.cpp
+	$(CXX) $(CFLAGS_DEBUGARM) $(INC_DEBUGARM) -c src/test/icc_simple_tests.cpp -o $(OBJDIR_DEBUGARM)/src/test/icc_simple_tests.o
 
-clean_debug: 
-	rm -f $(OBJ_DEBUG) $(OUT_DEBUG)
+$(OBJDIR_DEBUGARM)/src/test/max_tests.o: src/test/max_tests.cpp
+	$(CXX) $(CFLAGS_DEBUGARM) $(INC_DEBUGARM) -c src/test/max_tests.cpp -o $(OBJDIR_DEBUGARM)/src/test/max_tests.o
+
+clean_debugarm: 
+	rm -f $(OBJ_DEBUGARM) $(OUT_DEBUGARM)
 	rm -rf bin/Debug
-	rm -rf $(OBJDIR_DEBUG)/src/cppamp_emulator
-	rm -rf $(OBJDIR_DEBUG)/src
-	rm -rf $(OBJDIR_DEBUG)/src/test
-	rm -rf $(OBJDIR_DEBUG)/src/test/crypto/AES
+	rm -rf $(OBJDIR_DEBUGARM)/src/cppamp_emulator
+	rm -rf $(OBJDIR_DEBUGARM)/src
+	rm -rf $(OBJDIR_DEBUGARM)/src/test
+	rm -rf $(OBJDIR_DEBUGARM)/src/test/crypto/AES
 
-.PHONY: before_debug after_debug clean_debug
+.PHONY: before_debugarm after_debugarm clean_debugarm
 

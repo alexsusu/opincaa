@@ -137,7 +137,6 @@ void SAD16_Benchmark(char* fileName1, char* fileName2)
         SAD_FindMatches16_SSE_NEON = SAD_FindMatches16_SSE;
     #endif // __ARM_NEON__
 
-
     AlingedSiftDescriptorPtrs SiftDescriptors16_1 = malloc_alligned(sizeof(SiftDescriptors16), 5);
     AlingedSiftDescriptorPtrs SiftDescriptors16_2 = malloc_alligned(sizeof(SiftDescriptors16), 5);
     SiftMatches *SM_Arm = (SiftMatches *)malloc(sizeof(SiftMatches));
