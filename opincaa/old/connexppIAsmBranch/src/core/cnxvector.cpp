@@ -403,6 +403,7 @@ UINT32 cnxvector::getMultiRedResult(UINT_RED_REG_VAL* RedResults, UINT32 Limit)
     }
     else
     {
+        /*
         int totalReadBytes = 0;
         int readBytes = 0;
         do
@@ -411,6 +412,9 @@ UINT32 cnxvector::getMultiRedResult(UINT_RED_REG_VAL* RedResults, UINT32 Limit)
             if (readBytes > 0) totalReadBytes+= readBytes;
         }
         while (readBytes != -1);
+        */
+        return read(pipe_read_32,RedResults, Limit);
+
     }
 }
 

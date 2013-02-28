@@ -15,6 +15,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <limits>
 using namespace std;
 
 struct Dataset
@@ -1202,6 +1203,7 @@ int test_Simple_All(bool stress)
         cout<< "=="<< testFails << " SimpleTests FAILED ! " <<endl;
         cout<<"================================"<<endl<<endl;
 
+    if (TestJmpMultiRed(2,3)==FAIL) testFails++;
     if (TestJmpMultiRed(2,13)==FAIL) testFails++;
     if (TestJmpMultiRed(2,133)==FAIL) testFails++;
     if (TestJmpMultiRed(2,1333)==FAIL) testFails++;
@@ -1230,8 +1232,14 @@ static int TestJmpMultiRed(int RedValue, int SquareReds)
         }
     }
     free(BasicMatchRedResults);
-    if (i == ExpectedBytesOfReductions)
+    if ((i == ExpectedBytesOfReductions) && (RealBytesOfReductions == ExpectedBytesOfReductions))
         cout<<"Test JMP-MultiRed PASSED "<<endl;
-    else cout<<"Test JMP-MultiRed FAILED with args "<<RedValue<<" "<<SquareReds<<endl;
+    else
+    {
+        cout<<"Test JMP-MultiRed FAILED with args "<<RedValue<<" "<<SquareReds<<endl;
+        DEASM_BATCH(IJMP3_BNR);
+        cout << "Press ENTER to continue...";
+        cin.ignore( numeric_limits <streamsize> ::max(), '\n' );
+    }
 }
 
