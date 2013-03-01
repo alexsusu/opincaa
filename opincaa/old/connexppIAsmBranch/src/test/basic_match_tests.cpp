@@ -864,7 +864,7 @@ int test_BasicMatching_All()
     //forcing descriptors to have proper size: multiple of 364 for 1, multiple of 330 for second
     //const int MAX_IMG_1_DECRIPTORS = 364*5;//max 2306
     //const int MAX_IMG_2_DECRIPTORS = 330*3;//max 1196
-    int Start;
+    int Start, Delta;
 
     //LoadDescriptors((char*)"data/adam1.key", &SiftDescriptors1, 364);
     //LoadDescriptors((char*)"data/adam2.key", &SiftDescriptors2, 28*11);
@@ -873,6 +873,8 @@ int test_BasicMatching_All()
 
     BasicMatchRedResults = (UINT_RED_REG_VAL*)malloc(MAX_REDUCES * sizeof(UINT_RED_REG_VAL));
     if (BasicMatchRedResults == NULL) {cout<<"Could not allocate memory for reductions "<<endl;return 0;};
+
+    float BruteMatches = SiftDescriptors1.RealDescriptors * SiftDescriptors2.RealDescriptors;
 
     //LoadDescriptors((char*)"data/adam1_big.png.key", &SiftDescriptors1, 0);
     //LoadDescriptors((char*)"data/adam2_big.png.key", &SiftDescriptors2, 0);
@@ -929,13 +931,15 @@ int test_BasicMatching_All()
     Start = GetMilliCount();
     connexFindMatchesPass1(MODE_EXECUTE_FIND_MATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);
     connexFindMatchesPass2(MODE_EXECUTE_FIND_MATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan, &SM_ConnexArm);
-    cout<<"> ConnexS-unrolled connexFindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl<<endl;
+    Delta  = GetMilliSpan(Start);
+    cout<<"> ConnexS-unrolled connexFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
     //PrintMatches(&SM_ConnexArm);
 
     /* STEP2: Compute on ARM-only  */
     Start = GetMilliCount();
     FindMatches(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm);
-    cout<<"> armFindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
+    Delta  = GetMilliSpan(Start);
+    cout<<"> armFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
 
     /* STEP3: Compare Connex-S (noJMP) with  ARM-only  */
     if (PASS == CompareMatches(&SM_Arm,&SM_ConnexArm)) cout << "OK ! Arm == Arm-Connex"<<endl<<endl;
@@ -945,7 +949,8 @@ int test_BasicMatching_All()
     Start = GetMilliCount();
     connexJmpFindMatchesPass1(MODE_CREATE_BATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);
     connexJmpFindMatchesPass2(MODE_CREATE_BATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan2, &SM_ConnexArm2);
-    cout<<"  ConnexS-JMP Batches were created in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
+    cout<<"  ConnexS-JMP Batches were created in "<< GetMilliSpan(Start)<< " ms"<<flush<<endl;
+
 /*
     if (PASS != kernel_acc::storeKernel("database/connexJmpFindMatchesPass1_b1.ker", JMP_BASIC_MATCHING_BNR))
         cout<<"Could not store kernel "<<endl;
@@ -955,8 +960,9 @@ int test_BasicMatching_All()
     Start = GetMilliCount();
     connexJmpFindMatchesPass1(MODE_EXECUTE_FIND_MATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);
     connexJmpFindMatchesPass2(MODE_EXECUTE_FIND_MATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan2, &SM_ConnexArm2);
-    cout<<"> ConnexS-JMP connexFindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
-    //PrintMatches(&SM_ConnexArm);
+    Delta  = GetMilliSpan(Start);
+    cout<<"> ConnexS-JMP connexFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+
 
     /* STEP5: Compare Connex-S with JMP against ARM-only */
     if (PASS == CompareMatches(&SM_Arm,&SM_ConnexArm2)) cout << "OK! Arm == JMP Arm-Connex "<<endl<<endl;
@@ -970,7 +976,8 @@ int test_BasicMatching_All()
 
     Start = GetMilliCount();
     connexJmpFindMatchesMt(MODE_EXECUTE_FIND_MATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan3, &SM_ConnexArm3);
-    cout<<"> ConnexS-JMPMt connexFindMatches ran in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
+    Delta  = GetMilliSpan(Start);
+    cout<<"> ConnexS-JMPMt connexFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
 
     /* STEP7: Compare optimized(Red+Calc) Connex-S with JMP against ARM-only  */
     if (PASS == CompareMatches(&SM_Arm,&SM_ConnexArm3)) cout << "OK! Arm == JMP Arm-Connex "<<endl<<endl;

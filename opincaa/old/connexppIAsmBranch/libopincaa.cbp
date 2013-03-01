@@ -8,14 +8,14 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="DebugLib">
-				<Option output="lib/opincaa" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="lib" />
+				<Option output="lib/libopincaa" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="" />
 				<Option object_output="obj/DebugLib/" />
-				<Option type="1" />
+				<Option type="2" />
 				<Option compiler="gcc" />
-				<Option use_console_runner="0" />
 				<Option parameters="--csimulation" />
 				<Compiler>
+					<Add option="-std=c++0x" />
 					<Add option="-Wall" />
 					<Add option="-g" />
 				</Compiler>
@@ -29,6 +29,7 @@
 				<Option createDefFile="1" />
 				<Compiler>
 					<Add option="-O3" />
+					<Add option="-std=c++0x" />
 					<Add option="-Wall" />
 				</Compiler>
 				<Linker>
@@ -42,6 +43,7 @@
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-std=c++0x" />
 					<Add option="-Wall" />
 					<Add option="-g" />
 					<Add option="-mfpu=neon -mcpu=cortex-a9 -ftree-vectorize" />
@@ -56,6 +58,7 @@
 				<Option createDefFile="1" />
 				<Compiler>
 					<Add option="-O3" />
+					<Add option="-std=c++0x" />
 					<Add option="-Wall" />
 					<Add option="-mfpu=neon -mcpu=cortex-a9 -ftree-vectorize" />
 				</Compiler>
@@ -85,7 +88,6 @@
 		<Unit filename="src/core/cnxvector_registers.cpp" />
 		<Unit filename="src/core/io_unit.cpp" />
 		<Unit filename="src/cppamp_emulator/cppamp_emulator.cpp" />
-		<Unit filename="src/main.cpp" />
 		<Unit filename="src/test/simple_io_tests.cpp" />
 		<Unit filename="src/test/simple_tests.cpp" />
 		<Unit filename="src/test/speed_tests.cpp" />
