@@ -19,7 +19,7 @@ LIB =
 LDFLAGS = 
 
 INC_RELEASELIBARM =  $(INC)
-CFLAGS_RELEASELIBARM =  $(CFLAGS) -O3 -Wall -mfpu=neon -mcpu=cortex-a9 -ftree-vectorize
+CFLAGS_RELEASELIBARM =  $(CFLAGS) -O3 -std=c++0x -Wall -mfpu=neon -mcpu=cortex-a9 -ftree-vectorize
 RESINC_RELEASELIBARM =  $(RESINC)
 RCFLAGS_RELEASELIBARM =  $(RCFLAGS)
 LIBDIR_RELEASELIBARM =  $(LIBDIR)
@@ -29,7 +29,7 @@ OBJDIR_RELEASELIBARM = obj/ReleaseLib
 DEP_RELEASELIBARM = 
 OUT_RELEASELIBARM = lib/opincaa.a
 
-OBJ_RELEASELIBARM = $(OBJDIR_RELEASELIBARM)/src/util/utils.o $(OBJDIR_RELEASELIBARM)/src/util/timing.o $(OBJDIR_RELEASELIBARM)/src/util/kernel_acc.o $(OBJDIR_RELEASELIBARM)/src/test/speed_tests.o $(OBJDIR_RELEASELIBARM)/src/test/simple_tests.o $(OBJDIR_RELEASELIBARM)/src/test/simple_io_tests.o $(OBJDIR_RELEASELIBARM)/src/main.o $(OBJDIR_RELEASELIBARM)/src/cppamp_emulator/cppamp_emulator.o $(OBJDIR_RELEASELIBARM)/src/core/io_unit.o $(OBJDIR_RELEASELIBARM)/src/core/cnxvector_registers.o $(OBJDIR_RELEASELIBARM)/src/core/cnxvector_errors.o $(OBJDIR_RELEASELIBARM)/src/core/cnxvector.o $(OBJDIR_RELEASELIBARM)/src/c_simu/c_simulator.o $(OBJDIR_RELEASELIBARM)/src/api/wrapper/Image.o
+OBJ_RELEASELIBARM = $(OBJDIR_RELEASELIBARM)/src/util/utils.o $(OBJDIR_RELEASELIBARM)/src/util/timing.o $(OBJDIR_RELEASELIBARM)/src/util/kernel_acc.o $(OBJDIR_RELEASELIBARM)/src/test/speed_tests.o $(OBJDIR_RELEASELIBARM)/src/test/simple_tests.o $(OBJDIR_RELEASELIBARM)/src/test/simple_io_tests.o $(OBJDIR_RELEASELIBARM)/src/cppamp_emulator/cppamp_emulator.o $(OBJDIR_RELEASELIBARM)/src/core/io_unit.o $(OBJDIR_RELEASELIBARM)/src/core/cnxvector_registers.o $(OBJDIR_RELEASELIBARM)/src/core/cnxvector_errors.o $(OBJDIR_RELEASELIBARM)/src/core/cnxvector.o $(OBJDIR_RELEASELIBARM)/src/c_simu/c_simulator.o $(OBJDIR_RELEASELIBARM)/src/api/wrapper/Image.o
 
 all: releaselibarm
 
@@ -39,7 +39,6 @@ before_releaselibarm:
 	test -d lib || mkdir -p lib
 	test -d $(OBJDIR_RELEASELIBARM)/src/util || mkdir -p $(OBJDIR_RELEASELIBARM)/src/util
 	test -d $(OBJDIR_RELEASELIBARM)/src/test || mkdir -p $(OBJDIR_RELEASELIBARM)/src/test
-	test -d $(OBJDIR_RELEASELIBARM)/src || mkdir -p $(OBJDIR_RELEASELIBARM)/src
 	test -d $(OBJDIR_RELEASELIBARM)/src/cppamp_emulator || mkdir -p $(OBJDIR_RELEASELIBARM)/src/cppamp_emulator
 	test -d $(OBJDIR_RELEASELIBARM)/src/core || mkdir -p $(OBJDIR_RELEASELIBARM)/src/core
 	test -d $(OBJDIR_RELEASELIBARM)/src/c_simu || mkdir -p $(OBJDIR_RELEASELIBARM)/src/c_simu
@@ -70,9 +69,6 @@ $(OBJDIR_RELEASELIBARM)/src/test/simple_tests.o: src/test/simple_tests.cpp
 $(OBJDIR_RELEASELIBARM)/src/test/simple_io_tests.o: src/test/simple_io_tests.cpp
 	$(CXX) $(CFLAGS_RELEASELIBARM) $(INC_RELEASELIBARM) -c src/test/simple_io_tests.cpp -o $(OBJDIR_RELEASELIBARM)/src/test/simple_io_tests.o
 
-$(OBJDIR_RELEASELIBARM)/src/main.o: src/main.cpp
-	$(CXX) $(CFLAGS_RELEASELIBARM) $(INC_RELEASELIBARM) -c src/main.cpp -o $(OBJDIR_RELEASELIBARM)/src/main.o
-
 $(OBJDIR_RELEASELIBARM)/src/cppamp_emulator/cppamp_emulator.o: src/cppamp_emulator/cppamp_emulator.cpp
 	$(CXX) $(CFLAGS_RELEASELIBARM) $(INC_RELEASELIBARM) -c src/cppamp_emulator/cppamp_emulator.cpp -o $(OBJDIR_RELEASELIBARM)/src/cppamp_emulator/cppamp_emulator.o
 
@@ -99,7 +95,6 @@ clean_releaselibarm:
 	rm -rf lib
 	rm -rf $(OBJDIR_RELEASELIBARM)/src/util
 	rm -rf $(OBJDIR_RELEASELIBARM)/src/test
-	rm -rf $(OBJDIR_RELEASELIBARM)/src
 	rm -rf $(OBJDIR_RELEASELIBARM)/src/cppamp_emulator
 	rm -rf $(OBJDIR_RELEASELIBARM)/src/core
 	rm -rf $(OBJDIR_RELEASELIBARM)/src/c_simu

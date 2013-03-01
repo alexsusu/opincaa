@@ -19,7 +19,7 @@ LIB =
 LDFLAGS = 
 
 INC_DEBUGLIBARM =  $(INC)
-CFLAGS_DEBUGLIBARM =  $(CFLAGS) -Wall -g -mfpu=neon -mcpu=cortex-a9 -ftree-vectorize
+CFLAGS_DEBUGLIBARM =  $(CFLAGS) -std=c++0x -Wall -g -mfpu=neon -mcpu=cortex-a9 -ftree-vectorize
 RESINC_DEBUGLIBARM =  $(RESINC)
 RCFLAGS_DEBUGLIBARM =  $(RCFLAGS)
 LIBDIR_DEBUGLIBARM =  $(LIBDIR)
@@ -29,7 +29,7 @@ OBJDIR_DEBUGLIBARM = obj/DebugLib
 DEP_DEBUGLIBARM = 
 OUT_DEBUGLIBARM = lib/opincaa.a
 
-OBJ_DEBUGLIBARM = $(OBJDIR_DEBUGLIBARM)/src/util/utils.o $(OBJDIR_DEBUGLIBARM)/src/util/timing.o $(OBJDIR_DEBUGLIBARM)/src/util/kernel_acc.o $(OBJDIR_DEBUGLIBARM)/src/test/speed_tests.o $(OBJDIR_DEBUGLIBARM)/src/test/simple_tests.o $(OBJDIR_DEBUGLIBARM)/src/test/simple_io_tests.o $(OBJDIR_DEBUGLIBARM)/src/main.o $(OBJDIR_DEBUGLIBARM)/src/cppamp_emulator/cppamp_emulator.o $(OBJDIR_DEBUGLIBARM)/src/core/io_unit.o $(OBJDIR_DEBUGLIBARM)/src/core/cnxvector_registers.o $(OBJDIR_DEBUGLIBARM)/src/core/cnxvector_errors.o $(OBJDIR_DEBUGLIBARM)/src/core/cnxvector.o $(OBJDIR_DEBUGLIBARM)/src/c_simu/c_simulator.o $(OBJDIR_DEBUGLIBARM)/src/api/wrapper/Image.o
+OBJ_DEBUGLIBARM = $(OBJDIR_DEBUGLIBARM)/src/util/utils.o $(OBJDIR_DEBUGLIBARM)/src/util/timing.o $(OBJDIR_DEBUGLIBARM)/src/util/kernel_acc.o $(OBJDIR_DEBUGLIBARM)/src/test/speed_tests.o $(OBJDIR_DEBUGLIBARM)/src/test/simple_tests.o $(OBJDIR_DEBUGLIBARM)/src/test/simple_io_tests.o $(OBJDIR_DEBUGLIBARM)/src/cppamp_emulator/cppamp_emulator.o $(OBJDIR_DEBUGLIBARM)/src/core/io_unit.o $(OBJDIR_DEBUGLIBARM)/src/core/cnxvector_registers.o $(OBJDIR_DEBUGLIBARM)/src/core/cnxvector_errors.o $(OBJDIR_DEBUGLIBARM)/src/core/cnxvector.o $(OBJDIR_DEBUGLIBARM)/src/c_simu/c_simulator.o $(OBJDIR_DEBUGLIBARM)/src/api/wrapper/Image.o
 
 all: debuglibarm
 
@@ -39,7 +39,6 @@ before_debuglibarm:
 	test -d lib || mkdir -p lib
 	test -d $(OBJDIR_DEBUGLIBARM)/src/util || mkdir -p $(OBJDIR_DEBUGLIBARM)/src/util
 	test -d $(OBJDIR_DEBUGLIBARM)/src/test || mkdir -p $(OBJDIR_DEBUGLIBARM)/src/test
-	test -d $(OBJDIR_DEBUGLIBARM)/src || mkdir -p $(OBJDIR_DEBUGLIBARM)/src
 	test -d $(OBJDIR_DEBUGLIBARM)/src/cppamp_emulator || mkdir -p $(OBJDIR_DEBUGLIBARM)/src/cppamp_emulator
 	test -d $(OBJDIR_DEBUGLIBARM)/src/core || mkdir -p $(OBJDIR_DEBUGLIBARM)/src/core
 	test -d $(OBJDIR_DEBUGLIBARM)/src/c_simu || mkdir -p $(OBJDIR_DEBUGLIBARM)/src/c_simu
@@ -70,9 +69,6 @@ $(OBJDIR_DEBUGLIBARM)/src/test/simple_tests.o: src/test/simple_tests.cpp
 $(OBJDIR_DEBUGLIBARM)/src/test/simple_io_tests.o: src/test/simple_io_tests.cpp
 	$(CXX) $(CFLAGS_DEBUGLIBARM) $(INC_DEBUGLIBARM) -c src/test/simple_io_tests.cpp -o $(OBJDIR_DEBUGLIBARM)/src/test/simple_io_tests.o
 
-$(OBJDIR_DEBUGLIBARM)/src/main.o: src/main.cpp
-	$(CXX) $(CFLAGS_DEBUGLIBARM) $(INC_DEBUGLIBARM) -c src/main.cpp -o $(OBJDIR_DEBUGLIBARM)/src/main.o
-
 $(OBJDIR_DEBUGLIBARM)/src/cppamp_emulator/cppamp_emulator.o: src/cppamp_emulator/cppamp_emulator.cpp
 	$(CXX) $(CFLAGS_DEBUGLIBARM) $(INC_DEBUGLIBARM) -c src/cppamp_emulator/cppamp_emulator.cpp -o $(OBJDIR_DEBUGLIBARM)/src/cppamp_emulator/cppamp_emulator.o
 
@@ -99,7 +95,6 @@ clean_debuglibarm:
 	rm -rf lib
 	rm -rf $(OBJDIR_DEBUGLIBARM)/src/util
 	rm -rf $(OBJDIR_DEBUGLIBARM)/src/test
-	rm -rf $(OBJDIR_DEBUGLIBARM)/src
 	rm -rf $(OBJDIR_DEBUGLIBARM)/src/cppamp_emulator
 	rm -rf $(OBJDIR_DEBUGLIBARM)/src/core
 	rm -rf $(OBJDIR_DEBUGLIBARM)/src/c_simu
