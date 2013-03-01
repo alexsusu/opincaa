@@ -329,6 +329,7 @@ static int connexFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
                 EXECUTE_BATCH(LoadToRxBatchNumber + UsingBuffer0or1);
                 TotalBatchTime += GetMilliSpan(TimeStart);
 
+                /*
                 {
                     int ExpectedBytesOfReductions = BYTES_IN_DWORD* VECTORS_CHUNK_IMAGE1 * VECTORS_CHUNK_IMAGE2;
                     TimeStart = GetMilliCount();
@@ -340,7 +341,7 @@ static int connexFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
                     TotalReductionTime += GetMilliSpan(TimeStart);
                     if (ExpectedBytesOfReductions != RealBytesOfReductions)
                      cout<<" Unexpected size of bytes of reductions (expected: "<<ExpectedBytesOfReductions<<" but got "<<RealBytesOfReductions<<endl;
-                }
+                }*/
             }
             //next: create or execute created batch
             else// (RunningMode == MODE_CREATE_BATCHES)
@@ -403,6 +404,7 @@ static int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
         int TotalcnxvectorSubChunksImg2 = VECTORS_CHUNK_IMAGE2 / VECTORS_SUBCHUNK_IMAGE2;
 
         int RedCounter = 0;
+        UINT_RED_REG_VAL dsq;
 
          for(int CurrentcnxvectorChunkImg1 = 0; CurrentcnxvectorChunkImg1 < TotalcnxvectorChunksImg1; CurrentcnxvectorChunkImg1++)
          {
@@ -423,7 +425,8 @@ static int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
                             //if (descIm1 == 0) { cout<<RedCounter<<":"<<BasicMatchRedResults[RedCounter]<<" "; if ((descIm2 & 3) == 3) cout << endl;}
                             if ((descIm1 < SiftDescriptors1->RealDescriptors) && (descIm2 < SiftDescriptors2->RealDescriptors))
                             {
-                                UINT_RED_REG_VAL dsq = BasicMatchRedResults[RedCounter];
+                                //UINT_RED_REG_VAL dsq = BasicMatchRedResults[RedCounter];
+                                GET_MULTIRED_RESULT(&dsq,4);
                                 if (dsq < SMs->ScoreMin[descIm1])
                                 {
                                     SMs->ScoreNextToMin[descIm1] = SMs->ScoreMin[descIm1];
