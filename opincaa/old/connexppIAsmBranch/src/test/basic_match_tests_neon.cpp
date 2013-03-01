@@ -116,7 +116,7 @@ int MainNeonSSE()
 
     data_4 = vmulq_u16(data_4, data_4);
     cout<<"datamult: "<<
-    vst1q_u16(dataOut, data);
+    //vst1q_u16(dataOut, data);
     for (int i = 0; i < 8; i++)
         cout<<dataOut[i]<<" ";
     cout<<endl;
