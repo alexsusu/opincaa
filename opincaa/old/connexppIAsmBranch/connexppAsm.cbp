@@ -13,6 +13,7 @@
 				<Option compiler="gcc" />
 				<Option parameters="--csimulation" />
 				<Compiler>
+					<Add option="-std=c++0x" />
 					<Add option="-g" />
 					<Add option="-msse4.2 -march=corei7-avx -fopenmp" />
 					<Add directory="include" />
@@ -31,6 +32,7 @@
 				<Option parameters="--csimulation" />
 				<Compiler>
 					<Add option="-O3" />
+					<Add option="-std=c++0x" />
 					<Add option="-msse4.2  -march=corei7-avx -ftree-vectorize" />
 				</Compiler>
 				<Linker>
@@ -46,6 +48,7 @@
 				<Option compiler="gcc" />
 				<Option parameters="--csimulation" />
 				<Compiler>
+					<Add option="-std=c++0x" />
 					<Add option="-g" />
 					<Add option="-mfpu=neon -mcpu=cortex-a9 -ftree-vectorize" />
 					<Add directory="include" />
@@ -64,6 +67,7 @@
 				<Option parameters="--csimulation" />
 				<Compiler>
 					<Add option="-O3" />
+					<Add option="-std=c++0x" />
 					<Add option="-mfpu=neon -mcpu=cortex-a9 -ftree-vectorize" />
 				</Compiler>
 				<Linker>

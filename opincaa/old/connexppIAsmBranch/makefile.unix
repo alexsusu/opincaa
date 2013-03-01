@@ -19,7 +19,7 @@ LIB =
 LDFLAGS = 
 
 INC_DEBUGARM =  $(INC) -Iinclude -Iinclude/util
-CFLAGS_DEBUGARM =  $(CFLAGS) -g -mfpu=neon -mcpu=cortex-a9 -ftree-vectorize
+CFLAGS_DEBUGARM =  $(CFLAGS) -std=c++0x -g -mfpu=neon -mcpu=cortex-a9 -ftree-vectorize
 RESINC_DEBUGARM =  $(RESINC)
 RCFLAGS_DEBUGARM =  $(RCFLAGS)
 LIBDIR_DEBUGARM =  $(LIBDIR) -LM:/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/lib/

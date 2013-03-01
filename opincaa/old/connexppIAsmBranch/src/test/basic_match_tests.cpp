@@ -16,6 +16,8 @@
 #include "../../include/util/timing.h"
 #include "../../include/util/kernel_acc.h"
 
+#include <thread>
+
 
 //#include <unistd.h>     /* Symbolic Constants */
 //#include <sys/types.h>  /* Primitive System Data Types */
@@ -631,14 +633,15 @@ static int connexJmpFindMatchesMt(int RunningMode,int LoadToRxBatchNumber,
                     }
 
                 TimeStart = GetMilliCount();
-                EXECUTE_BATCH(LoadToRxBatchNumber + UsingBuffer0or1);
+                std::thread t1(EXECUTE_BATCH,(LoadToRxBatchNumber + UsingBuffer0or1));
                 TotalBatchTime += GetMilliSpan(TimeStart);
 
                 TimeStart = GetMilliCount();
+                /*
                 int ExpectedReduces = JMP_VECTORS_CHUNK_IMAGE1 * JMP_VECTORS_CHUNK_IMAGE2 * BYTES_IN_DWORD;
                 int ActualReduces = GET_MULTIRED_RESULT(BasicMatchRedResults,ExpectedReduces);
                 if (ExpectedReduces!= ActualReduces) cout << "ERROR: expected "<<ExpectedReduces<<" but got "<<ActualReduces<<endl;
-
+                */
                 for(int CurrentcnxvectorSubChunkImg2 = 0; CurrentcnxvectorSubChunkImg2 < TotalcnxvectorSubChunksImg2; CurrentcnxvectorSubChunkImg2++)
                     //forall 364 cnxvectors "y" in chunk of image 1
                     for (int CntDescIm1 = 0; CntDescIm1 < JMP_VECTORS_CHUNK_IMAGE1; CntDescIm1++)
@@ -650,7 +653,8 @@ static int connexJmpFindMatchesMt(int RunningMode,int LoadToRxBatchNumber,
                                             (CurrentcnxvectorSubChunkImg2 * JMP_VECTORS_SUBCHUNK_IMAGE2) + x;
                             //if (descIm1 == 0) { cout<<RedCounter<<":"<<BasicMatchRedResults[RedCounter]<<" "; if ((descIm2 & 3) == 3) cout << endl;}
 
-                            UINT_RED_REG_VAL dsq = BasicMatchRedResults[RedCounter2];
+                            //UINT_RED_REG_VAL dsq = BasicMatchRedResults[RedCounter2];
+                            GET_MULTIRED_RESULT(&dsq,4);
 
                             if (dsq < SMs->ScoreMin[descIm1])
                             {
@@ -671,6 +675,7 @@ static int connexJmpFindMatchesMt(int RunningMode,int LoadToRxBatchNumber,
                     }
 
                 TotalReductionTime += GetMilliSpan(TimeStart);
+                t1.join();
             }
             //next: create or execute created batch
             else// (RunningMode == MODE_CREATE_BATCHES)
