@@ -556,6 +556,8 @@ static int connexJmpFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
                                 REDUCE(R31);
                             }
                         )
+                        for (int nops=0; nops<10; nops++)
+                        NOP;
                     }
                 END_BATCH();
                 if (UsingBuffer0or1 == 1) return PASS; //no need to create more than 2 batches

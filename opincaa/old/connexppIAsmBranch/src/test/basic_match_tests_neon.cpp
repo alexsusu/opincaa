@@ -86,7 +86,7 @@ int MainNeonSSE()
     for (int i=0; i<32; i++) dataIn1[i]=i;
     for (int i=0; i<32; i++) dataIn2[i]=i+1;
 
-    uint16x4x4_t data __attribute__ ((aligned(32)));
+    uint16x8x4_t data __attribute__ ((aligned(32)));
     UINT16 dataOut[16] __attribute__ ((aligned(32)));
 
     //load 4 chuncks each having

@@ -131,11 +131,15 @@ static void InitKernel_Jump3(int BatchNumber,INT32 Param1, INT32 Param2)
         EXECUTE_IN_ALL(
                         R0 = Param1;
                         for (int x=0; x< Param2; x++)
-                        REPEAT_X_TIMES
-                        (Param2,
-                            REDUCE(R0);
-                        )
-                        NOP;//hardware bug workaround
+                        {
+                            NOP;
+                            REPEAT_X_TIMES
+                            (Param2,
+                                REDUCE(R0);
+                            )
+                            for (int nops=0; nops< 10; nops++)
+                            NOP;//hardware bug workaround
+                        }
                        )
     END_BATCH(BatchNumber);
 }
