@@ -18,6 +18,7 @@
 
 #include "../../include/test/basic_match_tests_commons.h"
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 static void SAD_FindMatchesF32(SiftDescriptorsF32* SDs1, SiftDescriptorsF32* SDs2, SiftMatches* SMs)
@@ -35,7 +36,7 @@ static void SAD_FindMatchesF32(SiftDescriptorsF32* SDs1, SiftDescriptorsF32* SDs
 	    {
             FLOAT32 dsq = 0;
             for (int FeatIndex = 0; FeatIndex < FEATURES_PER_DESCRIPTOR; FeatIndex++)
-                dsq += abs(SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1][FeatIndex] -
+                dsq += fabs(SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1][FeatIndex] -
                                     SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2][FeatIndex]);
 
             if (dsq < distsq1)
