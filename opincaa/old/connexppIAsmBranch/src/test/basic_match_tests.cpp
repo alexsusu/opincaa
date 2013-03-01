@@ -598,7 +598,7 @@ static int connexJmpFindMatchesMt(int RunningMode,int LoadToRxBatchNumber,
     int TimeStart;
     int TotalIOTime = 0, TotalBatchTime = 0, TotalReductionTime = 0;
     UINT32 dsq;
-    UINT32 RedCounter;
+    UINT32 RedCounter, RedCounter2;
     //forall cnxvector chunks in img1
     for(CurrentcnxvectorChunkImg1 = 0; CurrentcnxvectorChunkImg1 < TotalcnxvectorChunksImg1; CurrentcnxvectorChunkImg1++)
     {
@@ -616,6 +616,7 @@ static int connexJmpFindMatchesMt(int RunningMode,int LoadToRxBatchNumber,
         for(CurrentcnxvectorChunkImg2 = 0; CurrentcnxvectorChunkImg2 < TotalcnxvectorChunksImg2; CurrentcnxvectorChunkImg2++)
         {
             UsingBuffer0or1 = CurrentcnxvectorChunkImg2 & 0x01;
+            RedCounter2 = 0;
             if (RunningMode == MODE_EXECUTE_FIND_MATCHES)
             {
                     TimeStart = GetMilliCount();
@@ -634,6 +635,10 @@ static int connexJmpFindMatchesMt(int RunningMode,int LoadToRxBatchNumber,
                 TotalBatchTime += GetMilliSpan(TimeStart);
 
                 TimeStart = GetMilliCount();
+                int ExpectedReduces = JMP_VECTORS_CHUNK_IMAGE1 * JMP_VECTORS_CHUNK_IMAGE2 * BYTES_IN_DWORD;
+                int ActualReduces = GET_MULTIRED_RESULT(BasicMatchRedResults,ExpectedReduces);
+                if (ExpectedReduces!= ActualReduces) cout << "ERROR: expected "<<ExpectedReduces<<" but got "<<ActualReduces<<endl;
+
                 for(int CurrentcnxvectorSubChunkImg2 = 0; CurrentcnxvectorSubChunkImg2 < TotalcnxvectorSubChunksImg2; CurrentcnxvectorSubChunkImg2++)
                     //forall 364 cnxvectors "y" in chunk of image 1
                     for (int CntDescIm1 = 0; CntDescIm1 < JMP_VECTORS_CHUNK_IMAGE1; CntDescIm1++)
@@ -645,8 +650,8 @@ static int connexJmpFindMatchesMt(int RunningMode,int LoadToRxBatchNumber,
                                             (CurrentcnxvectorSubChunkImg2 * JMP_VECTORS_SUBCHUNK_IMAGE2) + x;
                             //if (descIm1 == 0) { cout<<RedCounter<<":"<<BasicMatchRedResults[RedCounter]<<" "; if ((descIm2 & 3) == 3) cout << endl;}
 
-                            //UINT_RED_REG_VAL dsq = BasicMatchRedResults[RedCounter];
-                            GET_MULTIRED_RESULT(&dsq,4);
+                            UINT_RED_REG_VAL dsq = BasicMatchRedResults[RedCounter2];
+
                             if (dsq < SMs->ScoreMin[descIm1])
                             {
                                 SMs->ScoreNextToMin[descIm1] = SMs->ScoreMin[descIm1];
@@ -661,6 +666,7 @@ static int connexJmpFindMatchesMt(int RunningMode,int LoadToRxBatchNumber,
                                 SMs->DescIx2ndImgNextToMin[descIm1] = descIm2;
                             }
                             RedCounter++;
+                            RedCounter2++;
                         }
                     }
 
