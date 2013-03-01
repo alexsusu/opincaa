@@ -598,7 +598,7 @@ static int connexJmpFindMatchesMt(int RunningMode,int LoadToRxBatchNumber,
     int TimeStart;
     int TotalIOTime = 0, TotalBatchTime = 0, TotalReductionTime = 0;
     UINT32 dsq;
-    UINT32 RedCounter, RedCounter2;
+    UINT32 RedCounter = 0, RedCounter2;
     //forall cnxvector chunks in img1
     for(CurrentcnxvectorChunkImg1 = 0; CurrentcnxvectorChunkImg1 < TotalcnxvectorChunksImg1; CurrentcnxvectorChunkImg1++)
     {
