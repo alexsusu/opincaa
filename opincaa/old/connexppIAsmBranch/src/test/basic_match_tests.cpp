@@ -529,7 +529,7 @@ static int connexJmpFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
             {
                 BEGIN_BATCH(LoadToRxBatchNumber + UsingBuffer0or1);
                     R29 = 1;//reserved for increment with one
-
+                    //R[JMP_VECTORS_SUBCHUNK_IMAGE2] = 0;//<<NOT matching !!!
                     //forall subchunks of chunk of img 2
                     for(int CurrentcnxvectorSubChunkImg2 = 0; CurrentcnxvectorSubChunkImg2 < TotalcnxvectorSubChunksImg2; CurrentcnxvectorSubChunkImg2++)
                     {
@@ -543,10 +543,12 @@ static int connexJmpFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
                         //for (int y = 0; y < JMP_VECTORS_CHUNK_IMAGE1; y++)
                        /* R30 is reserved for localstore loading location */
                        R30 = 0;
+                       //R[JMP_VECTORS_SUBCHUNK_IMAGE2] = 0;
                        REPEAT_X_TIMES(JMP_VECTORS_CHUNK_IMAGE1,
 
                             //R[JMP_VECTORS_SUBCHUNK_IMAGE2] = LS[y]; //load cnxvector y to R30 ; cout <<" LS[" <<y<<"] ====== "<<endl;
                             R[JMP_VECTORS_SUBCHUNK_IMAGE2] = LS[R30]; //load cnxvector y to R30 ; cout <<" LS[" <<y<<"] ====== "<<endl;
+
                             R30 = R30 + R29;
                             //forall registers with cnxvector-subchunk of img 2 (~30 cnxvectors in 30 registers)
                             for(int x = 0; x < JMP_VECTORS_SUBCHUNK_IMAGE2; x++)
@@ -554,11 +556,14 @@ static int connexJmpFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
                                 R31 = R[JMP_VECTORS_SUBCHUNK_IMAGE2] - R[x];
                                 R31 = R31 * R31;
                                 REDUCE(R31);
+                                //R[JMP_VECTORS_SUBCHUNK_IMAGE2] = R[JMP_VECTORS_SUBCHUNK_IMAGE2] + R29;
+                                //REDUCE(R[JMP_VECTORS_SUBCHUNK_IMAGE2]);
                             }
                         )
-                        for (int nops=0; nops<10; nops++)
-                        NOP;
+                        //for (int nops=0; nops<10; nops++)
+                        //NOP;
                     }
+                NOP;
                 END_BATCH();
                 if (UsingBuffer0or1 == 1) return PASS; //no need to create more than 2 batches
             }
@@ -702,6 +707,8 @@ int test_BasicMatching_All()
     //const int MAX_IMG_2_DECRIPTORS = 330*3;//max 1196
     int Start;
 
+    //LoadDescriptors((char*)"data/adam1.key", &SiftDescriptors1, 364);
+    //LoadDescriptors((char*)"data/adam2.key", &SiftDescriptors2, 28*11);
     LoadDescriptors((char*)"data/adam1.key", &SiftDescriptors1, 0);
     LoadDescriptors((char*)"data/adam2.key", &SiftDescriptors2, 0);
 
@@ -776,6 +783,12 @@ int test_BasicMatching_All()
     connexJmpFindMatchesPass1(MODE_CREATE_BATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);
     connexJmpFindMatchesPass2(MODE_CREATE_BATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan2, &SM_ConnexArm2);
     cout<<"> ConnexS-JMP Batches were created in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
+
+    if (PASS != kernel_acc::storeKernel("database/connexJmpFindMatchesPass1_b1.ker", JMP_BASIC_MATCHING_BNR))
+        cout<<"Could not store kernel "<<endl;
+    if (PASS != kernel_acc::storeKernel("database/connexJmpFindMatchesPass1_b2.ker", JMP_BASIC_MATCHING_BNR+1))
+        cout<<"Could not store kernel "<<endl;
+
 
     Start = GetMilliCount();
     connexJmpFindMatchesPass1(MODE_EXECUTE_FIND_MATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);

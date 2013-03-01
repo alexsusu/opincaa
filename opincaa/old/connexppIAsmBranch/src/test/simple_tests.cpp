@@ -12,6 +12,7 @@
 #include "../../include/core/io_unit.h"
 #include "../../include/c_simu/c_simulator.h"
 #include "../../include/util/utils.h"
+#include "../../include/util/kernel_acc.h"
 
 #include <iostream>
 #include <iomanip>
@@ -132,15 +133,16 @@ static void InitKernel_Jump3(int BatchNumber,INT32 Param1, INT32 Param2)
                         R0 = Param1;
                         for (int x=0; x< Param2; x++)
                         {
-                            NOP;
+                            //NOP;
                             REPEAT_X_TIMES
                             (Param2,
                                 REDUCE(R0);
                             )
-                            for (int nops=0; nops< 10; nops++)
-                            NOP;//hardware bug workaround
+                            //for (int nops=0; nops< 10; nops++)
+
                         }
                        )
+    NOP;//hardware bug workaround
     END_BATCH(BatchNumber);
 }
 
@@ -1209,10 +1211,25 @@ int test_Simple_All(bool stress)
         cout<<"================================"<<endl<<endl;
 
     if (TestJmpMultiRed(2,1)==FAIL) testFails++;
+    if (PASS != kernel_acc::storeKernel("database/TestJmpMultiRed_2_1.ker", IJMP3_BNR))
+        cout<<"Could not store kernel "<<endl;
+
     if (TestJmpMultiRed(2,3)==FAIL) testFails++;
+    if (PASS != kernel_acc::storeKernel("database/TestJmpMultiRed_2_3.ker", IJMP3_BNR))
+        cout<<"Could not store kernel "<<endl;
+
     if (TestJmpMultiRed(2,13)==FAIL) testFails++;
+    if (PASS != kernel_acc::storeKernel("database/TestJmpMultiRed_2_13.ker", IJMP3_BNR))
+        cout<<"Could not store kernel "<<endl;
+
     if (TestJmpMultiRed(2,133)==FAIL) testFails++;
+    if (PASS != kernel_acc::storeKernel("database/TestJmpMultiRed_2_133.ker", IJMP3_BNR))
+        cout<<"Could not store kernel "<<endl;
+
     if (TestJmpMultiRed(2,1333)==FAIL) testFails++;
+    if (PASS != kernel_acc::storeKernel("database/TestJmpMultiRed_2_1333.ker", IJMP3_BNR))
+        cout<<"Could not store kernel "<<endl;
+
     return testFails;
 }
 

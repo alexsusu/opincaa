@@ -54,7 +54,7 @@
 #define SET_JMP_LABEL(x) cnxvector::jmp(JMP_MODE_SET_LABEL,0)
 #define JMP_TIMES_TO_LABEL(times,label) cnxvector::jmp(JMP_MODE_PERFORM, times)
 #define REPEAT_X_TIMES(times, instructions_to_repeat) \
-    if (times > 1) {SET_JMP_LABEL(0); instructions_to_repeat; JMP_TIMES_TO_LABEL(times-1,0);}\
+    if (times > 1) {SET_JMP_LABEL(0);SET_JMP_LABEL(0); instructions_to_repeat; JMP_TIMES_TO_LABEL(times-1,0);}\
     else if (times == 1) {instructions_to_repeat}
 
 
