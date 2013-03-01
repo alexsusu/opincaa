@@ -79,6 +79,7 @@ struct uint16x4x2_t
 
 int MainNeonSSE()
 {
+    /*
     //cout << "MainNeonSSE not implemented for arm "<<endl;
     UINT16 dataIn1[32] __attribute__ ((aligned(32)));
     UINT16 dataIn2[32] __attribute__ ((aligned(32)));
@@ -93,7 +94,7 @@ int MainNeonSSE()
     data = vld4_u16(dataIn1);
 
     //void vst4_u16 (uint16_t *, uint16x4x4_t)
-    vst4_u16(dataOut, data);
+    //vst4_u16(dataOut, data);
     for (int i = 0; i < 32; i++)
         cout<<dataOut[i]<<" ";
     cout<<endl;
@@ -108,8 +109,8 @@ int MainNeonSSE()
     cout<<endl;
 
     data_4 = vsubq_u16(data.val[0], data_4);
-    cout<<"datasub: "<<
-    vst1q_u16(dataOut, data);
+    //cout<<"datasub: "<<
+    //vst1q_u16(dataOut, data);
     for (int i = 0; i < 8; i++)
         cout<<dataOut[i]<<" ";
     cout<<endl;
@@ -126,6 +127,7 @@ int MainNeonSSE()
     for (int i = 0; i < 8; i++)
         cout<<multsUI16[i]<<" ";
     cout<<endl;
+    */
 
 /*
 
