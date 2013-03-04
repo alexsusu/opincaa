@@ -9,6 +9,7 @@
 			<Target title="Debug">
 				<Option output="bin/Debug/connexppAsm" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
+				<Option external_deps="lib/opincaa.a;" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option parameters="--csimulation" />
@@ -20,6 +21,7 @@
 					<Add directory="include/util" />
 				</Compiler>
 				<Linker>
+					<Add option="-lgomp" />
 					<Add library="lib\opincaa.a" />
 					<Add directory="M:/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/lib/" />
 				</Linker>
