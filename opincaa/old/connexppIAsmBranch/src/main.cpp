@@ -198,8 +198,8 @@ int main(int argc, char *argv[])
     char *fn1 ="data/img1.png.key";
     char *fn2 ="data/img3.png.key";
 
-    test_BasicMatching_All_SAD(fn1, fn2, logfile);
     test_BasicMatching_All_SSD(fn1, fn2, logfile);
+    test_BasicMatching_All_SAD(fn1, fn2, logfile);
     test_BasicMatching_All_NeonSSE(fn1, fn2, logfile);
 
     //MainNeonSSE();
