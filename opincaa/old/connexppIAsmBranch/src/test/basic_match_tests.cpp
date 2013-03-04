@@ -248,20 +248,24 @@ static void FindMatches(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatche
 
 static inline unsigned int SSD_Distance(unsigned short int *set1, unsigned short int *set2)
 {
-    unsigned int ssd = 0;
+    unsigned int sum_ssd = 0;
+    unsigned int ssd;
     for (int i=0; i < 128; i++)
-        ssd += (*set1++) * (*set2++);
-    return ssd;
+    {
+        ssd = (*set1++) - (*set2++);
+        sum_ssd += ssd *ssd;
+    }
+    return sum_ssd;
 }
 
 static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatches* SMs, int threads)
 {
     SMs->RealMatches = 0;
 
-    int **dsq = new int*[SDs1->RealDescriptors];
+    unsigned int **dsq = new unsigned int*[SDs1->RealDescriptors];
 
-    omp_set_num_threads(threads);
-    for (int er=0; er < SDs1->RealDescriptors; er++) dsq[er] = new int[SDs2->RealDescriptors];
+    if (threads !=0) omp_set_num_threads(threads);
+    for (int er=0; er < SDs1->RealDescriptors; er++) dsq[er] = new unsigned int[SDs2->RealDescriptors];
 
         #pragma omp parallel for
         for (int DescriptorIndex1 =0; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1++)
@@ -318,35 +322,7 @@ static io_unit IOU_CVCI1;
 static io_unit IOU_CVCI2;
 #define MODE_CREATE_BATCHES 0
 #define MODE_EXECUTE_FIND_MATCHES 1
-/*
-static int connexFM_CreateBatch(int LoadToRxBatchNumber, int UsingBuffer0or1)
-{
-    int TotalcnxvectorSubChunksImg2 = VECTORS_CHUNK_IMAGE2 / VECTORS_SUBCHUNK_IMAGE2;
-    BEGIN_BATCH(LoadToRxBatchNumber);
-        //forall subchunks of chunk of img 2
-        for(int CurrentcnxvectorSubChunkImg2 = 0; CurrentcnxvectorSubChunkImg2 < TotalcnxvectorSubChunksImg2; CurrentcnxvectorSubChunkImg2++)
-        {
-            //forall cnxvectors in subchunk of chunk of img (~30 cnxvectors) load cnxvector x to Rx
-            for(int x = 0; x < 30; x++)
-                R[x] = LS[VECTORS_CHUNK_IMAGE1 + UsingBuffer0or1*VECTORS_CHUNK_IMAGE2 +
-                            CurrentcnxvectorSubChunkImg2 * VECTORS_SUBCHUNK_IMAGE2 + x];
-            //forall 364 cnxvectors "y" in chunk of image 1
-            for (int y = 0; y < VECTORS_CHUNK_IMAGE1; y++)
-            {
-                R[30] = LS[y]; //load cnxvector y to R30 ; cout <<" LS[" <<y<<"] ====== "<<endl;
-                //forall registers with cnxvector-subchunk of img 2 (~30 cnxvectors in 30 registers)
-                for(int x = 0; x < 30; x++)
-                {
-                    R31 = R30 - R[x];
-                    R31 = R31 * R31;
-                    REDUCE(R31);
-                }
-            }
-        }
-    END_BATCH();
-    return PASS;
-}
-*/
+
 static int connexFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
                                     SiftDescriptors *SiftDescriptors1, SiftDescriptors *SiftDescriptors2)
 {
@@ -937,27 +913,6 @@ int test_BasicMatching_All_SSD(char* fn1, char* fn2, FILE* logfile)
 
     float BruteMatches = SiftDescriptors1.RealDescriptors * SiftDescriptors2.RealDescriptors;
 
-    //LoadDescriptors((char*)"data/adam1_big.png.key", &SiftDescriptors1, 0);
-    //LoadDescriptors((char*)"data/adam2_big.png.key", &SiftDescriptors2, 0);
-
-    //LoadDescriptors((char*)"data/img1.png.key", &SiftDescriptors1, 0);
-    //LoadDescriptors((char*)"data/img3.png.key", &SiftDescriptors2, 0);
-
-    //LoadDescriptors((char*)"data/adam1_big_siftpp.key", &SiftDescriptors1, 0);
-    //LoadDescriptors((char*)"data/adam2_big_siftpp.key", &SiftDescriptors2, 0);
-
-    //LoadDescriptors((char*)"data/img3_siftpp.key", &SiftDescriptors1, 0);
-    //LoadDescriptors((char*)"data/img3_siftpp.key", &SiftDescriptors2, 0);
-    //LoadDescriptors((char*)"data/img1_siftpp.key", &SiftDescriptors1, 0);
-    //LoadDescriptors((char*)"data/img3_siftpp.key", &SiftDescriptors2, 0);
-
-    //Start = GetMilliCount();
-    //FindMatches2T(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm);
-    //cout<<"armFindMatches (2 threads) ran in " << GetMilliSpan(Start)<< " ms"<<endl;
-
-    //PrintMatches(&SM_Arm);
-    //database
-
     /*
     Start = GetMilliCount();
     if (PASS != kernel_acc::storeKernel("database/BasicMatchingA.ker", BASIC_MATCHING_BNR))
@@ -977,15 +932,13 @@ int test_BasicMatching_All_SSD(char* fn1, char* fn2, FILE* logfile)
         cout<<"Could not load kernel "<<endl;
     if (PASS != kernel_acc::loadKernel("database/BasicMatchingB.ker", BASIC_MATCHING_BNR+3))
         cout<<"Could not load kernel "<<endl;
-
-    cout<<"Batches were loaded in " << GetMilliSpan(Start)<< " ms"<<endl;
-    //cout<<"Could not load batches "<<endl;
     */
 
     cout<<endl<<"Starting SSD16: "<<endl;
 
     // STEP1: Compute on ConnexS no jump
-    /*
+    #ifdef __ARM_NEON__ //run only on zedboard
+
     Start = GetMilliCount();
     connexFindMatchesPass1(MODE_CREATE_BATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);
     connexFindMatchesPass2(MODE_CREATE_BATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan, &SM_ConnexArm);
@@ -997,60 +950,20 @@ int test_BasicMatching_All_SSD(char* fn1, char* fn2, FILE* logfile)
     Delta  = GetMilliSpan(Start);
     cout<<"> ConnexS-unrolled connexFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
     fprintf(logfile, "ConnexS-unrolled_connexFindMatches_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
-    //PrintMatches(&SM_ConnexArm);
-    */
 
-    // STEP2: Compute on cpu-only
-    Start = GetMilliCount();
-    FindMatches(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm);
-    Delta  = GetMilliSpan(Start);
-    cout<<"> cpu-only FindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
-    fprintf(logfile, "cpu-only_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
-
-    /* STEP3: Compare Connex-S (noJMP) with  ARM-only  */
-    if (PASS == CompareMatches(&SM_Arm,&SM_ConnexArm)) cout << "OK ! Arm == Arm-Connex"<<endl<<endl;
-    else cout << "Match test has FAILed. Arm and ConnexArm got different results !"<<endl<<endl;
-
-    /* STEP4: Compute on ARM-only with OMP */
-    Start = GetMilliCount();
-    FindMatchesOMP(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm_OMP,2);
-    Delta  = GetMilliSpan(Start);
-    cout<<"> armFindMatchesOMP-2 Threads ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
-    fprintf(logfile, "cpu-onlyOMP2T_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
-
-    Start = GetMilliCount();
-    FindMatchesOMP(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm_OMP,4);
-    Delta  = GetMilliSpan(Start);
-    cout<<"> armFindMatchesOMP-4 Threads ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
-    fprintf(logfile, "cpu-onlyOMP4T_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
-
-    Start = GetMilliCount();
-    FindMatchesOMP(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm_OMP,8);
-    Delta  = GetMilliSpan(Start);
-    cout<<"> armFindMatchesOMP-8 Threads ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
-    fprintf(logfile, "cpu-onlyOMP8T_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
-
-    Start = GetMilliCount();
-    FindMatchesOMP(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm_OMP,16);
-    Delta  = GetMilliSpan(Start);
-    cout<<"> armFindMatchesOMP-16 Threads ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
-
-    /* STEP5: Compare ARM_OMP with  ARM-only  */
-    if (PASS == CompareMatches(&SM_Arm,&SM_Arm_OMP)) cout << "OK ! Arm == Arm-OMP"<<endl<<endl;
-    else cout << "Match test has FAILed. Arm and ConnexArm got different results !"<<endl<<endl;
-
-    /* STEP4-6: Compute on Connex-S with JMP  */
+    // STEP2: Compute on Connex-S with JMP  */
     Start = GetMilliCount();
     connexJmpFindMatchesPass1(MODE_CREATE_BATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);
     connexJmpFindMatchesPass2(MODE_CREATE_BATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan2, &SM_ConnexArm2);
     cout<<"  ConnexS-JMP Batches were created in "<< GetMilliSpan(Start)<< " ms"<<flush<<endl;
 
-/*
+    /*
     if (PASS != kernel_acc::storeKernel("database/connexJmpFindMatchesPass1_b1.ker", JMP_BASIC_MATCHING_BNR))
         cout<<"Could not store kernel "<<endl;
     if (PASS != kernel_acc::storeKernel("database/connexJmpFindMatchesPass1_b2.ker", JMP_BASIC_MATCHING_BNR+1))
         cout<<"Could not store kernel "<<endl;
-*/
+    */
+
     Start = GetMilliCount();
     connexJmpFindMatchesPass1(MODE_EXECUTE_FIND_MATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);
     connexJmpFindMatchesPass2(MODE_EXECUTE_FIND_MATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan2, &SM_ConnexArm2);
@@ -1058,12 +971,34 @@ int test_BasicMatching_All_SSD(char* fn1, char* fn2, FILE* logfile)
     cout<<"> ConnexS-JMP connexFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
     fprintf(logfile, "ConnexS-JMP_connexFindMatches_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
 
-    /* STEP5: Compare Connex-S with JMP against ARM-only */
-    if (PASS == CompareMatches(&SM_Arm,&SM_ConnexArm2)) cout << "OK! Arm == JMP Arm-Connex "<<endl<<endl;
-    else cout << "Match test has FAILed. Arm and JMP ConnexArm got different results !"<<endl<<endl;
 
+    /* STEP3: Compare Connex-S (noJMP) with  ARM-only  */
+    if (PASS == CompareMatches(&SM_ConnexArm2,&SM_ConnexArm)) cout << "OK ! Connex_nojmp == Connex_jmp"<<endl<<endl;
+    else cout << "Match test has FAILed. Connex_nojmp and Connex_jmp got different results !"<<endl<<endl;
+
+    #endif // __ARM_NEON__
+
+
+    // STEP4: Compute on cpu-only
+    Start = GetMilliCount();
+    FindMatches(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm);
+    Delta  = GetMilliSpan(Start);
+    cout<<"> cpu-only FindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+    fprintf(logfile, "cpu-only_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
+
+
+    /* STEP5: Compute on Cpu with OMP */
+    Start = GetMilliCount();
+    FindMatchesOMP(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm_OMP,0);
+    Delta  = GetMilliSpan(Start);
+    cout<<"> cpu-omp FindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+
+    /* STEP5: Compare ARM_OMP with  ARM-only  */
+    if (PASS == CompareMatches(&SM_Arm,&SM_Arm_OMP)) cout << "OK ! cpu == cpu-OMP"<<endl<<endl;
+    else cout << "Match test has FAILed. cpu and cpu-omp got different results !"<<endl<<endl;
 
     /* STEP6: Compute on optimized(Red+Calc) Connex-S with JMP  */
+    /*
     Start = GetMilliCount();
     connexJmpFindMatchesMt(MODE_CREATE_BATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan3, &SM_ConnexArm3);
     cout<<"  ConnexS-JMPMt Batches were created in " << GetMilliSpan(Start)<< " ms"<<flush<<endl;
@@ -1073,10 +1008,10 @@ int test_BasicMatching_All_SSD(char* fn1, char* fn2, FILE* logfile)
     Delta  = GetMilliSpan(Start);
     cout<<"> ConnexS-JMPMt connexFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
 
-    /* STEP7: Compare optimized(Red+Calc) Connex-S with JMP against ARM-only  */
+    // STEP7: Compare optimized(Red+Calc) Connex-S with JMP against ARM-only
     if (PASS == CompareMatches(&SM_Arm,&SM_ConnexArm3)) cout << "OK! Arm == JMP Arm-Connex "<<endl<<endl;
     else cout << "Match test has FAILed. Arm and JMP ConnexArm got different results !"<<endl<<endl;
-
+    */
 
     //IntProofConcept();
     //cout<< "IBC = "<<cnxvector::dwInBatchCounter[0]<<endl;

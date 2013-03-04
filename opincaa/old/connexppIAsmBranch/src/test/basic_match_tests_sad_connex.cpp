@@ -235,19 +235,27 @@ static void FindMatches(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatche
     }
 }
 
+static inline unsigned int SAD16_Distance(unsigned short int *set1, unsigned short int *set2)
+{
+    unsigned int ssd = 0;
+    for (int i=0; i < 128; i++)
+        ssd += abs((*set1++) - (*set2++));
+    return ssd;
+}
+
 static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatches* SMs, int threads)
 {
     SMs->RealMatches = 0;
     int **dsq = new int*[SDs1->RealDescriptors];
     for (int er=0; er < SDs1->RealDescriptors; er++) dsq[er] = new int[SDs2->RealDescriptors];
 
-    omp_set_num_threads(threads);
+    if (threads !=0) omp_set_num_threads(threads);
         #pragma omp parallel for
         for (int DescriptorIndex1 =0; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1++)
         {
-                #pragma omp parallel for
                 for (int DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
                 {
+                    /*
                     UINT32 dsqs = 0;
                     int FeatIndex;
                     for (FeatIndex = 0; FeatIndex < FEATURES_PER_DESCRIPTOR; FeatIndex++)
@@ -257,6 +265,9 @@ static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMat
                         dsqs += sq;
                     }
                     dsq[DescriptorIndex1][DescriptorIndex2] = dsqs;
+                    */
+                    dsq[DescriptorIndex1][DescriptorIndex2] = SAD16_Distance(SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1],
+                                                                             SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]);
                 }
         }
 
@@ -791,8 +802,8 @@ int test_BasicMatching_All_SAD(char* fn1, char* fn2, FILE* logfile)
     */
 
     cout<<endl<<"Starting SAD16: "<<endl;
+    #ifdef __ARM_NEON__ //run only on zedboard
     // STEP1: Compute on ConnexS no jump
-    /*
     Start = GetMilliCount();
     connexFindMatchesPass1(MODE_CREATE_BATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);
     connexFindMatchesPass2(MODE_CREATE_BATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan, &SM_ConnexArm);
@@ -803,69 +814,56 @@ int test_BasicMatching_All_SAD(char* fn1, char* fn2, FILE* logfile)
     connexFindMatchesPass2(MODE_EXECUTE_FIND_MATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan, &SM_ConnexArm);
     Delta  = GetMilliSpan(Start);
     cout<<"> ConnexS-unrolled connexFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
-    //PrintMatches(&SM_ConnexArm);
-    */
 
-    /* STEP2: Compute on ARM-only  */
-    Start = GetMilliCount();
-    FindMatches(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm);
-    Delta  = GetMilliSpan(Start);
-    cout<<"> armFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
-
-    /* STEP3: Compare Connex-S (noJMP) with  ARM-only  */
-    if (PASS == CompareMatches(&SM_Arm,&SM_ConnexArm)) cout << "OK ! Arm == Arm-Connex"<<endl<<endl;
-    else cout << "Match test has FAILed. Arm and ConnexArm got different results !"<<endl<<endl;
-
-    /* STEP4: Compute on ARM-only with OMP */
-    Start = GetMilliCount();
-    FindMatchesOMP(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm_OMP,2);
-    Delta  = GetMilliSpan(Start);
-    cout<<"> armFindMatchesOMP-2 Threads ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
-
-    Start = GetMilliCount();
-    FindMatchesOMP(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm_OMP,4);
-    Delta  = GetMilliSpan(Start);
-    cout<<"> armFindMatchesOMP-4 Threads ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
-
-    Start = GetMilliCount();
-    FindMatchesOMP(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm_OMP,8);
-    Delta  = GetMilliSpan(Start);
-    cout<<"> armFindMatchesOMP-8 Threads ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
-
-    Start = GetMilliCount();
-    FindMatchesOMP(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm_OMP,16);
-    Delta  = GetMilliSpan(Start);
-    cout<<"> armFindMatchesOMP-16 Threads ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
-
-    /* STEP5: Compare ARM_OMP with  ARM-only  */
-    if (PASS == CompareMatches(&SM_Arm,&SM_Arm_OMP)) cout << "OK ! Arm == Arm-OMP"<<endl<<endl;
-    else cout << "Match test has FAILed. Arm and ConnexArm got different results !"<<endl<<endl;
-
-    /* STEP4-6: Compute on Connex-S with JMP  */
+    // STEP2 Compute on Connex-S with JMP
     Start = GetMilliCount();
     connexJmpFindMatchesPass1(MODE_CREATE_BATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);
     connexJmpFindMatchesPass2(MODE_CREATE_BATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan2, &SM_ConnexArm2);
     cout<<"  ConnexS-JMP Batches were created in "<< GetMilliSpan(Start)<< " ms"<<flush<<endl;
 
-/*
-    if (PASS != kernel_acc::storeKernel("database/connexJmpFindMatchesPass1_b1.ker", JMP_BASIC_MATCHING_BNR))
-        cout<<"Could not store kernel "<<endl;
-    if (PASS != kernel_acc::storeKernel("database/connexJmpFindMatchesPass1_b2.ker", JMP_BASIC_MATCHING_BNR+1))
-        cout<<"Could not store kernel "<<endl;
-*/
+    /*
+        if (PASS != kernel_acc::storeKernel("database/connexJmpFindMatchesPass1_b1.ker", JMP_BASIC_MATCHING_BNR))
+            cout<<"Could not store kernel "<<endl;
+        if (PASS != kernel_acc::storeKernel("database/connexJmpFindMatchesPass1_b2.ker", JMP_BASIC_MATCHING_BNR+1))
+            cout<<"Could not store kernel "<<endl;
+    */
+
     Start = GetMilliCount();
     connexJmpFindMatchesPass1(MODE_EXECUTE_FIND_MATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);
     connexJmpFindMatchesPass2(MODE_EXECUTE_FIND_MATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan2, &SM_ConnexArm2);
     Delta  = GetMilliSpan(Start);
     cout<<"> ConnexS-JMP connexFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
 
+    /* STEP3: Compare Connex-S (noJMP) with JMP */
+    if (PASS == CompareMatches(&SM_ConnexArm2,&SM_ConnexArm)) cout << "OK ! Arm == Arm-Connex"<<endl<<endl;
+    else cout << "Match test has FAILed. Arm and ConnexArm got different results !"<<endl<<endl;
 
-    /* STEP5: Compare Connex-S with JMP against ARM-only */
-    if (PASS == CompareMatches(&SM_Arm,&SM_ConnexArm2)) cout << "OK! Arm == JMP Arm-Connex "<<endl<<endl;
-    else cout << "Match test has FAILed. Arm and JMP ConnexArm got different results !"<<endl<<endl;
+    #endif
 
 
-    /* STEP6: Compute on optimized(Red+Calc) Connex-S with JMP  */
+    /* STEP4: Compute on ARM-only  */
+    Start = GetMilliCount();
+    FindMatches(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm);
+    Delta  = GetMilliSpan(Start);
+    cout<<"> armFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+
+    #ifdef __ARM_NEON__ //run only on zedboard
+    /* STEP5: Compare Connex-S (noJMP) with  ARM-only  */
+    if (PASS == CompareMatches(&SM_Arm,&SM_ConnexArm)) cout << "OK ! Arm == Arm-Connex"<<endl<<endl;
+    else cout << "Match test has FAILed. Arm and ConnexArm got different results !"<<endl<<endl;
+    #endif
+
+    /* STEP6: Compute on CPU with OMP */
+    Start = GetMilliCount();
+    FindMatchesOMP(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm_OMP,0);
+    Delta  = GetMilliSpan(Start);
+    cout<<"> cpu-omp FindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+
+    /* STEP7: Compare ARM_OMP with  ARM-only  */
+    if (PASS == CompareMatches(&SM_Arm,&SM_Arm_OMP)) cout << "OK ! Arm == Arm-OMP"<<endl<<endl;
+    else cout << "Match test has FAILed. Arm and ConnexArm got different results !"<<endl<<endl;
+
+    /* STEP9: Compute on optimized(Red+Calc) Connex-S with JMP  */
     /*
     Start = GetMilliCount();
     connexJmpFindMatchesMt(MODE_CREATE_BATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan3, &SM_ConnexArm3);

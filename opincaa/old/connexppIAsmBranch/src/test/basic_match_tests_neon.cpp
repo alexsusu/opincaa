@@ -38,7 +38,7 @@ int test_BasicMatching_All_NeonSSE(char* fileName1, char* fileName2, FILE* logfi
     //SAD32F_Benchmark(fileName1, fileName2);
 
     //SSD32F_Benchmark(fileName1, fileName2);
-    //SSD16_Benchmark(fileName1, fileName2);
+    SSD16_Benchmark(fileName1, fileName2, logfile);
 
 	return 0;
 }

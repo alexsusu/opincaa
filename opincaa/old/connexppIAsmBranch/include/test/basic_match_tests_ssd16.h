@@ -5,4 +5,4 @@
  *
  */
 
-void SSD16_Benchmark(char* fileName1, char* fileName2);
+void SSD16_Benchmark(char* fileName1, char* fileName2, FILE* logfile);
