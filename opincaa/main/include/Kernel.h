@@ -92,9 +92,11 @@ using namespace std;
 #define MULT_HIGH()                 Operand::multhi()
 
 #define REPEAT(x)					__kernel->append(Instruction(_SETLC, x, 0, 0));	\
-									__kernel->resetLoopDestination();
+							__kernel->append(Instruction(_SETLC, x, 0, 0)); \
+							__kernel->resetLoopDestination();
 									
-#define END_REPEAT					__kernel->appendLoopInstruction();
+#define END_REPEAT					__kernel->appendLoopInstruction(); \
+							__kernel->append(Instruction(_NOP, 0, 0, 0));
 
 #define END_KERNEL(x)               ConnexMachine::addKernel(__kernel);}
 
