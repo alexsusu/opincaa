@@ -35,7 +35,7 @@
 				<Compiler>
 					<Add option="-O3" />
 					<Add option="-std=c++0x" />
-					<Add option="-msse4.2  -march=corei7-avx -ftree-vectorize" />
+					<Add option="-msse4.2  -march=corei7-avx -ftree-vectorize -fopenmp" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -53,7 +53,7 @@
 				<Compiler>
 					<Add option="-std=c++0x" />
 					<Add option="-g" />
-					<Add option="-mfpu=neon -mcpu=cortex-a9 -ftree-vectorize" />
+					<Add option="-mfpu=neon -mcpu=cortex-a9 -ftree-vectorize -fopenmp" />
 					<Add directory="include" />
 					<Add directory="include/util" />
 				</Compiler>
@@ -72,7 +72,7 @@
 				<Compiler>
 					<Add option="-O3" />
 					<Add option="-std=c++0x" />
-					<Add option="-mfpu=neon -mcpu=cortex-a9 -ftree-vectorize" />
+					<Add option="-mfpu=neon -mcpu=cortex-a9 -ftree-vectorize -fopenmp" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />

@@ -19,7 +19,7 @@ LIB =
 LDFLAGS = 
 
 INC_RELEASEARM =  $(INC)
-CFLAGS_RELEASEARM =  $(CFLAGS) -O3 -std=c++0x -mfpu=neon -mcpu=cortex-a9 -ftree-vectorize
+CFLAGS_RELEASEARM =  $(CFLAGS) -O3 -std=c++0x -mfpu=neon -mcpu=cortex-a9 -ftree-vectorize -fopenmp
 RESINC_RELEASEARM =  $(RESINC)
 RCFLAGS_RELEASEARM =  $(RCFLAGS)
 LIBDIR_RELEASEARM =  $(LIBDIR) -LM:/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/lib/
