@@ -29,16 +29,16 @@
 #include "../../include/test/basic_match_tests_ssd16.h"
 #include "../../include/test/basic_match_tests_ssd32.h"
 
-int test_BasicMatching_All_NeonSSE(char* fileName1, char* fileName2)
+int test_BasicMatching_All_NeonSSE(char* fileName1, char* fileName2, FILE* logfile)
 {
     int Start;
 
-    SAD8_Benchmark(fileName1, fileName2);
-    SAD16_Benchmark(fileName1, fileName2);
-    SAD32F_Benchmark(fileName1, fileName2);
+    //SAD8_Benchmark(fileName1, fileName2);
+    SAD16_Benchmark(fileName1, fileName2, logfile);
+    //SAD32F_Benchmark(fileName1, fileName2);
 
-    SSD32F_Benchmark(fileName1, fileName2);
-    SSD16_Benchmark(fileName1, fileName2);
+    //SSD32F_Benchmark(fileName1, fileName2);
+    //SSD16_Benchmark(fileName1, fileName2);
 
 	return 0;
 }

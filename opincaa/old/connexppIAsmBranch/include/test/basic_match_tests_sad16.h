@@ -5,4 +5,4 @@
  *
  */
 
-void SAD16_Benchmark(char* fileName1, char* fileName2);
+void SAD16_Benchmark(char* fileName1, char* fileName2, FILE* logfile);

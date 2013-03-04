@@ -39,6 +39,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-lgomp" />
 					<Add library="lib\opincaa.a" />
 					<Add directory="M:/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/lib/" />
 				</Linker>
@@ -57,6 +58,7 @@
 					<Add directory="include/util" />
 				</Compiler>
 				<Linker>
+					<Add option="-lgomp" />
 					<Add library="lib\opincaa.a" />
 					<Add directory="M:/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/lib/" />
 				</Linker>
@@ -74,6 +76,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
+					<Add option="-lgomp" />
 					<Add library="lib\opincaa.a" />
 					<Add directory="M:/xillinux/ConnexRepoArh/CONNEX_SIFT/software/connex/connexppIAsm/lib/" />
 				</Linker>

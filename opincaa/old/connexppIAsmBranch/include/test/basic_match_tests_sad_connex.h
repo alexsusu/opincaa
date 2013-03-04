@@ -5,4 +5,4 @@
  *
  */
 
-int test_BasicMatching_All_SAD();
+int test_BasicMatching_All_SAD(char *fn1, char* fn2, FILE* logfile);

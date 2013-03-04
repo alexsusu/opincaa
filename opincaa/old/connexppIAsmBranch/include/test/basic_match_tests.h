@@ -5,4 +5,4 @@
  *
  */
 
-int test_BasicMatching_All();
+int test_BasicMatching_All_SSD(char* fn1, char* fn2, FILE* logfile);

@@ -915,7 +915,7 @@ static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
 #define BASIC_MATCHING_BNR 0
 #define JMP_BASIC_MATCHING_BNR 2
 
-int test_BasicMatching_All()
+int test_BasicMatching_All_SSD(char* fn1, char* fn2, FILE* logfile)
 {
     //forcing descriptors to have proper size: multiple of 364 for 1, multiple of 330 for second
     //const int MAX_IMG_1_DECRIPTORS = 364*5;//max 2306
@@ -924,8 +924,8 @@ int test_BasicMatching_All()
 
     //LoadDescriptors((char*)"data/adam1.key", &SiftDescriptors1, 364);
     //LoadDescriptors((char*)"data/adam2.key", &SiftDescriptors2, 28*11);
-    LoadDescriptors((char*)"data/adam1.key", &SiftDescriptors1, 0);
-    LoadDescriptors((char*)"data/adam2.key", &SiftDescriptors2, 0);
+    LoadDescriptors(fn1, &SiftDescriptors1, 0);
+    LoadDescriptors(fn2, &SiftDescriptors2, 0);
 
     BasicMatchRedResults = (UINT_RED_REG_VAL*)malloc(MAX_REDUCES * sizeof(UINT_RED_REG_VAL));
     if (BasicMatchRedResults == NULL) {cout<<"Could not allocate memory for reductions "<<endl;return 0;};
@@ -989,13 +989,15 @@ int test_BasicMatching_All()
     connexFindMatchesPass2(MODE_EXECUTE_FIND_MATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan, &SM_ConnexArm);
     Delta  = GetMilliSpan(Start);
     cout<<"> ConnexS-unrolled connexFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+    fprintf(logfile, "ConnexS-unrolled_connexFindMatches_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
     //PrintMatches(&SM_ConnexArm);
 
-    /* STEP2: Compute on ARM-only  */
+    /* STEP2: Compute on cpu-only  */
     Start = GetMilliCount();
     FindMatches(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm);
     Delta  = GetMilliSpan(Start);
-    cout<<"> armFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+    cout<<"> cpu-only FindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+    fprintf(logfile, "cpu-only_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
 
     /* STEP3: Compare Connex-S (noJMP) with  ARM-only  */
     if (PASS == CompareMatches(&SM_Arm,&SM_ConnexArm)) cout << "OK ! Arm == Arm-Connex"<<endl<<endl;
@@ -1006,16 +1008,19 @@ int test_BasicMatching_All()
     FindMatchesOMP(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm_OMP,2);
     Delta  = GetMilliSpan(Start);
     cout<<"> armFindMatchesOMP-2 Threads ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+    fprintf(logfile, "cpu-onlyOMP2T_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
 
     Start = GetMilliCount();
     FindMatchesOMP(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm_OMP,4);
     Delta  = GetMilliSpan(Start);
     cout<<"> armFindMatchesOMP-4 Threads ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+    fprintf(logfile, "cpu-onlyOMP4T_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
 
     Start = GetMilliCount();
     FindMatchesOMP(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm_OMP,8);
     Delta  = GetMilliSpan(Start);
     cout<<"> armFindMatchesOMP-8 Threads ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+    fprintf(logfile, "cpu-onlyOMP8T_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
 
     Start = GetMilliCount();
     FindMatchesOMP(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm_OMP,16);
@@ -1043,7 +1048,7 @@ int test_BasicMatching_All()
     connexJmpFindMatchesPass2(MODE_EXECUTE_FIND_MATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan2, &SM_ConnexArm2);
     Delta  = GetMilliSpan(Start);
     cout<<"> ConnexS-JMP connexFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
-
+    fprintf(logfile, "ConnexS-JMP_connexFindMatches_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
 
     /* STEP5: Compare Connex-S with JMP against ARM-only */
     if (PASS == CompareMatches(&SM_Arm,&SM_ConnexArm2)) cout << "OK! Arm == JMP Arm-Connex "<<endl<<endl;
