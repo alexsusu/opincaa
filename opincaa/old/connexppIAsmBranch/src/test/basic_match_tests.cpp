@@ -249,7 +249,8 @@ static void FindMatches(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatche
 static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatches* SMs, int threads)
 {
     SMs->RealMatches = 0;
-    omp_set_num_threads(threads);
+    //omp_set_num_threads(threads);
+    #pragma omp parallel num_threads(2)
     int **dsq = new int*[SDs1->RealDescriptors];
     for (int er=0; er < SDs1->RealDescriptors; er++) dsq[er] = new int[SDs2->RealDescriptors];
 
