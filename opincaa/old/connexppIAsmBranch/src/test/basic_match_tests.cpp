@@ -246,10 +246,10 @@ static void FindMatches(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatche
     }
 }
 
-static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatches* SMs)
+static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatches* SMs, int threads)
 {
     SMs->RealMatches = 0;
-
+    omp_set_num_threads(threads);
     int **dsq = new int*[SDs1->RealDescriptors];
     for (int er=0; er < SDs1->RealDescriptors; er++) dsq[er] = new int[SDs2->RealDescriptors];
 
@@ -1003,9 +1003,24 @@ int test_BasicMatching_All()
 
     /* STEP4: Compute on ARM-only with OMP */
     Start = GetMilliCount();
-    FindMatchesOMP(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm_OMP);
+    FindMatchesOMP(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm_OMP,2);
     Delta  = GetMilliSpan(Start);
-    cout<<"> armFindMatchesOMP ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+    cout<<"> armFindMatchesOMP-2 Threads ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+
+    Start = GetMilliCount();
+    FindMatchesOMP(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm_OMP,4);
+    Delta  = GetMilliSpan(Start);
+    cout<<"> armFindMatchesOMP-4 Threads ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+
+    Start = GetMilliCount();
+    FindMatchesOMP(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm_OMP,8);
+    Delta  = GetMilliSpan(Start);
+    cout<<"> armFindMatchesOMP-8 Threads ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+
+    Start = GetMilliCount();
+    FindMatchesOMP(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm_OMP,16);
+    Delta  = GetMilliSpan(Start);
+    cout<<"> armFindMatchesOMP-16 Threads ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
 
     /* STEP5: Compare ARM_OMP with  ARM-only  */
     if (PASS == CompareMatches(&SM_Arm,&SM_Arm_OMP)) cout << "OK ! Arm == Arm-OMP"<<endl<<endl;
