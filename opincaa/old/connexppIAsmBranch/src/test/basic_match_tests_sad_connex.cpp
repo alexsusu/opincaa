@@ -241,7 +241,7 @@ static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMat
     int **dsq = new int*[SDs1->RealDescriptors];
     for (int er=0; er < SDs1->RealDescriptors; er++) dsq[er] = new int[SDs2->RealDescriptors];
 
-    #pragma omp parallel num_threads(2)
+    omp_set_num_threads(threads);
         #pragma omp parallel for
         for (int DescriptorIndex1 =0; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1++)
         {
@@ -770,20 +770,6 @@ int test_BasicMatching_All_SAD(char* fn1, char* fn2, FILE* logfile)
 
     float BruteMatches = SiftDescriptors1.RealDescriptors * SiftDescriptors2.RealDescriptors;
 
-    //LoadDescriptors((char*)"data/adam1_big.png.key", &SiftDescriptors1, 0);
-    //LoadDescriptors((char*)"data/adam2_big.png.key", &SiftDescriptors2, 0);
-
-    //LoadDescriptors((char*)"data/img1.png.key", &SiftDescriptors1, 0);
-    //LoadDescriptors((char*)"data/img3.png.key", &SiftDescriptors2, 0);
-
-    //LoadDescriptors((char*)"data/adam1_big_siftpp.key", &SiftDescriptors1, 0);
-    //LoadDescriptors((char*)"data/adam2_big_siftpp.key", &SiftDescriptors2, 0);
-
-    //LoadDescriptors((char*)"data/img3_siftpp.key", &SiftDescriptors1, 0);
-    //LoadDescriptors((char*)"data/img3_siftpp.key", &SiftDescriptors2, 0);
-    //LoadDescriptors((char*)"data/img1_siftpp.key", &SiftDescriptors1, 0);
-    //LoadDescriptors((char*)"data/img3_siftpp.key", &SiftDescriptors2, 0);
-
     /*
     Start = GetMilliCount();
     if (PASS != kernel_acc::storeKernel("database/BasicMatchingA.ker", BASIC_MATCHING_BNR))
@@ -805,7 +791,8 @@ int test_BasicMatching_All_SAD(char* fn1, char* fn2, FILE* logfile)
     */
 
     cout<<endl<<"Starting SAD16: "<<endl;
-    /* STEP1: Compute on ConnexS no jump */
+    // STEP1: Compute on ConnexS no jump
+    /*
     Start = GetMilliCount();
     connexFindMatchesPass1(MODE_CREATE_BATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);
     connexFindMatchesPass2(MODE_CREATE_BATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan, &SM_ConnexArm);
@@ -817,6 +804,7 @@ int test_BasicMatching_All_SAD(char* fn1, char* fn2, FILE* logfile)
     Delta  = GetMilliSpan(Start);
     cout<<"> ConnexS-unrolled connexFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
     //PrintMatches(&SM_ConnexArm);
+    */
 
     /* STEP2: Compute on ARM-only  */
     Start = GetMilliCount();

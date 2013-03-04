@@ -139,7 +139,6 @@ static void SAD_FindMatches16_OMP_SSE(SiftDescriptors16 *SDs1, SiftDescriptors16
     int **dsq = new int*[SDs1->RealDescriptors];
     for (int er=0; er < SDs1->RealDescriptors; er++) dsq[er] = new int[SDs2->RealDescriptors];
 
-    #pragma omp parallel num_threads(2)
     #pragma omp parallel for
     for (int DescriptorIndex1 =0; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1++)
     {
@@ -155,6 +154,7 @@ static void SAD_FindMatches16_OMP_SSE(SiftDescriptors16 *SDs1, SiftDescriptors16
         #pragma omp parallel for
         for (int DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
 	    {
+
 	        UINT32 dsqs = 0;
 	        UINT16 multsU16[8*16] __attribute__ ((aligned(16)));
             UINT16 *src2 = (UINT16*)__builtin_assume_aligned((SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]), 16);
@@ -172,6 +172,7 @@ static void SAD_FindMatches16_OMP_SSE(SiftDescriptors16 *SDs1, SiftDescriptors16
               dsqs += multsU16[i];
 
             dsq[DescriptorIndex1][DescriptorIndex2] = dsqs;
+            //dsq[DescriptorIndex1][DescriptorIndex2] = SAD16_Distance()
 	    }
     }
 

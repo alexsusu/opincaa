@@ -246,31 +246,30 @@ static void FindMatches(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatche
     }
 }
 
+static inline unsigned int SSD_Distance(unsigned short int *set1, unsigned short int *set2)
+{
+    unsigned int ssd = 0;
+    for (int i=0; i < 128; i++)
+        ssd += (*set1++) * (*set2++);
+    return ssd;
+}
+
 static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatches* SMs, int threads)
 {
-
     SMs->RealMatches = 0;
-    //omp_set_num_threads(threads);
+
     int **dsq = new int*[SDs1->RealDescriptors];
 
+    omp_set_num_threads(threads);
     for (int er=0; er < SDs1->RealDescriptors; er++) dsq[er] = new int[SDs2->RealDescriptors];
 
-    //#pragma omp parallel num_threads(2)
         #pragma omp parallel for
         for (int DescriptorIndex1 =0; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1++)
         {
-                #pragma omp parallel for
                 for (int DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
                 {
-                    UINT32 dsqs = 0;
-                    int FeatIndex;
-                    for (FeatIndex = 0; FeatIndex < FEATURES_PER_DESCRIPTOR; FeatIndex++)
-                    {
-                        INT32 sq = (SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1][FeatIndex] -
-                                    SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2][FeatIndex]);
-                        dsqs += sq*sq;
-                    }
-                    dsq[DescriptorIndex1][DescriptorIndex2] = dsqs;
+                    dsq[DescriptorIndex1][DescriptorIndex2] = SSD_Distance(SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1],
+                                                                           SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]);
                 }
         }
 
@@ -279,6 +278,7 @@ static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMat
             int	minIndex = -1;
             unsigned int distsq1, distsq2;
             distsq1 = distsq2 = (unsigned int)(-1);
+
             for (int DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
             {
                 if (dsq[DescriptorIndex1][DescriptorIndex2] < distsq1)
@@ -294,8 +294,10 @@ static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMat
                     //nexttomin = j;
                 }
             }
+
             if (distsq1 < (FACTOR1 * distsq2) >> FACTOR2)
                 SMs->DescIx2ndImgMin[SMs->RealMatches++] = minIndex;
+
         }
 
         for (int er=0; er < SDs1->RealDescriptors; er++) delete(dsq[er]);
@@ -981,7 +983,9 @@ int test_BasicMatching_All_SSD(char* fn1, char* fn2, FILE* logfile)
     */
 
     cout<<endl<<"Starting SSD16: "<<endl;
-    /* STEP1: Compute on ConnexS no jump */
+
+    // STEP1: Compute on ConnexS no jump
+    /*
     Start = GetMilliCount();
     connexFindMatchesPass1(MODE_CREATE_BATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);
     connexFindMatchesPass2(MODE_CREATE_BATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan, &SM_ConnexArm);
@@ -994,8 +998,9 @@ int test_BasicMatching_All_SSD(char* fn1, char* fn2, FILE* logfile)
     cout<<"> ConnexS-unrolled connexFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
     fprintf(logfile, "ConnexS-unrolled_connexFindMatches_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
     //PrintMatches(&SM_ConnexArm);
+    */
 
-    /* STEP2: Compute on cpu-only  */
+    // STEP2: Compute on cpu-only
     Start = GetMilliCount();
     FindMatches(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm);
     Delta  = GetMilliSpan(Start);

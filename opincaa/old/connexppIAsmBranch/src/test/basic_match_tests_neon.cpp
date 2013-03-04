@@ -131,7 +131,7 @@ int MainNeonSSE()
 
 /*
 
-                #define LOAD_512_bits(x) vld4q_u16(x)
+            #define LOAD_512_bits(x) vld4q_u16(x)
 
             //uint16x8_t  vld1q_u16(__transfersize(8) uint16_t const * ptr); // VLD1.16 {d0, d1}, [r0]
             #define LOAD_128_bits(x) vld1q_u16(x)
