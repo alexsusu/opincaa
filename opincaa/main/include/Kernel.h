@@ -91,11 +91,13 @@ using namespace std;
 #define MULT_LOW()                  Operand::multlo()
 #define MULT_HIGH()                 Operand::multhi()
 
-#define REPEAT(x)					__kernel->append(Instruction(_SETLC, x, 0, 0));	\
+#define REPEAT(x)			__kernel->append(Instruction(_SETLC, x, 0, 0));	\
+                            /* Hw workaround */                             \
 							__kernel->append(Instruction(_SETLC, x, 0, 0)); \
 							__kernel->resetLoopDestination();
-									
-#define END_REPEAT					__kernel->appendLoopInstruction(); \
+
+#define REPEAT_X_TIMES(x)   REPEAT(x)
+#define END_REPEAT			__kernel->appendLoopInstruction(); \
 							__kernel->append(Instruction(_NOP, 0, 0, 0));
 
 #define END_KERNEL(x)               ConnexMachine::addKernel(__kernel);}
@@ -168,13 +170,13 @@ class Kernel
 		 * where the jump needs to be made
 		 */
 		void resetLoopDestination();
-		
+
 		/*
 		 * This will append the jump instruction to the kernel by
 		 * using the loop destination
 		 */
 		void appendLoopInstruction();
-		
+
     private:
 
         /*
@@ -186,7 +188,7 @@ class Kernel
          * The vector containing the instructions
          */
         vector<unsigned> instructions;
-		
+
 		/*
 		 *	The counter used for the loop
 		 * NOTE: This will become a queue when we support nested loops
