@@ -10,6 +10,7 @@
 #ifdef _WIN32
     #define O_WRONLY (1 << 0)
     #define O_RDONLY (1 << 1)
+    #define O_RDWR   (O_RDONLY | O_WRONLY)
 
     int pmake(const char *path, int permissions);
 
@@ -18,6 +19,8 @@
 
     int pwrite(int Descriptor, void *Buffsrc, unsigned int BytesToWrite);
     int pread(int Descriptor, void* Buffdest, unsigned int BytesToRead);
+
+    int pAvailable(int Descriptor);
 
 #else
     #include <fcntl.h>

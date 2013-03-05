@@ -39,7 +39,7 @@ ConnexVector ConnexVector::operator op(ConnexVector anotherVector)	\
         else eqFlag.cells[i] = 0;
 
 #define BINARY_OP_FLAGS_LT(op)                                      \
-		if (cells[i] < anotherVector.cells[i])                      \
+		if ((short)cells[i] < (short)anotherVector.cells[i])                      \
             ltFlag.cells[i] = 1;                                    \
         else ltFlag.cells[i] = 0;
 

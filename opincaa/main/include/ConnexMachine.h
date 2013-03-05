@@ -150,6 +150,7 @@ class ConnexMachine
          * The mutex used to sync the IO operations.
          */
 		mutex threadMutex;
+		mutex threadMutexIR;
 
 		/*
          * The mutex used to sync the kernel map operations

@@ -168,15 +168,15 @@ ConnexMachine::~ConnexMachine()
  */
 void ConnexMachine::executeKernel(string kernelName)
 {
-	threadMutex.lock();
+	threadMutexIR.lock();
     if(kernels.count(kernelName) == 0)
     {
-		threadMutex.unlock();
+		threadMutexIR.unlock();
         throw string("Kernel ") + kernelName + string(" not found in ConnexMachine::executeKernel!");
     }
     Kernel *kernel = kernels.find(kernelName)->second;
     kernel->writeTo(distributionFifo);
-	threadMutex.unlock();
+	threadMutexIR.unlock();
 }
 
 /*
@@ -268,14 +268,14 @@ void* ConnexMachine::readDataFromArray(void *buffer, unsigned vectorCount, unsig
  */
 int ConnexMachine::readReduction()
 {
-	threadMutex.lock();
+	threadMutexIR.lock();
     int result;
     if(pread(reductionFifo, &result, sizeof(int)) < 0)
     {
-		threadMutex.unlock();
+		threadMutexIR.unlock();
         throw string("Error reading from reduction FIFO");
     }
 
-    threadMutex.unlock();
+    threadMutexIR.unlock();
     return result;
 }

@@ -1,6 +1,7 @@
 #include <iostream>
 #include "ConnexMachine.h"
 #include "simple_tests.h"
+#include "icc_simple_tests.h"
 #include "simple_io_tests.h"
 
 using namespace std;
@@ -35,7 +36,7 @@ int RunDemo()
                 if (connex->readReduction() != CONNEX_MAX_REGS*(i << j))
                     cout<<"Demo failed with params "<<i<<" "<<j<<endl;
             }
-            
+
         delete connex;
     }
 
@@ -60,6 +61,8 @@ int RunAll(bool stress)
 
         result = test_Simple_All(connex, stress);
         result += test_Simple_IO_All(connex, stress);
+        //result += icc_test_Simple_All(connex, stress);
+
         delete connex;
     }
 
@@ -73,6 +76,6 @@ int RunAll(bool stress)
 }
 
 int main(){
-    RunAll(false);
+    RunAll(true);
 }
 

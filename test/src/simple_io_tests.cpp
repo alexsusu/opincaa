@@ -224,7 +224,7 @@ int test_Simple_IO_All(ConnexMachine *connex, bool stress)
                cout<< "Test "<< setw(8) << left << TestIoFunctionTable[i].TestName <<" FAILED ! params are "
                << TestIoFunctionTable[i].ds.Param1 << " and " << TestIoFunctionTable[i].ds.Param2 <<endl;
                testFails++;
-               return testFails;
+               //return testFails;
             }
             else
             {

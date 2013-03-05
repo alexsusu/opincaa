@@ -102,3 +102,103 @@
 	"timing.h"
 	<iomanip>
 
+1361267674 source:m:\xillinux\connexrepoarh\connex_sift2\software\connex\utils\src\timing.cpp
+	<sys/timeb.h>
+	<stdio.h>
+
+1361267674 source:m:\xillinux\connexrepoarh\connex_sift2\software\connex\utils\src\utils.cpp
+	"utils.h"
+	"timing.h"
+	<iostream>
+	<stdlib.h>
+	<sstream>
+	<string>
+
+1361267656 m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\include\util\utils.h
+	<iostream>
+
+1361267656 m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\include\util\timing.h
+
+1362249894 source:m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\src\basic_match_tests.cpp
+	<iostream>
+	"ConnexMachine.h"
+	"ConnexSimulator.h"
+	"utils.h"
+	"timing.h"
+	<iomanip>
+	<direct.h>
+	<unistd.h>
+
+1362270331 m:\xillinux\connexrepoarh\connex_sift2\software\connex\opincaa\main\include\connexmachine.h
+	"Operand.h"
+	"Kernel.h"
+	<string>
+	<map>
+	<mutex>
+
+1361267674 m:\xillinux\connexrepoarh\connex_sift2\software\connex\opincaa\main\include\operand.h
+	"Instruction.h"
+	"Kernel.h"
+
+1361267674 m:\xillinux\connexrepoarh\connex_sift2\software\connex\opincaa\main\include\instruction.h
+	<string>
+
+1362308785 m:\xillinux\connexrepoarh\connex_sift2\software\connex\opincaa\main\include\kernel.h
+	"Instruction.h"
+	"ConnexMachine.h"
+	<vector>
+	<string>
+
+1362307265 m:\xillinux\connexrepoarh\connex_sift2\software\connex\simulator\include\connexsimulator.h
+	"ConnexVector.h"
+	"Instruction.h"
+	"InstructionQueue.h"
+	"Architecture.h"
+	<string>
+	<thread>
+
+1361267651 m:\xillinux\connexrepoarh\connex_sift2\software\connex\simulator\include\connexvector.h
+	"Architecture.h"
+
+1361976566 m:\xillinux\connexrepoarh\connex_sift2\software\connex\arch\include\architecture.h
+
+1361267659 source:m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\src\icc_simple_tests.cpp
+	<iostream>
+	"ConnexMachine.h"
+	"ConnexSimulator.h"
+	"utils.h"
+	<iomanip>
+
+1362391676 source:m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\src\simple_io_tests.cpp
+	<iostream>
+	"ConnexMachine.h"
+	"utils.h"
+	<iomanip>
+
+1362351018 source:m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\src\simple_tests.cpp
+	<iostream>
+	"ConnexMachine.h"
+	"utils.h"
+	<stdlib.h>
+	<iomanip>
+
+1362356268 source:m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\src\test.cpp
+	<iostream>
+	"ConnexMachine.h"
+	"simple_tests.h"
+	"icc_simple_tests.h"
+	"simple_io_tests.h"
+
+1361267651 m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\include\simple_tests.h
+	"utils.h"
+
+1361267651 m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\include\simple_io_tests.h
+
+1361976566 m:\xillinux\connexrepoarh\connex_sift2\software\connex\arch\include\instruction.h
+	<string>
+
+1361976566 m:\xillinux\connexrepoarh\connex_sift2\software\connex\simulator\include\instructionqueue.h
+	"Instruction.h"
+
+1361267651 m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\include\icc_simple_tests.h
+

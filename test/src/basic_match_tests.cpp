@@ -94,7 +94,7 @@ static void PrintMatches(SiftMatches *SMs)
     for(MatchesIndex =0; MatchesIndex < SMs->RealMatches; MatchesIndex++)
     //for(MatchesIndex =0; MatchesIndex < 10; MatchesIndex++)
     {
-        printf("Matches[%d].DescriptorIndexInSecondImage = %d \n", SMs->DescIx2ndImgMin[MatchesIndex]);
+        printf("Matches[%d].DescriptorIndexInSecondImage = %d \n", MatchesIndex, SMs->DescIx2ndImgMin[MatchesIndex]);
         /*
         printf("Matches[%d].X1,Y1,X2,Y2,Sc= %f %f %f %f %d\n",
                MatchesIndex, SMs->Matches[MatchesIndex].X1, SMs->Matches[MatchesIndex].Y1,

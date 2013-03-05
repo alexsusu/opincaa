@@ -93,7 +93,7 @@
         pipes[pipe_index].accessType = flags;
 
         ConnectNamedPipe(pipes[pipe_index].handle, NULL);
-        printf("%s is linked to index %d handle %lu \n", pipeName, pipe_index, pipes[pipe_index].handle);
+        //printf("%s is linked to index %d handle %lu \n", pipeName, pipe_index, (long long int)(pipes[pipe_index].handle));
         pipe_index++;
         return pipe_index-1;
     }
@@ -152,6 +152,19 @@
 		}
 		//printf("reading %d from handle %d\n",dwBytesRead, pipes[Descriptor].handle);
 		return dwBytesRead;
+    }
+
+    int pAvailable(int Descriptor)
+    {
+        DWORD bytesAvail = 0;
+        BOOL isOK = PeekNamedPipe(pipes[Descriptor].handle, NULL, 0, NULL, &bytesAvail, NULL);
+        if(!isOK)
+        {
+           // Check GetLastError() code
+           return -1;
+        }
+        else
+            return bytesAvail;
     }
 #endif
 

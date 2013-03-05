@@ -158,6 +158,8 @@ unsigned Instruction::assemble()
             instruction = opcode << OPCODE_6BITS_POS;
             instruction |= value << IMMEDIATE_VALUE_POS;
             break;
+        default:
+            throw string("Illegal instruction-type in Instruction::assemble");
     }
     
     instruction |= left << LEFT_POS;

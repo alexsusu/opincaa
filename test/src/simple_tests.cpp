@@ -11,6 +11,7 @@
 #include <iostream>
 #include "ConnexMachine.h"
 #include "utils.h"
+#include <stdlib.h>
 using namespace std;
 #include <iomanip>
 
@@ -91,6 +92,55 @@ static void InitKernel_Read(int BatchNumber,INT32 Param1, INT32 Param2)
                         )
     _END_KERNEL(BatchNumber);
 }
+
+static void InitKernel_Jump(int BatchNumber,INT32 Param1, INT32 Param2)
+{
+    _BEGIN_KERNEL(BatchNumber);
+        EXECUTE_IN_ALL(
+                        R1 = 1;
+                        R0 = Param1;
+                        //SET_JMP_LABEL(99);
+                        REPEAT_X_TIMES(Param2+1);
+                            R0 = R0 - R1;
+                        END_REPEAT;
+                        //JMP_TIMES_TO_LABEL(Param2,99);// times, label
+                        REDUCE(R0);
+                       )
+
+
+    _END_KERNEL(BatchNumber);
+}
+
+static void InitKernel_Jump2(int BatchNumber,INT32 Param1, INT32 Param2)
+{
+    _BEGIN_KERNEL(BatchNumber);
+        EXECUTE_IN_ALL(
+                        R1 = 1;
+                        R0 = Param1;
+                        REPEAT_X_TIMES(Param2);
+                            R0 = R0 - R1;
+                        END_REPEAT;
+                        REDUCE(R0);
+                       )
+    _END_KERNEL(BatchNumber);
+}
+
+static void InitKernel_Jump3(int BatchNumber,INT32 Param1, INT32 Param2)
+{
+    _BEGIN_KERNEL(BatchNumber);
+        EXECUTE_IN_ALL(
+                        R0 = Param1;
+                        for (int x=0; x< Param2; x++)
+                        {
+                            REPEAT_X_TIMES(Param2)
+                                REDUCE(R0);
+                            END_REPEAT;
+                        }
+                       )
+    NOP;//hardware bug workaround
+    _END_KERNEL(BatchNumber);
+}
+
 
 static void InitKernel_Add(int BatchNumber,INT32 Param1, INT32 Param2);
 static void InitKernel_Vload(int BatchNumber,INT32 Param1, INT32 Param2)
@@ -703,6 +753,22 @@ static void InitKernel_Wherelt(int BatchNumber, INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
+static void InitKernel_Wherelt2(int BatchNumber, INT32 Param1, INT32 Param2)
+{
+    _BEGIN_KERNEL(BatchNumber);
+        EXECUTE_IN_ALL(
+                        R0 = INDEX;
+                        R1 = Param1;
+                        R2 = 0;
+                        R0 = R0 - R1;
+                        R3 = (R0 < R2);
+                        R4 = 0;
+                      )
+        EXECUTE_WHERE_LT( R4 = Param2;)
+        EXECUTE_IN_ALL( REDUCE(R4);)
+    _END_KERNEL(BatchNumber);
+}
+
 static void InitKernel_Wherecry(int BatchNumber, INT32 Param1, INT32 Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
@@ -732,6 +798,7 @@ enum SimpleBatchNumbers
     WHERE_CARRY_BNR ,
     WHERE_EQ_BNR    ,
     WHERE_LT_BNR    ,
+    WHERE_LT2_BNR   ,
     ENDWHERE_BNR    ,
     LDIX_BNR        ,
     READ_BNR        ,
@@ -796,6 +863,10 @@ enum SimpleBatchNumbers
 
     IO_WRITE_BNR    ,
     IO_READ_BNR     ,
+
+    IJMP_BNR        ,
+    IJMP2_BNR       ,
+    IJMP3_BNR       ,
 
     PRINT_LS_BNR = 98,
     CLEAR_LS_BNR = 99,
@@ -879,7 +950,11 @@ static TestFunction TestFunctionTable[] =
     {WHERE_EQ_BNR,"WHEREQ",InitKernel_Whereq,{27,50,50}},
 
     {WHERE_LT_BNR,"WHERELT",InitKernel_Wherelt,{27,50,27*50}},
+    {WHERE_LT2_BNR,"WHERELT2",InitKernel_Wherelt2,{27,50,27*50}},
     {WHERE_CARRY_BNR,"WHERECRY",InitKernel_Wherecry,{(0x10000UL-10),50,118*50}},
+
+    //{IJMP_BNR,"IJMP",InitKernel_Jump,{(10), 2, (10-1 - 2)*NUMBER_OF_MACHINES}},
+    //{IJMP2_BNR,"IJMP2",InitKernel_Jump2,{(10), 2, (10-2)*NUMBER_OF_MACHINES}},
 
 	{CELL_SHL_BNR,"CELLSHL",InitKernel_Cellshl,{2,5,5-2}},
     {CELL_SHR_BNR,"CELLSHR",InitKernel_Cellshr,{2,5,5+2}},
@@ -1082,6 +1157,7 @@ int test_ExtendedSimpleAll(ConnexMachine *connex)
 	return 0;
 }
 
+static int TestJmpMultiRed(ConnexMachine *connex, int RedValue, int SquareReds);
 int test_Simple_All(ConnexMachine *connex, bool stress)
 {
     UINT16 i = 0;
@@ -1132,6 +1208,71 @@ int test_Simple_All(ConnexMachine *connex, bool stress)
         cout<< "=="<< testFails << " SimpleTests FAILED ! " <<endl;
         cout<<"================================"<<endl<<endl;
 
+
+    if (TestJmpMultiRed(connex,2,1)==FAIL) testFails++;
+    //if (PASS != kernel_acc::storeKernel("database/TestJmpMultiRed_2_1.ker", IJMP3_BNR))
+      //  cout<<"Could not store kernel "<<endl;
+
+    if (TestJmpMultiRed(connex,2,3)==FAIL) testFails++;
+    //if (PASS != kernel_acc::storeKernel("database/TestJmpMultiRed_2_3.ker", IJMP3_BNR))
+      //  cout<<"Could not store kernel "<<endl;
+
+    if (TestJmpMultiRed(connex,2,13)==FAIL) testFails++;
+    //if (PASS != kernel_acc::storeKernel("database/TestJmpMultiRed_2_13.ker", IJMP3_BNR))
+      //  cout<<"Could not store kernel "<<endl;
+
+    if (TestJmpMultiRed(connex,2,133)==FAIL) testFails++;
+    //if (PASS != kernel_acc::storeKernel("database/TestJmpMultiRed_2_133.ker", IJMP3_BNR))
+      //  cout<<"Could not store kernel "<<endl;
+
+    if (TestJmpMultiRed(connex,2,1333)==FAIL) testFails++;
+    //if (PASS != kernel_acc::storeKernel("database/TestJmpMultiRed_2_1333.ker", IJMP3_BNR))
+      //  cout<<"Could not store kernel "<<endl;
+
     return testFails;
 }
 
+static int TestJmpMultiRed(ConnexMachine *connex, int RedValue, int SquareReds)
+{
+    InitKernel_Jump3(IJMP3_BNR, RedValue,SquareReds);
+    cout<<connex->disassembleKernel(TEST_PREFIX + to_string(IJMP3_BNR));
+    connex->executeKernel(TEST_PREFIX + to_string(IJMP3_BNR));
+
+    int ExpectedBytesOfReductions = SquareReds*SquareReds*BYTES_IN_DWORD;
+    static UINT_RED_REG_VAL *BasicMatchRedResults;
+    BasicMatchRedResults = (UINT_RED_REG_VAL*)malloc(8192*1024 * sizeof(UINT_RED_REG_VAL));
+    if (BasicMatchRedResults == NULL) {cout<<"Could not allocate memory for reductions "<<endl;return 0;};
+
+    int RealBytesOfReductions = 0;
+    for (RealBytesOfReductions=0 ; RealBytesOfReductions < ExpectedBytesOfReductions; RealBytesOfReductions+=4)
+    {
+        *BasicMatchRedResults++ = connex->readReduction();
+    }
+
+    int i;
+    for (i=0; i < ExpectedBytesOfReductions / BYTES_IN_DWORD; i++)
+    {
+        if (BasicMatchRedResults[i] != RedValue* NUMBER_OF_MACHINES)
+        {
+            cout <<"  Unexpected red result "<<BasicMatchRedResults[i]<<endl;
+            break;
+        }
+    }
+    free(BasicMatchRedResults);
+    if ((i == ExpectedBytesOfReductions/BYTES_IN_DWORD) && (RealBytesOfReductions == ExpectedBytesOfReductions))
+        cout<<"Test JMP-MultiRed PASSED "<<endl;
+    else
+    {
+        cout<<"Test JMP-MultiRed FAILED with args "<<RedValue<<" "<<SquareReds<<endl;
+        if (RealBytesOfReductions != ExpectedBytesOfReductions)
+            cout<<"Test JMP-MultiRed FAILED with different number of reductions "
+            <<RealBytesOfReductions/BYTES_IN_DWORD<<" instead of "
+            <<ExpectedBytesOfReductions/BYTES_IN_DWORD<<endl;
+        else
+            cout<<"Test JMP-MultiRed FAILED with different value of reduction"<<endl;
+
+        cout<<connex->disassembleKernel(TEST_PREFIX + to_string(IJMP3_BNR));
+        cout << "Press ENTER to continue...";
+        cin.ignore( numeric_limits <streamsize> ::max(), '\n' );
+    }
+}
