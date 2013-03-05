@@ -3,6 +3,7 @@
 #include "simple_tests.h"
 #include "icc_simple_tests.h"
 #include "simple_io_tests.h"
+#include "controller_tests.h"
 
 using namespace std;
 
@@ -24,7 +25,7 @@ int RunDemo()
         /* Pass the opened file descriptor as the distribution FIFO.
          * All kernels to be executed will be written to that file.
          */
-        ConnexMachine *connex = new ConnexMachine("distributionFIFO", "reductionFIFO", "writeFIFO", "readFIFO");
+        ConnexMachine *connex = new ConnexMachine("/dev/xillybus_write_arm2array_32", "/dev/xillybus_read_array2arm_32", "/dev/xillybus_write_mem2array_32", "/dev/xillybus_read_array2mem_32");
         cout << "Success in opening the connex machine" << endl;
 
         for(int i=0;i<7;i++)
@@ -57,10 +58,11 @@ int RunAll(bool stress)
         /* Pass the opened file descriptor as the distribution FIFO.
          * All kernels to be executed will be written to that file.
          */
-        ConnexMachine *connex = new ConnexMachine("distributionFIFO", "reductionFIFO", "writeFIFO", "readFIFO");
+	ConnexMachine *connex = new ConnexMachine("/dev/xillybus_write_arm2array_32", "/dev/xillybus_read_array2arm_32", "/dev/xillybus_write_mem2array_32", "/dev/xillybus_read_array2mem_32");
 
         result = test_Simple_All(connex, stress);
-        result += test_Simple_IO_All(connex, stress);
+        //result += test_Simple_IO_All(connex, stress);
+	//jump_test(5,connex);
         //result += icc_test_Simple_All(connex, stress);
 
         delete connex;

@@ -15,7 +15,7 @@ LIB_DIR = libs
 CFLAGS = -fPIC -std=c++0x
 LDFLAGS_DEBUG =  $(LDFLAGS)
 
-OBJ = $(BUILD_DIR)/test.o $(BUILD_DIR)/simple_tests.o $(BUILD_DIR)/simple_io_tests.o $(BUILD_DIR)/timing.o $(BUILD_DIR)/utils.o
+OBJ = $(BUILD_DIR)/test.o $(BUILD_DIR)/simple_tests.o $(BUILD_DIR)/simple_io_tests.o $(BUILD_DIR)/controller_tests.o $(BUILD_DIR)/timing.o $(BUILD_DIR)/utils.o
 
 all: make_paths build
 
@@ -30,6 +30,9 @@ $(BUILD_DIR)/test.o: $(SRC_DIR)/test.cpp
 
 $(BUILD_DIR)/simple_tests.o: $(SRC_DIR)/simple_tests.cpp
 	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../opincaa/main/include -I../utils/include -I../arch/include -c $(SRC_DIR)/simple_tests.cpp -o $(BUILD_DIR)/simple_tests.o
+
+$(BUILD_DIR)/controller_tests.o: $(SRC_DIR)/controller_tests.cpp
+	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../opincaa/main/include -I../utils/include -I../arch/include -c $(SRC_DIR)/controller_tests.cpp -o $(BUILD_DIR)/controller_tests.o
 	
 $(BUILD_DIR)/simple_io_tests.o: $(SRC_DIR)/simple_io_tests.cpp
 	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../opincaa/main/include -I../utils/include -I../arch/include -c $(SRC_DIR)/simple_io_tests.cpp -o $(BUILD_DIR)/simple_io_tests.o
