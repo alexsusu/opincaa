@@ -143,13 +143,13 @@
 1361267674 m:\xillinux\connexrepoarh\connex_sift2\software\connex\opincaa\main\include\instruction.h
 	<string>
 
-1362308785 m:\xillinux\connexrepoarh\connex_sift2\software\connex\opincaa\main\include\kernel.h
+1362499573 m:\xillinux\connexrepoarh\connex_sift2\software\connex\opincaa\main\include\kernel.h
 	"Instruction.h"
 	"ConnexMachine.h"
 	<vector>
 	<string>
 
-1362307265 m:\xillinux\connexrepoarh\connex_sift2\software\connex\simulator\include\connexsimulator.h
+1362498551 m:\xillinux\connexrepoarh\connex_sift2\software\connex\simulator\include\connexsimulator.h
 	"ConnexVector.h"
 	"Instruction.h"
 	"InstructionQueue.h"
@@ -175,19 +175,20 @@
 	"utils.h"
 	<iomanip>
 
-1362351018 source:m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\src\simple_tests.cpp
+1362498685 source:m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\src\simple_tests.cpp
 	<iostream>
 	"ConnexMachine.h"
 	"utils.h"
 	<stdlib.h>
 	<iomanip>
 
-1362356268 source:m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\src\test.cpp
+1362500514 source:m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\src\test.cpp
 	<iostream>
 	"ConnexMachine.h"
 	"simple_tests.h"
 	"icc_simple_tests.h"
 	"simple_io_tests.h"
+	"controller_tests.h"
 
 1361267651 m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\include\simple_tests.h
 	"utils.h"
@@ -201,4 +202,11 @@
 	"Instruction.h"
 
 1361267651 m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\include\icc_simple_tests.h
+
+1362501094 source:m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\src\controller_tests.cpp
+	"controller_tests.h"
+	"ConnexMachine.h"
+
+1362501094 m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\include\controller_tests.h
+	"ConnexMachine.h"
 

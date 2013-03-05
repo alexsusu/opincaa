@@ -41,10 +41,10 @@ ConnexSimulator::ConnexSimulator(string distributionDescriptorPath,
 	readDescriptor = openPipe(readDescriptorPath, O_RDWR);
 
 	instructionQueue = new InstructionQueue(INSTRUCTION_QUEUE_LENGTH);
-	
+
 	codeInLoop = false;
 	repeatCounter = 0;
-	
+
 	initiateThreads();
 }
 
@@ -127,7 +127,9 @@ void ConnexSimulator::coreThreadHandler()
 	{
 		if(codeInLoop)
 		{
-			executeInstruction(*(instructionQueue->read()));
+		    Instruction *compiledInstruction = (instructionQueue->read());
+			executeInstruction(*compiledInstruction);
+			cout<<" Loop running "<< compiledInstruction.toString()<<endl;
 		}
 		else
 		{
@@ -135,6 +137,7 @@ void ConnexSimulator::coreThreadHandler()
 			Instruction *compiledInstruction = new Instruction(instruction);
 			instructionQueue->push(compiledInstruction);
 			executeInstruction(*compiledInstruction);
+			cout<<" Running "<< compiledInstruction.toString()<<endl;
 		}
 	}
 }
@@ -301,7 +304,7 @@ void ConnexSimulator::executeInstruction(Instruction instruction)
 				codeInLoop = true;
 				instructionQueue->displaceReadPointer(instruction.getValue());
 			}
-			return;	
+			return;
         default: throw string("Invalid instruction opcode!");
     }
 }

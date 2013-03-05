@@ -60,9 +60,9 @@ int RunAll(bool stress)
          */
 	ConnexMachine *connex = new ConnexMachine("/dev/xillybus_write_arm2array_32", "/dev/xillybus_read_array2arm_32", "/dev/xillybus_write_mem2array_32", "/dev/xillybus_read_array2mem_32");
 
-        result = test_Simple_All(connex, stress);
+        //result = test_Simple_All(connex, stress);
         //result += test_Simple_IO_All(connex, stress);
-	//jump_test(5,connex);
+        jump_test(5,connex);
         //result += icc_test_Simple_All(connex, stress);
 
         delete connex;

@@ -1,1 +1,56 @@
 # depslib dependency file v1.0
+1362498354 source:m:\xillinux\connexrepoarh\connex_sift2\software\connex\arch\src\instruction.cpp
+	"Instruction.h"
+	<string>
+	<stdio.h>
+	<sstream>
+
+1361976566 m:\xillinux\connexrepoarh\connex_sift2\software\connex\arch\include\instruction.h
+	<string>
+
+1362498751 source:m:\xillinux\connexrepoarh\connex_sift2\software\connex\utils\src\namedpipes.cpp
+	"NamedPipes.h"
+	<windows.h>
+	<stdio.h>
+
+1362350301 m:\xillinux\connexrepoarh\connex_sift2\software\connex\utils\include\namedpipes.h
+	<fcntl.h>
+	<unistd.h>
+	<sys/stat.h>
+
+1362498595 source:m:\xillinux\connexrepoarh\connex_sift2\software\connex\simulator\src\connexsimulator.cpp
+	<iostream>
+	<thread>
+	"ConnexSimulator.h"
+	"NamedPipes.h"
+
+1362498551 m:\xillinux\connexrepoarh\connex_sift2\software\connex\simulator\include\connexsimulator.h
+	"ConnexVector.h"
+	"Instruction.h"
+	"InstructionQueue.h"
+	"Architecture.h"
+	<string>
+	<thread>
+
+1361267651 m:\xillinux\connexrepoarh\connex_sift2\software\connex\simulator\include\connexvector.h
+	"Architecture.h"
+
+1361976566 m:\xillinux\connexrepoarh\connex_sift2\software\connex\arch\include\architecture.h
+
+1361976566 m:\xillinux\connexrepoarh\connex_sift2\software\connex\simulator\include\instructionqueue.h
+	"Instruction.h"
+
+1362306645 source:m:\xillinux\connexrepoarh\connex_sift2\software\connex\simulator\src\connexvector.cpp
+	"ConnexVector.h"
+	<string.h>
+
+1361976566 source:m:\xillinux\connexrepoarh\connex_sift2\software\connex\simulator\src\instructionqueue.cpp
+	"InstructionQueue.h"
+	<string>
+
+1362498611 source:m:\xillinux\connexrepoarh\connex_sift2\software\connex\simulator\src\main.cpp
+	"ConnexSimulator.h"
+	<string>
+	<iostream>
+	<system_error>
+
