@@ -27,8 +27,9 @@ AlingedSiftDescriptorPtrs malloc_alligned(int BytesToAllocate, int LogAlignament
     AlingedSiftDescriptorPtrs obj;
     obj.NonalignedValue = malloc(BytesToAllocate + (1 << LogAlignament) - 1);
     obj.AlignedValue = (void*) (
-                                ((UINT64)obj.NonalignedValue) & 0xFFFFFFFF & ~((1 << LogAlignament)-1) );
-    return obj;
+                                (((UINT64)obj.NonalignedValue) + (1 << LogAlignament)-1) & ~((1 << LogAlignament)-1));
+    cout<<obj.NonalignedValue<<" " <<obj.AlignedValue<<endl;
+	return obj;
 }
 
 void free_alligned(AlingedSiftDescriptorPtrs obj)
