@@ -5,4 +5,5 @@
  *
  */
 
-int test_BasicMatching_All(ConnexMachine *connex, bool RunFully);
+int test_BasicMatching_All_SSD(ConnexMachine *connex, char* fn1, char *fn2, FILE* logfile);
+

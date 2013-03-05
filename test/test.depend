@@ -119,15 +119,16 @@
 
 1361267656 m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\include\util\timing.h
 
-1362249894 source:m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\src\basic_match_tests.cpp
-	<iostream>
+1362506996 source:m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\src\basic_match_tests.cpp
 	"ConnexMachine.h"
 	"ConnexSimulator.h"
 	"utils.h"
 	"timing.h"
 	<iomanip>
-	<direct.h>
-	<unistd.h>
+	<thread>
+	<omp.h>
+	<iostream>
+	<stdlib.h>
 
 1362270331 m:\xillinux\connexrepoarh\connex_sift2\software\connex\opincaa\main\include\connexmachine.h
 	"Operand.h"
@@ -143,13 +144,13 @@
 1361267674 m:\xillinux\connexrepoarh\connex_sift2\software\connex\opincaa\main\include\instruction.h
 	<string>
 
-1362499573 m:\xillinux\connexrepoarh\connex_sift2\software\connex\opincaa\main\include\kernel.h
+1362503404 m:\xillinux\connexrepoarh\connex_sift2\software\connex\opincaa\main\include\kernel.h
 	"Instruction.h"
 	"ConnexMachine.h"
 	<vector>
 	<string>
 
-1362498551 m:\xillinux\connexrepoarh\connex_sift2\software\connex\simulator\include\connexsimulator.h
+1362503535 m:\xillinux\connexrepoarh\connex_sift2\software\connex\simulator\include\connexsimulator.h
 	"ConnexVector.h"
 	"Instruction.h"
 	"InstructionQueue.h"
@@ -157,7 +158,7 @@
 	<string>
 	<thread>
 
-1361267651 m:\xillinux\connexrepoarh\connex_sift2\software\connex\simulator\include\connexvector.h
+1362503544 m:\xillinux\connexrepoarh\connex_sift2\software\connex\simulator\include\connexvector.h
 	"Architecture.h"
 
 1361976566 m:\xillinux\connexrepoarh\connex_sift2\software\connex\arch\include\architecture.h
@@ -203,7 +204,7 @@
 
 1361267651 m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\include\icc_simple_tests.h
 
-1362501094 source:m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\src\controller_tests.cpp
+1362503876 source:m:\xillinux\connexrepoarh\connex_sift2\software\connex\test\src\controller_tests.cpp
 	"controller_tests.h"
 	"ConnexMachine.h"
 
