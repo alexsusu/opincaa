@@ -91,9 +91,9 @@ using namespace std;
 #define MULT_LOW()                  Operand::multlo()
 #define MULT_HIGH()                 Operand::multhi()
 
-#define REPEAT(x)			__kernel->append(Instruction(_SETLC, x, 0, 0));	\
+#define REPEAT(x)			__kernel->append(Instruction(_SETLC, x-1, 0, 0));	\
                             /* Hw workaround */                             \
-							__kernel->append(Instruction(_SETLC, x, 0, 0)); \
+							__kernel->append(Instruction(_SETLC, x-1, 0, 0)); \
 							__kernel->resetLoopDestination();
 
 #define REPEAT_X_TIMES(x)   REPEAT(x)

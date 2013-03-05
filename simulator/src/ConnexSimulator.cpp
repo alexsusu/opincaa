@@ -129,7 +129,8 @@ void ConnexSimulator::coreThreadHandler()
 		{
 		    Instruction *compiledInstruction = (instructionQueue->read());
 			executeInstruction(*compiledInstruction);
-			cout<<" Loop running "<< compiledInstruction->toString()<<endl;
+			//cout<<" Loop running "<< compiledInstruction->toString()<<endl;
+			//cout <<" R0 ="<<this->registerFile->cells[0]<<endl;
 		}
 		else
 		{
@@ -137,7 +138,8 @@ void ConnexSimulator::coreThreadHandler()
 			Instruction *compiledInstruction = new Instruction(instruction);
 			instructionQueue->push(compiledInstruction);
 			executeInstruction(*compiledInstruction);
-			cout<<" Running "<< compiledInstruction->toString()<<endl;
+			//cout<<" Running "<< compiledInstruction->toString()<<endl;
+			//cout <<" R0 ="<<this->registerFile->cells[0]<<endl;
 		}
 	}
 }

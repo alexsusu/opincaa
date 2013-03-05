@@ -4,8 +4,8 @@
 void jump_kernel_init(int n){
     BEGIN_KERNEL("jump_test")
         EXECUTE_IN_ALL(
-            R0 = 1;
-            R1 = 0;
+            R0 = 0;
+            R1 = 1;
             REPEAT(n)
                 R0 = R0 + R1;
                 REDUCE(R0);

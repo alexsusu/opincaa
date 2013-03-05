@@ -58,7 +58,18 @@ int RunAll(bool stress)
         /* Pass the opened file descriptor as the distribution FIFO.
          * All kernels to be executed will be written to that file.
          */
-	ConnexMachine *connex = new ConnexMachine("/dev/xillybus_write_arm2array_32", "/dev/xillybus_read_array2arm_32", "/dev/xillybus_write_mem2array_32", "/dev/xillybus_read_array2mem_32");
+        
+	ConnexMachine *connex = new ConnexMachine("/dev/xillybus_write_arm2array_32",
+                                              "/dev/xillybus_read_array2arm_32",
+                                              "/dev/xillybus_write_mem2array_32",
+                                              "/dev/xillybus_read_array2mem_32");
+        /*
+
+    ConnexMachine *connex = new ConnexMachine("distributionFIFO",
+                                                "reductionFIFO",
+                                                "writeFIFO",
+                                                "readFIFO");
+		*/
 
         //result = test_Simple_All(connex, stress);
         //result += test_Simple_IO_All(connex, stress);
