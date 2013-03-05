@@ -329,6 +329,8 @@ void SSD16_Benchmark(char* fileName1, char* fileName2, FILE* logfile)
 
     int Start, Delta;
     cout<<"Starting SSD 16-bit... " <<flush<<endl;
+    fprintf(logfile, "\nStarting SSD 16-bit...\n");
+
     cout<<"---------------------- " <<flush<<endl;
 
     LoadDescriptors16(fileName1, (SiftDescriptors16*)(SiftDescriptors16_1.AlignedValue), 0);
@@ -342,7 +344,7 @@ void SSD16_Benchmark(char* fileName1, char* fileName2, FILE* logfile)
     SSD_FindMatches16((SiftDescriptors16*)(SiftDescriptors16_1.AlignedValue), (SiftDescriptors16*)(SiftDescriptors16_2.AlignedValue), SM_Cpu);
     Delta  = GetMilliSpan(Start);
     cout<<"> CPU FindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
-    //fprintf(logfile, "CPU_FindMatches_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
+    fprintf(logfile, "CPU_FindMatches_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
 
     Start = GetMilliCount();
     SSD_FindMatches16_SSE_NEON((SiftDescriptors16*)(SiftDescriptors16_1.AlignedValue),

@@ -935,6 +935,7 @@ int test_BasicMatching_All_SSD(char* fn1, char* fn2, FILE* logfile)
     */
 
     cout<<endl<<"Starting SSD16: "<<endl;
+    fprintf(logfile, "\nStarting SSD16\n");
 
     // STEP1: Compute on ConnexS no jump
     #ifdef __ARM_NEON__ //run only on zedboard
@@ -956,6 +957,7 @@ int test_BasicMatching_All_SSD(char* fn1, char* fn2, FILE* logfile)
     connexJmpFindMatchesPass1(MODE_CREATE_BATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2);
     connexJmpFindMatchesPass2(MODE_CREATE_BATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan2, &SM_ConnexArm2);
     cout<<"  ConnexS-JMP Batches were created in "<< GetMilliSpan(Start)<< " ms"<<flush<<endl;
+    fprintf(logfile, "ConnexS-JMP_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
 
     /*
     if (PASS != kernel_acc::storeKernel("database/connexJmpFindMatchesPass1_b1.ker", JMP_BASIC_MATCHING_BNR))
@@ -992,6 +994,7 @@ int test_BasicMatching_All_SSD(char* fn1, char* fn2, FILE* logfile)
     FindMatchesOMP(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm_OMP,0);
     Delta  = GetMilliSpan(Start);
     cout<<"> cpu-omp FindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+    fprintf(logfile, "cpu-omp_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
 
     /* STEP5: Compare ARM_OMP with  ARM-only  */
     if (PASS == CompareMatches(&SM_Arm,&SM_Arm_OMP)) cout << "OK ! cpu == cpu-OMP"<<endl<<endl;

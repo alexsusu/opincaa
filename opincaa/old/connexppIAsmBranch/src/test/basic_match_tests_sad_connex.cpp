@@ -802,6 +802,8 @@ int test_BasicMatching_All_SAD(char* fn1, char* fn2, FILE* logfile)
     */
 
     cout<<endl<<"Starting SAD16: "<<endl;
+    fprintf(logfile, "\nStarting SAD16:\n");
+
     #ifdef __ARM_NEON__ //run only on zedboard
     // STEP1: Compute on ConnexS no jump
     Start = GetMilliCount();
@@ -814,6 +816,8 @@ int test_BasicMatching_All_SAD(char* fn1, char* fn2, FILE* logfile)
     connexFindMatchesPass2(MODE_EXECUTE_FIND_MATCHES, BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan, &SM_ConnexArm);
     Delta  = GetMilliSpan(Start);
     cout<<"> ConnexS-unrolled connexFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+    fprintf(logfile, "ConnexS-unrolled_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
+
 
     // STEP2 Compute on Connex-S with JMP
     Start = GetMilliCount();
@@ -833,6 +837,7 @@ int test_BasicMatching_All_SAD(char* fn1, char* fn2, FILE* logfile)
     connexJmpFindMatchesPass2(MODE_EXECUTE_FIND_MATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1, &SiftDescriptors2, &SM_ConnexArmMan2, &SM_ConnexArm2);
     Delta  = GetMilliSpan(Start);
     cout<<"> ConnexS-JMP connexFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+    fprintf(logfile, "ConnexS-JMP_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
 
     /* STEP3: Compare Connex-S (noJMP) with JMP */
     if (PASS == CompareMatches(&SM_ConnexArm2,&SM_ConnexArm)) cout << "OK ! Arm == Arm-Connex"<<endl<<endl;
@@ -841,11 +846,12 @@ int test_BasicMatching_All_SAD(char* fn1, char* fn2, FILE* logfile)
     #endif
 
 
-    /* STEP4: Compute on ARM-only  */
+    /* STEP4: Compute on cpu-only  */
     Start = GetMilliCount();
     FindMatches(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm);
     Delta  = GetMilliSpan(Start);
-    cout<<"> armFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+    cout<<"> cpu-onlu FindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+    fprintf(logfile, "cpu-only_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
 
     #ifdef __ARM_NEON__ //run only on zedboard
     /* STEP5: Compare Connex-S (noJMP) with  ARM-only  */
@@ -858,6 +864,7 @@ int test_BasicMatching_All_SAD(char* fn1, char* fn2, FILE* logfile)
     FindMatchesOMP(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm_OMP,0);
     Delta  = GetMilliSpan(Start);
     cout<<"> cpu-omp FindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+    fprintf(logfile, "cpu-omp_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
 
     /* STEP7: Compare ARM_OMP with  ARM-only  */
     if (PASS == CompareMatches(&SM_Arm,&SM_Arm_OMP)) cout << "OK ! Arm == Arm-OMP"<<endl<<endl;
