@@ -7,8 +7,8 @@ void jump_kernel_init(int n){
             R0 = 0;
             R1 = 1;
             REPEAT(n)
-                R0 = R0 + R1;
-                REDUCE(R0);
+                //R0 = R0 + R1;
+                REDUCE(R1);
             END_REPEAT
             NOP;
         )

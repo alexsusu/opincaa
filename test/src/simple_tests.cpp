@@ -1235,7 +1235,7 @@ int test_Simple_All(ConnexMachine *connex, bool stress)
 static int TestJmpMultiRed(ConnexMachine *connex, int RedValue, int SquareReds)
 {
     InitKernel_Jump3(IJMP3_BNR, RedValue,SquareReds);
-    cout<<connex->disassembleKernel(TEST_PREFIX + to_string(IJMP3_BNR));
+    //cout<<connex->disassembleKernel(TEST_PREFIX + to_string(IJMP3_BNR));
     connex->executeKernel(TEST_PREFIX + to_string(IJMP3_BNR));
 
     int ExpectedBytesOfReductions = SquareReds*SquareReds*BYTES_IN_DWORD;
@@ -1246,7 +1246,7 @@ static int TestJmpMultiRed(ConnexMachine *connex, int RedValue, int SquareReds)
     int RealBytesOfReductions = 0;
     for (RealBytesOfReductions=0 ; RealBytesOfReductions < ExpectedBytesOfReductions; RealBytesOfReductions+=4)
     {
-        *BasicMatchRedResults++ = connex->readReduction();
+        BasicMatchRedResults[RealBytesOfReductions>>2] = connex->readReduction();
     }
 
     int i;

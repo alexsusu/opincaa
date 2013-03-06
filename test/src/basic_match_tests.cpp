@@ -9,7 +9,6 @@
  *
  */
 #include "ConnexMachine.h"
-#include "ConnexSimulator.h"
 #include "utils.h"
 #include "timing.h"
 

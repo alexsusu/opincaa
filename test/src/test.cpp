@@ -98,8 +98,8 @@ int RunAll(bool stress)
                                                 "readFIFO");
 		*/
 
-        //result = test_Simple_All(connex, stress);
-        //result += test_Simple_IO_All(connex, stress);
+        result = test_Simple_All(connex, stress);
+        result += test_Simple_IO_All(connex, stress);
         jump_test(5,connex);
 
         char *LogFileName = "RunScores.log";
