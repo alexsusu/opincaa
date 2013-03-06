@@ -23,7 +23,7 @@
 //#include <errno.h>      /* Errors */
 //#include <stdio.h>      /* Input/Output */
 //#include <sys/wait.h>   /* Wait for Process Termination */
-//#include <stdlib.h>
+#include <stdlib.h>
 
 #include <iostream>
 #include <iomanip>
@@ -246,8 +246,8 @@ static inline unsigned int SAD16_Distance(unsigned short int *set1, unsigned sho
 static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatches* SMs, int threads)
 {
     SMs->RealMatches = 0;
-    int **dsq = new int*[SDs1->RealDescriptors];
-    for (int er=0; er < SDs1->RealDescriptors; er++) dsq[er] = new int[SDs2->RealDescriptors];
+    int *dsq = (int*) malloc(SDs1->RealDescriptors*SDs2->RealDescriptors*sizeof(int));
+//    for (int er=0; er < SDs1->RealDescriptors; er++) dsq[er] = new int[SDs2->RealDescriptors];
 
     if (threads !=0) omp_set_num_threads(threads);
         #pragma omp parallel for
@@ -266,7 +266,7 @@ static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMat
                     }
                     dsq[DescriptorIndex1][DescriptorIndex2] = dsqs;
                     */
-                    dsq[DescriptorIndex1][DescriptorIndex2] = SAD16_Distance(SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1],
+                    dsq[DescriptorIndex1*SDs2->RealDescriptors+DescriptorIndex2] = SAD16_Distance(SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1],
                                                                              SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]);
                 }
         }
@@ -278,16 +278,16 @@ static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMat
             distsq1 = distsq2 = (unsigned int)(-1);
             for (int DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
             {
-                if (dsq[DescriptorIndex1][DescriptorIndex2] < distsq1)
+                if (dsq[DescriptorIndex1*SDs2->RealDescriptors+DescriptorIndex2] < distsq1)
                 {
                     distsq2 = distsq1;
-                    distsq1 = dsq[DescriptorIndex1][DescriptorIndex2];
+                    distsq1 = dsq[DescriptorIndex1*SDs2->RealDescriptors+DescriptorIndex2];
                     //nexttomin = imatch;
                     minIndex = DescriptorIndex2;
                 }
-                else if (dsq[DescriptorIndex1][DescriptorIndex2] < distsq2)
+                else if (dsq[DescriptorIndex1*SDs2->RealDescriptors+DescriptorIndex2] < distsq2)
                 {
-                    distsq2 = dsq[DescriptorIndex1][DescriptorIndex2];
+                    distsq2 = dsq[DescriptorIndex1*SDs2->RealDescriptors+DescriptorIndex2];
                     //nexttomin = j;
                 }
             }
@@ -295,8 +295,8 @@ static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMat
                 SMs->DescIx2ndImgMin[SMs->RealMatches++] = minIndex;
         }
 
-        for (int er=0; er < SDs1->RealDescriptors; er++) delete(dsq[er]);
-        delete(dsq);
+//        for (int er=0; er < SDs1->RealDescriptors; er++) delete(dsq[er]);
+        free(dsq);
 }
 
 /*
@@ -844,7 +844,7 @@ int test_BasicMatching_All_SAD(char* fn1, char* fn2, FILE* logfile)
     else cout << "Match test has FAILed. Arm and ConnexArm got different results !"<<endl<<endl;
 
     #endif
-
+    free(BasicMatchRedResults);
 
     /* STEP4: Compute on cpu-only  */
     Start = GetMilliCount();
@@ -904,7 +904,7 @@ int test_BasicMatching_All_SAD(char* fn1, char* fn2, FILE* logfile)
         cout<< testFails << " SimpleTests failed." <<endl;
     return testFails;
 */
-    free(BasicMatchRedResults);
+//    free(BasicMatchRedResults);
 	return 0;
 }
 

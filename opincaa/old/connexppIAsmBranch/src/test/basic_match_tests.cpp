@@ -16,6 +16,7 @@
 #include "../../include/util/timing.h"
 #include "../../include/util/kernel_acc.h"
 
+
 //#include <thread>
 #include <omp.h>
 
@@ -25,7 +26,7 @@
 //#include <errno.h>      /* Errors */
 //#include <stdio.h>      /* Input/Output */
 //#include <sys/wait.h>   /* Wait for Process Termination */
-//#include <stdlib.h>
+#include <stdlib.h>
 
 #include <iostream>
 #include <iomanip>
@@ -262,17 +263,18 @@ static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMat
 {
     SMs->RealMatches = 0;
 
-    unsigned int **dsq = new unsigned int*[SDs1->RealDescriptors];
+    unsigned int *dsq ;
+	dsq= (unsigned int*)malloc(SDs1->RealDescriptors*SDs2->RealDescriptors*sizeof(unsigned int));
 
     if (threads !=0) omp_set_num_threads(threads);
-    for (int er=0; er < SDs1->RealDescriptors; er++) dsq[er] = new unsigned int[SDs2->RealDescriptors];
+//    for (int er=0; er < SDs1->RealDescriptors; er++) dsq[er] =(unsigned int) malloc(SDs2->RealDescriptors*sizeof(unsigned int));
 
         #pragma omp parallel for
         for (int DescriptorIndex1 =0; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1++)
         {
                 for (int DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
                 {
-                    dsq[DescriptorIndex1][DescriptorIndex2] = SSD_Distance(SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1],
+                    dsq[DescriptorIndex1*SDs2->RealDescriptors+DescriptorIndex2] = SSD_Distance(SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1],
                                                                            SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]);
                 }
         }
@@ -285,16 +287,16 @@ static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMat
 
             for (int DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
             {
-                if (dsq[DescriptorIndex1][DescriptorIndex2] < distsq1)
+                if (dsq[DescriptorIndex1*SDs2->RealDescriptors+DescriptorIndex2] < distsq1)
                 {
                     distsq2 = distsq1;
-                    distsq1 = dsq[DescriptorIndex1][DescriptorIndex2];
+                    distsq1 = dsq[DescriptorIndex1*SDs2->RealDescriptors+DescriptorIndex2];
                     //nexttomin = imatch;
                     minIndex = DescriptorIndex2;
                 }
-                else if (dsq[DescriptorIndex1][DescriptorIndex2] < distsq2)
+                else if (dsq[DescriptorIndex1*SDs2->RealDescriptors+DescriptorIndex2] < distsq2)
                 {
-                    distsq2 = dsq[DescriptorIndex1][DescriptorIndex2];
+                    distsq2 = dsq[DescriptorIndex1*SDs2->RealDescriptors+DescriptorIndex2];
                     //nexttomin = j;
                 }
             }
@@ -304,8 +306,8 @@ static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMat
 
         }
 
-        for (int er=0; er < SDs1->RealDescriptors; er++) delete(dsq[er]);
-        delete(dsq);
+//        for (int er=0; er < SDs1->RealDescriptors; er++) free(dsq[er]);
+        free(dsq);
 }
 
 /*
