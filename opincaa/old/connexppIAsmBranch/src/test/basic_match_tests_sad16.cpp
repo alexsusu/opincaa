@@ -180,7 +180,7 @@ static void SAD_FindMatches16_NEON(SiftDescriptors16 *SDs1, SiftDescriptors16 *S
             desc1_2 = vld4q_s16(src1 + 64);
             desc1_3 = vld4q_s16(src1 + 96);
             */
-            #define LOAD_SAD16_NEON_128bits(x) int16x8x4_t desc1_##x; desc1_##x = vld1q_s16(src1 + 8*x);
+            #define LOAD_SAD16_NEON_128bits(x) int16x8_t desc1_##x; desc1_##x = vld1q_s16(src1 + 8*x);
             LOAD_SAD16_NEON_128bits(0); LOAD_SAD16_NEON_128bits(1); LOAD_SAD16_NEON_128bits(2); LOAD_SAD16_NEON_128bits(3);
             LOAD_SAD16_NEON_128bits(4); LOAD_SAD16_NEON_128bits(5); LOAD_SAD16_NEON_128bits(6); LOAD_SAD16_NEON_128bits(7);
             LOAD_SAD16_NEON_128bits(8); LOAD_SAD16_NEON_128bits(9); LOAD_SAD16_NEON_128bits(10); LOAD_SAD16_NEON_128bits(11);
