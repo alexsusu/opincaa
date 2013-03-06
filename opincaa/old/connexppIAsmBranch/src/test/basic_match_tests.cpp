@@ -979,7 +979,7 @@ int test_BasicMatching_All_SSD(char* fn1, char* fn2, FILE* logfile)
     else cout << "Match test has FAILed. Connex_nojmp and Connex_jmp got different results !"<<endl<<endl;
 
     #endif // __ARM_NEON__
-
+   free(BasicMatchRedResults);
 
     // STEP4: Compute on cpu-only
     Start = GetMilliCount();
@@ -1034,7 +1034,7 @@ int test_BasicMatching_All_SSD(char* fn1, char* fn2, FILE* logfile)
         cout<< testFails << " SimpleTests failed." <<endl;
     return testFails;
 */
-    free(BasicMatchRedResults);
+//    free(BasicMatchRedResults);
 	return 0;
 }
 
