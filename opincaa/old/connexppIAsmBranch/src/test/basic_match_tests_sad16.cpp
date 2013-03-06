@@ -183,12 +183,29 @@ static void SAD_FindMatches16_NEON(SiftDescriptors16 *SDs1, SiftDescriptors16 *S
         for (int DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
         {
             INT32 dsq = 0;
-            INT32 multsI32[16*4] __attribute__ ((aligned(64)));
+            INT16 multsI16[16*8] __attribute__ ((aligned(64)));
 
             //INT16 *src2 = (INT16*)__builtin_assume_aligned((SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]), 64);
             INT16 *src2 = (INT16*)(SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]);
 
             int16x8x4_t desc2_chunk;
+            int16x8_t calc;
+
+            #define PARTIAL_SAD16(x) \
+            desc2_chunk = vld1q_s16(src2 + x*8);
+            calc = vsubq_s16(desc1_##(x>>4).val[x & 3],desc2_chunk);\
+            calc = vabsq_s16(calc);          \
+            vst1q_s16(multsI16 + 8 * x, calc);
+
+            PARTIAL_SAD16(0); PARTIAL_SAD16(1); PARTIAL_SAD16(2); PARTIAL_SAD16(3);
+            PARTIAL_SAD16(4); PARTIAL_SAD16(5); PARTIAL_SAD16(6); PARTIAL_SAD16(7);
+            PARTIAL_SAD16(8); PARTIAL_SAD16(9); PARTIAL_SAD16(10); PARTIAL_SAD16(11);
+            PARTIAL_SAD16(12); PARTIAL_SAD16(13); PARTIAL_SAD16(14); PARTIAL_SAD16(15);
+
+            for (int i = 0; i < 128; i++) dsq += multsI16[i];
+
+            /*
+            INT32 multsI32[16*4] __attribute__ ((aligned(64)));
             int16x8x4_t calc;
             int32x4x4_t addi32;
 
@@ -211,12 +228,11 @@ static void SAD_FindMatches16_NEON(SiftDescriptors16 *SDs1, SiftDescriptors16 *S
                                                                     \
             vst4q_s32(multsI32 + 16 * x, addi32);
 
-            PARTIAL_SAD16(0);
-            PARTIAL_SAD16(1);
-            PARTIAL_SAD16(2);
-            PARTIAL_SAD16(3);
-
+            PARTIAL_SAD16(0); PARTIAL_SAD16(1);  PARTIAL_SAD16(2); PARTIAL_SAD16(3);
             for (int i = 0; i < 64; i++) dsq += multsI32[i];
+
+            */
+
 
             if (dsq < distsq1)
             {
