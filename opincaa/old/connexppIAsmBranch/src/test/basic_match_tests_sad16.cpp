@@ -160,7 +160,7 @@ static void SAD_FindMatches16_NEON(SiftDescriptors16 *SDs1, SiftDescriptors16 *S
 
     int minIndex = 0;
     //int nexttominIndex;
-    UINT32 dsq, distsq1, distsq2;
+    UINT32 distsq1, distsq2;
 
     for (int DescriptorIndex1 =0; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1++)
     {
@@ -168,7 +168,8 @@ static void SAD_FindMatches16_NEON(SiftDescriptors16 *SDs1, SiftDescriptors16 *S
         distsq2 = (UINT32)-1;
 
             //load 128 bits as 8x 16 bits. Optimized for cache line of 64 Bytes = 512 bits (Intel SandyBridge)
-            INT16 *src1 = (INT16*)__builtin_assume_aligned((SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1]), 64);
+            //INT16 *src1 = (INT16*)__builtin_assume_aligned((SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1]), 64);
+            INT16 *src1 = (INT16*)(SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1]);
 
             int16x8x4_t desc1_0;
             int16x8x4_t desc1_1;
@@ -182,12 +183,14 @@ static void SAD_FindMatches16_NEON(SiftDescriptors16 *SDs1, SiftDescriptors16 *S
             desc1_3 = vld4q_s16(src1 + 96);
 
         for (int DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
-	    {
-	        dsq = 0;
-            INT16 *src2 = (INT16*)__builtin_assume_aligned((SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]), 64);
+            {
+            UINT32 dsq = 0;
+            //INT16 *src2 = (INT16*)__builtin_assume_aligned((SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]), 64);
+            INT16 *src2 = (INT16*)(SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]);
 
             int16x8x4_t desc2_chunk;
             int16x8x4_t calc;
+            int32x4x4_t addi32;
 
             #define PARTIAL_SAD16(x) \
             desc2_chunk = vld4q_s16(src2 + x * 32);\
@@ -206,10 +209,15 @@ static void SAD_FindMatches16_NEON(SiftDescriptors16 *SDs1, SiftDescriptors16 *S
             addi32.val[2] = vpaddlq_s16(calc.val[2]);               \
             addi32.val[3] = vpaddlq_s16(calc.val[3]);               \
                                                                     \
-            vst4q_s32(mults32 + 16 * x, addi32);
+            vst4q_s32(multsI32 + 16 * x, addi32);
 
             //for (int i=0; i < 16; i++) cout<< data[i]<<" ";
             //cout<<endl;
+
+            PARTIAL_SAD16(0);
+            PARTIAL_SAD16(1);
+            PARTIAL_SAD16(2);
+            PARTIAL_SAD16(3);
 
             for (int i = 0; i < 64; i++) dsq += multsI32[i];
 
