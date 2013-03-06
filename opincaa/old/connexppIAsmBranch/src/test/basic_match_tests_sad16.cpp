@@ -194,11 +194,11 @@ static void SAD_FindMatches16_NEON(SiftDescriptors16 *SDs1, SiftDescriptors16 *S
             //INT16 *src2 = (INT16*)__builtin_assume_aligned((SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]), 64);
             INT16 *src2 = (INT16*)(SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]);
 
-            int16x8x4_t desc2_chunk;
+            int16x8_t desc2_chunk;
             int16x8_t calc;
 
             #define PARTIAL_SAD16(x) \
-            desc2_chunk = vld1q_s16(src2 + x*8);
+            desc2_chunk = vld1q_s16(src2 + x*8);\
             calc = vsubq_s16(desc1_##x,desc2_chunk);\
             calc = vabsq_s16(calc);          \
             vst1q_s16(multsI16 + 8 * x, calc);
