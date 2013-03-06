@@ -20,6 +20,10 @@
 #include <iostream>
 using namespace std;
 
+#ifdef __ARM_NEON__
+    #include <arm_neon.h>
+#endif
+
 static void SAD_FindMatches16(SiftDescriptors16 *SDs1, SiftDescriptors16 *SDs2, SiftMatches* SMs)
 {
     SMs->RealMatches = 0;
@@ -63,8 +67,173 @@ static void SAD_FindMatches16(SiftDescriptors16 *SDs1, SiftDescriptors16 *SDs2, 
 }
 
 #ifdef __ARM_NEON__
+static void print_int16x8(int16x8_t a)
+{
+        INT16 data[8];
+        vst1q_s16(data, a);
+        for (int i=0; i < 8; i++)
+                cout<< data[i]<<" ";
+        cout<<endl;
+}
+
+static void print_int16x8x4(int16x8x4_t a)
+{
+        INT16 data[32];
+        vst4q_s16(data, a);
+        for (int i=0; i < 32; i++)
+                cout<< data[i]<<" ";
+        cout<<endl;
+}
+
+static void print_int32x4x4(int32x4x4_t a)
+{
+        int  data[16];
+        vst4q_s32(data, a);
+        for (int i=0; i < 16; i++)
+                cout<< data[i]<<" ";
+        cout<<endl;
+}
+
+static void print_int64x2x4(int64x2x4_t a)
+{
+        long long int  data[8];
+
+        vst1q_s64(&data[0], a.val[0]);
+        vst1q_s64(&data[2], a.val[1]);
+        vst1q_s64(&data[4], a.val[2]);
+        vst1q_s64(&data[6], a.val[3]);
+
+        for (int i=0; i < 8; i++)
+                cout<< data[i]<<" ";
+        cout<<endl;
+}
+
+static void SAD_Demo()
+{
+        int16x8x4_t num1;
+        int16x8x4_t num2;
+        int16x8x4_t calc;
+        int32x4x4_t add1;
+        int64x2x4_t add2;
+
+        INT16 data1[] = {0,255,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31};
+        INT16 data2[] = {255,0,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32};
+
+        //INT16 datacalc[32];
+        num1 = vld4q_s16(data1);
+        num2 = vld4q_s16(data2);
+
+        calc.val[0] = vsubq_s16(num1.val[0],num2.val[0]);
+        calc.val[1] = vsubq_s16(num1.val[1],num2.val[1]);
+        calc.val[2] = vsubq_s16(num1.val[2],num2.val[2]);
+        calc.val[3] = vsubq_s16(num1.val[3],num2.val[3]);
+
+        print_int16x8x4(num1);
+        print_int16x8x4(num2);
+        print_int16x8x4(calc);
+
+
+        calc.val[0] = vabsq_s16(calc.val[0]);
+        calc.val[1] = vabsq_s16(calc.val[1]);
+        calc.val[2] = vabsq_s16(calc.val[2]);
+        calc.val[3] = vabsq_s16(calc.val[3]);
+
+        print_int16x8x4(calc);
+
+        add1.val[0] = vpaddlq_s16(calc.val[0]);
+        add1.val[1] = vpaddlq_s16(calc.val[1]);
+        add1.val[2] = vpaddlq_s16(calc.val[2]);
+        add1.val[3] = vpaddlq_s16(calc.val[3]);
+
+        //add2.val[0] = vpaddlq_s32(add1.val[0]);
+        //add2.val[1] = vpaddlq_s32(add1.val[1]);
+        //add2.val[2] = vpaddlq_s32(add1.val[2]);
+        //add2.val[3] = vpaddlq_s32(add1.val[3]);
+
+
+}
+
 static void SAD_FindMatches16_NEON(SiftDescriptors16 *SDs1, SiftDescriptors16 *SDs2, SiftMatches* SMs)
-{}
+{
+    SMs->RealMatches = 0;
+    INT32 mults32[16*4] __attribute__ ((aligned(64)));
+
+    int minIndex = 0;
+    //int nexttominIndex;
+    UINT32 dsq, distsq1, distsq2;
+
+    for (int DescriptorIndex1 =0; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1++)
+    {
+        distsq1 = (UINT32)-1;
+        distsq2 = (UINT32)-1;
+
+            //load 128 bits as 8x 16 bits. Optimized for cache line of 64 Bytes = 512 bits (Intel SandyBridge)
+            INT16 *src1 = (INT16*)__builtin_assume_aligned((SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1]), 64);
+
+            int16x8x4_t desc1_0;
+            int16x8x4_t desc1_1;
+            int16x8x4_t desc1_2;
+            int16x8x4_t desc1_3;
+
+            //load 128 Bytes of data (4 x (16x8) bits )
+            desc1_0 = vld4q_s16(src1);
+            desc1_1 = vld4q_s16(src1 + 32);
+            desc1_2 = vld4q_s16(src1 + 64);
+            desc1_3 = vld4q_s16(src1 + 96);
+
+        for (int DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
+	    {
+	        dsq = 0;
+            INT16 *src2 = (INT16*)__builtin_assume_aligned((SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]), 64);
+
+            int16x8x4_t desc2_chunk;
+            int16x8x4_t calc;
+
+            #define PARTIAL_SAD16(x) \
+            desc2_chunk = vld4q_s16(src2 + x * 32);\
+            calc.val[0] = vsubq_s16(desc1_##x.val[0],desc2_chunk.val[0]);\
+            calc.val[1] = vsubq_s16(desc1_##x.val[1],desc2_chunk.val[1]);\
+            calc.val[2] = vsubq_s16(desc1_##x.val[2],desc2_chunk.val[2]);\
+            calc.val[3] = vsubq_s16(desc1_##x.val[3],desc2_chunk.val[3]);\
+                                                                    \
+            calc.val[0] = vabsq_s16(calc.val[0]);                   \
+            calc.val[1] = vabsq_s16(calc.val[1]);                   \
+            calc.val[2] = vabsq_s16(calc.val[2]);                   \
+            calc.val[3] = vabsq_s16(calc.val[3]);                   \
+                                                                    \
+            addi32.val[0] = vpaddlq_s16(calc.val[0]);               \
+            addi32.val[1] = vpaddlq_s16(calc.val[1]);               \
+            addi32.val[2] = vpaddlq_s16(calc.val[2]);               \
+            addi32.val[3] = vpaddlq_s16(calc.val[3]);               \
+                                                                    \
+            vst4q_s32(mults32 + 16 * x, addi32);
+
+            //for (int i=0; i < 16; i++) cout<< data[i]<<" ";
+            //cout<<endl;
+
+            for (int i = 0; i < 64; i++) dsq += multsI32[i];
+
+            if (dsq < distsq1)
+            {
+                distsq2 = distsq1;
+                distsq1 = dsq;
+                //nexttominIndex = minIndex;
+                minIndex = DescriptorIndex2;
+            }
+            else if (dsq < distsq2)
+            {
+                distsq2 = dsq;
+                //nexttominIndex = DescriptorIndex2;
+            }
+       }
+
+        if (distsq1 < (FACTOR1 * distsq2) >> FACTOR2)
+            SMs->DescIx2ndImgMin[SMs->RealMatches++] = minIndex;
+        //otherwise overwrite it next image1 descriptor
+    }
+
+
+}
 #else
 static void SAD_FindMatches16_SSE(SiftDescriptors16 *SDs1, SiftDescriptors16 *SDs2, SiftMatches* SMs)
 {
@@ -81,7 +250,7 @@ static void SAD_FindMatches16_SSE(SiftDescriptors16 *SDs1, SiftDescriptors16 *SD
         distsq2 = (UINT32)-1;
 
             //load 128 bits as 8x 16 bits. Optimized for cache line of 64 Bytes = 512 bits (Intel SandyBridge)
-            UINT16 *src1 = (UINT16*)__builtin_assume_aligned((SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1]), 16);
+            UINT16 *src1 = (UINT16*)__builtin_assume_aligned((SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1]), 64);
             //load 128 Bytes of data (8 x (16x8) bits )
             #define LOAD_128_bits_src1_16(x) __m128i m##x = LOAD_128_bits((__m128i*)(src1 + 8*x))
             LOAD_128_bits_src1_16(0);LOAD_128_bits_src1_16(1);LOAD_128_bits_src1_16(2);LOAD_128_bits_src1_16(3);
@@ -92,7 +261,7 @@ static void SAD_FindMatches16_SSE(SiftDescriptors16 *SDs1, SiftDescriptors16 *SD
         for (int DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
 	    {
 	        dsq = 0;
-            UINT16 *src2 = (UINT16*)__builtin_assume_aligned((SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]), 16);
+            UINT16 *src2 = (UINT16*)__builtin_assume_aligned((SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]), 64);
             __m128i m16;
             #define PARTIAL_SAD16(x) \
             m16 = LOAD_128_bits((__m128i*)(src2 + 8*x));\
@@ -143,7 +312,7 @@ static void SAD_FindMatches16_OMP_SSE(SiftDescriptors16 *SDs1, SiftDescriptors16
     for (int DescriptorIndex1 =0; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1++)
     {
             //load 128 bits as 8x 16 bits. Optimized for cache line of 64 Bytes = 512 bits (Intel SandyBridge)
-            UINT16 *src1 = (UINT16*)__builtin_assume_aligned((SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1]), 16);
+            UINT16 *src1 = (UINT16*)__builtin_assume_aligned((SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1]), 64);
             //load 128 Bytes of data (8 x (16x8) bits )
             #define LOAD_128_bits_src1_16(x) __m128i m##x = LOAD_128_bits((__m128i*)(src1 + 8*x))
             LOAD_128_bits_src1_16(0);LOAD_128_bits_src1_16(1);LOAD_128_bits_src1_16(2);LOAD_128_bits_src1_16(3);
@@ -157,7 +326,7 @@ static void SAD_FindMatches16_OMP_SSE(SiftDescriptors16 *SDs1, SiftDescriptors16
 
 	        UINT32 dsqs = 0;
 	        UINT16 multsU16[8*16] __attribute__ ((aligned(16)));
-            UINT16 *src2 = (UINT16*)__builtin_assume_aligned((SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]), 16);
+            UINT16 *src2 = (UINT16*)__builtin_assume_aligned((SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]), 64);
             __m128i m16;
             #define PARTIAL_SAD16(x) \
             m16 = LOAD_128_bits((__m128i*)(src2 + 8*x));\
@@ -217,8 +386,8 @@ void SAD16_Benchmark(char* fileName1, char* fileName2, FILE* logfile)
         SAD_FindMatches16_OMP_SSE_NEON = SAD_FindMatches16_OMP_SSE;
     #endif // __ARM_NEON__
 
-    AlingedSiftDescriptorPtrs SiftDescriptors16_1 = malloc_alligned(sizeof(SiftDescriptors16), 5);
-    AlingedSiftDescriptorPtrs SiftDescriptors16_2 = malloc_alligned(sizeof(SiftDescriptors16), 5);
+    AlingedSiftDescriptorPtrs SiftDescriptors16_1 = malloc_alligned(sizeof(SiftDescriptors16), 6);
+    AlingedSiftDescriptorPtrs SiftDescriptors16_2 = malloc_alligned(sizeof(SiftDescriptors16), 6);
     SiftMatches *SM_Cpu = (SiftMatches *)malloc(sizeof(SiftMatches));
     SiftMatches *SM_Cpu_SSE_NEON = (SiftMatches *)malloc(sizeof(SiftMatches));
     SiftMatches *SM_Cpu_OMP_SSE_NEON = (SiftMatches *)malloc(sizeof(SiftMatches));
