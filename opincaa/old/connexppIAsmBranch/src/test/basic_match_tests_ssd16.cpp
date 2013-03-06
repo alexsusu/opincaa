@@ -102,7 +102,8 @@ static void SSD_FindMatches16_NEON(SiftDescriptors16 *SDs1, SiftDescriptors16 *S
 		distsq2 = (UINT32)-1;
 
             //load 128 bits as 8x 16 bits. Optimized for cache line of 64 Bytes = 512 bits (Intel SandyBridge)
-            UINT16 *src1 = (UINT16*)__builtin_assume_aligned((SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1]), 32);
+            //UINT16 *src1 = (UINT16*)__builtin_assume_aligned((SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1]), 32);
+            UINT16 *src1 = (UINT16*)(SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1]);
             //load 128 Bytes of data (8 x (16x8) bits )
             #define LOAD_512_bits(x) vld4q_u16(x)
 
@@ -117,7 +118,8 @@ static void SSD_FindMatches16_NEON(SiftDescriptors16 *SDs1, SiftDescriptors16 *S
         for (DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
 	    {
 	        dsq = 0;
-            UINT16 *src2 = (UINT16*)__builtin_assume_aligned((SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]), 16);
+            //UINT16 *src2 = (UINT16*)__builtin_assume_aligned((SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]), 32);
+            UINT16 *src2 = (SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]);
             // uint16x8_t  vsubq_u16(uint16x8_t a, uint16x8_t b);   // VSUB.I16 q0,q0,q0
             // uint16x8_t  vmulq_u16(uint16x8_t a, uint16x8_t b);   // VMUL.I16 q0,q0,q0
             // void  vst1q_u16(__transfersize(8) uint16_t * ptr, uint16x8_t val); // VST1.16 {d0, d1}, [r0]

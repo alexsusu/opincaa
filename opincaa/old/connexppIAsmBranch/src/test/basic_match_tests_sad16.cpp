@@ -190,25 +190,41 @@ static void SAD_FindMatches16_NEON(SiftDescriptors16 *SDs1, SiftDescriptors16 *S
         {
             INT32 dsq = 0;
             INT16 multsI16[16*8] __attribute__ ((aligned(64)));
+	    INT32 mI32[4] __attribute__ ((aligned(64)));
 
             //INT16 *src2 = (INT16*)__builtin_assume_aligned((SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]), 64);
             INT16 *src2 = (INT16*)(SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]);
 
-            int16x8_t desc2_chunk;
+//            int16x8_t desc2_chunk;
             int16x8_t calc;
+	    int16x8_t accu;
 
+            //#define LOAD_SAD16_NEON_128bits2(x) int16x8_t desc2_##x; desc2_##x = vld1q_s16(src2 + 8*x);
             #define PARTIAL_SAD16(x) \
-            desc2_chunk = vld1q_s16(src2 + x*8);\
-            calc = vsubq_s16(desc1_##x,desc2_chunk);\
+            int16x8_t desc2_##x = vld1q_s16(src2 + x*8);\
+            calc = vsubq_s16(desc1_##x,desc2_##x);\
             calc = vabsq_s16(calc);          \
-            vst1q_s16(multsI16 + 8 * x, calc);
+	    accu = vqaddq_s16(calc,accu);
+            //vst1q_s16(multsI16 + 8 * x, calc);
+
+	    vsetq_lane_s16(0,accu,0);	    vsetq_lane_s16(0,accu,1);
+	    vsetq_lane_s16(0,accu,2);	    vsetq_lane_s16(0,accu,3);
+	    vsetq_lane_s16(0,accu,4);	    vsetq_lane_s16(0,accu,5);
+	    vsetq_lane_s16(0,accu,6);	    vsetq_lane_s16(0,accu,7);
+
+	    __builtin_prefetch(src2);
+	    //LOAD_SAD16_NEON_128bits2(0);	    LOAD_SAD16_NEON_128bits2(1);	    LOAD_SAD16_NEON_128bits2(2);	    LOAD_SAD16_NEON_128bits2(3);
+	    //LOAD_SAD16_NEON_128bits2(4);	    LOAD_SAD16_NEON_128bits2(5);	    LOAD_SAD16_NEON_128bits2(6);	    LOAD_SAD16_NEON_128bits2(7);
+	    //LOAD_SAD16_NEON_128bits2(8);	    LOAD_SAD16_NEON_128bits2(9);	    LOAD_SAD16_NEON_128bits2(10);	    LOAD_SAD16_NEON_128bits2(11);
+	    //LOAD_SAD16_NEON_128bits2(12);	    LOAD_SAD16_NEON_128bits2(13);	    LOAD_SAD16_NEON_128bits2(14);	    LOAD_SAD16_NEON_128bits2(15);
 
             PARTIAL_SAD16(0); PARTIAL_SAD16(1); PARTIAL_SAD16(2); PARTIAL_SAD16(3);
             PARTIAL_SAD16(4); PARTIAL_SAD16(5); PARTIAL_SAD16(6); PARTIAL_SAD16(7);
             PARTIAL_SAD16(8); PARTIAL_SAD16(9); PARTIAL_SAD16(10); PARTIAL_SAD16(11);
             PARTIAL_SAD16(12); PARTIAL_SAD16(13); PARTIAL_SAD16(14); PARTIAL_SAD16(15);
 
-            for (int i = 0; i < 128; i++) dsq += multsI16[i];
+	    vst1q_s16(multsI16,accu);
+            for (int i = 0; i < 8; i++) dsq += multsI16[i];
 
             /*
             INT32 multsI32[16*4] __attribute__ ((aligned(64)));
