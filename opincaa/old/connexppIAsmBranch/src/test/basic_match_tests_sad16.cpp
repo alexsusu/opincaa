@@ -307,7 +307,102 @@ static void SAD_FindMatches16_SSE(SiftDescriptors16 *SDs1, SiftDescriptors16 *SD
 
 #ifdef __ARM_NEON__
 static void SAD_FindMatches16_OMP_NEON(SiftDescriptors16 *SDs1, SiftDescriptors16 *SDs2, SiftMatches* SMs)
-{}
+{
+    SMs->RealMatches = 0;
+    INT32 mults32[16*4] __attribute__ ((aligned(64)));
+
+    int *dsqs = (int*) malloc(SDs1->RealDescriptors*SDs2->RealDescriptors*sizeof(int));
+    //    for (int er=0; er < SDs1->RealDescriptors; er++) dsq[er] = new int[SDs2->RealDescriptors];
+
+        #pragma omp parallel for
+        for (int DescriptorIndex1 =0; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1++)
+        {
+            //load 128 bits as 8x 16 bits. Optimized for cache line of 64 Bytes = 512 bits (Intel SandyBridge)
+            //INT16 *src1 = (INT16*)__builtin_assume_aligned((SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1]), 64);
+            INT16 *src1 = (INT16*)(SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1]);
+
+            int16x8x4_t desc1_0;
+            int16x8x4_t desc1_1;
+            int16x8x4_t desc1_2;
+            int16x8x4_t desc1_3;
+
+            //load 128 Bytes of data (4 x (16x8) bits )
+            desc1_0 = vld4q_s16(src1);
+            desc1_1 = vld4q_s16(src1 + 32);
+            desc1_2 = vld4q_s16(src1 + 64);
+            desc1_3 = vld4q_s16(src1 + 96);
+
+            for (int DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
+            {
+                UINT32 dsq = 0;
+                //INT16 *src2 = (INT16*)__builtin_assume_aligned((SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]), 64);
+                INT16 *src2 = (INT16*)(SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]);
+
+                int16x8x4_t desc2_chunk;
+                int16x8x4_t calc;
+                int32x4x4_t addi32;
+
+                #define _PARTIAL_SAD16(x) \
+                desc2_chunk = vld4q_s16(src2 + x * 32);\
+                calc.val[0] = vsubq_s16(desc1_##x.val[0],desc2_chunk.val[0]);\
+                calc.val[1] = vsubq_s16(desc1_##x.val[1],desc2_chunk.val[1]);\
+                calc.val[2] = vsubq_s16(desc1_##x.val[2],desc2_chunk.val[2]);\
+                calc.val[3] = vsubq_s16(desc1_##x.val[3],desc2_chunk.val[3]);\
+                                                                        \
+                calc.val[0] = vabsq_s16(calc.val[0]);                   \
+                calc.val[1] = vabsq_s16(calc.val[1]);                   \
+                calc.val[2] = vabsq_s16(calc.val[2]);                   \
+                calc.val[3] = vabsq_s16(calc.val[3]);                   \
+                                                                        \
+                addi32.val[0] = vpaddlq_s16(calc.val[0]);               \
+                addi32.val[1] = vpaddlq_s16(calc.val[1]);               \
+                addi32.val[2] = vpaddlq_s16(calc.val[2]);               \
+                addi32.val[3] = vpaddlq_s16(calc.val[3]);               \
+                                                                        \
+                vst4q_s32(multsI32 + 16 * x, addi32);
+
+                //for (int i=0; i < 16; i++) cout<< data[i]<<" ";
+                //cout<<endl;
+
+                _PARTIAL_SAD16(0);
+                _PARTIAL_SAD16(1);
+                _PARTIAL_SAD16(2);
+                _PARTIAL_SAD16(3);
+
+                for (int i = 0; i < 64; i++) dsq += multsI32[i];
+                dsqs[DescriptorIndex1*SDs2->RealDescriptors+DescriptorIndex2] = dsq;
+        }
+
+        for (int DescriptorIndex1 =0; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1++)
+        {
+            int	minIndex = -1;
+            unsigned int distsq1, distsq2;
+            distsq1 = distsq2 = (unsigned int)(-1);
+            for (int DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
+            {
+                if (dsq[DescriptorIndex1*SDs2->RealDescriptors+DescriptorIndex2] < distsq1)
+                {
+                    distsq2 = distsq1;
+                    distsq1 = dsq[DescriptorIndex1*SDs2->RealDescriptors+DescriptorIndex2];
+                    //nexttomin = imatch;
+                    minIndex = DescriptorIndex2;
+                }
+                else if (dsq[DescriptorIndex1*SDs2->RealDescriptors+DescriptorIndex2] < distsq2)
+                {
+                    distsq2 = dsq[DescriptorIndex1*SDs2->RealDescriptors+DescriptorIndex2];
+                    //nexttomin = j;
+                }
+            }
+            if (distsq1 < (FACTOR1 * distsq2) >> FACTOR2)
+                SMs->DescIx2ndImgMin[SMs->RealMatches++] = minIndex;
+        }
+
+//        for (int er=0; er < SDs1->RealDescriptors; er++) delete(dsq[er]);
+        free(dsqs);
+}
+
+
+}
 #else
 static void SAD_FindMatches16_OMP_SSE(SiftDescriptors16 *SDs1, SiftDescriptors16 *SDs2, SiftMatches* SMs)
 {

@@ -255,17 +255,6 @@ static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMat
         {
                 for (int DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
                 {
-                    /*
-                    UINT32 dsqs = 0;
-                    int FeatIndex;
-                    for (FeatIndex = 0; FeatIndex < FEATURES_PER_DESCRIPTOR; FeatIndex++)
-                    {
-                        INT32 sq = abs(SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1][FeatIndex] -
-                            SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2][FeatIndex]);
-                        dsqs += sq;
-                    }
-                    dsq[DescriptorIndex1][DescriptorIndex2] = dsqs;
-                    */
                     dsq[DescriptorIndex1*SDs2->RealDescriptors+DescriptorIndex2] = SAD16_Distance(SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1],
                                                                              SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]);
                 }
