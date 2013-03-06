@@ -169,16 +169,22 @@ static void SAD_FindMatches16_NEON(SiftDescriptors16 *SDs1, SiftDescriptors16 *S
             //INT16 *src1 = (INT16*)__builtin_assume_aligned((SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1]), 64);
             INT16 *src1 = (INT16*)(SDs1->SiftDescriptorsBasicFeatures[DescriptorIndex1]);
 
+            ////load 128 Bytes of data (4 x (16x8) bits )
+            /*
             int16x8x4_t desc1_0;
             int16x8x4_t desc1_1;
             int16x8x4_t desc1_2;
             int16x8x4_t desc1_3;
-
-            //load 128 Bytes of data (4 x (16x8) bits )
             desc1_0 = vld4q_s16(src1);
             desc1_1 = vld4q_s16(src1 + 32);
             desc1_2 = vld4q_s16(src1 + 64);
             desc1_3 = vld4q_s16(src1 + 96);
+            */
+            #define LOAD_SAD16_NEON_128bits(x) int16x8x4_t desc1_##x; desc1_##x = vld1q_s16(src1 + 8*x);
+            LOAD_SAD16_NEON_128bits(0); LOAD_SAD16_NEON_128bits(1); LOAD_SAD16_NEON_128bits(2); LOAD_SAD16_NEON_128bits(3);
+            LOAD_SAD16_NEON_128bits(4); LOAD_SAD16_NEON_128bits(5); LOAD_SAD16_NEON_128bits(6); LOAD_SAD16_NEON_128bits(7);
+            LOAD_SAD16_NEON_128bits(8); LOAD_SAD16_NEON_128bits(9); LOAD_SAD16_NEON_128bits(10); LOAD_SAD16_NEON_128bits(11);
+            LOAD_SAD16_NEON_128bits(12); LOAD_SAD16_NEON_128bits(13); LOAD_SAD16_NEON_128bits(14); LOAD_SAD16_NEON_128bits(15);
 
         for (int DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
         {
@@ -193,7 +199,7 @@ static void SAD_FindMatches16_NEON(SiftDescriptors16 *SDs1, SiftDescriptors16 *S
 
             #define PARTIAL_SAD16(x) \
             desc2_chunk = vld1q_s16(src2 + x*8);
-            calc = vsubq_s16(desc1_##(x>>4).val[x & 3],desc2_chunk);\
+            calc = vsubq_s16(desc1_##x,desc2_chunk);\
             calc = vabsq_s16(calc);          \
             vst1q_s16(multsI16 + 8 * x, calc);
 
