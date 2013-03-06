@@ -156,8 +156,6 @@ static void SAD_Demo()
 static void SAD_FindMatches16_NEON(SiftDescriptors16 *SDs1, SiftDescriptors16 *SDs2, SiftMatches* SMs)
 {
     SMs->RealMatches = 0;
-    INT32 mults32[16*4] __attribute__ ((aligned(64)));
-
     int minIndex = 0;
     //int nexttominIndex;
     UINT32 distsq1, distsq2;
@@ -183,8 +181,10 @@ static void SAD_FindMatches16_NEON(SiftDescriptors16 *SDs1, SiftDescriptors16 *S
             desc1_3 = vld4q_s16(src1 + 96);
 
         for (int DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
-            {
-            UINT32 dsq = 0;
+        {
+            INT32 dsq = 0;
+            INT32 multsI32[16*4] __attribute__ ((aligned(64)));
+
             //INT16 *src2 = (INT16*)__builtin_assume_aligned((SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]), 64);
             INT16 *src2 = (INT16*)(SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]);
 
@@ -211,9 +211,6 @@ static void SAD_FindMatches16_NEON(SiftDescriptors16 *SDs1, SiftDescriptors16 *S
                                                                     \
             vst4q_s32(multsI32 + 16 * x, addi32);
 
-            //for (int i=0; i < 16; i++) cout<< data[i]<<" ";
-            //cout<<endl;
-
             PARTIAL_SAD16(0);
             PARTIAL_SAD16(1);
             PARTIAL_SAD16(2);
@@ -239,8 +236,6 @@ static void SAD_FindMatches16_NEON(SiftDescriptors16 *SDs1, SiftDescriptors16 *S
             SMs->DescIx2ndImgMin[SMs->RealMatches++] = minIndex;
         //otherwise overwrite it next image1 descriptor
     }
-
-
 }
 #else
 static void SAD_FindMatches16_SSE(SiftDescriptors16 *SDs1, SiftDescriptors16 *SDs2, SiftMatches* SMs)
@@ -309,9 +304,8 @@ static void SAD_FindMatches16_SSE(SiftDescriptors16 *SDs1, SiftDescriptors16 *SD
 static void SAD_FindMatches16_OMP_NEON(SiftDescriptors16 *SDs1, SiftDescriptors16 *SDs2, SiftMatches* SMs)
 {
     SMs->RealMatches = 0;
-    INT32 mults32[16*4] __attribute__ ((aligned(64)));
-
-    int *dsqs = (int*) malloc(SDs1->RealDescriptors*SDs2->RealDescriptors*sizeof(int));
+    int *dsq = (int*) malloc(SDs1->RealDescriptors*SDs2->RealDescriptors*sizeof(int));
+    if (dsq == NULL) {cout<<" Could not allocate memory "<<endl;return;}
     //    for (int er=0; er < SDs1->RealDescriptors; er++) dsq[er] = new int[SDs2->RealDescriptors];
 
         #pragma omp parallel for
@@ -334,7 +328,8 @@ static void SAD_FindMatches16_OMP_NEON(SiftDescriptors16 *SDs1, SiftDescriptors1
 
             for (int DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
             {
-                UINT32 dsq = 0;
+                INT32 dsqs = 0;
+                INT32 mults32[16*4] __attribute__ ((aligned(64)));
                 //INT16 *src2 = (INT16*)__builtin_assume_aligned((SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]), 64);
                 INT16 *src2 = (INT16*)(SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]);
 
@@ -361,16 +356,13 @@ static void SAD_FindMatches16_OMP_NEON(SiftDescriptors16 *SDs1, SiftDescriptors1
                                                                         \
                 vst4q_s32(multsI32 + 16 * x, addi32);
 
-                //for (int i=0; i < 16; i++) cout<< data[i]<<" ";
-                //cout<<endl;
-
                 _PARTIAL_SAD16(0);
                 _PARTIAL_SAD16(1);
                 _PARTIAL_SAD16(2);
                 _PARTIAL_SAD16(3);
 
-                for (int i = 0; i < 64; i++) dsq += multsI32[i];
-                dsqs[DescriptorIndex1*SDs2->RealDescriptors+DescriptorIndex2] = dsq;
+                for (int i = 0; i < 64; i++) dsqs += multsI32[i];
+                dsq[DescriptorIndex1*SDs2->RealDescriptors+DescriptorIndex2] = dsqs;
         }
 
         for (int DescriptorIndex1 =0; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1++)
@@ -398,7 +390,7 @@ static void SAD_FindMatches16_OMP_NEON(SiftDescriptors16 *SDs1, SiftDescriptors1
         }
 
 //        for (int er=0; er < SDs1->RealDescriptors; er++) delete(dsq[er]);
-        free(dsqs);
+        free(dsq);
 }
 
 
