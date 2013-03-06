@@ -329,7 +329,7 @@ static void SAD_FindMatches16_OMP_NEON(SiftDescriptors16 *SDs1, SiftDescriptors1
             for (int DescriptorIndex2 =0; DescriptorIndex2 < SDs2->RealDescriptors; DescriptorIndex2++)
             {
                 INT32 dsqs = 0;
-                INT32 mults32[16*4] __attribute__ ((aligned(64)));
+                INT32 multsI32[16*4] __attribute__ ((aligned(64)));
                 //INT16 *src2 = (INT16*)__builtin_assume_aligned((SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]), 64);
                 INT16 *src2 = (INT16*)(SDs2->SiftDescriptorsBasicFeatures[DescriptorIndex2]);
 
