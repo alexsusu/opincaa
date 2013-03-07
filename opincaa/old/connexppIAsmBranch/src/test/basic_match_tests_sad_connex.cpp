@@ -264,6 +264,7 @@ static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMat
                 }
         }
 
+        int TimeStart = GetMilliCount();
         #pragma omp parallel for
         for (int DescriptorIndex1 =0; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1++)
         {
@@ -296,6 +297,8 @@ static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMat
             {
                 SMs->DescIx2ndImgMin[SMs->RealMatches++] = SM_Arm_OMP_man.DescIx2ndImgMin[i];
             }
+
+        cout<<"  |    Total FindGoodMatch time is "<<GetMilliSpan(TimeStart)<<" ms"<<endl;
 
 //        for (int er=0; er < SDs1->RealDescriptors; er++) delete(dsq[er]);
         free(dsq);
@@ -436,6 +439,7 @@ static int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
     }
     else // (RunningMode == MODE_EXECUTE_FIND_MATCHES)
     {
+        int TimeStart = GetMilliCount();
         //cout<<SiftDescriptors1->RealDescriptors<<" x "<<SiftDescriptors2->RealDescriptors<<endl;
         int TotalcnxvectorChunksImg1 = (SiftDescriptors1->RealDescriptors + VECTORS_CHUNK_IMAGE1 - 1) / VECTORS_CHUNK_IMAGE1;
         int TotalcnxvectorChunksImg2 = (SiftDescriptors2->RealDescriptors + VECTORS_CHUNK_IMAGE2 - 1) / VECTORS_CHUNK_IMAGE2;
@@ -492,9 +496,8 @@ static int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
                 SMsFinal->DescIx2ndImgMin[SMsFinal->RealMatches++] = SMs->DescIx2ndImgMin[i];
         }
         //cout<<"CounttimesLess "<<CounttimesLess<<endl;
+        cout<<"  |    Total FindGoodMatch time is "<<GetMilliSpan(TimeStart)<<" ms"<<endl;
     }
-
-
     return PASS;
 }
 
@@ -710,6 +713,7 @@ static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
     }
     else // (RunningMode == MODE_EXECUTE_FIND_MATCHES)
     {
+        int TimeStart = GetMilliCount();
         int TotalcnxvectorChunksImg1 = (SiftDescriptors1->RealDescriptors + JMP_VECTORS_CHUNK_IMAGE1 - 1) / JMP_VECTORS_CHUNK_IMAGE1;
         int TotalcnxvectorChunksImg2 = (SiftDescriptors2->RealDescriptors + JMP_VECTORS_CHUNK_IMAGE2 - 1) / JMP_VECTORS_CHUNK_IMAGE2;
         int TotalcnxvectorSubChunksImg2 = JMP_VECTORS_CHUNK_IMAGE2 / JMP_VECTORS_SUBCHUNK_IMAGE2;
@@ -763,6 +767,8 @@ static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
         {
             SMsFinal->DescIx2ndImgMin[SMsFinal->RealMatches++] = SMs->DescIx2ndImgMin[i];
         }
+
+        cout<<"  |    Total FindGoodMatch time is "<<GetMilliSpan(TimeStart)<<" ms"<<endl;
     }
 
 
