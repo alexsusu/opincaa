@@ -502,7 +502,7 @@ static int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
 }
 
 #define JMP_VECTORS_CHUNK_IMAGE1 364
-#define JMP_VECTORS_SUBCHUNK_IMAGE2 26
+#define JMP_VECTORS_SUBCHUNK_IMAGE2 24 //keep it even, for easy double buffering
 #define JMP_VECTORS_CHUNK_IMAGE2 (JMP_VECTORS_SUBCHUNK_IMAGE2*12)
 
 #undef VECTORS_CHUNK_IMAGE1
@@ -519,7 +519,8 @@ Localstore 364...~700 (JMP_VECTORS_CHUNK_IMAGE1+JMP_VECTORS_CHUNK_IMAGE2) has fi
 Localstore     ...1023 has the second chunk of img2
 
 >> REG <<
-R0 ... R26 filled with one img2 subchunk
+R0 ... R25 filled with one img2 subchunk
+R26, reserved for double buffering
 R27 , reserved as dest for LT instruction (R27 = R31 < R28)
 R28 = 0; // reserved for 0: helps in comparison with 0, for absolute value {if (a-b < 0) then return (b-a) else return (a-b);}
 R29 = 1;//reserved for increment with one
@@ -612,7 +613,7 @@ static int connexJmpFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
                             R[JMP_VECTORS_SUBCHUNK_IMAGE2] = LS[R30]; //load cnxvector y to R30 ; cout <<" LS[" <<y<<"] ====== "<<endl;
                             R30 = R30 + R29;
                             //forall registers with cnxvector-subchunk of img 2 (~30 cnxvectors in 30 registers)
-                            for(int x = 0; x < JMP_VECTORS_SUBCHUNK_IMAGE2; x++)
+                            for(int x = 0; x < JMP_VECTORS_SUBCHUNK_IMAGE2; x+=2)
                             {
                                 /*
                                 R0 ... R26 filled with one img2 subchunk
@@ -624,14 +625,12 @@ static int connexJmpFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
                                 */
 
                                 R31 = R[JMP_VECTORS_SUBCHUNK_IMAGE2] - R[x];
+                                R26 = R[JMP_VECTORS_SUBCHUNK_IMAGE2] - R[x+1];
                                 R27 = R31 < R28;
-                                NOP;
-                                EXECUTE_WHERE_LT
-                                (
-                                R31 = R[x] - R[JMP_VECTORS_SUBCHUNK_IMAGE2];
-                                )
-                                EXECUTE_IN_ALL(REDUCE(R31));
-
+                                R27 = R26 < R28;
+                                EXECUTE_WHERE_LT(R31 = R[x] - R[JMP_VECTORS_SUBCHUNK_IMAGE2];)
+                                EXECUTE_WHERE_LT(R26 = R[x+1] - R[JMP_VECTORS_SUBCHUNK_IMAGE2];)
+                                EXECUTE_IN_ALL(REDUCE(R31);REDUCE(R26);)
                             }
                         )
                     }
