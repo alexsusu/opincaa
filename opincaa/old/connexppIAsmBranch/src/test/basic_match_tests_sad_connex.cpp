@@ -286,7 +286,7 @@ static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMat
                 }
             }
             if (distsq1 < (FACTOR1 * distsq2) >> FACTOR2)
-                SMs->DescIx2ndImgMin[DescriptorIndex1] = minIndex;
+                SM_Arm_OMP_man.DescIx2ndImgMin[DescriptorIndex1] = minIndex;
                 //SMs->DescIx2ndImgMin[SMs->RealMatches++] = minIndex;
         }
 
