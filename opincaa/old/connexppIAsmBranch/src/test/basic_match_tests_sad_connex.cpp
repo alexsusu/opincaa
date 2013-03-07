@@ -245,6 +245,10 @@ static inline unsigned int SAD16_Distance(unsigned short int *set1, unsigned sho
 
 static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMatches* SMs, int threads)
 {
+    //area for parallel real matches finding
+    static SiftMatches SM_Arm_OMP_man;
+    for (int i =0 ;i < SDs1->RealDescriptors; i++) SM_Arm_OMP_man.ScoreMin[i] = (UINT32)-1;
+
     SMs->RealMatches = 0;
     int *dsq = (int*) malloc(SDs1->RealDescriptors*SDs2->RealDescriptors*sizeof(int));
 //    for (int er=0; er < SDs1->RealDescriptors; er++) dsq[er] = new int[SDs2->RealDescriptors];
@@ -260,6 +264,7 @@ static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMat
                 }
         }
 
+        #pragma omp parallel for
         for (int DescriptorIndex1 =0; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1++)
         {
             int	minIndex = -1;
@@ -281,8 +286,16 @@ static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMat
                 }
             }
             if (distsq1 < (FACTOR1 * distsq2) >> FACTOR2)
-                SMs->DescIx2ndImgMin[SMs->RealMatches++] = minIndex;
+                SMs->DescIx2ndImgMin[DescriptorIndex1] = minIndex;
+                //SMs->DescIx2ndImgMin[SMs->RealMatches++] = minIndex;
         }
+
+        //serial region
+        for (int i =0 ;i < SDs1->RealDescriptors; i++)
+            if (SM_Arm_OMP_man.ScoreMin[i] != (UINT32)-1)
+            {
+                SMs->DescIx2ndImgMin[SMs->RealMatches++] = SM_Arm_OMP_man.DescIx2ndImgMin[i];
+            }
 
 //        for (int er=0; er < SDs1->RealDescriptors; er++) delete(dsq[er]);
         free(dsq);
