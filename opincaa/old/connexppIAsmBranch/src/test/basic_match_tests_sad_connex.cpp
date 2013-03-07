@@ -79,7 +79,6 @@ static SiftMatches SM_ConnexArm2;
 static SiftMatches SM_ConnexArmMan;
 static SiftMatches SM_ConnexArmMan2;
 static UINT_RED_REG_VAL *BasicMatchRedResults;
-static UINT_RED_REG_VAL *BasicMatchRedResults2;
 
 static void PrintDescriptors(SiftDescriptors *SDs)
 {
@@ -720,7 +719,7 @@ static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
         int TotalcnxvectorSubChunksImg2 = JMP_VECTORS_CHUNK_IMAGE2 / JMP_VECTORS_SUBCHUNK_IMAGE2;
 
          int RedCounter = 0;
-         BasicMatchRedResults2 = (UINT_RED_REG_VAL*)malloc(sizeof (UINT_RED_REG_VAL) * TotalcnxvectorChunksImg1 * JMP_VECTORS_CHUNK_IMAGE1 *
+         UINT16* BasicMatchRedResults2 = (UINT16*)malloc(sizeof (UINT16) * TotalcnxvectorChunksImg1 * JMP_VECTORS_CHUNK_IMAGE1 *
                                                     TotalcnxvectorChunksImg2 * JMP_VECTORS_CHUNK_IMAGE2);
          for(int CurrentcnxvectorChunkImg1 = 0; CurrentcnxvectorChunkImg1 < TotalcnxvectorChunksImg1; CurrentcnxvectorChunkImg1++)
          {
