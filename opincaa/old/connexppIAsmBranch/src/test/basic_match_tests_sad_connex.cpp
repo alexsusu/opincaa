@@ -717,13 +717,10 @@ static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
         int TotalcnxvectorChunksImg2 = (SiftDescriptors2->RealDescriptors + JMP_VECTORS_CHUNK_IMAGE2 - 1) / JMP_VECTORS_CHUNK_IMAGE2;
         int TotalcnxvectorSubChunksImg2 = JMP_VECTORS_CHUNK_IMAGE2 / JMP_VECTORS_SUBCHUNK_IMAGE2;
 
-        //int RedCounter = 0;
+         //int RedCounter = 0;
          for(int CurrentcnxvectorChunkImg1 = 0; CurrentcnxvectorChunkImg1 < TotalcnxvectorChunksImg1; CurrentcnxvectorChunkImg1++)
          {
              //TotalcnxvectorChunksImg2 *JMP_VECTORS_CHUNK_IMAGE1 * (JMP_VECTORS_SUBCHUNK_IMAGE2 * TotalcnxvectorSubChunksImg2)
-
-             //cout<<"Redcounter = "<<RedCounter<<endl;
-
             // for all chunks of img 2
             for(int CurrentcnxvectorChunkImg2 = 0; CurrentcnxvectorChunkImg2 < TotalcnxvectorChunksImg2; CurrentcnxvectorChunkImg2++)
             {
@@ -734,12 +731,15 @@ static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
                     #pragma omp parallel for
                     for (int CntDescIm1 = 0; CntDescIm1 < JMP_VECTORS_CHUNK_IMAGE1; CntDescIm1++)
                     {
-                        int RedCounter =  CurrentcnxvectorChunkImg1 * TotalcnxvectorChunksImg2 * TotalcnxvectorSubChunksImg2 +
-                                            CurrentcnxvectorChunkImg2 * TotalcnxvectorSubChunksImg2 +
-                                            CntDescIm1;
 
-                        //* JMP_VECTORS_CHUNK_IMAGE2
-                          //                  CurrentcnxvectorSubChunkImg2 * CntDescIm1 * JMP_VECTORS_SUBCHUNK_IMAGE2;
+                        int RedCounter =  CurrentcnxvectorChunkImg1 * TotalcnxvectorChunksImg2 * TotalcnxvectorSubChunksImg2 * JMP_VECTORS_CHUNK_IMAGE1 * JMP_VECTORS_SUBCHUNK_IMAGE2+
+                                            CurrentcnxvectorChunkImg2 * TotalcnxvectorSubChunksImg2* JMP_VECTORS_CHUNK_IMAGE1 * JMP_VECTORS_SUBCHUNK_IMAGE2+
+                                            CurrentcnxvectorSubChunkImg2 * JMP_VECTORS_CHUNK_IMAGE1 * JMP_VECTORS_SUBCHUNK_IMAGE2+
+                                            CntDescIm1 * JMP_VECTORS_SUBCHUNK_IMAGE2;
+
+                        //if ((CurrentcnxvectorChunkImg1 == 1) && (CurrentcnxvectorChunkImg2 == 1) && (CntDescIm1 ==1))
+                        //cout<<"Redcounter = "<<RedCounter<<endl<<flush;
+
                         int descIm1 = JMP_VECTORS_CHUNK_IMAGE1 * CurrentcnxvectorChunkImg1 + CntDescIm1;
 
                         //forall registers with cnxvector-subchunk of img 2 (~30 cnxvectors in 30 registers)
