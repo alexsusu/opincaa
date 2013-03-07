@@ -628,8 +628,8 @@ static int connexJmpFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
                                 R26 = R[JMP_VECTORS_SUBCHUNK_IMAGE2] - R[x+1];
                                 R27 = R31 < R28;
                                 R27 = R26 < R28;
-                                EXECUTE_WHERE_LT(R31 = R[x] - R[JMP_VECTORS_SUBCHUNK_IMAGE2];)
-                                EXECUTE_WHERE_LT(R26 = R[x+1] - R[JMP_VECTORS_SUBCHUNK_IMAGE2];)
+                                EXECUTE_WHERE_LT(R31 = R[x] - R[JMP_VECTORS_SUBCHUNK_IMAGE2];) // this is the lt from R31 < R28;
+                                EXECUTE_WHERE_LT(R26 = R[x+1] - R[JMP_VECTORS_SUBCHUNK_IMAGE2];) // this is the lt from RR26 < 28;
                                 EXECUTE_IN_ALL(REDUCE(R31);REDUCE(R26);)
                             }
                         )
@@ -761,11 +761,18 @@ static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
             }
          }
 
+        SiftMatches SMsFinalman;
+        for (int i=0; i < SiftDescriptors1->RealDescriptors; i++) SMsFinalman.DescIx2ndImgMin[i] = (UINT32)-1;
+
         for (int i = 0; i < SiftDescriptors1->RealDescriptors; i++)
         if (SMs->ScoreMin[i] < (FACTOR1 * SMs->ScoreNextToMin[i]) >> FACTOR2)
         {
-            SMsFinal->DescIx2ndImgMin[SMsFinal->RealMatches++] = SMs->DescIx2ndImgMin[i];
+           SMsFinalman.DescIx2ndImgMin[i] = SMs->DescIx2ndImgMin[i];
         }
+
+        for (int i=0; i < SiftDescriptors1->RealDescriptors; i++)
+            if (SMsFinalman.DescIx2ndImgMin[i] != (UINT32)-1)
+                SMsFinal->DescIx2ndImgMin[SMsFinal->RealMatches++] = SMsFinalman.DescIx2ndImgMin[i];
 
         cout<<"  |    Total FindGoodMatch time is "<<GetMilliSpan(TimeStart)<<" ms"<<endl;
     }
