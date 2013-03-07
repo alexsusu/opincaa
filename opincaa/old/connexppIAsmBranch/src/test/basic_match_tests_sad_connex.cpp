@@ -247,7 +247,7 @@ static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMat
 {
     //area for parallel real matches finding
     static SiftMatches SM_Arm_OMP_man;
-    for (int i =0 ;i < SDs1->RealDescriptors; i++) SM_Arm_OMP_man.ScoreMin[i] = (UINT32)-1;
+    for (int i =0 ;i < SDs1->RealDescriptors; i++) SM_Arm_OMP_man.DescIx2ndImgMin[i] = (UINT32)-1;
 
     SMs->RealMatches = 0;
     int *dsq = (int*) malloc(SDs1->RealDescriptors*SDs2->RealDescriptors*sizeof(int));
@@ -292,7 +292,7 @@ static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMat
 
         //serial region
         for (int i =0 ;i < SDs1->RealDescriptors; i++)
-            if (SM_Arm_OMP_man.ScoreMin[i] != (UINT32)-1)
+            if (SM_Arm_OMP_man.DescIx2ndImgMin[i] != (UINT32)-1)
             {
                 SMs->DescIx2ndImgMin[SMs->RealMatches++] = SM_Arm_OMP_man.DescIx2ndImgMin[i];
             }
