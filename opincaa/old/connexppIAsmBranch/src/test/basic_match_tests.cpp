@@ -864,19 +864,22 @@ static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
                                             (CurrentcnxvectorSubChunkImg2 * JMP_VECTORS_SUBCHUNK_IMAGE2) + x;
                             //if (descIm1 == 0) { cout<<RedCounter<<":"<<BasicMatchRedResults[RedCounter]<<" "; if ((descIm2 & 3) == 3) cout << endl;}
 
-                            UINT_RED_REG_VAL dsq = BasicMatchRedResults[RedCounter];
-                            if (dsq < SMs->ScoreMin[descIm1])
+                            if ((descIm1 < SiftDescriptors1->RealDescriptors) && (descIm2 < SiftDescriptors2->RealDescriptors))
                             {
-                                SMs->ScoreNextToMin[descIm1] = SMs->ScoreMin[descIm1];
-                                SMs->ScoreMin[descIm1] = dsq;
+                                UINT_RED_REG_VAL dsq = BasicMatchRedResults[RedCounter];
+                                if (dsq < SMs->ScoreMin[descIm1])
+                                {
+                                    SMs->ScoreNextToMin[descIm1] = SMs->ScoreMin[descIm1];
+                                    SMs->ScoreMin[descIm1] = dsq;
 
-                                SMs->DescIx2ndImgNextToMin[descIm1] = SMs->DescIx2ndImgMin[descIm1];
-                                SMs->DescIx2ndImgMin[descIm1] = descIm2;
-                            }
-                            else if (dsq < SMs->ScoreNextToMin[descIm1])
-                            {
-                                SMs->ScoreNextToMin[descIm1] = dsq;
-                                SMs->DescIx2ndImgNextToMin[descIm1] = descIm2;
+                                    SMs->DescIx2ndImgNextToMin[descIm1] = SMs->DescIx2ndImgMin[descIm1];
+                                    SMs->DescIx2ndImgMin[descIm1] = descIm2;
+                                }
+                                else if (dsq < SMs->ScoreNextToMin[descIm1])
+                                {
+                                    SMs->ScoreNextToMin[descIm1] = dsq;
+                                    SMs->DescIx2ndImgNextToMin[descIm1] = descIm2;
+                                }
                             }
                             RedCounter++;
                         }
