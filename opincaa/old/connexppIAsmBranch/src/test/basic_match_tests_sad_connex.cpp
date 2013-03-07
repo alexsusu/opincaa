@@ -79,6 +79,7 @@ static SiftMatches SM_ConnexArm2;
 static SiftMatches SM_ConnexArmMan;
 static SiftMatches SM_ConnexArmMan2;
 static UINT_RED_REG_VAL *BasicMatchRedResults;
+static UINT_RED_REG_VAL *BasicMatchRedResults2;
 
 static void PrintDescriptors(SiftDescriptors *SDs)
 {
@@ -706,6 +707,7 @@ static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
         {
             SMs->ScoreMin[CntDescIm1] = (UINT32)-1;
             SMs->ScoreNextToMin[CntDescIm1] = (UINT32)-1;
+            SMs->DescIx2ndImgMin[CntDescIm1] = (UINT32)-1;
         }
 
         SMs->RealMatches = 0;
@@ -718,6 +720,8 @@ static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
         int TotalcnxvectorSubChunksImg2 = JMP_VECTORS_CHUNK_IMAGE2 / JMP_VECTORS_SUBCHUNK_IMAGE2;
 
          int RedCounter = 0;
+         BasicMatchRedResults2 = (UINT_RED_REG_VAL*)malloc(sizeof (UINT_RED_REG_VAL) * TotalcnxvectorChunksImg1 * JMP_VECTORS_CHUNK_IMAGE1 *
+                                                    TotalcnxvectorChunksImg2 * JMP_VECTORS_CHUNK_IMAGE2);
          for(int CurrentcnxvectorChunkImg1 = 0; CurrentcnxvectorChunkImg1 < TotalcnxvectorChunksImg1; CurrentcnxvectorChunkImg1++)
          {
              //TotalcnxvectorChunksImg2 *JMP_VECTORS_CHUNK_IMAGE1 * (JMP_VECTORS_SUBCHUNK_IMAGE2 * TotalcnxvectorSubChunksImg2)
@@ -730,85 +734,60 @@ static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
                 {
                     for (int CntDescIm1 = 0; CntDescIm1 < JMP_VECTORS_CHUNK_IMAGE1; CntDescIm1++)
                     {
-                        //if ((CurrentcnxvectorChunkImg1 == 1) && (CurrentcnxvectorChunkImg2 == 1) && (CntDescIm1 ==1))
-                        //cout<<"Redcounter = "<<RedCounter<<endl<<flush;
-
                         int descIm1 = JMP_VECTORS_CHUNK_IMAGE1 * CurrentcnxvectorChunkImg1 + CntDescIm1;
-
                         //forall registers with cnxvector-subchunk of img 2 (~30 cnxvectors in 30 registers)
-                        int ScoreMin[omp_get_num_threads()];
-                        int ScoreNextToMin[omp_get_num_threads()];
-                        int DescIx2ndImgMin[omp_get_num_threads()];
-
-                        for (int i=0; i < omp_get_num_threads(); i++)
-                            {
-                                DescIx2ndImgMin[i] = SMs->DescIx2ndImgMin[descIm1];
-                                ScoreNextToMin[i] = SMs->ScoreNextToMin[descIm1];
-                                ScoreMin[i] = SMs->ScoreMin[descIm1];
-                            }
-                        #pragma omp parallel for
                         for(int x = 0; x < JMP_VECTORS_SUBCHUNK_IMAGE2; x++)
                         {
-                            int thread = omp_get_thread_num();
-                            int RedCounter =  CurrentcnxvectorChunkImg1 * TotalcnxvectorChunksImg2 * TotalcnxvectorSubChunksImg2 * JMP_VECTORS_CHUNK_IMAGE1 * JMP_VECTORS_SUBCHUNK_IMAGE2+
-                                                CurrentcnxvectorChunkImg2 * TotalcnxvectorSubChunksImg2* JMP_VECTORS_CHUNK_IMAGE1 * JMP_VECTORS_SUBCHUNK_IMAGE2+
-                                                    CurrentcnxvectorSubChunkImg2 * JMP_VECTORS_CHUNK_IMAGE1 * JMP_VECTORS_SUBCHUNK_IMAGE2+
-                                                        CntDescIm1 * JMP_VECTORS_SUBCHUNK_IMAGE2 + x;
-
-
                             int descIm2 = CurrentcnxvectorChunkImg2*JMP_VECTORS_CHUNK_IMAGE2 +
                                             (CurrentcnxvectorSubChunkImg2 * JMP_VECTORS_SUBCHUNK_IMAGE2) + x;
-                            //if (descIm1 == 0) { cout<<RedCounter<<":"<<BasicMatchRedResults[RedCounter]<<" "; if ((descIm2 & 3) == 3) cout << endl;}
 
-                            if ((descIm1 < SiftDescriptors1->RealDescriptors) && (descIm2 < SiftDescriptors2->RealDescriptors))
-                            {
-                                UINT_RED_REG_VAL dsq = BasicMatchRedResults[RedCounter];
-                                if (dsq < ScoreMin[thread])
-                                {
-                                    ScoreNextToMin[thread] = ScoreMin[thread];
-                                    ScoreMin[thread] = dsq;
-                                    DescIx2ndImgMin[thread] = descIm2;
-                                }
-                                else if (dsq < ScoreNextToMin[thread])
-                                {
-                                    ScoreNextToMin[thread] = dsq;
-                                }
-                            }
+                            BasicMatchRedResults2[descIm1 * TotalcnxvectorChunksImg2 * JMP_VECTORS_CHUNK_IMAGE2 + descIm2] =
+                            BasicMatchRedResults[RedCounter++];
                         }
-
-                        int _ScoreMin = (UINT32)-1;
-                        int _ScoreNextToMin = (UINT32)-1;
-                        int _DescIx2ndImgMin;
-
-                        for (int i=0; i < omp_get_num_threads(); i++)
-                            if (_ScoreMin < ScoreMin[i])
-                            {
-                                _ScoreMin = ScoreMin[i];
-                                _DescIx2ndImgMin = DescIx2ndImgMin[i];
-                            }
-
-                        for (int i=0; i < omp_get_num_threads(); i++)
-                            if (_ScoreNextToMin < ScoreNextToMin[i])
-                            {
-                                _ScoreNextToMin = ScoreNextToMin[i];
-                            }
-
-                        SMs->DescIx2ndImgMin[descIm1]= _DescIx2ndImgMin;
-                        SMs->ScoreNextToMin[descIm1] = _ScoreNextToMin;
-                        SMs->ScoreMin[descIm1] = _ScoreMin;
-
                     }
                 }
             }
          }
 
-        for (int i = 0; i < SiftDescriptors1->RealDescriptors; i++)
-        if (SMs->ScoreMin[i] < (FACTOR1 * SMs->ScoreNextToMin[i]) >> FACTOR2)
+//        if ((descIm1 < SiftDescriptors1->RealDescriptors) && (descIm2 < SiftDescriptors2->RealDescriptors))
+
+
+
+        #pragma omp parallel for
+        for (int DescriptorIndex1 =0; DescriptorIndex1 < SiftDescriptors1->RealDescriptors; DescriptorIndex1++)
         {
-           SMsFinal->DescIx2ndImgMin[SMsFinal->RealMatches++] = SMs->DescIx2ndImgMin[i];
+            int	minIndex = -1;
+            unsigned int distsq1, distsq2;
+            distsq1 = distsq2 = (unsigned int)(-1);
+            for (int DescriptorIndex2 =0; DescriptorIndex2 < SiftDescriptors2->RealDescriptors; DescriptorIndex2++)
+            {
+                if (BasicMatchRedResults2[DescriptorIndex1 * SiftDescriptors2->RealDescriptors+DescriptorIndex2] < distsq1)
+                {
+                    distsq2 = distsq1;
+                    distsq1 = BasicMatchRedResults2[DescriptorIndex1*SiftDescriptors2->RealDescriptors+DescriptorIndex2];
+                    //nexttomin = imatch;
+                    minIndex = DescriptorIndex2;
+                }
+                else if (BasicMatchRedResults2[DescriptorIndex1*SiftDescriptors2->RealDescriptors+DescriptorIndex2] < distsq2)
+                {
+                    distsq2 = BasicMatchRedResults2[DescriptorIndex1*SiftDescriptors2->RealDescriptors+DescriptorIndex2];
+                    //nexttomin = j;
+                }
+            }
+            if (distsq1 < (FACTOR1 * distsq2) >> FACTOR2)
+                SMs->DescIx2ndImgMin[DescriptorIndex1] = minIndex;
+                //SMs->DescIx2ndImgMin[SMs->RealMatches++] = minIndex;
         }
 
+        //serial region
+        for (int i =0 ;i < SiftDescriptors1->RealDescriptors; i++)
+            if (SMs->DescIx2ndImgMin[i] != (UINT32)-1)
+            {
+                SMsFinal->DescIx2ndImgMin[SMsFinal->RealMatches++] = SMs->DescIx2ndImgMin[i];
+            }
+
         cout<<"  |    Total FindGoodMatch time is "<<GetMilliSpan(TimeStart)<<" ms"<<endl;
+        free(BasicMatchRedResults2);
     }
 
 
