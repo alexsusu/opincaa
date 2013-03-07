@@ -279,6 +279,7 @@ static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMat
                 }
         }
 
+        int TimeStart = GetMilliCount();
         for (int DescriptorIndex1 =0; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1++)
         {
             int	minIndex = -1;
@@ -305,7 +306,7 @@ static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMat
                 SMs->DescIx2ndImgMin[SMs->RealMatches++] = minIndex;
 
         }
-
+        cout<<"  |    Total FindGoodMatch time is "<<GetMilliSpan(TimeStart)<<" ms"<<endl;
 //        for (int er=0; er < SDs1->RealDescriptors; er++) free(dsq[er]);
         free(dsq);
 }

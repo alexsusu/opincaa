@@ -858,7 +858,7 @@ int test_BasicMatching_All_SAD(char* fn1, char* fn2, FILE* logfile)
     Start = GetMilliCount();
     FindMatches(&SiftDescriptors1, &SiftDescriptors2, &SM_Arm);
     Delta  = GetMilliSpan(Start);
-    cout<<"> cpu-onlu FindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+    cout<<"> cpu-only FindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
     fprintf(logfile, "cpu-only_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
 
     #ifdef __ARM_NEON__ //run only on zedboard
