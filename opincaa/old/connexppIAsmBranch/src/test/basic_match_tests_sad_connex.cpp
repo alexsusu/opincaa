@@ -764,6 +764,7 @@ static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
         SiftMatches SMsFinalman;
         for (int i=0; i < SiftDescriptors1->RealDescriptors; i++) SMsFinalman.DescIx2ndImgMin[i] = (UINT32)-1;
 
+        #pragma omp parallel for
         for (int i = 0; i < SiftDescriptors1->RealDescriptors; i++)
         if (SMs->ScoreMin[i] < (FACTOR1 * SMs->ScoreNextToMin[i]) >> FACTOR2)
         {
