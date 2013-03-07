@@ -717,10 +717,13 @@ static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
         int TotalcnxvectorChunksImg2 = (SiftDescriptors2->RealDescriptors + JMP_VECTORS_CHUNK_IMAGE2 - 1) / JMP_VECTORS_CHUNK_IMAGE2;
         int TotalcnxvectorSubChunksImg2 = JMP_VECTORS_CHUNK_IMAGE2 / JMP_VECTORS_SUBCHUNK_IMAGE2;
 
-        int RedCounter = 0;
-
+        #pragma omp parallel for
          for(int CurrentcnxvectorChunkImg1 = 0; CurrentcnxvectorChunkImg1 < TotalcnxvectorChunksImg1; CurrentcnxvectorChunkImg1++)
          {
+             int RedCounter = CurrentcnxvectorChunkImg1 * JMP_VECTORS_CHUNK_IMAGE1* JMP_VECTORS_CHUNK_IMAGE2* sizeof(UINT_RED_REG_VAL);
+             //int RedCounter = 0;
+             //cout<<"Redcounter = "<<RedCounter<<endl;
+
             // for all chunks of img 2
             for(int CurrentcnxvectorChunkImg2 = 0; CurrentcnxvectorChunkImg2 < TotalcnxvectorChunksImg2; CurrentcnxvectorChunkImg2++)
             {
@@ -729,7 +732,7 @@ static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
                     //forall 364 cnxvectors "y" in chunk of image 1
                     for (int CntDescIm1 = 0; CntDescIm1 < JMP_VECTORS_CHUNK_IMAGE1; CntDescIm1++)
                     {
-                        int descIm1 = JMP_VECTORS_CHUNK_IMAGE1*CurrentcnxvectorChunkImg1 + CntDescIm1;
+                        int descIm1 = JMP_VECTORS_CHUNK_IMAGE1 * CurrentcnxvectorChunkImg1 + CntDescIm1;
 
                         //forall registers with cnxvector-subchunk of img 2 (~30 cnxvectors in 30 registers)
                         for(int x = 0; x < JMP_VECTORS_SUBCHUNK_IMAGE2; x++)
@@ -833,6 +836,7 @@ int test_BasicMatching_All_SAD(char* fn1, char* fn2, FILE* logfile)
     cout<<"> ConnexS-unrolled connexFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
     fprintf(logfile, "ConnexS-unrolled_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
 
+    #endif
 
     // STEP2 Compute on Connex-S with JMP
     Start = GetMilliCount();
@@ -858,7 +862,7 @@ int test_BasicMatching_All_SAD(char* fn1, char* fn2, FILE* logfile)
     if (PASS == CompareMatches(&SM_ConnexArm2,&SM_ConnexArm)) cout << "OK ! Arm == Arm-Connex"<<endl<<endl;
     else cout << "Match test has FAILed. Arm and ConnexArm got different results !"<<endl<<endl;
 
-    #endif
+
     free(BasicMatchRedResults);
 
     /* STEP4: Compute on cpu-only  */
