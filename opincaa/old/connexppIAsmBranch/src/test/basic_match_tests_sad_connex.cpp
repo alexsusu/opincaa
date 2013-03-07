@@ -764,19 +764,11 @@ static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
             }
          }
 
-        SiftMatches SMsFinalman;
-        for (int i=0; i < SiftDescriptors1->RealDescriptors; i++) SMsFinalman.DescIx2ndImgMin[i] = (UINT32)-1;
-
-        #pragma omp parallel for
         for (int i = 0; i < SiftDescriptors1->RealDescriptors; i++)
         if (SMs->ScoreMin[i] < (FACTOR1 * SMs->ScoreNextToMin[i]) >> FACTOR2)
         {
-           SMsFinalman.DescIx2ndImgMin[i] = SMs->DescIx2ndImgMin[i];
+           SMsFinal->DescIx2ndImgMin[SMsFinal->RealMatches++] = SMs->DescIx2ndImgMin[i];
         }
-
-        for (int i=0; i < SiftDescriptors1->RealDescriptors; i++)
-            if (SMsFinalman.DescIx2ndImgMin[i] != (UINT32)-1)
-                SMsFinal->DescIx2ndImgMin[SMsFinal->RealMatches++] = SMsFinalman.DescIx2ndImgMin[i];
 
         cout<<"  |    Total FindGoodMatch time is "<<GetMilliSpan(TimeStart)<<" ms"<<endl;
     }
