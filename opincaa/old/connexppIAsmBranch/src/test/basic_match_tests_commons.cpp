@@ -28,7 +28,7 @@ AlingedSiftDescriptorPtrs malloc_alligned(int BytesToAllocate, int LogAlignament
     obj.NonalignedValue = malloc(BytesToAllocate + (1 << LogAlignament) - 1);
     obj.AlignedValue = (void*) (
                                 (((UINT64)obj.NonalignedValue) + (1 << LogAlignament)-1) & ~((1 << LogAlignament)-1));
-    cout<<obj.NonalignedValue<<" " <<obj.AlignedValue<<endl;
+    //cout<<obj.NonalignedValue<<" " <<obj.AlignedValue<<endl;
 	return obj;
 }
 
@@ -170,6 +170,63 @@ int LoadDescriptors16(char *FileName, SiftDescriptors16 *SDs, int Limit)
                 SDs->SiftDescriptorsBasicFeatures[DescriptorIndex][FeatIndex] = val;
             }
 
+
+            if (result == 1) SDs->RealDescriptors++;
+            else
+                {
+                    fclose(fp);
+                    //printf("Reached end of file\n");
+                    printf("Loading of all %d descriptors took = %d ms \n", SDs->RealDescriptors,GetMilliSpan(Start));
+                    return 0;
+                }
+
+            DescriptorIndex++;
+            if (Limit !=0)
+                if (DescriptorIndex == Limit)
+                {
+                    fclose(fp);
+                    //printf("Reached end of file\n");
+                    printf("LimitLoading of %d descriptors took = %d ms \n", Limit,GetMilliSpan(Start));
+                    return 0;
+                }
+        }
+    }
+}
+
+
+int LoadDescriptors16_64m(char *FileName, SiftDescriptors16 *SDs, int Limit)
+{
+    FILE *fp;
+    int Start = GetMilliCount();
+    if((fp = fopen(FileName, "r")) == NULL)
+    {
+        printf("No such file\n");
+        exit(1);
+    }
+    else
+    {
+        int FeatIndex;
+        int DescriptorIndex=0;
+        int result;
+        SDs->RealDescriptors = 0;
+
+        while(1)
+        {
+            if (DescriptorIndex & 1 == 0) //load descriptor data every 2 vectors so that we will get two vectors per descriptor (as in 64machines connex)
+            {
+                fscanf(fp,"%f",&SDs->SD[DescriptorIndex].X);
+                fscanf(fp,"%f",&SDs->SD[DescriptorIndex].Y);
+                fscanf(fp,"%f",&SDs->SD[DescriptorIndex].Scale);
+                fscanf(fp,"%f",&SDs->SD[DescriptorIndex].Orientation);
+            }
+
+            for (FeatIndex = 0; FeatIndex < (FEATURES_PER_DESCRIPTOR >> 1); FeatIndex++)
+            {
+                int val;
+                result = fscanf(fp,"%d",&val);
+                SDs->SiftDescriptorsBasicFeatures[DescriptorIndex][FeatIndex] = val;
+                SDs->SiftDescriptorsBasicFeatures[DescriptorIndex][FeatIndex + (FEATURES_PER_DESCRIPTOR >> 1)] = 0;
+            }
 
             if (result == 1) SDs->RealDescriptors++;
             else

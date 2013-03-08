@@ -1,6 +1,6 @@
 /*
  *
- * File: basic_match_tests.h
+ * File: basic_match_tests_commons.h
  *
  *
  */
@@ -87,6 +87,7 @@ int CompareMatches(SiftMatches *SMs1, SiftMatches *SMs2);
 
 int LoadDescriptorsF32(char *FileName, SiftDescriptorsF32 *SDs, int Limit);
 int LoadDescriptors16(char *FileName, SiftDescriptors16 *SDs, int Limit);
+int LoadDescriptors16_64m(char *FileName, SiftDescriptors16 *SDs, int Limit);
 int LoadDescriptors8(char *FileName, SiftDescriptors8 *SDs, int Limit);
 
 #ifdef __ARM_NEON__
