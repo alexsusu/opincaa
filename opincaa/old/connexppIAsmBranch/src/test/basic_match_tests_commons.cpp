@@ -212,7 +212,7 @@ int LoadDescriptors16_64m(char *FileName, SiftDescriptors16 *SDs, int Limit)
 
         while(1)
         {
-            if (DescriptorIndex & 1 == 0) //load descriptor data every 2 vectors so that we will get two vectors per descriptor (as in 64machines connex)
+            if ((DescriptorIndex & 1) == 0) //load descriptor data every 2 vectors so that we will get two vectors per descriptor (as in 64machines connex)
             {
                 fscanf(fp,"%f",&SDs->SD[DescriptorIndex].X);
                 fscanf(fp,"%f",&SDs->SD[DescriptorIndex].Y);
