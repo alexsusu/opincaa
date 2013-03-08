@@ -629,7 +629,9 @@ static int connexJmpFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
                             for(int x = 0; x < JMP_VECTORS_SUBCHUNK_IMAGE2; x+=2)
                             {
                                 /*
-                                R0 ... R26 filled with one img2 subchunk
+                                R0 ... R24 filled with one img2 subchunk
+                                R25 is free
+                                R26 = pipelined computation (similar to R31)
                                 R27 , reserved as dest for LT instruction (R27 = R31 < R28)
                                 R28 = 0; // reserved for 0: helps in comparison with 0, for absolute value {if (a-b < 0) then return (b-a) else return (a-b);}
                                 R29 = 1;//reserved for increment with one
