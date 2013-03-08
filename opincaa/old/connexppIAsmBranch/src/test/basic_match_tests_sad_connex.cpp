@@ -611,7 +611,7 @@ static int connexJmpFindMatchesPass1_64m(int RunningMode,int LoadToRxBatchNumber
 
                 if (RunningMode != MODE_NO_REDUCTIONS)
                 {
-                    int ExpectedBytesOfReductions = BYTES_IN_DWORD* JMP_VECTORS_CHUNK_IMAGE1 * JMP_VECTORS_CHUNK_IMAGE2;
+                    int ExpectedBytesOfReductions = BYTES_IN_DWORD* JMP_VECTORS_CHUNK_IMAGE1 * JMP_VECTORS_CHUNK_IMAGE2/2;
                     TimeStart = GetMilliCount();
                     int RealBytesOfReductions = GET_MULTIRED_RESULT(BasicMatchRedResults +
                                         JMP_VECTORS_CHUNK_IMAGE1 * (TotalcnxvectorChunksImg2*JMP_VECTORS_CHUNK_IMAGE2) * CurrentcnxvectorChunkImg1 +
@@ -626,6 +626,7 @@ static int connexJmpFindMatchesPass1_64m(int RunningMode,int LoadToRxBatchNumber
             //next: create or execute created batch
             else if (RunningMode == MODE_CREATE_BATCHES)
             {
+                int reductions = 0;
                 BEGIN_BATCH(LoadToRxBatchNumber + UsingBuffer0or1);
                     R28 = 0;
                     R29 = 1;//reserved for increment with one
@@ -670,10 +671,12 @@ static int connexJmpFindMatchesPass1_64m(int RunningMode,int LoadToRxBatchNumber
                                 EXECUTE_WHERE_LT(R31 = R[x] - R[JMP_VECTORS_SUBCHUNK_IMAGE2];) // this is the lt from R31 < R28;
                                 EXECUTE_WHERE_LT(R26 = R[x+1] - R[JMP_VECTORS_SUBCHUNK_IMAGE2+1];) // this is the lt from R26 < R28;
                                 EXECUTE_IN_ALL(REDUCE(R31);REDUCE(R26);)
+                                reductions++;
                             }
                         )
                     }
                 END_BATCH();
+                cout << "Counted reductions "<<reductions/2<<endl; //twice per batch, for evaluation of space
                 if (UsingBuffer0or1 == 1) return PASS; //no need to create more than 2 batches
             }
         }
@@ -1007,6 +1010,12 @@ int test_BasicMatching_All_SAD(char* fn1, char* fn2, FILE* logfile)
     /***************************************************************************************************************\
     ************************   FOR 64 machine - connex **************************************************************
     \****************************************************************************************************************/
+
+    Start = GetMilliCount();
+    connexJmpFindMatchesPass1_64m(MODE_CREATE_BATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1_64m, &SiftDescriptors2_64m);
+    connexJmpFindMatchesPass2_64m(MODE_CREATE_BATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1_64m, &SiftDescriptors2_64m,
+                                &SM_ConnexArmMan2, &SM_ConnexArm2);
+    cout<<"  ConnexS-JMP Batches were created in "<< GetMilliSpan(Start)<< " ms"<<flush<<endl;
 
     Start = GetMilliCount();
     connexJmpFindMatchesPass1_64m(MODE_EXECUTE_FIND_MATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1_64m, &SiftDescriptors2_64m);
