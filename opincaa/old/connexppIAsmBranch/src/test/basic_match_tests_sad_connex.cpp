@@ -316,8 +316,12 @@ static void FindMatchesOMP(SiftDescriptors *SDs1, SiftDescriptors *SDs2, SiftMat
 
 static io_unit IOU_CVCI1;
 static io_unit IOU_CVCI2;
+
 #define MODE_CREATE_BATCHES 0
 #define MODE_EXECUTE_FIND_MATCHES 1
+#define MODE_NO_BATCH_EXEC 2
+#define MODE_NO_IO_TRANSFERS 3
+#define MODE_NO_REDUCTIONS 4
 
 static int connexFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
                                     SiftDescriptors *SiftDescriptors1, SiftDescriptors *SiftDescriptors2)
@@ -544,36 +548,45 @@ static int connexJmpFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
     {
         UsingBuffer0or1 = 0;
         //>>>>IO-load cnxvector chunk on img1 to LocalStore[0...363]
-        if (RunningMode == MODE_EXECUTE_FIND_MATCHES)
-        {
-            TimeStart = GetMilliCount();
-            IOU_CVCI1.preWritecnxvectors(0,SiftDescriptors1->SiftDescriptorsBasicFeatures[JMP_VECTORS_CHUNK_IMAGE1*CurrentcnxvectorChunkImg1],JMP_VECTORS_CHUNK_IMAGE1);
-            if (PASS != IO_WRITE_NOW(&IOU_CVCI1)) {   printf("Writing next CurrentcnxvectorChunkImg1 to IO pipe, FAILED !"); return FAIL;}
-            TotalIOTime += GetMilliSpan(TimeStart);
-        }
+        if (RunningMode != MODE_CREATE_BATCHES)
+            if (RunningMode != MODE_NO_IO_TRANSFERS)
+            {
+                TimeStart = GetMilliCount();
+                IOU_CVCI1.preWritecnxvectors(0,SiftDescriptors1->SiftDescriptorsBasicFeatures[JMP_VECTORS_CHUNK_IMAGE1*CurrentcnxvectorChunkImg1],JMP_VECTORS_CHUNK_IMAGE1);
+                if (PASS != IO_WRITE_NOW(&IOU_CVCI1)) {   printf("Writing next CurrentcnxvectorChunkImg1 to IO pipe, FAILED !"); return FAIL;}
+                TotalIOTime += GetMilliSpan(TimeStart);
+            }
 
         //forall cnxvector chunks in img2
         for(CurrentcnxvectorChunkImg2 = 0; CurrentcnxvectorChunkImg2 < TotalcnxvectorChunksImg2; CurrentcnxvectorChunkImg2++)
         {
             UsingBuffer0or1 = CurrentcnxvectorChunkImg2 & 0x01;
-            if (RunningMode == MODE_EXECUTE_FIND_MATCHES)
+            if (RunningMode != MODE_CREATE_BATCHES)
             {
                 //>>>> BLOCKING_IO-load cnxvector chunk on img2 to LocalStore[364 ... 364 + 329] or [364+329 ... 1023] (aka wait for loading;)
                 //if still have data, start NON_BLOCKING_IO-load cnxvector chunk on img2 to LS[364+329 ... 1023] or [364 ... 364 + 329]
+                if (RunningMode != MODE_NO_IO_TRANSFERS)
+                {
                     TimeStart = GetMilliCount();
-                    IOU_CVCI2.preWritecnxvectors(JMP_VECTORS_CHUNK_IMAGE1 + UsingBuffer0or1*JMP_VECTORS_CHUNK_IMAGE2,
+                        IOU_CVCI2.preWritecnxvectors(JMP_VECTORS_CHUNK_IMAGE1 + UsingBuffer0or1*JMP_VECTORS_CHUNK_IMAGE2,
                                                     SiftDescriptors2->SiftDescriptorsBasicFeatures[JMP_VECTORS_CHUNK_IMAGE2*CurrentcnxvectorChunkImg2],
                                                         JMP_VECTORS_CHUNK_IMAGE2);
-                    TotalIOTime += GetMilliSpan(TimeStart);
                     if (PASS != IO_WRITE_NOW(&IOU_CVCI2))
                     {
                         printf("Writing next CurrentcnxvectorChunkImg2 to IO pipe, FAILED !");
                         return FAIL;
                     }
-                TimeStart = GetMilliCount();
-                EXECUTE_BATCH(LoadToRxBatchNumber + UsingBuffer0or1);
-                TotalBatchTime += GetMilliSpan(TimeStart);
+                    TotalIOTime += GetMilliSpan(TimeStart);
+                }
 
+                if (RunningMode != MODE_NO_BATCH_EXEC)
+                {
+                    TimeStart = GetMilliCount();
+                    EXECUTE_BATCH(LoadToRxBatchNumber + UsingBuffer0or1);
+                    TotalBatchTime += GetMilliSpan(TimeStart);
+                }
+
+                if (RunningMode != MODE_NO_REDUCTIONS)
                 {
                     int ExpectedBytesOfReductions = BYTES_IN_DWORD* JMP_VECTORS_CHUNK_IMAGE1 * JMP_VECTORS_CHUNK_IMAGE2;
                     TimeStart = GetMilliCount();
@@ -588,7 +601,7 @@ static int connexJmpFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
                 }
             }
             //next: create or execute created batch
-            else// (RunningMode == MODE_CREATE_BATCHES)
+            else if (RunningMode == MODE_CREATE_BATCHES)
             {
                 BEGIN_BATCH(LoadToRxBatchNumber + UsingBuffer0or1);
                     R28 = 0;
