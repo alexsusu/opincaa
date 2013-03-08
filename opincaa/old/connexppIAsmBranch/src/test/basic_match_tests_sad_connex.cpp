@@ -725,12 +725,13 @@ static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
     }
     else // (RunningMode == MODE_EXECUTE_FIND_MATCHES)
     {
-        int TimeStart = GetMilliCount();
-        int TotalcnxvectorChunksImg1 = (SiftDescriptors1->RealDescriptors + JMP_VECTORS_CHUNK_IMAGE1 - 1) / JMP_VECTORS_CHUNK_IMAGE1;
-        int TotalcnxvectorChunksImg2 = (SiftDescriptors2->RealDescriptors + JMP_VECTORS_CHUNK_IMAGE2 - 1) / JMP_VECTORS_CHUNK_IMAGE2;
-        int TotalcnxvectorSubChunksImg2 = JMP_VECTORS_CHUNK_IMAGE2 / JMP_VECTORS_SUBCHUNK_IMAGE2;
+    	const int TimeStart = GetMilliCount();
+        const int TotalcnxvectorChunksImg1 = (SiftDescriptors1->RealDescriptors + JMP_VECTORS_CHUNK_IMAGE1 - 1) / JMP_VECTORS_CHUNK_IMAGE1;
+        const int TotalcnxvectorChunksImg2 = (SiftDescriptors2->RealDescriptors + JMP_VECTORS_CHUNK_IMAGE2 - 1) / JMP_VECTORS_CHUNK_IMAGE2;
+        const int TotalcnxvectorSubChunksImg2 = JMP_VECTORS_CHUNK_IMAGE2 / JMP_VECTORS_SUBCHUNK_IMAGE2;
 
          //int RedCounter = 0;
+#pragma omp parallel for schedule(dynamic) num_threads(2)
          for(int CurrentcnxvectorChunkImg1 = 0; CurrentcnxvectorChunkImg1 < TotalcnxvectorChunksImg1; CurrentcnxvectorChunkImg1++)
          {
              //TotalcnxvectorChunksImg2 *JMP_VECTORS_CHUNK_IMAGE1 * (JMP_VECTORS_SUBCHUNK_IMAGE2 * TotalcnxvectorSubChunksImg2)
@@ -741,7 +742,7 @@ static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
                 for(int CurrentcnxvectorSubChunkImg2 = 0; CurrentcnxvectorSubChunkImg2 < TotalcnxvectorSubChunksImg2; CurrentcnxvectorSubChunkImg2++)
                     //forall 364 cnxvectors "y" in chunk of image 1
                 {
-                    #pragma omp parallel for
+//                    #pragma omp parallel for
                     for (int CntDescIm1 = 0; CntDescIm1 < JMP_VECTORS_CHUNK_IMAGE1; CntDescIm1++)
                     {
 

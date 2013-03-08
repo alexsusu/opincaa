@@ -460,7 +460,6 @@ static int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
 
         int RedCounter = 0;
         //UINT_RED_REG_VAL dsq;
-
          for(int CurrentcnxvectorChunkImg1 = 0; CurrentcnxvectorChunkImg1 < TotalcnxvectorChunksImg1; CurrentcnxvectorChunkImg1++)
          {
             // for all chunks of img 2
@@ -848,12 +847,13 @@ static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
     }
     else // (RunningMode == MODE_EXECUTE_FIND_MATCHES)
     {
-        int TotalcnxvectorChunksImg1 = (SiftDescriptors1->RealDescriptors + JMP_VECTORS_CHUNK_IMAGE1 - 1) / JMP_VECTORS_CHUNK_IMAGE1;
-        int TotalcnxvectorChunksImg2 = (SiftDescriptors2->RealDescriptors + JMP_VECTORS_CHUNK_IMAGE2 - 1) / JMP_VECTORS_CHUNK_IMAGE2;
-        int TotalcnxvectorSubChunksImg2 = JMP_VECTORS_CHUNK_IMAGE2 / JMP_VECTORS_SUBCHUNK_IMAGE2;
+        const int TotalcnxvectorChunksImg1 = (SiftDescriptors1->RealDescriptors + JMP_VECTORS_CHUNK_IMAGE1 - 1) / JMP_VECTORS_CHUNK_IMAGE1;
+        const int TotalcnxvectorChunksImg2 = (SiftDescriptors2->RealDescriptors + JMP_VECTORS_CHUNK_IMAGE2 - 1) / JMP_VECTORS_CHUNK_IMAGE2;
+        const int TotalcnxvectorSubChunksImg2 = JMP_VECTORS_CHUNK_IMAGE2 / JMP_VECTORS_SUBCHUNK_IMAGE2;
 
-        int RedCounter = 0;
+//        int RedCounter = 0;
 
+#pragma omp parallel for schedule(dynamic) num_threads(2)
          for(int CurrentcnxvectorChunkImg1 = 0; CurrentcnxvectorChunkImg1 < TotalcnxvectorChunksImg1; CurrentcnxvectorChunkImg1++)
          {
             // for all chunks of img 2
@@ -864,6 +864,9 @@ static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
                     //forall 364 cnxvectors "y" in chunk of image 1
                     for (int CntDescIm1 = 0; CntDescIm1 < JMP_VECTORS_CHUNK_IMAGE1; CntDescIm1++)
                     {
+                        int RedCounter =  CurrentcnxvectorChunkImg1 * TotalcnxvectorChunksImg2 * TotalcnxvectorSubChunksImg2 * JMP_VECTORS_CHUNK_IMAGE1 * JMP_VECTORS_SUBCHUNK_IMAGE2+
+                                            CurrentcnxvectorChunkImg2 * TotalcnxvectorSubChunksImg2* JMP_VECTORS_CHUNK_IMAGE1 * JMP_VECTORS_SUBCHUNK_IMAGE2+
+						 CurrentcnxvectorSubChunkImg2 * JMP_VECTORS_CHUNK_IMAGE1 * JMP_VECTORS_SUBCHUNK_IMAGE2+CntDescIm1 * JMP_VECTORS_SUBCHUNK_IMAGE2;
                         int descIm1 = JMP_VECTORS_CHUNK_IMAGE1*CurrentcnxvectorChunkImg1 + CntDescIm1;
 
                         //forall registers with cnxvector-subchunk of img 2 (~30 cnxvectors in 30 registers)
@@ -872,7 +875,6 @@ static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
                             int descIm2 = CurrentcnxvectorChunkImg2*JMP_VECTORS_CHUNK_IMAGE2 +
                                             (CurrentcnxvectorSubChunkImg2 * JMP_VECTORS_SUBCHUNK_IMAGE2) + x;
                             //if (descIm1 == 0) { cout<<RedCounter<<":"<<BasicMatchRedResults[RedCounter]<<" "; if ((descIm2 & 3) == 3) cout << endl;}
-
                             if ((descIm1 < SiftDescriptors1->RealDescriptors) && (descIm2 < SiftDescriptors2->RealDescriptors))
                             {
                                 UINT_RED_REG_VAL dsq = BasicMatchRedResults[RedCounter];
@@ -902,7 +904,7 @@ static int connexJmpFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
         }
 
     cout<<"  |___ Total good-match cpu-only computation:"<<GetMilliSpan(Start)<< " ms"<<endl;
-    cout<<"  |___ Total reductions:"<<RedCounter<<endl;
+//    cout<<"  |___ Total reductions:"<<RedCounter<<endl;
     }
 
     return PASS;
