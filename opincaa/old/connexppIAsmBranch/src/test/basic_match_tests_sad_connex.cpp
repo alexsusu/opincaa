@@ -643,7 +643,7 @@ static int connexJmpFindMatchesPass1_64m(int RunningMode,int LoadToRxBatchNumber
                         //for (int y = 0; y < JMP_VECTORS_CHUNK_IMAGE1; y++)
 
                        R30 = 0;/* R30 is reserved for localstore loading location */
-                       REPEAT_X_TIMES(JMP_VECTORS_CHUNK_IMAGE1,
+                       REPEAT_X_TIMES(JMP_VECTORS_CHUNK_IMAGE1/2,
 
                             R[JMP_VECTORS_SUBCHUNK_IMAGE2] = LS[R30]; //load first half of cnxvector y to R30 ;
                             R30 = R30 + R29;
@@ -724,7 +724,7 @@ static int connexJmpFindMatchesPass2_64m(int RunningMode,int LoadToRxBatchNumber
                     //forall 364 cnxvectors "y" in chunk of image 1
                 {
 //                    #pragma omp parallel for
-                    for (int CntDescIm1 = 0; CntDescIm1 < JMP_VECTORS_CHUNK_IMAGE1; CntDescIm1++)
+                    for (int CntDescIm1 = 0; CntDescIm1 < JMP_VECTORS_CHUNK_IMAGE1; CntDescIm1+=2)
                     {
 
                         int RedCounter =  CurrentcnxvectorChunkImg1 * TotalcnxvectorChunksImg2 * TotalcnxvectorSubChunksImg2 * JMP_VECTORS_CHUNK_IMAGE1 * JMP_VECTORS_SUBCHUNK_IMAGE2+
@@ -738,7 +738,7 @@ static int connexJmpFindMatchesPass2_64m(int RunningMode,int LoadToRxBatchNumber
                         int descIm1 = JMP_VECTORS_CHUNK_IMAGE1 * CurrentcnxvectorChunkImg1 + CntDescIm1;
 
                         //forall registers with cnxvector-subchunk of img 2 (~30 cnxvectors in 30 registers)
-                        for(int x = 0; x < JMP_VECTORS_SUBCHUNK_IMAGE2; x++)
+                        for(int x = 0; x < JMP_VECTORS_SUBCHUNK_IMAGE2; x+=2)
                         {
                             int descIm2 = CurrentcnxvectorChunkImg2*JMP_VECTORS_CHUNK_IMAGE2 +
                                             (CurrentcnxvectorSubChunkImg2 * JMP_VECTORS_SUBCHUNK_IMAGE2) + x;
@@ -749,18 +749,18 @@ static int connexJmpFindMatchesPass2_64m(int RunningMode,int LoadToRxBatchNumber
                                 //consolidate results for descriptor in image 1
                                 UINT_RED_REG_VAL dsq = BasicMatchRedResults[RedCounter] + BasicMatchRedResults[RedCounter+1];
 
-                                if (dsq < SMs->ScoreMin[descIm1])
+                                if (dsq < SMs->ScoreMin[descIm1>>1])
                                 {
-                                    SMs->ScoreNextToMin[descIm1] = SMs->ScoreMin[descIm1];
-                                    SMs->ScoreMin[descIm1] = dsq;
+                                    SMs->ScoreNextToMin[descIm1>>1] = SMs->ScoreMin[descIm1>>1];
+                                    SMs->ScoreMin[descIm1>>1] = dsq;
 
-                                    SMs->DescIx2ndImgNextToMin[descIm1] = SMs->DescIx2ndImgMin[descIm1];
-                                    SMs->DescIx2ndImgMin[descIm1] = descIm2;
+                                    SMs->DescIx2ndImgNextToMin[descIm1>>1] = SMs->DescIx2ndImgMin[descIm1>>1];
+                                    SMs->DescIx2ndImgMin[descIm1>>1] = (descIm2 >> 1);
                                 }
-                                else if (dsq < SMs->ScoreNextToMin[descIm1])
+                                else if (dsq < SMs->ScoreNextToMin[descIm1>>1])
                                 {
-                                    SMs->ScoreNextToMin[descIm1] = dsq;
-                                    SMs->DescIx2ndImgNextToMin[descIm1] = descIm2;
+                                    SMs->ScoreNextToMin[descIm1>>1] = dsq;
+                                    SMs->DescIx2ndImgNextToMin[descIm1>>1] = (descIm2>>1);
                                 }
                             }
                             RedCounter+=2;
@@ -1013,8 +1013,8 @@ int test_BasicMatching_All_SAD(char* fn1, char* fn2, FILE* logfile)
     connexJmpFindMatchesPass2_64m(MODE_EXECUTE_FIND_MATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1_64m, &SiftDescriptors2_64m,
                                 &SM_ConnexArmMan3, &SM_ConnexArm3);
     Delta  = GetMilliSpan(Start);
-    cout<<"> ConnexS-JMP connexFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
-    fprintf(logfile, "ConnexS-JMP_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
+    cout<<"> ConnexS-JMP_64m connexFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
+    fprintf(logfile, "ConnexS-JMP_64m_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
 
 
     /* STEP3b: Compare Connex-S (noJMP) with JMP */
