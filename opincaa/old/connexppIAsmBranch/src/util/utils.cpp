@@ -26,7 +26,7 @@ UINT32 (*GET_MULTIRED_RESULT)(UINT_RED_REG_VAL* Results, UINT32 Limit);
 
 int (*IO_WRITE_NOW)(void*);
 int (*IO_WRITE_BEGIN)(void*);
-int (*IO_WRITE_IS_ENDED)();
+//int (*IO_WRITE_IS_ENDED)();
 void (*IO_WRITE_WAIT_END)();
 int (*IO_READ_NOW)(void*);
 
@@ -96,7 +96,7 @@ int initialize(UINT8 RunningMode)
 
         IO_WRITE_NOW = io_unit::vwrite;
         IO_WRITE_BEGIN = io_unit::vwriteNonBlocking;
-        IO_WRITE_IS_ENDED = io_unit::vwriteIsEnded;
+        //IO_WRITE_IS_ENDED = io_unit::vwriteIsEnded;
         IO_WRITE_WAIT_END = io_unit::vwriteWaitEnd;
 
         IO_READ_NOW = io_unit::vread;
@@ -115,7 +115,7 @@ int initialize(UINT8 RunningMode)
 
         IO_WRITE_NOW = io_unit::vwrite;
         IO_WRITE_BEGIN = io_unit::vwriteNonBlocking;
-        IO_WRITE_IS_ENDED = io_unit::vwriteIsEnded;
+        //IO_WRITE_IS_ENDED = io_unit::vwriteIsEnded;
         IO_WRITE_WAIT_END = io_unit::vwriteWaitEnd;
 
         IO_READ_NOW = io_unit::vread;
@@ -128,7 +128,7 @@ int initialize(UINT8 RunningMode)
 
         IO_WRITE_NOW = c_simulator::vwrite;
         IO_WRITE_BEGIN = c_simulator::vwriteNonBlocking;
-        IO_WRITE_IS_ENDED = io_unit::vwriteIsEnded;
+        //IO_WRITE_IS_ENDED = io_unit::vwriteIsEnded;
         IO_WRITE_WAIT_END = io_unit::vwriteWaitEnd;
 
         IO_READ_NOW = c_simulator::vread;
@@ -142,7 +142,7 @@ int initialize(UINT8 RunningMode)
 
         IO_WRITE_NOW = cppamp_emulator::vwrite;
         IO_WRITE_BEGIN = cppamp_emulator::vwriteNonBlocking;
-        IO_WRITE_IS_ENDED = cppamp_emulator::vwriteIsEnded;
+        //IO_WRITE_IS_ENDED = cppamp_emulator::vwriteIsEnded;
         IO_WRITE_WAIT_END = cppamp_emulator::vwriteWaitEnd;
 
         IO_READ_NOW = cppamp_emulator::vread;

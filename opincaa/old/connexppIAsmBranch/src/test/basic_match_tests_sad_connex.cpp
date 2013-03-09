@@ -236,16 +236,38 @@ static int connexFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
             {
                 //>>>> BLOCKING_IO-load cnxvector chunk on img2 to LocalStore[364 ... 364 + 329] or [364+329 ... 1023] (aka wait for loading;)
                 //if still have data, start NON_BLOCKING_IO-load cnxvector chunk on img2 to LS[364+329 ... 1023] or [364 ... 364 + 329]
-                    TimeStart = GetMilliCount();
-                    IOU_CVCI2.preWritecnxvectors(VECTORS_CHUNK_IMAGE1 + UsingBuffer0or1*VECTORS_CHUNK_IMAGE2,
+                    if (CurrentcnxvectorChunkImg2 == 0) //if first block in img2, wait for transfer to end, then start next transfer and batch.
+                    {
+                        TimeStart = GetMilliCount();
+                        IOU_CVCI2.preWritecnxvectors(VECTORS_CHUNK_IMAGE1 + UsingBuffer0or1*VECTORS_CHUNK_IMAGE2,
                                                     SiftDescriptors2->SiftDescriptorsBasicFeatures[VECTORS_CHUNK_IMAGE2*CurrentcnxvectorChunkImg2],
                                                         VECTORS_CHUNK_IMAGE2);
-                    TotalIOTime += GetMilliSpan(TimeStart);
-                    if (PASS != IO_WRITE_NOW(&IOU_CVCI2))
-                    {
-                        printf("Writing next CurrentcnxvectorChunkImg2 to IO pipe, FAILED !");
-                        return FAIL;
+                        TotalIOTime += GetMilliSpan(TimeStart);
+
+                        if (PASS != IO_WRITE_NOW(&IOU_CVCI2))
+                        {
+                            printf("Writing next CurrentcnxvectorChunkImg2 to IO pipe, FAILED !");
+                            return FAIL;
+                        }
                     }
+                    else // if not first img2 transfer
+                    {
+                        //end pending tranfer
+                        IO_WRITE_WAIT_END();
+                    }
+
+                    //start (non-blocking) next transfer if exists
+                    if ((CurrentcnxvectorChunkImg2 + 1) != TotalcnxvectorChunksImg2)
+                    {
+                        TimeStart = GetMilliCount();
+                        IOU_CVCI2.preWritecnxvectors(VECTORS_CHUNK_IMAGE1 + ((UsingBuffer0or1+1) & 0x01)*VECTORS_CHUNK_IMAGE2,
+                                                SiftDescriptors2->SiftDescriptorsBasicFeatures[VECTORS_CHUNK_IMAGE2*CurrentcnxvectorChunkImg2],
+                                                    VECTORS_CHUNK_IMAGE2);
+                        TotalIOTime += GetMilliSpan(TimeStart);
+                        IO_WRITE_BEGIN(&IOU_CVCI2);
+                    }
+
+
                 TimeStart = GetMilliCount();
                 EXECUTE_BATCH(LoadToRxBatchNumber + UsingBuffer0or1);
                 TotalBatchTime += GetMilliSpan(TimeStart);
@@ -524,6 +546,7 @@ static int connexJmpFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
                             }
                         )
                     }
+                NOP;
                 END_BATCH();
                 if (UsingBuffer0or1 == 1) return PASS; //no need to create more than 2 batches
             }

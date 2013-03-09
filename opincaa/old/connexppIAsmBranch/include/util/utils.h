@@ -70,6 +70,7 @@ extern UINT32 (*GET_MULTIRED_RESULT)(UINT_RED_REG_VAL* RedResults, UINT32 Limit)
 
 extern int (*IO_WRITE_NOW)(void*);
 extern int (*IO_WRITE_BEGIN)(void*);
+extern void (*IO_WRITE_WAIT_END)(void);
 extern int (*IO_READ_NOW)(void*);
 
 void initRand();

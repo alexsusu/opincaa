@@ -78,6 +78,7 @@ int io_unit::vwrite(void *_iou)
     Non-blocking write to IO.
     Writes descriptor and data to IO pipe and flushes the pipe.
     It does NOT wait for recevive confirmation.
+    To make sure the stream got to destination, call vwriteWaitEnd
 
     Keep in mind to read the confirmation
     (by calling once waitVwriteComplete()) before any vread call) !
@@ -92,7 +93,6 @@ int io_unit::vwriteNonBlocking(void *_iou)
      else
         result = FAIL;
 
-	write(vpipe_write_32, NULL, 0); //flush
 	return result;
 }
 
@@ -124,6 +124,7 @@ int io_unit::vwriteIsEnded()
 
 void io_unit::vwriteWaitEnd()
 {
+    write(vpipe_write_32, NULL, 0); //flush
     while (PASS != vwriteIsEnded())
     ;//wait
 }
