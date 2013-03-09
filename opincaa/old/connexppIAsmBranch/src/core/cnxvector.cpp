@@ -210,11 +210,13 @@ cnxvector cnxvector::ishra(cnxvector other, UINT_PARAM imm_val) {RETURN_NEW_OBJ_
 cnxvector cnxvector::ult(cnxvector other_left, cnxvector other_right) {RETURN_NEW_OBJ_BIN(_ULT)};
 cnxvector cnxvector::ult(cnxvector other, UINT_PARAM imm_val) {RETURN_NEW_OBJ_PBIN_IMMVAL(_ULT)};
 
+cnxvector cnxvector::condsub(cnxvector other_left, cnxvector other_right) {RETURN_NEW_OBJ_BIN(_CONDSUB)};
+
 cnxvector cnxvector::addc(cnxvector other_left, cnxvector other_right) {RETURN_NEW_OBJ_BIN(_ADDC)};
 cnxvector cnxvector::addc(cnxvector other, UINT_PARAM imm_val) {RETURN_NEW_OBJ_PBIN_IMMVAL(_ADDC)};
 
-cnxvector cnxvector::subc(cnxvector other_left, cnxvector other_right) {RETURN_NEW_OBJ_BIN(_SUBC)};
-cnxvector cnxvector::subc(cnxvector other, UINT_PARAM imm_val) {RETURN_NEW_OBJ_PBIN_IMMVAL(_SUBC)};
+//cnxvector cnxvector::subc(cnxvector other_left, cnxvector other_right) {RETURN_NEW_OBJ_BIN(_SUBC)};
+//cnxvector cnxvector::subc(cnxvector other, UINT_PARAM imm_val) {RETURN_NEW_OBJ_PBIN_IMMVAL(_SUBC)};
 
 void cnxvector::cellshl(cnxvector other_left, cnxvector other_right)
 {

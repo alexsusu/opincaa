@@ -86,7 +86,8 @@
 
 #define REDUCE(x)       cnxvector::reduce(x)
 #define ADDC(x,y)       cnxvector::addc(x,y)
-#define SUBC(x,y)       cnxvector::subc(x,y)
+//#define SUBC(x,y)       cnxvector::subc(x,y)
+#define CONDSUB(x,y)    cnxvector::condsub(x,y)
 #define ULT(x,y)        cnxvector::ult(x,y)
 #define SHRA(x,y)       cnxvector::shra(x,y)
 #define ISHRA(x,y)      cnxvector::ishra(x,y)
@@ -156,8 +157,9 @@ class cnxvector
         static cnxvector addc(cnxvector other_left, cnxvector other_right);
         static cnxvector addc(cnxvector other_left, UINT_PARAM value);
 
-        static cnxvector subc(cnxvector other_left, cnxvector other_right);
-        static cnxvector subc(cnxvector other_left, UINT_PARAM value);
+        //static cnxvector subc(cnxvector other_left, cnxvector other_right);
+        //static cnxvector subc(cnxvector other_left, UINT_PARAM value);
+        static cnxvector condsub(cnxvector other_left, cnxvector other_right);
 
         static cnxvector shra(cnxvector other_left, cnxvector other_right);
         static cnxvector ishra(cnxvector other_left, UINT_PARAM value);

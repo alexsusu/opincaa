@@ -276,6 +276,20 @@ static void InitKernel_pSub(int BatchNumber,INT32 Param1, INT32 Param2)
     END_BATCH(BatchNumber);
 }
 
+
+static void InitKernel_CondSub(int BatchNumber,INT32 Param1, INT32 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        EXECUTE_IN_ALL(
+                        R1 = Param1;
+                        R2 = Param2;
+                        R2 = CONDSUB(R1,R2);
+                        REDUCE(R2);
+                        )
+
+    END_BATCH(BatchNumber);
+}
+
 static void InitKernel_Subc(int BatchNumber,INT32 Param1, INT32 Param2)
 {
     BEGIN_BATCH(BatchNumber);
@@ -283,11 +297,21 @@ static void InitKernel_Subc(int BatchNumber,INT32 Param1, INT32 Param2)
                         R1 = 0xff;
                         R2 = 0xffff;
                         R3 = R1 - R2;
-
+                        /* The sequence of 3 instructions:
                         R1 = Param1;
                         R2 = Param2;
                         R3 = SUBC(R1,R2);
-                        REDUCE(R3);
+                        is replaceble with the following 8 instructions:
+                        */
+
+                        R4 = 0;
+                        EXECUTE_WHERE_CARRY(R4 = 1;)
+                        EXECUTE_IN_ALL(
+                        R1 = Param1;
+                        R2 = Param2;
+                        R3 = R1 - R2;
+                        R3 = R3 - R4;
+                        REDUCE(R3);)
                         )
 
     END_BATCH(BatchNumber);
@@ -301,9 +325,20 @@ static void InitKernel_pSubc(int BatchNumber,INT32 Param1, INT32 Param2)
                         R2 = 0xffff;
                         R3 = R1 - R2;
 
+                        /* The sequence of 3 instructions here the SUBC is pseudo-instruction:
                         R1 = Param1;
                         R2 = SUBC(R1,Param2);
-                        REDUCE(R2);
+
+                        is replaceble with the following 8 instructions:
+                        */
+                        R4 = 0;
+                        EXECUTE_WHERE_CARRY(R4 = 1;)
+                        EXECUTE_IN_ALL(
+                                R1 = Param1;
+                                R2 = Param2;
+                                R2 = R1 - R2;
+                                R2 = R2 - R4;
+                            REDUCE(R2);)
                         )
 
     END_BATCH(BatchNumber);
@@ -861,6 +896,8 @@ enum SimpleBatchNumbers
     SUBC_BNR        ,
     pSUBC_BNR       ,
 
+    CONDSUB_BNR     ,
+
     XOR_BNR         ,
     pXOR_BNR        ,
     sXOR_BNR        ,
@@ -903,6 +940,9 @@ static TestFunction TestFunctionTable[] =
 
     {SUBC_BNR,"SUBC",InitKernel_Subc,{0xffff,0xff8f,(0xffff - 0xff8f -1)*NUMBER_OF_MACHINES}},
     {pSUBC_BNR,"pSUBC",InitKernel_pSubc,{0xffff,0xff8f,(0xffff - 0xff8f -1)*NUMBER_OF_MACHINES}},
+
+    {CONDSUB_BNR,"CONDSUB",InitKernel_CondSub,{0xffff,0xff8f,(0xffff - 0xff8f)*NUMBER_OF_MACHINES}},
+    {CONDSUB_BNR,"CONDSUB2",InitKernel_CondSub,{0xff8f,0xffff,0*NUMBER_OF_MACHINES}},
 
     {NOT_BNR,"NOT",InitKernel_Not,{0xfff0,0x00,(0xf)*NUMBER_OF_MACHINES}},
 

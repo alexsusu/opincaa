@@ -51,7 +51,7 @@
     #define _ADD     0b101000100
     #define _ADDC    0b101100100
     #define _SUB     0b101010100
-    #define _SUBC    0b101110100
+    #define _CONDSUB 0b101110100
 
     #define _NOT    0b101001100
     #define _OR     0b101011100

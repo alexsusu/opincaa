@@ -111,7 +111,7 @@ static OpCodeDeAsm OpCodeDeAsms[] =
     {_ADD,"+"},
     {_ADDC,"+ CARRY +"},
     {_SUB,"-"},
-    {_SUBC,"- CARRY -"},
+    {_CONDSUB," CONDSUB "},
     {_NOT,"~"},
     {_OR,"|"},
     {_AND,"&"},
@@ -247,7 +247,7 @@ int c_simulator::printDeAsmBatch(UINT16 dwBatchNumber)
                 case _ADD:
                 case _ADDC:
                 case _SUB:
-                case _SUBC:
+                case _CONDSUB:
                 case _OR:
                 case _AND:
                 case _XOR:
@@ -381,14 +381,13 @@ int c_simulator::DeAsmBatch(UINT16 dwBatchNumber)
                                                    );
                                                     continue;}
 
-                case _SUBC:{FOR_ALL_ACTIVE_MACHINES(CSimuRegs[MACHINE][GET_DEST(CI)] =
-                                                    CSimuRegs[MACHINE][GET_LEFT(CI)] - CSimuRegs[MACHINE][GET_RIGHT(CI)]
-                                                   - CSimuCarryFlags[MACHINE]); continue;
-                                    if (CSimuRegs[MACHINE][GET_LEFT(CI)] <
-                                            CSimuRegs[MACHINE][GET_RIGHT(CI)] + CSimuCarryFlags[MACHINE])
-                                         CSimuCarryFlags[MACHINE] = 1;
-                                    else CSimuCarryFlags[MACHINE] = 0;
-                                                   }
+                case _CONDSUB:{FOR_ALL_ACTIVE_MACHINES(
+                                                       if (CSimuRegs[MACHINE][GET_LEFT(CI)] < CSimuRegs[MACHINE][GET_RIGHT(CI)])
+                                                                                                    CSimuRegs[MACHINE][GET_DEST(CI)] = 0;
+                                                       else CSimuRegs[MACHINE][GET_DEST(CI)] =
+                                                                CSimuRegs[MACHINE][GET_LEFT(CI)] - CSimuRegs[MACHINE][GET_RIGHT(CI)];
+                                                   );
+                                                    continue;}
 
                 case _OR:{FOR_ALL_ACTIVE_MACHINES(CSimuRegs[MACHINE][GET_DEST(CI)] =
                                                     CSimuRegs[MACHINE][GET_LEFT(CI)] | CSimuRegs[MACHINE][GET_RIGHT(CI)]);

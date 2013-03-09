@@ -519,7 +519,7 @@ static int connexJmpFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
                                 R30 is reserved for localstore loading location (looped jmp variable)
                                 R31 = we reduce this for the SAD
                                 */
-
+                                /* OLD version
                                 R31 = R[JMP_VECTORS_SUBCHUNK_IMAGE2] - R[x];
                                 R26 = R[JMP_VECTORS_SUBCHUNK_IMAGE2] - R[x+1];
                                 R27 = R31 < R28;
@@ -527,6 +527,19 @@ static int connexJmpFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
                                 EXECUTE_WHERE_LT(R31 = R[x] - R[JMP_VECTORS_SUBCHUNK_IMAGE2];) // this is the lt from R31 < R28;
                                 EXECUTE_WHERE_LT(R26 = R[x+1] - R[JMP_VECTORS_SUBCHUNK_IMAGE2];) // this is the lt from RR26 < 28;
                                 EXECUTE_IN_ALL(REDUCE(R31);REDUCE(R26);)
+                                */
+
+                                /* CONDSUB version */
+                                R31 = CONDSUB(R[JMP_VECTORS_SUBCHUNK_IMAGE2], R[x]);
+                                R26 = CONDSUB(R[x] , R[JMP_VECTORS_SUBCHUNK_IMAGE2]);
+                                R31 = R31 + R26;
+                                REDUCE(R31);
+
+                                R31 = CONDSUB(R[JMP_VECTORS_SUBCHUNK_IMAGE2], R[x+1]);
+                                R26 = CONDSUB(R[x+1] , R[JMP_VECTORS_SUBCHUNK_IMAGE2]);
+                                R31 = R31 + R26;
+                                REDUCE(R31);
+
                             }
                         )
                     }
@@ -617,7 +630,7 @@ static int connexJmpFindMatchesPass1_64m(int RunningMode,int LoadToRxBatchNumber
                                         JMP_VECTORS_CHUNK_IMAGE1 * (TotalcnxvectorChunksImg2*JMP_VECTORS_CHUNK_IMAGE2) * CurrentcnxvectorChunkImg1 +
                                         JMP_VECTORS_CHUNK_IMAGE1 * JMP_VECTORS_CHUNK_IMAGE2 * CurrentcnxvectorChunkImg2,
                                         ExpectedBytesOfReductions
-                                        );
+                                       );
                     TotalReductionTime += GetMilliSpan(TimeStart);
                     if (ExpectedBytesOfReductions != RealBytesOfReductions)
                      cout<<" Unexpected size of bytes of reductions (expected: "<<ExpectedBytesOfReductions<<" but got "<<RealBytesOfReductions<<endl;
@@ -626,7 +639,7 @@ static int connexJmpFindMatchesPass1_64m(int RunningMode,int LoadToRxBatchNumber
             //next: create or execute created batch
             else if (RunningMode == MODE_CREATE_BATCHES)
             {
-                int reductions = 0;
+                //int reductions = 0;
                 BEGIN_BATCH(LoadToRxBatchNumber + UsingBuffer0or1);
                     R28 = 0;
                     R29 = 1;//reserved for increment with one
@@ -671,12 +684,12 @@ static int connexJmpFindMatchesPass1_64m(int RunningMode,int LoadToRxBatchNumber
                                 EXECUTE_WHERE_LT(R31 = R[x] - R[JMP_VECTORS_SUBCHUNK_IMAGE2];) // this is the lt from R31 < R28;
                                 EXECUTE_WHERE_LT(R26 = R[x+1] - R[JMP_VECTORS_SUBCHUNK_IMAGE2+1];) // this is the lt from R26 < R28;
                                 EXECUTE_IN_ALL(REDUCE(R31);REDUCE(R26);)
-                                reductions++;
+                                //reductions++;
                             }
                         )
                     }
                 END_BATCH();
-                cout << "Counted reductions "<<reductions/2<<endl; //twice per batch, for evaluation of space
+                //cout << "Counted reductions "<<reductions/2<<endl; //twice per batch, for evaluation of space
                 if (UsingBuffer0or1 == 1) return PASS; //no need to create more than 2 batches
             }
         }
@@ -1010,6 +1023,10 @@ int test_BasicMatching_All_SAD(char* fn1, char* fn2, FILE* logfile)
     /***************************************************************************************************************\
     ************************   FOR 64 machine - connex **************************************************************
     \****************************************************************************************************************/
+    /*
+    free(BasicMatchRedResults);
+    BasicMatchRedResults = (UINT_RED_REG_VAL*)malloc(228000*4);
+    if (BasicMatchRedResults == NULL) {cout<<"Could not allocate memory for reductions "<<endl;return 0;};
 
     Start = GetMilliCount();
     connexJmpFindMatchesPass1_64m(MODE_CREATE_BATCHES, JMP_BASIC_MATCHING_BNR, &SiftDescriptors1_64m, &SiftDescriptors2_64m);
@@ -1025,11 +1042,15 @@ int test_BasicMatching_All_SAD(char* fn1, char* fn2, FILE* logfile)
     cout<<"> ConnexS-JMP_64m connexFindMatches ran in " << Delta << " ms ("<< BruteMatches/Delta/1000 <<" MM/s)"<<flush<<endl;
     fprintf(logfile, "ConnexS-JMP_64m_ran_in_time %d %f MM/s \n", Delta, BruteMatches/Delta/1000);
 
+    free(BasicMatchRedResults);
+    BasicMatchRedResults = (UINT_RED_REG_VAL*)malloc(MAX_REDUCES * sizeof(UINT_RED_REG_VAL));
+    if (BasicMatchRedResults == NULL) {cout<<"Could not allocate memory for reductions "<<endl;return 0;};
 
-    /* STEP3b: Compare Connex-S (noJMP) with JMP */
+
+    // STEP3b: Compare Connex-S (noJMP) with JMP
     if (PASS == CompareMatches(&SM_ConnexArm2,&SM_ConnexArm3)) cout << "OK ! Connex_128 == Connex_64"<<endl<<endl;
     else cout << "Match test has FAILed. Connex_128 and Connex_64 got different results !"<<endl<<endl;
-
+    */
     /****************************************************************************************************************/
 
     free(BasicMatchRedResults);
