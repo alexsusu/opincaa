@@ -387,8 +387,8 @@ static int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
 }
 
 #define JMP_VECTORS_CHUNK_IMAGE1 364
-#define JMP_VECTORS_SUBCHUNK_IMAGE2 24 //keep it even, for easy double buffering
-#define JMP_VECTORS_CHUNK_IMAGE2 (JMP_VECTORS_SUBCHUNK_IMAGE2*13)
+#define JMP_VECTORS_SUBCHUNK_IMAGE2 27 //keep it even, for easy double buffering
+#define JMP_VECTORS_CHUNK_IMAGE2 (JMP_VECTORS_SUBCHUNK_IMAGE2*12)
 
 #undef VECTORS_CHUNK_IMAGE1
 #undef VECTORS_CHUNK_IMAGE2
@@ -485,7 +485,6 @@ static int connexJmpFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
             else if (RunningMode == MODE_CREATE_BATCHES)
             {
                 BEGIN_BATCH(LoadToRxBatchNumber + UsingBuffer0or1);
-                    R28 = 0;
                     R29 = 1;//reserved for increment with one
 
                     //forall subchunks of chunk of img 2
@@ -507,39 +506,21 @@ static int connexJmpFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
                             R[JMP_VECTORS_SUBCHUNK_IMAGE2] = LS[R30]; //load cnxvector y to R30 ; cout <<" LS[" <<y<<"] ====== "<<endl;
                             R30 = R30 + R29;
                             //forall registers with cnxvector-subchunk of img 2 (~30 cnxvectors in 30 registers)
-                            for(int x = 0; x < JMP_VECTORS_SUBCHUNK_IMAGE2; x+=2)
+                            for(int x = 0; x < JMP_VECTORS_SUBCHUNK_IMAGE2; x++)
                             {
                                 /*
-                                R0 ... R24 filled with one img2 subchunk
-                                R25 is free
-                                R26 = pipelined computation (similar to R31)
-                                R27 , reserved as dest for LT instruction (R27 = R31 < R28)
-                                R28 = 0; // reserved for 0: helps in comparison with 0, for absolute value {if (a-b < 0) then return (b-a) else return (a-b);}
+                                R0 ... R26 filled with one img2 subchunk
+                                R27 has one img1 descriptor
+                                R28 = man variable for the condsub
                                 R29 = 1;//reserved for increment with one
                                 R30 is reserved for localstore loading location (looped jmp variable)
                                 R31 = we reduce this for the SAD
                                 */
-                                /* OLD version
-                                R31 = R[JMP_VECTORS_SUBCHUNK_IMAGE2] - R[x];
-                                R26 = R[JMP_VECTORS_SUBCHUNK_IMAGE2] - R[x+1];
-                                R27 = R31 < R28;
-                                R27 = R26 < R28;
-                                EXECUTE_WHERE_LT(R31 = R[x] - R[JMP_VECTORS_SUBCHUNK_IMAGE2];) // this is the lt from R31 < R28;
-                                EXECUTE_WHERE_LT(R26 = R[x+1] - R[JMP_VECTORS_SUBCHUNK_IMAGE2];) // this is the lt from RR26 < 28;
-                                EXECUTE_IN_ALL(REDUCE(R31);REDUCE(R26);)
-                                */
 
-                                /* CONDSUB version */
                                 R31 = CONDSUB(R[JMP_VECTORS_SUBCHUNK_IMAGE2], R[x]);
-                                R26 = CONDSUB(R[x] , R[JMP_VECTORS_SUBCHUNK_IMAGE2]);
-                                R31 = R31 + R26;
+                                R28 = CONDSUB(R[x] , R[JMP_VECTORS_SUBCHUNK_IMAGE2]);
+                                R31 = R31 + R28;
                                 REDUCE(R31);
-
-                                R31 = CONDSUB(R[JMP_VECTORS_SUBCHUNK_IMAGE2], R[x+1]);
-                                R26 = CONDSUB(R[x+1] , R[JMP_VECTORS_SUBCHUNK_IMAGE2]);
-                                R31 = R31 + R26;
-                                REDUCE(R31);
-
                             }
                         )
                     }
