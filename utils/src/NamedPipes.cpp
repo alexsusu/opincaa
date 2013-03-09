@@ -168,3 +168,18 @@
     }
 #endif
 
+/*
+ * Reads byteCount bytes from descriptor and places the 
+ * result in destination. It blocks until all byteCount bytes
+ * have been read.
+ */
+unsigned readFromPipe(int descriptor, void* destination, unsigned byteCount)
+{
+    char* dest = (char*)destination;
+    unsigned totalBytesRead = 0;
+    do{
+        totalBytesRead += read(descriptor, dest + totalBytesRead, byteCount - totalBytesRead);
+    }while(byteCount != totalBytesRead);
+    
+    return byteCount;
+}

@@ -29,9 +29,18 @@
 
     #define popen open
     #define pwrite write
-    #define pread read
+    #define pread readFromPipe
     #define pclose close
     #define pmake mkfifo
+    
+    
 #endif
 
+/*
+* Reads byteCount bytes from descriptor and places the 
+* result in destination. It blocks until all byteCount bytes
+* have been read.
+*/
+unsigned readFromPipe(int descriptor, void* destination, unsigned byteCount);
+    
 #endif // NAMEDPIPES_H

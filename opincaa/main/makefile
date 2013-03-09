@@ -17,7 +17,7 @@ TEST_BUILD_DIR = test_build
 CFLAGS = -fPIC -std=c++0x
 LDFLAGS_DEBUG =  $(LDFLAGS)
 
-OBJ = $(BUILD_DIR)/Instruction.o  $(BUILD_DIR)/Kernel.o $(BUILD_DIR)/ConnexMachine.o $(BUILD_DIR)/Operand.o
+OBJ = $(BUILD_DIR)/Instruction.o  $(BUILD_DIR)/Kernel.o $(BUILD_DIR)/ConnexMachine.o $(BUILD_DIR)/Operand.o $(BUILD_DIR)/NamedPipes.o
 TEST_OBJ = $(TEST_BUILD_DIR)/api_test
 
 lib: make_paths build_lib
@@ -42,7 +42,7 @@ $(BUILD_DIR)/ConnexMachine.o: $(SRC_DIR)/ConnexMachine.cpp
 	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../../utils/include -I../../arch/include -c $(SRC_DIR)/ConnexMachine.cpp -o $(BUILD_DIR)/ConnexMachine.o
 
 $(BUILD_DIR)/NamedPipes.o: ../../utils/src/NamedPipes.cpp
-	$(CXX) $(CFLAGS) -I$(INC_DIR) -c ../../utils/src/NamedPipes.cpp -o $(BUILD_DIR)/NamedPipes.o
+	$(CXX) $(CFLAGS) -I../../utils/include -c ../../utils/src/NamedPipes.cpp -o $(BUILD_DIR)/NamedPipes.o
 
 install: lib
 	cp $(LIB_DIR)/libopincaa.so /usr/local/lib
