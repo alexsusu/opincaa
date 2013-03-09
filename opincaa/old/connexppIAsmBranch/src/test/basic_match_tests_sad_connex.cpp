@@ -261,7 +261,7 @@ static int connexFindMatchesPass1(int RunningMode,int LoadToRxBatchNumber,
                     {
                         TimeStart = GetMilliCount();
                         IOU_CVCI2.preWritecnxvectors(VECTORS_CHUNK_IMAGE1 + ((UsingBuffer0or1+1) & 0x01)*VECTORS_CHUNK_IMAGE2,
-                                                SiftDescriptors2->SiftDescriptorsBasicFeatures[VECTORS_CHUNK_IMAGE2*CurrentcnxvectorChunkImg2],
+                                                SiftDescriptors2->SiftDescriptorsBasicFeatures[VECTORS_CHUNK_IMAGE2*(CurrentcnxvectorChunkImg2 + 1)],
                                                     VECTORS_CHUNK_IMAGE2);
                         TotalIOTime += GetMilliSpan(TimeStart);
                         IO_WRITE_BEGIN(&IOU_CVCI2);

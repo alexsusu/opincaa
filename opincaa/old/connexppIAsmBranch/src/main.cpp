@@ -178,7 +178,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    test_Simple_All(false);
+    test_Simple_All(true);
 
     char *LogFileName = "RunScores.log";
     FILE *logfile = fopen(LogFileName, "w");
@@ -189,14 +189,14 @@ int main(int argc, char *argv[])
     //test_Simple_IO_All(true);
 	//test_BasicMatching_SAD_All();
 
-    //char *fn1 ="data/adam1.key";
-    //char *fn2 ="data/adam2.key";
+    char *fn1 ="data/adam1.key";
+    char *fn2 ="data/adam2.key";
 
     //char *fn1 ="data/adam1_big.png.key";
     //char *fn2 ="data/adam2_big.png.key";
 
-    char *fn1 ="data/img1.png.key";
-    char *fn2 ="data/img3.png.key";
+    //char *fn1 ="data/img1.png.key";
+    //char *fn2 ="data/img3.png.key";
 
     test_BasicMatching_All_SSD(fn1, fn2, logfile);
     test_BasicMatching_All_SAD(fn1, fn2, logfile);
