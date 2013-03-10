@@ -42,11 +42,7 @@ void io_unit::setIOParams(int mode, int LsAddress, int NumOfCnxvectors)
 void io_unit::preWritecnxvectors(UINT16 destAddress, UINT16 *srcAddress, UINT16 numcnxvectors)
 {
     setIOParams(WRITE_MODE, destAddress,numcnxvectors);
-    UINT32 *buff = Iouc.Content;
-    UINT32 *dwsrcAddress = (UINT32*)srcAddress;
-    UINT32 *buffstop = buff + numcnxvectors*CNXVECTOR_SIZE_IN_DWORDS;
-    while (buff < buffstop)
-        *buff++ = *dwsrcAddress++;
+    memcpy(Iouc.Content, srcAddress, numcnxvectors*CNXVECTOR_SIZE_IN_BYTES);
 }
 /*
 void io_unit::preWritecnxvectorsAppend(UINT16 destAddress, UINT16 *srcAddress, UINT16 numcnxvectors)
