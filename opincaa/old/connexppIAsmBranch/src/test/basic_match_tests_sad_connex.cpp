@@ -767,22 +767,26 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
             {
                 //>>>> BLOCKING_IO-load cnxvector chunk on img2 to LocalStore[364 ... 364 + 329] or [364+329 ... 1023] (aka wait for loading;)
                 //if still have data, start NON_BLOCKING_IO-load cnxvector chunk on img2 to LS[364+329 ... 1023] or [364 ... 364 + 329]
-
-                TimeStart = GetMilliCount();
+                if (CurrentcnxvectorChunkImg2 == 0) //if first block in img2, wait for transfer to end, then start next transfer and batch.
+                {
+                    TimeStart = GetMilliCount();
                     IOU_CVCI2.preWritecnxvectors(JMP_VECTORS_CHUNK_IMAGE1 + UsingBuffer0or1*JMP_VECTORS_CHUNK_IMAGE2,
                                                 SiftDescriptors2->SiftDescriptorsBasicFeatures[JMP_VECTORS_CHUNK_IMAGE2*CurrentcnxvectorChunkImg2],
                                                     JMP_VECTORS_CHUNK_IMAGE2);
-                if (PASS != IO_WRITE_NOW(&IOU_CVCI2))
-                {
-                    printf("Writing next CurrentcnxvectorChunkImg2 to IO pipe, FAILED !");
-                    return FAIL;
+                    if (PASS != IO_WRITE_NOW(&IOU_CVCI2))
+                    {
+                        printf("Writing next CurrentcnxvectorChunkImg2 to IO pipe, FAILED !");
+                        return FAIL;
+                    }
+                    TotalIOTime += GetMilliSpan(TimeStart);
                 }
-                TotalIOTime += GetMilliSpan(TimeStart);
 
                 TimeStart = GetMilliCount();
                 EXECUTE_BATCH(LoadToRxBatchNumber + UsingBuffer0or1);
                 TotalBatchTime += GetMilliSpan(TimeStart);
 
+                /* While batch executes, do work: do not wait for reduction to haoppen */
+                /* Extra-work1: process last reduction results */
                 if ((CurrentcnxvectorChunkImg1 != 0) || (CurrentcnxvectorChunkImg2 != 0)) //if not first reduction
                 ProcessLastReduction(LastCurrentcnxvectorChunkImg1, LastCurrentcnxvectorChunkImg2, TotalcnxvectorSubChunksImg2,
                                      SiftDescriptors1->RealDescriptors, SiftDescriptors2->RealDescriptors, SMs
@@ -791,6 +795,22 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
                 LastCurrentcnxvectorChunkImg1 = CurrentcnxvectorChunkImg1;
                 LastCurrentcnxvectorChunkImg2 = CurrentcnxvectorChunkImg2;
 
+                /* Extra-work2: Send next io-transfer, if any left */
+                if ((CurrentcnxvectorChunkImg2 + 1) != TotalcnxvectorChunksImg2)
+                {
+                    TimeStart = GetMilliCount();
+                    IOU_CVCI2.preWritecnxvectors(JMP_VECTORS_CHUNK_IMAGE1 + ((UsingBuffer0or1+1) & 0x01)*JMP_VECTORS_CHUNK_IMAGE2,
+                                            SiftDescriptors2->SiftDescriptorsBasicFeatures[JMP_VECTORS_CHUNK_IMAGE2*(CurrentcnxvectorChunkImg2 + 1)],
+                                                JMP_VECTORS_CHUNK_IMAGE2);
+                    if (PASS != IO_WRITE_NOW(&IOU_CVCI2))
+                    {
+                        printf("Writing next CurrentcnxvectorChunkImg2 to IO pipe, FAILED !");
+                        return FAIL;
+                    }
+                    TotalIOTime += GetMilliSpan(TimeStart);
+                }
+
+                //We have no more work to do, so we wait for reduction (in fact batch execution) to happen */
                 {
                     int ExpectedBytesOfReductions = BYTES_IN_DWORD* JMP_VECTORS_CHUNK_IMAGE1 * JMP_VECTORS_CHUNK_IMAGE2;
                     TimeStart = GetMilliCount();
