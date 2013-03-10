@@ -408,7 +408,7 @@ static int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
     return PASS;
 }
 
-#define JMP_VECTORS_CHUNK_IMAGE1 364
+#define JMP_VECTORS_CHUNK_IMAGE1 376
 #define JMP_VECTORS_SUBCHUNK_IMAGE2 27 //keep it even, for easy double buffering
 #define JMP_VECTORS_CHUNK_IMAGE2 (JMP_VECTORS_SUBCHUNK_IMAGE2*12)
 
@@ -747,7 +747,6 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
             SMs->ScoreMin[CntDescIm1] = (UINT32)-1;
             SMs->ScoreNextToMin[CntDescIm1] = (UINT32)-1;
         }
-
         SMs->RealMatches = 0;
     }
 
@@ -770,6 +769,7 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
             //UsingBuffer0or1 = CurrentcnxvectorChunkImg2 & 0x01;
             if (RunningMode != MODE_CREATE_BATCHES)
             {
+                if (CurrentcnxvectorChunkImg1==0)
                 if (CurrentcnxvectorChunkImg2 == 0) //if first block in img2 and first in img1, wait for transfer to end, then start next transfer and batch.
                     TransferIOChunk(SiftDescriptors2->SiftDescriptorsBasicFeatures[JMP_VECTORS_CHUNK_IMAGE2*CurrentcnxvectorChunkImg2],
                                     JMP_VECTORS_CHUNK_IMAGE1 + UsingBuffer0or1*JMP_VECTORS_CHUNK_IMAGE2,
