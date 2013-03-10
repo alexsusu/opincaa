@@ -681,10 +681,13 @@ R31 = we reduce this for the SAD
 static void ProcessLastReduction(int CurrentcnxvectorChunkImg1, int CurrentcnxvectorChunkImg2, int TotalcnxvectorSubChunksImg2,
                                  int MaxDescriptorImg1, int MaxDescriptorImg2,  SiftMatches* SMs)
 {
-    int RedCounter = 0;
     for(int CurrentcnxvectorSubChunkImg2 = 0; CurrentcnxvectorSubChunkImg2 < TotalcnxvectorSubChunksImg2; CurrentcnxvectorSubChunkImg2++)
-    for (int CntDescIm1 = 0; CntDescIm1 < JMP_VECTORS_CHUNK_IMAGE1; CntDescIm1++)
+        #pragma omp parallel for schedule(dynamic) num_threads(2)
+        for (int CntDescIm1 = 0; CntDescIm1 < JMP_VECTORS_CHUNK_IMAGE1; CntDescIm1++)
         {
+            int RedCounter =  CurrentcnxvectorSubChunkImg2 * JMP_VECTORS_CHUNK_IMAGE1 * JMP_VECTORS_SUBCHUNK_IMAGE2+
+                                CntDescIm1 * JMP_VECTORS_SUBCHUNK_IMAGE2;
+
             int descIm1 = JMP_VECTORS_CHUNK_IMAGE1*CurrentcnxvectorChunkImg1 + CntDescIm1;
 
             //forall registers with cnxvector-subchunk of img 2 (~30 cnxvectors in 30 registers)
