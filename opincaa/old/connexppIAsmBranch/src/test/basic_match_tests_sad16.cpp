@@ -438,8 +438,8 @@ static void SAD_FindMatches16_OMP_SSE(SiftDescriptors16 *SDs1, SiftDescriptors16
 {
     SMs->RealMatches = 0;
 
-    int **dsq = new int*[SDs1->RealDescriptors];
-    for (int er=0; er < SDs1->RealDescriptors; er++) dsq[er] = new int[SDs2->RealDescriptors];
+    unsigned int **dsq = new unsigned int*[SDs1->RealDescriptors];
+    for (int er=0; er < SDs1->RealDescriptors; er++) dsq[er] = new unsigned int[SDs2->RealDescriptors];
 
     #pragma omp parallel for
     for (int DescriptorIndex1 =0; DescriptorIndex1 < SDs1->RealDescriptors; DescriptorIndex1++)
