@@ -728,7 +728,7 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
     int TotalcnxvectorSubChunksImg2 = JMP_VECTORS_CHUNK_IMAGE2 / JMP_VECTORS_SUBCHUNK_IMAGE2;
     int UsingBuffer0or1;
     int TimeStart;
-    int TotalIOTime = 0, TotalBatchTime = 0, TotalReductionTime = 0;
+    int TotalIOTime = 0, TotalBatchTime = 0, TotalReductionTime = 0, TotalFindGoodMatchTime = 0;
 
     if (RunningMode == MODE_CREATE_BATCHES)
     {
@@ -757,6 +757,7 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
                 IOU_CVCI1.preWritecnxvectors(0,SiftDescriptors1->SiftDescriptorsBasicFeatures[JMP_VECTORS_CHUNK_IMAGE1*CurrentcnxvectorChunkImg1],JMP_VECTORS_CHUNK_IMAGE1);
                 if (PASS != IO_WRITE_NOW(&IOU_CVCI1)) {   printf("Writing next CurrentcnxvectorChunkImg1 to IO pipe, FAILED !"); return FAIL;}
                 TotalIOTime += GetMilliSpan(TimeStart);
+                cout<< GetMilliSpan(TimeStart)<<" ms lost for initial IO1"<<endl;
             }
 
         //forall cnxvector chunks in img2
@@ -779,19 +780,25 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
                         return FAIL;
                     }
                     TotalIOTime += GetMilliSpan(TimeStart);
+                    cout<< GetMilliSpan(TimeStart)<<" ms lost for initial IO2"<<endl;
                 }
 
                 TimeStart = GetMilliCount();
                 EXECUTE_BATCH(LoadToRxBatchNumber + UsingBuffer0or1);
                 TotalBatchTime += GetMilliSpan(TimeStart);
 
-                /* While batch executes, do work: do not wait for reduction to haoppen */
+                /* While batch executes, do work: do not wait for reduction to happen */
                 /* Extra-work1: process last reduction results */
                 if ((CurrentcnxvectorChunkImg1 != 0) || (CurrentcnxvectorChunkImg2 != 0)) //if not first reduction
-                ProcessLastReduction(LastCurrentcnxvectorChunkImg1, LastCurrentcnxvectorChunkImg2, TotalcnxvectorSubChunksImg2,
+                {
+                    TimeStart = GetMilliCount();
+                    ProcessLastReduction(LastCurrentcnxvectorChunkImg1, LastCurrentcnxvectorChunkImg2, TotalcnxvectorSubChunksImg2,
                                      SiftDescriptors1->RealDescriptors, SiftDescriptors2->RealDescriptors, SMs
                                      );
+                    TotalFindGoodMatchTime += GetMilliSpan(TimeStart);
+                    cout<< GetMilliSpan(TimeStart)<<" ms lost for fbm"<<endl;
 
+                }
                 LastCurrentcnxvectorChunkImg1 = CurrentcnxvectorChunkImg1;
                 LastCurrentcnxvectorChunkImg2 = CurrentcnxvectorChunkImg2;
 
@@ -808,6 +815,7 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
                         return FAIL;
                     }
                     TotalIOTime += GetMilliSpan(TimeStart);
+                    cout<< GetMilliSpan(TimeStart)<<" ms lost for IO2"<<endl;
                 }
 
                 //We have no more work to do, so we wait for reduction (in fact batch execution) to happen */
@@ -815,6 +823,7 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
                     int ExpectedBytesOfReductions = BYTES_IN_DWORD* JMP_VECTORS_CHUNK_IMAGE1 * JMP_VECTORS_CHUNK_IMAGE2;
                     TimeStart = GetMilliCount();
                     int RealBytesOfReductions = GET_MULTIRED_RESULT(BasicMatchRedResults, ExpectedBytesOfReductions);
+                    cout<< GetMilliSpan(TimeStart)<<" ms lost for reduction"<<endl;
                     TotalReductionTime += GetMilliSpan(TimeStart);
                     if (ExpectedBytesOfReductions != RealBytesOfReductions)
                      cout<<" Unexpected size of bytes of reductions (expected: "<<ExpectedBytesOfReductions<<" but got "<<RealBytesOfReductions<<endl;
@@ -876,9 +885,11 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
     cout<<"  |___ Total BatchExecution time is "<<TotalBatchTime<<" ms"<<endl;
     cout<<"  |    Total TotalReductionTime time is "<<TotalReductionTime<<" ms"<<endl;
 
+    TimeStart = GetMilliCount();
     ProcessLastReduction(LastCurrentcnxvectorChunkImg1, LastCurrentcnxvectorChunkImg2, TotalcnxvectorSubChunksImg2,
                          SiftDescriptors1->RealDescriptors, SiftDescriptors2->RealDescriptors, SMs
                          );
+    TotalFindGoodMatchTime += GetMilliSpan(TimeStart);
 
     for (int i = 0; i < SiftDescriptors1->RealDescriptors; i++)
         if (SMs->ScoreMin[i] < (FACTOR1 * SMs->ScoreNextToMin[i]) >> FACTOR2)
@@ -886,7 +897,7 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
            SMsFinal->DescIx2ndImgMin[SMsFinal->RealMatches++] = SMs->DescIx2ndImgMin[i];
         }
 
-    cout<<"  |    Total FindGoodMatch time is "<<GetMilliSpan(TimeStart)<<" ms"<<endl;
+    cout<<"  |    Total FindGoodMatch time is "<<TotalFindGoodMatchTime<<" ms"<<endl;
     return PASS;
 }
 
