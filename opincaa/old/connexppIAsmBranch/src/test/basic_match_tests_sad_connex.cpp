@@ -408,9 +408,13 @@ static int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
     return PASS;
 }
 
-#define JMP_VECTORS_CHUNK_IMAGE1 376
+//#define JMP_VECTORS_CHUNK_IMAGE1 376
+//#define JMP_VECTORS_SUBCHUNK_IMAGE2 27 //keep it even, for easy double buffering
+//#define JMP_VECTORS_CHUNK_IMAGE2 (JMP_VECTORS_SUBCHUNK_IMAGE2*12)
+
+#define JMP_VECTORS_CHUNK_IMAGE1 484
 #define JMP_VECTORS_SUBCHUNK_IMAGE2 27 //keep it even, for easy double buffering
-#define JMP_VECTORS_CHUNK_IMAGE2 (JMP_VECTORS_SUBCHUNK_IMAGE2*12)
+#define JMP_VECTORS_CHUNK_IMAGE2 (JMP_VECTORS_SUBCHUNK_IMAGE2*10)
 
 #undef VECTORS_CHUNK_IMAGE1
 #undef VECTORS_CHUNK_IMAGE2
