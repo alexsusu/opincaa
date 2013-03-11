@@ -733,6 +733,31 @@ static int TransferIOChunk(UINT16 *Buff, UINT16 VectorAddress, io_unit* Io, int 
     *TotalIOTime += GetMilliSpan(TimeStart);
 }
 
+int connexIOtimings[JMP_VECTORS_CHUNK_IMAGE1];
+static int connexIOBenchmark(SiftDescriptors16 * SiftDescriptors1)
+{
+    int dummyTime, timeMeasured;
+    printf("\nRunning IO transfer benchmark... \n");
+    for (int vectors=1; vectors < JMP_VECTORS_CHUNK_IMAGE1; vectors++)
+    {
+        int TimeStart = GetMilliCount();
+        for (int loops = 0; loops < 10; loops++)
+        {
+            TransferIOChunk(SiftDescriptors1->SiftDescriptorsBasicFeatures[0],
+                            0,
+                            &IOU_CVCI1, vectors, &dummyTime);
+        }
+        timeMeasured = GetMilliSpan(TimeStart) / 10;
+        connexIOtimings[vectors] = timeMeasured;
+    }
+
+    printf("1 Transfer of %d vectors takes %d ms \n",1, connexIOtimings[0]);
+    for (int vectors=2; vectors < JMP_VECTORS_CHUNK_IMAGE1; vectors++)
+    {
+        if (connexIOtimings[vectors] != connexIOtimings[vectors-1])
+            printf("1 Transfer of %d vectors takes %d ms \n",vectors, connexIOtimings[vectors]);
+    }
+}
 static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
                                     SiftDescriptors16 *SiftDescriptors1, SiftDescriptors16 *SiftDescriptors2,
                                     SiftMatches* SMs, SiftMatches* SMsFinal)
@@ -765,6 +790,7 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
         //truncate images when creating batches: we need at most first four batches
         if (TotalcnxvectorChunksImg1 > 2) TotalcnxvectorChunksImg1 = 2;
         if (TotalcnxvectorChunksImg2 > 2) TotalcnxvectorChunksImg2 = 2;
+        connexIOBenchmark(SiftDescriptors1);
     }
 
     int Img1TransferSubChunk = ((JMP_VECTORS_CHUNK_IMAGE1 + TotalcnxvectorChunksImg2-1) / TotalcnxvectorChunksImg2);
@@ -834,6 +860,9 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
                     {
                         int Img1VectorsTransferNow = Img1TransferSubChunk;
                         if (Img1VectorsTransferNow > Img1ChunkVectorsLeftToBeTransferred)
+                                Img1VectorsTransferNow = Img1ChunkVectorsLeftToBeTransferred;
+
+                        if ((CurrentcnxvectorChunkImg2 + 1) == TotalcnxvectorChunksImg2) //if lash chunk of img2, wait io img1 to transfer all remaining
                             Img1VectorsTransferNow = Img1ChunkVectorsLeftToBeTransferred;
 
                         //transfer next img1 chunk
