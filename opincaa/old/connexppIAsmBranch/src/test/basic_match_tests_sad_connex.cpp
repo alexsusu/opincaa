@@ -833,7 +833,7 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
                     if (Img1ChunkVectorsLeftToBeTransferred > 0)
                     {
                         int Img1VectorsTransferNow = Img1TransferSubChunk;
-                        if (Img1VectorsTransferNow < Img1ChunkVectorsLeftToBeTransferred)
+                        if (Img1VectorsTransferNow > Img1ChunkVectorsLeftToBeTransferred)
                             Img1VectorsTransferNow = Img1ChunkVectorsLeftToBeTransferred;
 
                         //transfer next img1 chunk
