@@ -412,7 +412,7 @@ static int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
 //#define JMP_VECTORS_SUBCHUNK_IMAGE2 27 //keep it even, for easy double buffering
 //#define JMP_VECTORS_CHUNK_IMAGE2 (JMP_VECTORS_SUBCHUNK_IMAGE2*12)
 
-#define JMP_VECTORS_CHUNK_IMAGE1 (1024 - JMP_VECTORS_CHUNK_IMAGE2*2)
+#define JMP_VECTORS_CHUNK_IMAGE1 ((1024 - JMP_VECTORS_CHUNK_IMAGE2*2)/2) //allow two img1 chunks for double buffering
 #define JMP_VECTORS_SUBCHUNK_IMAGE2 28
 #define JMP_VECTORS_CHUNK_IMAGE2 (JMP_VECTORS_SUBCHUNK_IMAGE2*8)
 
@@ -741,10 +741,16 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
     int TotalcnxvectorChunksImg1 = (SiftDescriptors1->RealDescriptors + JMP_VECTORS_CHUNK_IMAGE1 - 1) / JMP_VECTORS_CHUNK_IMAGE1;
     int TotalcnxvectorChunksImg2 = (SiftDescriptors2->RealDescriptors + JMP_VECTORS_CHUNK_IMAGE2 - 1) / JMP_VECTORS_CHUNK_IMAGE2;
     int TotalcnxvectorSubChunksImg2 = JMP_VECTORS_CHUNK_IMAGE2 / JMP_VECTORS_SUBCHUNK_IMAGE2;
-    int UsingBuffer0or1;
+    int UsingImg2Buffer0or1;//JMP_VECTORS_CHUNK_IMAGE1_HALF
+    int UsingImg1Buffer0or1;
     int TimeStart;
     int TotalIOTime = 0, TotalBatchTime = 0, TotalReductionTime = 0, TotalFindGoodMatchTime = 0;
 
+    //BATCH_0 = img1 - lowpart, img2 lowpart
+    //BATCH_1 = img1 - lowpart, img2 highpart
+    //BATCH_2 = img1 - highpart, img2 lowpart
+    //BATCH_3 = img1 - highpart, img2 highpart
+    //BATCH(X): x = UsingImg1Buffer0or1*2 + UsingImg2Buffer0or1
     if (RunningMode == MODE_CREATE_BATCHES)
     {
         // After running, get reduced results
@@ -755,18 +761,25 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
             SMs->ScoreNextToMin[CntDescIm1] = (UINT32)-1;
         }
         SMs->RealMatches = 0;
+
+        //truncate images when creating batches: we need at most first four batches
+        if (TotalcnxvectorChunksImg1 > 2) TotalcnxvectorChunksImg1 = 2;
+        if (TotalcnxvectorChunksImg2 > 2) TotalcnxvectorChunksImg2 = 2;
     }
 
     int LastCurrentcnxvectorChunkImg1;
     int LastCurrentcnxvectorChunkImg2;
+    UsingImg1Buffer0or1 = 0;
+    UsingImg2Buffer0or1 = 0;
+
     //forall cnxvector chunks in img1
-    UsingBuffer0or1 = 0;
     for(CurrentcnxvectorChunkImg1 = 0; CurrentcnxvectorChunkImg1 < TotalcnxvectorChunksImg1; CurrentcnxvectorChunkImg1++)
     {
         //>>>>IO-load cnxvector chunk on img1 to LocalStore[0...363]
         if (RunningMode != MODE_CREATE_BATCHES)
-            //if (CurrentcnxvectorChunkImg1==0) //if first chunk of img1, wait blocking
-                TransferIOChunk(SiftDescriptors1->SiftDescriptorsBasicFeatures[JMP_VECTORS_CHUNK_IMAGE1*CurrentcnxvectorChunkImg1],0,
+            if (CurrentcnxvectorChunkImg1==0) //if first chunk of img1, wait blocking
+                TransferIOChunk(SiftDescriptors1->SiftDescriptorsBasicFeatures[JMP_VECTORS_CHUNK_IMAGE1*CurrentcnxvectorChunkImg1],
+                                UsingImg1Buffer0or1 * JMP_VECTORS_CHUNK_IMAGE1,
                                 &IOU_CVCI1, JMP_VECTORS_CHUNK_IMAGE1, &TotalIOTime);
 
 
@@ -776,14 +789,14 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
             //UsingBuffer0or1 = CurrentcnxvectorChunkImg2 & 0x01;
             if (RunningMode != MODE_CREATE_BATCHES)
             {
-                if (CurrentcnxvectorChunkImg1==0)
+                if (CurrentcnxvectorChunkImg1 == 0)
                 if (CurrentcnxvectorChunkImg2 == 0) //if first block in img2 and first in img1, wait for transfer to end, then start next transfer and batch.
                     TransferIOChunk(SiftDescriptors2->SiftDescriptorsBasicFeatures[JMP_VECTORS_CHUNK_IMAGE2*CurrentcnxvectorChunkImg2],
-                                    JMP_VECTORS_CHUNK_IMAGE1 + UsingBuffer0or1*JMP_VECTORS_CHUNK_IMAGE2,
+                                    JMP_VECTORS_CHUNK_IMAGE1*2 + UsingImg2Buffer0or1*JMP_VECTORS_CHUNK_IMAGE2,
                                         &IOU_CVCI2, JMP_VECTORS_CHUNK_IMAGE2, &TotalIOTime);
 
                 TimeStart = GetMilliCount();
-                EXECUTE_BATCH(LoadToRxBatchNumber + UsingBuffer0or1);
+                EXECUTE_BATCH(LoadToRxBatchNumber + UsingImg1Buffer0or1*2 + UsingImg2Buffer0or1);
                 TotalBatchTime += GetMilliSpan(TimeStart);
 
                 /* While batch executes, do work: do not wait for reduction to happen */
@@ -808,11 +821,17 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
                 else
                         TransferIOChunk(SiftDescriptors2->SiftDescriptorsBasicFeatures[JMP_VECTORS_CHUNK_IMAGE2*
                                             ((CurrentcnxvectorChunkImg2 + 1)% TotalcnxvectorChunksImg2)],
-                        JMP_VECTORS_CHUNK_IMAGE1 + ((UsingBuffer0or1 + 1) & 0x01)*JMP_VECTORS_CHUNK_IMAGE2,
+                        JMP_VECTORS_CHUNK_IMAGE1*2 + ((UsingImg2Buffer0or1 + 1) & 0x01)*JMP_VECTORS_CHUNK_IMAGE2,
                             &IOU_CVCI2, JMP_VECTORS_CHUNK_IMAGE2, &TotalIOTime);
 
                 // if no piece of img2 is left, transfer from img1, if any left
-
+                if ((CurrentcnxvectorChunkImg2 + 1) == TotalcnxvectorChunksImg2) //if we are at last img2 descriptor
+                    if ((CurrentcnxvectorChunkImg1 + 1) != TotalcnxvectorChunksImg1) //if not last chunk in img1
+                        //transfer next img1 chunk
+                        TransferIOChunk(SiftDescriptors1->SiftDescriptorsBasicFeatures[JMP_VECTORS_CHUNK_IMAGE1*
+                                        ((CurrentcnxvectorChunkImg1 + 1)% TotalcnxvectorChunksImg1)],
+                                ((UsingImg1Buffer0or1 + 1) & 0x01) * JMP_VECTORS_CHUNK_IMAGE1,
+                                &IOU_CVCI1, JMP_VECTORS_CHUNK_IMAGE1, &TotalIOTime);
 
                 //We have no more work to do, so we wait for reduction (in fact batch execution) to happen */
                 {
@@ -830,18 +849,18 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
             //next: create or execute created batch
             else if (RunningMode == MODE_CREATE_BATCHES)
             {
-                BEGIN_BATCH(LoadToRxBatchNumber + UsingBuffer0or1);
+                BEGIN_BATCH(LoadToRxBatchNumber + UsingImg1Buffer0or1*2 + UsingImg2Buffer0or1);
                     //forall subchunks of chunk of img 2
                     for(int CurrentcnxvectorSubChunkImg2 = 0; CurrentcnxvectorSubChunkImg2 < TotalcnxvectorSubChunksImg2; CurrentcnxvectorSubChunkImg2++)
                     {
                         //forall cnxvectors in subchunk of chunk of img (~30 cnxvectors) load cnxvector x to Rx
 
                         for(int x = 0; x < JMP_VECTORS_SUBCHUNK_IMAGE2; x++)
-                            R[x] = LS[JMP_VECTORS_CHUNK_IMAGE1 + UsingBuffer0or1*JMP_VECTORS_CHUNK_IMAGE2 +
+                            R[x] = LS[2*JMP_VECTORS_CHUNK_IMAGE1 + UsingImg2Buffer0or1*JMP_VECTORS_CHUNK_IMAGE2 +
                                         CurrentcnxvectorSubChunkImg2 * JMP_VECTORS_SUBCHUNK_IMAGE2 + x];
 
                         //forall 364 cnxvectors "y" in chunk of image 1
-                       R30 = 0;/* R30 is reserved for localstore loading location */
+                       R30 = UsingImg1Buffer0or1*JMP_VECTORS_CHUNK_IMAGE1;/* R30 is reserved for localstore loading location */
                        REPEAT_X_TIMES(JMP_VECTORS_CHUNK_IMAGE1,
 
                             //R[JMP_VECTORS_SUBCHUNK_IMAGE2] = LS[y]; //load cnxvector y to R30 ; cout <<" LS[" <<y<<"] ====== "<<endl;
@@ -867,11 +886,14 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
                     }
                 NOP;
                 END_BATCH();
-                if (UsingBuffer0or1 == 1) return PASS; //no need to create more than 2 batches
+                if ((UsingImg1Buffer0or1 == 1) && (UsingImg2Buffer0or1==1))
+                    return PASS; //no need to create more than 4 batches
             }
 
-            UsingBuffer0or1 = (UsingBuffer0or1 + 1) & 0x01;
+            UsingImg2Buffer0or1 = (UsingImg2Buffer0or1 + 1) & 0x01;
         }
+
+        UsingImg1Buffer0or1 = (UsingImg1Buffer0or1 + 1) & 0x01;
     }
     //DEASM_BATCH(0);
     cout<<"   ___"<<endl;
