@@ -767,6 +767,9 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
         if (TotalcnxvectorChunksImg2 > 2) TotalcnxvectorChunksImg2 = 2;
     }
 
+    int Img1TransferSubChunk = ((JMP_VECTORS_CHUNK_IMAGE1 + TotalcnxvectorChunksImg2-1) / TotalcnxvectorChunksImg2);
+    int Img1ChunkVectorsLeftToBeTransferred;
+
     int LastCurrentcnxvectorChunkImg1;
     int LastCurrentcnxvectorChunkImg2;
     UsingImg1Buffer0or1 = 0;
@@ -775,7 +778,8 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
     //forall cnxvector chunks in img1
     for(CurrentcnxvectorChunkImg1 = 0; CurrentcnxvectorChunkImg1 < TotalcnxvectorChunksImg1; CurrentcnxvectorChunkImg1++)
     {
-        //>>>>IO-load cnxvector chunk on img1 to LocalStore[0...363]
+        Img1ChunkVectorsLeftToBeTransferred = JMP_VECTORS_CHUNK_IMAGE1;
+
         if (RunningMode != MODE_CREATE_BATCHES)
             if (CurrentcnxvectorChunkImg1==0) //if first chunk of img1, wait blocking
                 TransferIOChunk(SiftDescriptors1->SiftDescriptorsBasicFeatures[JMP_VECTORS_CHUNK_IMAGE1*CurrentcnxvectorChunkImg1],
@@ -825,14 +829,33 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
                             &IOU_CVCI2, JMP_VECTORS_CHUNK_IMAGE2, &TotalIOTime);
 
                 // if no piece of img2 is left, transfer from img1, if any left
-                if ((CurrentcnxvectorChunkImg2 + 1) == TotalcnxvectorChunksImg2) //if we are at last img2 descriptor
-                    if ((CurrentcnxvectorChunkImg1 + 1) != TotalcnxvectorChunksImg1) //if not last chunk in img1
-                        //transfer next img1 chunk
-                        TransferIOChunk(SiftDescriptors1->SiftDescriptorsBasicFeatures[JMP_VECTORS_CHUNK_IMAGE1*
-                                        ((CurrentcnxvectorChunkImg1 + 1)% TotalcnxvectorChunksImg1)],
-                                ((UsingImg1Buffer0or1 + 1) & 0x01) * JMP_VECTORS_CHUNK_IMAGE1,
-                                &IOU_CVCI1, JMP_VECTORS_CHUNK_IMAGE1, &TotalIOTime);
+                if ((CurrentcnxvectorChunkImg1 + 1) != TotalcnxvectorChunksImg1) //if not last chunk in img1
+                    if (Img1ChunkVectorsLeftToBeTransferred > 0)
+                    {
+                        int Img1VectorsTransferNow = Img1TransferSubChunk;
+                        if (Img1VectorsTransferNow < Img1ChunkVectorsLeftToBeTransferred)
+                            Img1VectorsTransferNow = Img1ChunkVectorsLeftToBeTransferred;
 
+                        //transfer next img1 chunk
+                        TransferIOChunk(SiftDescriptors1->SiftDescriptorsBasicFeatures[
+                                        //startoffset in feature
+                                        JMP_VECTORS_CHUNK_IMAGE1*((CurrentcnxvectorChunkImg1 + 1)% TotalcnxvectorChunksImg1)
+                                        + (JMP_VECTORS_CHUNK_IMAGE1 - Img1ChunkVectorsLeftToBeTransferred)
+                                        ],
+
+                                        //start offset in localstore
+                                        ((UsingImg1Buffer0or1 + 1) & 0x01) * JMP_VECTORS_CHUNK_IMAGE1 +
+                                        (JMP_VECTORS_CHUNK_IMAGE1 - Img1ChunkVectorsLeftToBeTransferred)
+                                        ,
+                                        &IOU_CVCI1,
+
+                                        //transfer size
+                                        Img1VectorsTransferNow,
+
+                                        &TotalIOTime);
+
+                        Img1ChunkVectorsLeftToBeTransferred -= Img1VectorsTransferNow;
+                    }
                 //We have no more work to do, so we wait for reduction (in fact batch execution) to happen */
                 {
                     int ExpectedBytesOfReductions = BYTES_IN_DWORD* JMP_VECTORS_CHUNK_IMAGE1 * JMP_VECTORS_CHUNK_IMAGE2;
