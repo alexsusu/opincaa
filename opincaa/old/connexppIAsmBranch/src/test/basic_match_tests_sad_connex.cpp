@@ -752,11 +752,11 @@ static int connexIOBenchmark(SiftDescriptors16 * SiftDescriptors1)
         connexIOtimings[vectors] = timeMeasured;
     }
 
-    printf("%d Transfers of %d vectors takes %d ms \n",BENCHMARK_LOOPS, 1, connexIOtimings[0]);
+    printf("%d Transfers of %d vectors takes %d ms \n",BENCHMARK_LOOPS, 1, connexIOtimings[1]);
     for (int vectors=2; vectors < JMP_VECTORS_CHUNK_IMAGE1; vectors++)
     {
         if (connexIOtimings[vectors] != connexIOtimings[vectors-1])
-            printf("1 Transfer of %d vectors takes %d ms \n",vectors, connexIOtimings[vectors]);
+            printf("%d Transfers of %d vectors takes %d ms \n", BENCHMARK_LOOPS, vectors, connexIOtimings[vectors]);
     }
 }
 static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
