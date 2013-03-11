@@ -741,17 +741,18 @@ static int connexIOBenchmark(SiftDescriptors16 * SiftDescriptors1)
     for (int vectors=1; vectors < JMP_VECTORS_CHUNK_IMAGE1; vectors++)
     {
         int TimeStart = GetMilliCount();
-        for (int loops = 0; loops < 10; loops++)
+        #define BENCHMARK_LOOPS 100
+        for (int loops = 0; loops < BENCHMARK_LOOPS; loops++)
         {
             TransferIOChunk(SiftDescriptors1->SiftDescriptorsBasicFeatures[0],
                             0,
                             &IOU_CVCI1, vectors, &dummyTime);
         }
-        timeMeasured = GetMilliSpan(TimeStart) / 10;
+        timeMeasured = GetMilliSpan(TimeStart);
         connexIOtimings[vectors] = timeMeasured;
     }
 
-    printf("1 Transfer of %d vectors takes %d ms \n",1, connexIOtimings[0]);
+    printf("%d Transfers of %d vectors takes %d ms \n",BENCHMARK_LOOPS, 1, connexIOtimings[0]);
     for (int vectors=2; vectors < JMP_VECTORS_CHUNK_IMAGE1; vectors++)
     {
         if (connexIOtimings[vectors] != connexIOtimings[vectors-1])
