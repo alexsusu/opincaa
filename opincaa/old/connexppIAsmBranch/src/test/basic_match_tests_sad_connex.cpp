@@ -735,8 +735,8 @@ static int TransferIOChunk(UINT16 *Buff, UINT16 VectorAddress, io_unit* Io, int 
 
 /* Benchmarking section:
     We try to determine how many vectors we can transfer in a certain amount of time.
-    Running on Zedboard (CortexA9 @ 667MHz) yields about 0.48 ms for one vector and almost
-        linear increase up to 0.90 ms for 315 vectors
+    Running on Zedboard (CortexA9 @ 667MHz) yields about 63/128 ms for one vector and almost
+        linear increase up to 117/128 ms for 315 vectors
 */
 int connexIOtimings[JMP_VECTORS_CHUNK_IMAGE1];
 static int connexIOBenchmark(SiftDescriptors16 * SiftDescriptors1)
@@ -797,10 +797,11 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
         //truncate images when creating batches: we need at most first four batches
         if (TotalcnxvectorChunksImg1 > 2) TotalcnxvectorChunksImg1 = 2;
         if (TotalcnxvectorChunksImg2 > 2) TotalcnxvectorChunksImg2 = 2;
-        connexIOBenchmark(SiftDescriptors1);
+        //connexIOBenchmark(SiftDescriptors1);
     }
 
-    int Img1TransferSubChunk = ((JMP_VECTORS_CHUNK_IMAGE1 + TotalcnxvectorChunksImg2-1) / TotalcnxvectorChunksImg2);
+    //int Img1TransferSubChunk = ((JMP_VECTORS_CHUNK_IMAGE1 + TotalcnxvectorChunksImg2-1) / TotalcnxvectorChunksImg2);
+    int Img1TransferSubChunk = 10;
     int Img1ChunkVectorsLeftToBeTransferred;
 
     int LastCurrentcnxvectorChunkImg1;
