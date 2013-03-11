@@ -846,7 +846,7 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
 
                             //R[JMP_VECTORS_SUBCHUNK_IMAGE2] = LS[y]; //load cnxvector y to R30 ; cout <<" LS[" <<y<<"] ====== "<<endl;
                             R[JMP_VECTORS_SUBCHUNK_IMAGE2] = LS[R30]; //load cnxvector y to R30 ; cout <<" LS[" <<y<<"] ====== "<<endl;
-                            R30++;
+                            R30 = R30 + 1;
                             //forall registers with cnxvector-subchunk of img 2 (~30 cnxvectors in 30 registers)
                             for(int x = 0; x < JMP_VECTORS_SUBCHUNK_IMAGE2; x++)
                             {
