@@ -106,8 +106,7 @@ static void InitKernel_Jump(int BatchNumber,INT32 Param1, INT32 Param2)
                         JMP_TIMES_TO_LABEL(Param2,99);// times, label
                         REDUCE(R0);
                        )
-
-
+    NOP;//hardware bug workaround
     END_BATCH(BatchNumber);
 }
 
@@ -123,6 +122,7 @@ static void InitKernel_Jump2(int BatchNumber,INT32 Param1, INT32 Param2)
                         )
                         REDUCE(R0);
                        )
+    NOP;//hardware bug workaround
     END_BATCH(BatchNumber);
 }
 
