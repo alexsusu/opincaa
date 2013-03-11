@@ -733,6 +733,11 @@ static int TransferIOChunk(UINT16 *Buff, UINT16 VectorAddress, io_unit* Io, int 
     *TotalIOTime += GetMilliSpan(TimeStart);
 }
 
+/* Benchmarking section:
+    We try to determine how many vectors we can transfer in a certain amount of time.
+    Running on Zedboard (CortexA9 @ 667MHz) yields about 0.48 ms for one vector and almost
+        linear increase up to 0.90 ms for 315 vectors
+*/
 int connexIOtimings[JMP_VECTORS_CHUNK_IMAGE1];
 static int connexIOBenchmark(SiftDescriptors16 * SiftDescriptors1)
 {
@@ -741,11 +746,12 @@ static int connexIOBenchmark(SiftDescriptors16 * SiftDescriptors1)
     for (int vectors=1; vectors < JMP_VECTORS_CHUNK_IMAGE1; vectors++)
     {
         int TimeStart = GetMilliCount();
-        #define BENCHMARK_LOOPS 100
+        #define BENCHMARK_LOOPS_BIT 7
+        #define BENCHMARK_LOOPS (1 << BENCHMARK_LOOPS_BIT)
         for (int loops = 0; loops < BENCHMARK_LOOPS; loops++)
         {
-            TransferIOChunk(SiftDescriptors1->SiftDescriptorsBasicFeatures[0],
-                            0,
+            TransferIOChunk(SiftDescriptors1->SiftDescriptorsBasicFeatures[loops],//variable
+                            loops,//variable
                             &IOU_CVCI1, vectors, &dummyTime);
         }
         timeMeasured = GetMilliSpan(TimeStart);
