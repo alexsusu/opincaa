@@ -109,7 +109,7 @@ struct OpCodeDeAsm
 static OpCodeDeAsm OpCodeDeAsms[] =
 {
     {_ADD,"+"},
-    {_ADDC,"+ CARRY +"},
+    {_INC,"++"},
     {_SUB,"-"},
     {_CONDSUB," CONDSUB "},
     {_NOT,"~"},
@@ -245,7 +245,8 @@ int c_simulator::printDeAsmBatch(UINT16 dwBatchNumber)
         switch (((CurrentInstruction) >> OPCODE_9BITS_POS) & ((1 << OPCODE_9BITS_SIZE)-1))
             {
                 case _ADD:
-                case _ADDC:
+                //case _ADDC:
+                case _INC:
                 case _SUB:
                 case _CONDSUB:
                 case _OR:
@@ -358,7 +359,7 @@ int c_simulator::DeAsmBatch(UINT16 dwBatchNumber)
                                 else CSimuCarryFlags[MACHINE] = 0;
                                      );
                                 continue;}
-
+            /*
                 case _ADDC:{FOR_ALL_ACTIVE_MACHINES(
                                 CSimuRegs[MACHINE][GET_DEST(CI)] = CSimuRegs[MACHINE][GET_LEFT(CI)] +
                                                                         CSimuRegs[MACHINE][GET_RIGHT(CI)] +
@@ -370,6 +371,11 @@ int c_simulator::DeAsmBatch(UINT16 dwBatchNumber)
                                 else CSimuCarryFlags[MACHINE] = 0;
                                      );
                                                    continue;}
+            */
+                case _INC:{FOR_ALL_ACTIVE_MACHINES(
+                                CSimuRegs[MACHINE][GET_DEST(CI)] = CSimuRegs[MACHINE][GET_LEFT(CI)] + 1;)
+                                continue;
+                                }
 
                 case _SUB:{FOR_ALL_ACTIVE_MACHINES(CSimuRegs[MACHINE][GET_DEST(CI)] =
                                                     CSimuRegs[MACHINE][GET_LEFT(CI)] - CSimuRegs[MACHINE][GET_RIGHT(CI)];

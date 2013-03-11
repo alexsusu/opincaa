@@ -414,7 +414,7 @@ static int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
 
 #define JMP_VECTORS_CHUNK_IMAGE1 (1024 - JMP_VECTORS_CHUNK_IMAGE2*2)
 #define JMP_VECTORS_SUBCHUNK_IMAGE2 27 //keep it even, for easy double buffering
-#define JMP_VECTORS_CHUNK_IMAGE2 (JMP_VECTORS_SUBCHUNK_IMAGE2*2)
+#define JMP_VECTORS_CHUNK_IMAGE2 (JMP_VECTORS_SUBCHUNK_IMAGE2*8)
 
 #undef VECTORS_CHUNK_IMAGE1
 #undef VECTORS_CHUNK_IMAGE2
@@ -843,8 +843,6 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
                                         CurrentcnxvectorSubChunkImg2 * JMP_VECTORS_SUBCHUNK_IMAGE2 + x];
 
                         //forall 364 cnxvectors "y" in chunk of image 1
-                        //for (int y = 0; y < JMP_VECTORS_CHUNK_IMAGE1; y++)
-
                        R30 = 0;/* R30 is reserved for localstore loading location */
                        REPEAT_X_TIMES(JMP_VECTORS_CHUNK_IMAGE1,
 

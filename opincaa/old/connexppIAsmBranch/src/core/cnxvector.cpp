@@ -15,6 +15,7 @@
 #include "../../include/core/cnxvector.h"
 #include "../../include/core/cnxvector_errors.h"
 #include "../../include/core/opcodes.h"
+#include "../../include/core/opcodes.h"
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -114,8 +115,12 @@ void cnxvector::replaceInstruction(UINT_INSTRUCTION instr, int index)
 
 
 cnxvector cnxvector::operator+(cnxvector other) {RETURN_NEW_OBJ_BINM(_ADD)};
-cnxvector cnxvector::operator+(UINT_PARAM imm_val) {RETURN_NEW_OBJ_PBINM_IMMVAL(_ADD);};
+cnxvector cnxvector::operator+(UINT_PARAM imm_val) { if (imm_val==1) return cnxvector(0, (mval << (LEFT_POS)), NO_IMVAL_MARKER, _INC);
+                                                     else RETURN_NEW_OBJ_PBINM_IMMVAL(_ADD);}
+
 void cnxvector::operator+=(cnxvector other){ SELF_OP(_ADD);}
+void cnxvector::operator+=(UINT_PARAM pseudoVal) {};
+void cnxvector::operator++(int val) {};
 
 cnxvector cnxvector::operator-(cnxvector other) {RETURN_NEW_OBJ_BINM(_SUB)};
 cnxvector cnxvector::operator-(UINT_PARAM imm_val) {RETURN_NEW_OBJ_PBINM_IMMVAL(_SUB)};
@@ -212,8 +217,9 @@ cnxvector cnxvector::ult(cnxvector other, UINT_PARAM imm_val) {RETURN_NEW_OBJ_PB
 
 cnxvector cnxvector::condsub(cnxvector other_left, cnxvector other_right) {RETURN_NEW_OBJ_BIN(_CONDSUB)};
 
-cnxvector cnxvector::addc(cnxvector other_left, cnxvector other_right) {RETURN_NEW_OBJ_BIN(_ADDC)};
-cnxvector cnxvector::addc(cnxvector other, UINT_PARAM imm_val) {RETURN_NEW_OBJ_PBIN_IMMVAL(_ADDC)};
+//cnxvector cnxvector::inc(cnxvector other_left) {RETURN_NEW_OBJ_UNM(_INC)};
+//cnxvector cnxvector::addc(cnxvector other_left, cnxvector other_right) {RETURN_NEW_OBJ_BIN(_ADDC)};
+//cnxvector cnxvector::addc(cnxvector other, UINT_PARAM imm_val) {RETURN_NEW_OBJ_PBIN_IMMVAL(_ADDC)};
 
 //cnxvector cnxvector::subc(cnxvector other_left, cnxvector other_right) {RETURN_NEW_OBJ_BIN(_SUBC)};
 //cnxvector cnxvector::subc(cnxvector other, UINT_PARAM imm_val) {RETURN_NEW_OBJ_PBIN_IMMVAL(_SUBC)};

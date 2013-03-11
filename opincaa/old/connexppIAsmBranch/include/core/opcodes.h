@@ -49,7 +49,8 @@
 
     /* 9-bit opcodes (instruction will NOT have immediate value) */
     #define _ADD     0b101000100
-    #define _ADDC    0b101100100
+    //#define _ADDC    0b101100100
+    #define _INC    0b101100100
     #define _SUB     0b101010100
     #define _CONDSUB 0b101110100
 

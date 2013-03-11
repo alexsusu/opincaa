@@ -85,8 +85,9 @@
 //#define BATCH(x) x
 
 #define REDUCE(x)       cnxvector::reduce(x)
-#define ADDC(x,y)       cnxvector::addc(x,y)
+//#define ADDC(x,y)       cnxvector::addc(x,y)
 //#define SUBC(x,y)       cnxvector::subc(x,y)
+#define INC(x)       cnxvector::inc(x)
 #define CONDSUB(x,y)    cnxvector::condsub(x,y)
 #define ULT(x,y)        cnxvector::ult(x,y)
 #define SHRA(x,y)       cnxvector::shra(x,y)
@@ -154,8 +155,9 @@ class cnxvector
         static void appendInstruction(UINT_INSTRUCTION instr);
         static void replaceInstruction(UINT_INSTRUCTION instr, int index);
 
-        static cnxvector addc(cnxvector other_left, cnxvector other_right);
-        static cnxvector addc(cnxvector other_left, UINT_PARAM value);
+        //static cnxvector addc(cnxvector other_left, cnxvector other_right);
+        //static cnxvector addc(cnxvector other_left, UINT_PARAM value);
+        //static cnxvector inc(cnxvector other_left);
 
         //static cnxvector subc(cnxvector other_left, cnxvector other_right);
         //static cnxvector subc(cnxvector other_left, UINT_PARAM value);
@@ -209,6 +211,9 @@ class cnxvector
         cnxvector operator+(cnxvector);
         cnxvector operator+(UINT_PARAM);
         void operator+=(cnxvector);
+
+        void operator+=(UINT_PARAM pseudoVal);
+        void operator++(int);
 
         cnxvector operator-(cnxvector);
         cnxvector operator-(UINT_PARAM);

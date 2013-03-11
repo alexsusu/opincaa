@@ -207,6 +207,42 @@ static void InitKernel_sAdd(int BatchNumber,INT32 Param1, INT32 Param2)
     END_BATCH(BatchNumber);
 }
 
+static void InitKernel_Inc(int BatchNumber,INT32 Param1, INT32 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        EXECUTE_IN_ALL(
+                        R4 = Param1;
+                        R4 = R4 + 1;
+                        REDUCE(R4);
+                    )
+
+    END_BATCH(BatchNumber);
+}
+
+static void InitKernel_Inc2(int BatchNumber,INT32 Param1, INT32 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        EXECUTE_IN_ALL(
+                        R4 = Param1;
+                        R4+= 1;
+                        REDUCE(R4);
+                    )
+
+    END_BATCH(BatchNumber);
+}
+
+static void InitKernel_Inc3(int BatchNumber,INT32 Param1, INT32 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        EXECUTE_IN_ALL(
+                        R4 = Param1;
+                        R4++;
+                        REDUCE(R4);
+                    )
+
+    END_BATCH(BatchNumber);
+}
+
 static void InitKernel_Addc(int BatchNumber,INT32 Param1, INT32 Param2)
 {
     BEGIN_BATCH(BatchNumber);
@@ -214,10 +250,17 @@ static void InitKernel_Addc(int BatchNumber,INT32 Param1, INT32 Param2)
                         R4 = 0xFF;
                         R5 = 0xFFFF;
                         R6 = R4 + R5;
+
+                        //R3 = ADDC(R1, R2); is equivalent to:
+
+                        R4 = 0;
+                        EXECUTE_WHERE_CARRY(R4 = 1;)
+                        EXECUTE_IN_ALL(
                         R1 = Param1;
                         R2 = Param2;
-                        R3 = ADDC(R1, R2);
-                        REDUCE(R3);
+                        R3 = R1 + R2;
+                        R3 = R3 + R4;
+                        REDUCE(R3);)
                     )
 
     END_BATCH(BatchNumber);
@@ -231,8 +274,16 @@ static void InitKernel_pAddc(int BatchNumber,INT32 Param1, INT32 Param2)
                         R5 = 0xFFFF;
                         R6 = R4 + R5;
                         R1 = Param1;
-                        R2 = ADDC(R1, Param2);
-                        REDUCE(R2);
+                        //R2 = ADDC(R1, Param2); is equivalent to
+
+                        R4 = 0;
+                        EXECUTE_WHERE_CARRY(R4 = 1;)
+                        EXECUTE_IN_ALL(
+                        R1 = Param1;
+                        R2 = Param2;
+                        R2 = R1 + R2;
+                        R2 = R2 + R4;
+                        REDUCE(R2);)
                     )
 
     END_BATCH(BatchNumber);
@@ -897,6 +948,9 @@ enum SimpleBatchNumbers
     pSUBC_BNR       ,
 
     CONDSUB_BNR     ,
+    INC_BNR         ,
+    INC2_BNR         ,
+    INC3_BNR         ,
 
     XOR_BNR         ,
     pXOR_BNR        ,
@@ -943,6 +997,10 @@ static TestFunction TestFunctionTable[] =
 
     {CONDSUB_BNR,"CONDSUB",InitKernel_CondSub,{0xffff,0xff8f,(0xffff - 0xff8f)*NUMBER_OF_MACHINES}},
     {CONDSUB_BNR,"CONDSUB2",InitKernel_CondSub,{0xff8f,0xffff,0*NUMBER_OF_MACHINES}},
+
+    {INC_BNR,"INC",InitKernel_Inc,{0xf0,0x0,(0xf0 + 1)*NUMBER_OF_MACHINES}},
+    {INC2_BNR,"INC2",InitKernel_Inc,{0xf0,0x0,(0xf0 + 1)*NUMBER_OF_MACHINES}},
+    {INC3_BNR,"INC3",InitKernel_Inc,{0xf0,0x0,(0xf0 + 1)*NUMBER_OF_MACHINES}},
 
     {NOT_BNR,"NOT",InitKernel_Not,{0xfff0,0x00,(0xf)*NUMBER_OF_MACHINES}},
 
