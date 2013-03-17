@@ -179,6 +179,8 @@ int main(int argc, char *argv[])
     }
 
     test_Simple_All(true);
+    test_Simple_IO_All(true);
+    //return 0;
 
     char *LogFileName = "RunScores.log";
     FILE *logfile = fopen(LogFileName, "w");
@@ -198,8 +200,8 @@ int main(int argc, char *argv[])
     //char *fn1 ="data/img1.png.key";
     //char *fn2 ="data/img3.png.key";
 
-    test_BasicMatching_All_SSD(fn1, fn2, logfile);
     test_BasicMatching_All_SAD(fn1, fn2, logfile);
+    test_BasicMatching_All_SSD(fn1, fn2, logfile);
     test_BasicMatching_All_NeonSSE(fn1, fn2, logfile);
 
     //MainNeonSSE();

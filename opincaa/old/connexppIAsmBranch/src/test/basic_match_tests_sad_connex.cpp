@@ -710,13 +710,13 @@ static void ProcessLastReduction(int CurrentcnxvectorChunkImg1, int Currentcnxve
                         SMs->ScoreNextToMin[descIm1] = SMs->ScoreMin[descIm1];
                         SMs->ScoreMin[descIm1] = dsq;
 
-                        SMs->DescIx2ndImgNextToMin[descIm1] = SMs->DescIx2ndImgMin[descIm1];
+                        //SMs->DescIx2ndImgNextToMin[descIm1] = SMs->DescIx2ndImgMin[descIm1];
                         SMs->DescIx2ndImgMin[descIm1] = descIm2;
                     }
                     else if (dsq < SMs->ScoreNextToMin[descIm1])
                     {
                         SMs->ScoreNextToMin[descIm1] = dsq;
-                        SMs->DescIx2ndImgNextToMin[descIm1] = descIm2;
+                        //SMs->DescIx2ndImgNextToMin[descIm1] = descIm2;
                     }
                     //CounttimesLess++;
                 }

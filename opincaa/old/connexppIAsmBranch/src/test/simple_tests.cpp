@@ -1087,7 +1087,7 @@ static void UpdateDatasetTable(int BatchNumber)
         case READ_BNR       ://fallthrough
         case IWRITE_BNR     ://fallthrough
         case IREAD_BNR      :{
-                                TestFunctionTable[i].ds.Param1 = randPar(1024);
+                                TestFunctionTable[i].ds.Param1 = randPar(2048);
                                 TestFunctionTable[i].ds.ExpectedResult = (NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2;
                                 break;
                              }
