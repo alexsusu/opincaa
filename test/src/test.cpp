@@ -85,34 +85,23 @@ int RunAll(bool stress)
         /* Pass the opened file descriptor as the distribution FIFO.
          * All kernels to be executed will be written to that file.
          */
-
+        /*
 	ConnexMachine *connex = new ConnexMachine("/dev/xillybus_write_arm2array_32",
                                               "/dev/xillybus_read_array2arm_32",
                                               "/dev/xillybus_write_mem2array_32",
                                               "/dev/xillybus_read_array2mem_32");
-        /*
+        */
 
     ConnexMachine *connex = new ConnexMachine("distributionFIFO",
                                                 "reductionFIFO",
                                                 "writeFIFO",
                                                 "readFIFO");
-		*/
+		
 
         result = test_Simple_All(connex, stress);
         result += test_Simple_IO_All(connex, stress);
         jump_test(5,connex);
 
-        char *LogFileName = "RunScores.log";
-        FILE *logfile = fopen(LogFileName, "w");
-        char *fn1 ="data/adam1.key";
-        char *fn2 ="data/adam2.key";
-
-        //result += icc_test_Simple_All(connex, stress);
-        result += test_BasicMatching_All_SSD(connex,
-                                        GetDataFilePath(fn1),
-                                        GetDataFilePath(fn2),
-                                        logfile
-                                         );
 
         delete connex;
     }
