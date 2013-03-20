@@ -167,20 +167,22 @@ static void InitKernel_Add(int BatchNumber,INT32 Param1, INT32 Param2)
     END_BATCH(BatchNumber);
 }
 
+/*
 static void InitKernel_pAdd(int BatchNumber,INT32 Param1, INT32 Param2)
 {
     BEGIN_BATCH(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = (UINT_PARAM)Param1;
-                        R2 = R1 + (UINT_PARAM)Param2;
-                        //R3 = Param2 + R1;
+                        //R2 = R1 + (UINT_PARAM)Param2;
+                        R3 = Param2 + R1;
                         REDUCE(R2);
                      )
 
     END_BATCH(BatchNumber);
-}
+}*/
 
 // pseudo instruction with zero
+/*
 static void InitKernel_pzAdd(int BatchNumber,INT32 Param1, INT32 Param2)
 {
     BEGIN_BATCH(BatchNumber);
@@ -192,7 +194,7 @@ static void InitKernel_pzAdd(int BatchNumber,INT32 Param1, INT32 Param2)
                      )
 
     END_BATCH(BatchNumber);
-}
+}*/
 
 static void InitKernel_sAdd(int BatchNumber,INT32 Param1, INT32 Param2)
 {
@@ -207,6 +209,7 @@ static void InitKernel_sAdd(int BatchNumber,INT32 Param1, INT32 Param2)
     END_BATCH(BatchNumber);
 }
 
+/*
 static void InitKernel_Inc(int BatchNumber,INT32 Param1, INT32 Param2)
 {
     BEGIN_BATCH(BatchNumber);
@@ -242,6 +245,7 @@ static void InitKernel_Inc3(int BatchNumber,INT32 Param1, INT32 Param2)
 
     END_BATCH(BatchNumber);
 }
+*/
 
 static void InitKernel_Addc(int BatchNumber,INT32 Param1, INT32 Param2)
 {
@@ -251,8 +255,11 @@ static void InitKernel_Addc(int BatchNumber,INT32 Param1, INT32 Param2)
                         R5 = 0xFFFF;
                         R6 = R4 + R5;
 
-                        //R3 = ADDC(R1, R2); is equivalent to:
-
+                        R1 = Param1;
+                        R2 = Param2;
+                        R3 = ADDC(R1, R2);
+                        /*
+                        is equivalent to:
                         R4 = 0;
                         EXECUTE_WHERE_CARRY(R4 = 1;)
                         EXECUTE_IN_ALL(
@@ -260,7 +267,8 @@ static void InitKernel_Addc(int BatchNumber,INT32 Param1, INT32 Param2)
                         R2 = Param2;
                         R3 = R1 + R2;
                         R3 = R3 + R4;
-                        REDUCE(R3);)
+                        */
+                        REDUCE(R3);
                     )
 
     END_BATCH(BatchNumber);
@@ -273,9 +281,11 @@ static void InitKernel_pAddc(int BatchNumber,INT32 Param1, INT32 Param2)
                         R4 = 0xFF;
                         R5 = 0xFFFF;
                         R6 = R4 + R5;
-                        R1 = Param1;
-                        //R2 = ADDC(R1, Param2); is equivalent to
 
+                        R1 = Param1;
+                        R2 = ADDC(R1, Param2);
+                        /*
+                        is equivalent to
                         R4 = 0;
                         EXECUTE_WHERE_CARRY(R4 = 1;)
                         EXECUTE_IN_ALL(
@@ -283,7 +293,8 @@ static void InitKernel_pAddc(int BatchNumber,INT32 Param1, INT32 Param2)
                         R2 = Param2;
                         R2 = R1 + R2;
                         R2 = R2 + R4;
-                        REDUCE(R2);)
+                        */
+                        REDUCE(R2);
                     )
 
     END_BATCH(BatchNumber);
@@ -981,8 +992,8 @@ static TestFunction TestFunctionTable[] =
     {VLOAD_BNR,"VLOAD",InitKernel_Vload,{0x01,0x02,3*NUMBER_OF_MACHINES}},
 
     {ADD_BNR,"ADD",InitKernel_Add,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
-    {pADD_BNR,"pADD",InitKernel_pAdd,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
-    {pzADD_BNR,"pzADD",InitKernel_pzAdd,{0,0,(0 + 0)*NUMBER_OF_MACHINES}},
+//    {pADD_BNR,"pADD",InitKernel_pAdd,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
+//    {pzADD_BNR,"pzADD",InitKernel_pzAdd,{0,0,(0 + 0)*NUMBER_OF_MACHINES}},
     {sADD_BNR,"sADD",InitKernel_sAdd,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
 
     {ADDC_BNR,"ADDC",InitKernel_Addc,{0xf0,0x1,(0xf0 + 1 + 1)*NUMBER_OF_MACHINES}},
@@ -998,9 +1009,9 @@ static TestFunction TestFunctionTable[] =
     {CONDSUB_BNR,"CONDSUB",InitKernel_CondSub,{0xffff,0xff8f,(0xffff - 0xff8f)*NUMBER_OF_MACHINES}},
     {CONDSUB_BNR,"CONDSUB2",InitKernel_CondSub,{0xff8f,0xffff,0*NUMBER_OF_MACHINES}},
 
-    {INC_BNR,"INC",InitKernel_Inc,{0xf0,0x0,(0xf0 + 1)*NUMBER_OF_MACHINES}},
-    {INC2_BNR,"INC2",InitKernel_Inc,{0xf0,0x0,(0xf0 + 1)*NUMBER_OF_MACHINES}},
-    {INC3_BNR,"INC3",InitKernel_Inc,{0xf0,0x0,(0xf0 + 1)*NUMBER_OF_MACHINES}},
+    //{INC_BNR,"INC",InitKernel_Inc,{0xf0,0x0,(0xf0 + 1)*NUMBER_OF_MACHINES}},
+    //{INC2_BNR,"INC2",InitKernel_Inc,{0xf0,0x0,(0xf0 + 1)*NUMBER_OF_MACHINES}},
+    //{INC3_BNR,"INC3",InitKernel_Inc,{0xf0,0x0,(0xf0 + 1)*NUMBER_OF_MACHINES}},
 
     {NOT_BNR,"NOT",InitKernel_Not,{0xfff0,0x00,(0xf)*NUMBER_OF_MACHINES}},
 

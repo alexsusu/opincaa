@@ -26,8 +26,8 @@ using namespace std;
 #ifndef _MSC_VER //MS C++ compiler
 	DECLARE_STATIC_C_SIMU_VARS
 #else
-	UINT_REGVALUE c_simulator::CSimuRegs[NUMBER_OF_MACHINES][32];
-	UINT_REGVALUE c_simulator::CSimuLocalStore[NUMBER_OF_MACHINES][1024];
+	UINT_REGVALUE c_simulator::CSimuRegs[NUMBER_OF_MACHINES][REGISTER_FILE_SIZE];
+	UINT_REGVALUE c_simulator::CSimuLocalStore[NUMBER_OF_MACHINES][LOCAL_STORE_SIZE];
 	UINT8 c_simulator::CSimuActiveFlags[NUMBER_OF_MACHINES];
 	UINT8 c_simulator::CSimuCarryFlags[NUMBER_OF_MACHINES];
 	UINT8 c_simulator::CSimuEqFlags[NUMBER_OF_MACHINES];
@@ -109,7 +109,7 @@ struct OpCodeDeAsm
 static OpCodeDeAsm OpCodeDeAsms[] =
 {
     {_ADD,"+"},
-    {_INC,"++"},
+    {_ADDC," + CARRY + "},
     {_SUB,"-"},
     {_CONDSUB," CONDSUB "},
     {_NOT,"~"},
@@ -245,8 +245,8 @@ int c_simulator::printDeAsmBatch(UINT16 dwBatchNumber)
         switch (((CurrentInstruction) >> OPCODE_9BITS_POS) & ((1 << OPCODE_9BITS_SIZE)-1))
             {
                 case _ADD:
-                //case _ADDC:
-                case _INC:
+                case _ADDC:
+//                case _INC:
                 case _SUB:
                 case _CONDSUB:
                 case _OR:
@@ -359,7 +359,7 @@ int c_simulator::DeAsmBatch(UINT16 dwBatchNumber)
                                 else CSimuCarryFlags[MACHINE] = 0;
                                      );
                                 continue;}
-            /*
+
                 case _ADDC:{FOR_ALL_ACTIVE_MACHINES(
                                 CSimuRegs[MACHINE][GET_DEST(CI)] = CSimuRegs[MACHINE][GET_LEFT(CI)] +
                                                                         CSimuRegs[MACHINE][GET_RIGHT(CI)] +
@@ -371,12 +371,12 @@ int c_simulator::DeAsmBatch(UINT16 dwBatchNumber)
                                 else CSimuCarryFlags[MACHINE] = 0;
                                      );
                                                    continue;}
-            */
+            /*
                 case _INC:{FOR_ALL_ACTIVE_MACHINES(
                                 CSimuRegs[MACHINE][GET_DEST(CI)] = CSimuRegs[MACHINE][GET_LEFT(CI)] + 1;)
                                 continue;
                                 }
-
+*/
                 case _SUB:{FOR_ALL_ACTIVE_MACHINES(CSimuRegs[MACHINE][GET_DEST(CI)] =
                                                     CSimuRegs[MACHINE][GET_LEFT(CI)] - CSimuRegs[MACHINE][GET_RIGHT(CI)];
 

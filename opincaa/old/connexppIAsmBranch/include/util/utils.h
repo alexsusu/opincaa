@@ -33,6 +33,9 @@
 #define FLOAT32 float
 #endif
 
+#define LOCAL_STORE_SIZE 2048
+#define REGISTER_FILE_SIZE 32
+
 #define UINT_INSTRUCTION UINT32 // how long an instruction is
 #define UINT_RED_REG_VAL UINT32 //actually 16+ log2(128) = 23 bits are enough for RedAdd
 #define UINT_REGISTER_VAL UINT16

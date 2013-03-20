@@ -15,7 +15,7 @@ Transfers occur in the following sequence of events:
         #define CNXVECTOR_SIZE_IN_BYTES (2 * CNXVECTOR_SIZE_IN_WORDS)
         #define CNXVECTOR_SIZE_IN_WORDS NUMBER_OF_MACHINES
         #define CNXVECTOR_SIZE_IN_DWORDS (CNXVECTOR_SIZE_IN_WORDS / 2)
-        #define MAX_CNXVECTORS 2048
+        #define MAX_CNXVECTORS LOCAL_STORE_SIZE
 
         #define DESCRIPTOR_SIZE_IN_DWORDS    3
         #define DESCRIPTOR_SIZE_IN_WORDS     (2*DESCRIPTOR_SIZE_IN_WORDS)

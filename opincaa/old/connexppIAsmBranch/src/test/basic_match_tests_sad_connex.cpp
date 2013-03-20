@@ -413,7 +413,7 @@ static int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
 //#define JMP_VECTORS_CHUNK_IMAGE2 (JMP_VECTORS_SUBCHUNK_IMAGE2*12)
 
 #define JMP_VECTORS_CHUNK_IMAGE1 ((1024 - JMP_VECTORS_CHUNK_IMAGE2*2)/2) //allow two img1 chunks for double buffering
-#define JMP_VECTORS_SUBCHUNK_IMAGE2 28
+#define JMP_VECTORS_SUBCHUNK_IMAGE2 27
 #define JMP_VECTORS_CHUNK_IMAGE2 (JMP_VECTORS_SUBCHUNK_IMAGE2*8)
 
 #undef VECTORS_CHUNK_IMAGE1
@@ -910,6 +910,9 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
             else if (RunningMode == MODE_CREATE_BATCHES)
             {
                 BEGIN_BATCH(LoadToRxBatchNumber + UsingImg1Buffer0or1*2 + UsingImg2Buffer0or1);
+                    EXECUTE_IN_ALL
+                    (
+                    R28 = 1;
                     //forall subchunks of chunk of img 2
                     for(int CurrentcnxvectorSubChunkImg2 = 0; CurrentcnxvectorSubChunkImg2 < TotalcnxvectorSubChunksImg2; CurrentcnxvectorSubChunkImg2++)
                     {
@@ -925,7 +928,7 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
 
                             //R[JMP_VECTORS_SUBCHUNK_IMAGE2] = LS[y]; //load cnxvector y to R30 ; cout <<" LS[" <<y<<"] ====== "<<endl;
                             R[JMP_VECTORS_SUBCHUNK_IMAGE2] = LS[R30]; //load cnxvector y to R30 ; cout <<" LS[" <<y<<"] ====== "<<endl;
-                            R30 = R30 + 1;
+                            R30 = R30 + R28;
                             //forall registers with cnxvector-subchunk of img 2 (~30 cnxvectors in 30 registers)
                             for(int x = 0; x < JMP_VECTORS_SUBCHUNK_IMAGE2; x++)
                             {
@@ -945,6 +948,7 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
                         )
                     }
                 NOP;
+                )
                 END_BATCH();
                 if ((UsingImg1Buffer0or1 == 1) && (UsingImg2Buffer0or1==1))
                     return PASS; //no need to create more than 4 batches

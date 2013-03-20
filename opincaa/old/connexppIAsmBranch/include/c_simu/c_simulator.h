@@ -22,9 +22,6 @@
 #define UINT_MULTVALUE  UINT32
 #define C_SIMU_RED_MAX (8*1024* 1024) // can hold 8MiB reductions
 
-#define LOCAL_STORE_SIZE 1024
-#define REGISTER_FILE_SIZE 32
-
 #define VERIFY_BATCH(Batch)         c_simulator::verifyBatch(Batch)
 #define DEASM_BATCH(Batch)          c_simulator::printDeAsmBatch(Batch)
 #define PRINT_SHIFT_REGS()           c_simulator::printSHIFT_REGS()
@@ -36,8 +33,8 @@
 
 #ifndef _MSC_VER //MS C++ compiler
 #define DECLARE_STATIC_C_SIMU_VARS\
-		UINT_REGVALUE c_simulator::CSimuRegs[NUMBER_OF_MACHINES][32];\
-        UINT_REGVALUE c_simulator::CSimuLocalStore[NUMBER_OF_MACHINES][1024];\
+		UINT_REGVALUE c_simulator::CSimuRegs[NUMBER_OF_MACHINES][REGISTER_FILE_SIZE];\
+        UINT_REGVALUE c_simulator::CSimuLocalStore[NUMBER_OF_MACHINES][LOCAL_STORE_SIZE];\
         UINT8 c_simulator::CSimuActiveFlags[NUMBER_OF_MACHINES];\
         UINT8 c_simulator::CSimuCarryFlags[NUMBER_OF_MACHINES];\
         UINT8 c_simulator::CSimuEqFlags[NUMBER_OF_MACHINES];\
