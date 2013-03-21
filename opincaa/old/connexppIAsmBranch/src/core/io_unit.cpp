@@ -104,8 +104,12 @@ int io_unit::vread(void *_iou)
     if (DESCRIPTOR_SIZE_IN_BYTES == write(vpipe_write_32, &(iou->getIO_UNIT_CORE())->Descriptor, DESCRIPTOR_SIZE_IN_BYTES))
     {
         write(vpipe_write_32, NULL, 0); //flush
+        //printf("Waiting for %d bytes \n", iou->getSize());
         if (iou->getSize() == read(vpipe_read_32, &(iou->getIO_UNIT_CORE())->Content, iou->getSize()))
+        {
             return PASS;
+            //printf("Waiting for is over \n");
+        }
     }
 
     return FAIL;
@@ -122,8 +126,10 @@ int io_unit::vwriteIsEnded()
 void io_unit::vwriteWaitEnd()
 {
     write(vpipe_write_32, NULL, 0); //flush
+    //printf("Waiting for vwrite-end \n");
     while (PASS != vwriteIsEnded())
     ;//wait
+    //printf("Waiting is over \n");
 }
 
 int io_unit::initialize()
