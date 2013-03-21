@@ -24,12 +24,15 @@ enum SimpleIoBatchNumbers
     IO_READ4_BNR    ,
     IO_READ5_BNR    ,
     IO_READ6_BNR    ,
+    IO_READ7_BNR    ,
+
     IO_WRITE1_BNR   ,
     IO_WRITE2_BNR   ,
     IO_WRITE3_BNR   ,
     IO_WRITE4_BNR   ,
     IO_WRITE5_BNR   ,
     IO_WRITE6_BNR   ,
+    IO_WRITE7_BNR   ,
 
     PRINT_LS_BNR = 98,
     CLEAR_LS_BNR = 99,
