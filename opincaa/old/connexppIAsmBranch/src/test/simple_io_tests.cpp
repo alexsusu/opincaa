@@ -171,6 +171,10 @@ TestIoFunction TestIoFunctionTable[] =
     {IO_WRITE3_BNR,"IO_WRITE_3.1   ",testIowrite,{3,1}},
     {IO_READ3_BNR, "IO_READ_3.1    ",testIoread,{3,1}},
 
+    {IO_WRITE7_BNR,"IO_WRITE_512.0",testIowrite,{512,0}},
+    {IO_READ7_BNR, "IO_READ_512.0 ",testIoread,{512,0}},
+    {IO_WRITE7_BNR,"IO_WRITE_512.0",testIowrite,{512,0}},
+
     {IO_WRITE4_BNR,"IO_WRITE_1024.0",testIowrite,{1024,0}},
     {IO_READ4_BNR, "IO_READ_1024.0 ",testIoread,{1024,0}},
     {IO_WRITE4_BNR,"IO_WRITE_1024.0",testIowrite,{1024,0}},
@@ -215,7 +219,7 @@ static void UpdateDatasetTable(int BatchNumber)
                                     {
                                         TestIoFunctionTable[i].ds.Param1 = randPar(MAX_CNXVECTORS-1)+1;
                                     }while (TestIoFunctionTable[i].ds.Param2 + TestIoFunctionTable[i].ds.Param1 > MAX_CNXVECTORS);
-									//cout<<endl<<"  IO test running with params "<< TestIoFunctionTable[i].ds.Param1 << " " << TestIoFunctionTable[i].ds.Param2;
+									cout<<endl<<"  IO test 4 running with params "<< TestIoFunctionTable[i].ds.Param1 << " " << TestIoFunctionTable[i].ds.Param2;
 					break;
                                 }
     }
