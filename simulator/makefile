@@ -12,7 +12,7 @@ BUILD_DIR = build
 SRC_DIR = src
 LIB_DIR = libs
 
-CFLAGS = -fPIC -std=c++0x
+CFLAGS = --std=c++0x
 LDFLAGS_DEBUG =  $(LDFLAGS)
 
 OBJ = $(BUILD_DIR)/ConnexVector.o $(BUILD_DIR)/ConnexSimulator.o $(BUILD_DIR)/NamedPipes.o $(BUILD_DIR)/Instruction.o $(BUILD_DIR)/InstructionQueue.o
@@ -24,6 +24,7 @@ start: all
 
 stop:
 	killall -9 simulator
+	rm distributionFIFO readFIFO reductionFIFO writeFIFO
 
 make_paths: 
 	test -d $(BUILD_DIR) || mkdir -p $(BUILD_DIR)

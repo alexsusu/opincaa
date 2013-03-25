@@ -117,17 +117,35 @@ static int testIoread(ConnexMachine *connex, int BatchNumber,INT32 Param1, INT32
             connex->executeKernel(TEST_PREFIX + to_string(BatchNumber));
         }
         //c_simulator::printLS(Param2+1);
+		
+	/* execute a reduction so we're sure the software's done executing */
+	connex->executeKernel("waitfor");
+	connex->readReduction();
+		
     // read data from local store
     {
         static UINT16 Content[NUMBER_OF_MACHINES * CONNEX_MAX_MEMORY];
         connex->readDataFromArray(Content, num_cnxvectors, Param2);
-
+        
+//         cout << "Read data: " << endl;
+//         for(int i=0; i<num_cnxvectors; i++)
+//         {
+//             cout << "v[" << i <<"] = ";
+//             for(int j=0; j<NUMBER_OF_MACHINES; j++)
+//             {
+//                 cout << hex << Content[i * NUMBER_OF_MACHINES + j] << " ";
+//             }
+//             cout << endl; 
+//         }
+        
+//         cout << endl;
+        
         testResult = PASS;
         for (cnxvectorIndex = 0; cnxvectorIndex < num_cnxvectors; cnxvectorIndex++)
             for (cnt = 0; cnt < NUMBER_OF_MACHINES; cnt++)
                 if (data[cnxvectorIndex * NUMBER_OF_MACHINES + cnt] != Content[cnxvectorIndex * NUMBER_OF_MACHINES + cnt])
                 {
-                    //cout<<cnxvectorIndex << " "<<cnt << " "<< " "<<data[cnxvectorIndex * CNXVECTOR_SIZE_IN_WORDS + cnt]<<endl;
+                    //cout<<cnxvectorIndex << " "<<cnt << "  "<<data[cnxvectorIndex * NUMBER_OF_MACHINES + cnt]<< " <> " << Content[cnxvectorIndex * NUMBER_OF_MACHINES + cnt] <<endl;
                     testResult = FAIL;
                 }
     }
@@ -210,6 +228,10 @@ int test_Simple_IO_All(ConnexMachine *connex, bool stress)
     int j;
     cout<<endl;
 
+    BEGIN_KERNEL("waitfor");
+    REDUCE(R0);
+    END_KERNEL("waitfor");
+    
     if (stress == true) { stressLoops = 10;} else stressLoops = 0;
     for (i = 0; i < sizeof (TestIoFunctionTable) / sizeof (TestIoFunction); i++)
     {
