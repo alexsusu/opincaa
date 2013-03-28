@@ -1,3 +1,4 @@
+
 /*
  *
  * File: basic_match_tests_sad_connex.cpp
@@ -407,13 +408,9 @@ static int connexFindMatchesPass2(int RunningMode,int LoadToRxBatchNumber,
     return PASS;
 }
 
-//#define JMP_VECTORS_CHUNK_IMAGE1 376
-//#define JMP_VECTORS_SUBCHUNK_IMAGE2 27 //keep it even, for easy double buffering
-//#define JMP_VECTORS_CHUNK_IMAGE2 (JMP_VECTORS_SUBCHUNK_IMAGE2*12)
-
-#define JMP_VECTORS_CHUNK_IMAGE1 ((1024 - JMP_VECTORS_CHUNK_IMAGE2*2)/2) //allow two img1 chunks for double buffering
-#define JMP_VECTORS_SUBCHUNK_IMAGE2 27
-#define JMP_VECTORS_CHUNK_IMAGE2 (JMP_VECTORS_SUBCHUNK_IMAGE2*8)
+#define JMP_VECTORS_CHUNK_IMAGE1 376
+#define JMP_VECTORS_SUBCHUNK_IMAGE2 27 //keep it even, for easy double buffering
+#define JMP_VECTORS_CHUNK_IMAGE2 (JMP_VECTORS_SUBCHUNK_IMAGE2*12)
 
 #undef VECTORS_CHUNK_IMAGE1
 #undef VECTORS_CHUNK_IMAGE2
@@ -709,13 +706,13 @@ static void ProcessLastReduction(int CurrentcnxvectorChunkImg1, int Currentcnxve
                         SMs->ScoreNextToMin[descIm1] = SMs->ScoreMin[descIm1];
                         SMs->ScoreMin[descIm1] = dsq;
 
-                        //SMs->DescIx2ndImgNextToMin[descIm1] = SMs->DescIx2ndImgMin[descIm1];
+                        SMs->DescIx2ndImgNextToMin[descIm1] = SMs->DescIx2ndImgMin[descIm1];
                         SMs->DescIx2ndImgMin[descIm1] = descIm2;
                     }
                     else if (dsq < SMs->ScoreNextToMin[descIm1])
                     {
                         SMs->ScoreNextToMin[descIm1] = dsq;
-                        //SMs->DescIx2ndImgNextToMin[descIm1] = descIm2;
+                        SMs->DescIx2ndImgNextToMin[descIm1] = descIm2;
                     }
                     //CounttimesLess++;
                 }
@@ -732,38 +729,6 @@ static int TransferIOChunk(UINT16 *Buff, UINT16 VectorAddress, io_unit* Io, int 
     *TotalIOTime += GetMilliSpan(TimeStart);
 }
 
-/* Benchmarking section:
-    We try to determine how many vectors we can transfer in a certain amount of time.
-    Running on Zedboard (CortexA9 @ 667MHz) yields about 63/128 ms for one vector and almost
-        linear increase up to 117/128 ms for 315 vectors
-*/
-int connexIOtimings[JMP_VECTORS_CHUNK_IMAGE1];
-static int connexIOBenchmark(SiftDescriptors16 * SiftDescriptors1)
-{
-    int dummyTime, timeMeasured;
-    printf("\nRunning IO transfer benchmark... \n");
-    for (int vectors=1; vectors < JMP_VECTORS_CHUNK_IMAGE1; vectors++)
-    {
-        int TimeStart = GetMilliCount();
-        #define BENCHMARK_LOOPS_BIT 7
-        #define BENCHMARK_LOOPS (1 << BENCHMARK_LOOPS_BIT)
-        for (int loops = 0; loops < BENCHMARK_LOOPS; loops++)
-        {
-            TransferIOChunk(SiftDescriptors1->SiftDescriptorsBasicFeatures[loops],//variable
-                            loops,//variable
-                            &IOU_CVCI1, vectors, &dummyTime);
-        }
-        timeMeasured = GetMilliSpan(TimeStart);
-        connexIOtimings[vectors] = timeMeasured;
-    }
-
-    printf("%d Transfers of %d vectors takes %d ms \n",BENCHMARK_LOOPS, 1, connexIOtimings[1]);
-    for (int vectors=2; vectors < JMP_VECTORS_CHUNK_IMAGE1; vectors++)
-    {
-        if (connexIOtimings[vectors] != connexIOtimings[vectors-1])
-            printf("%d Transfers of %d vectors takes %d ms \n", BENCHMARK_LOOPS, vectors, connexIOtimings[vectors]);
-    }
-}
 static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
                                     SiftDescriptors16 *SiftDescriptors1, SiftDescriptors16 *SiftDescriptors2,
                                     SiftMatches* SMs, SiftMatches* SMsFinal)
@@ -772,16 +737,10 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
     int TotalcnxvectorChunksImg1 = (SiftDescriptors1->RealDescriptors + JMP_VECTORS_CHUNK_IMAGE1 - 1) / JMP_VECTORS_CHUNK_IMAGE1;
     int TotalcnxvectorChunksImg2 = (SiftDescriptors2->RealDescriptors + JMP_VECTORS_CHUNK_IMAGE2 - 1) / JMP_VECTORS_CHUNK_IMAGE2;
     int TotalcnxvectorSubChunksImg2 = JMP_VECTORS_CHUNK_IMAGE2 / JMP_VECTORS_SUBCHUNK_IMAGE2;
-    int UsingImg2Buffer0or1;//JMP_VECTORS_CHUNK_IMAGE1_HALF
-    int UsingImg1Buffer0or1;
+    int UsingBuffer0or1;
     int TimeStart;
     int TotalIOTime = 0, TotalBatchTime = 0, TotalReductionTime = 0, TotalFindGoodMatchTime = 0;
 
-    //BATCH_0 = img1 - lowpart, img2 lowpart
-    //BATCH_1 = img1 - lowpart, img2 highpart
-    //BATCH_2 = img1 - highpart, img2 lowpart
-    //BATCH_3 = img1 - highpart, img2 highpart
-    //BATCH(X): x = UsingImg1Buffer0or1*2 + UsingImg2Buffer0or1
     if (RunningMode == MODE_CREATE_BATCHES)
     {
         // After running, get reduced results
@@ -792,31 +751,18 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
             SMs->ScoreNextToMin[CntDescIm1] = (UINT32)-1;
         }
         SMs->RealMatches = 0;
-
-        //truncate images when creating batches: we need at most first four batches
-        if (TotalcnxvectorChunksImg1 > 2) TotalcnxvectorChunksImg1 = 2;
-        if (TotalcnxvectorChunksImg2 > 2) TotalcnxvectorChunksImg2 = 2;
-        //connexIOBenchmark(SiftDescriptors1);
     }
-
-    //int Img1TransferSubChunk = ((JMP_VECTORS_CHUNK_IMAGE1 + TotalcnxvectorChunksImg2-1) / TotalcnxvectorChunksImg2);
-    int Img1TransferSubChunk = 10;
-    int Img1ChunkVectorsLeftToBeTransferred;
 
     int LastCurrentcnxvectorChunkImg1;
     int LastCurrentcnxvectorChunkImg2;
-    UsingImg1Buffer0or1 = 0;
-    UsingImg2Buffer0or1 = 0;
-
     //forall cnxvector chunks in img1
+    UsingBuffer0or1 = 0;
     for(CurrentcnxvectorChunkImg1 = 0; CurrentcnxvectorChunkImg1 < TotalcnxvectorChunksImg1; CurrentcnxvectorChunkImg1++)
     {
-        Img1ChunkVectorsLeftToBeTransferred = JMP_VECTORS_CHUNK_IMAGE1;
-
+        //>>>>IO-load cnxvector chunk on img1 to LocalStore[0...363]
         if (RunningMode != MODE_CREATE_BATCHES)
-            if (CurrentcnxvectorChunkImg1==0) //if first chunk of img1, wait blocking
-                TransferIOChunk(SiftDescriptors1->SiftDescriptorsBasicFeatures[JMP_VECTORS_CHUNK_IMAGE1*CurrentcnxvectorChunkImg1],
-                                UsingImg1Buffer0or1 * JMP_VECTORS_CHUNK_IMAGE1,
+            //if (CurrentcnxvectorChunkImg1==0) //if first chunk of img1, wait blocking
+                TransferIOChunk(SiftDescriptors1->SiftDescriptorsBasicFeatures[JMP_VECTORS_CHUNK_IMAGE1*CurrentcnxvectorChunkImg1],0,
                                 &IOU_CVCI1, JMP_VECTORS_CHUNK_IMAGE1, &TotalIOTime);
 
 
@@ -826,14 +772,14 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
             //UsingBuffer0or1 = CurrentcnxvectorChunkImg2 & 0x01;
             if (RunningMode != MODE_CREATE_BATCHES)
             {
-                if (CurrentcnxvectorChunkImg1 == 0)
+                if (CurrentcnxvectorChunkImg1==0)
                 if (CurrentcnxvectorChunkImg2 == 0) //if first block in img2 and first in img1, wait for transfer to end, then start next transfer and batch.
                     TransferIOChunk(SiftDescriptors2->SiftDescriptorsBasicFeatures[JMP_VECTORS_CHUNK_IMAGE2*CurrentcnxvectorChunkImg2],
-                                    JMP_VECTORS_CHUNK_IMAGE1*2 + UsingImg2Buffer0or1*JMP_VECTORS_CHUNK_IMAGE2,
+                                    JMP_VECTORS_CHUNK_IMAGE1 + UsingBuffer0or1*JMP_VECTORS_CHUNK_IMAGE2,
                                         &IOU_CVCI2, JMP_VECTORS_CHUNK_IMAGE2, &TotalIOTime);
 
                 TimeStart = GetMilliCount();
-                EXECUTE_BATCH(LoadToRxBatchNumber + UsingImg1Buffer0or1*2 + UsingImg2Buffer0or1);
+                EXECUTE_BATCH(LoadToRxBatchNumber + UsingBuffer0or1);
                 TotalBatchTime += GetMilliSpan(TimeStart);
 
                 /* While batch executes, do work: do not wait for reduction to happen */
@@ -858,40 +804,12 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
                 else
                         TransferIOChunk(SiftDescriptors2->SiftDescriptorsBasicFeatures[JMP_VECTORS_CHUNK_IMAGE2*
                                             ((CurrentcnxvectorChunkImg2 + 1)% TotalcnxvectorChunksImg2)],
-                        JMP_VECTORS_CHUNK_IMAGE1*2 + ((UsingImg2Buffer0or1 + 1) & 0x01)*JMP_VECTORS_CHUNK_IMAGE2,
+                        JMP_VECTORS_CHUNK_IMAGE1 + ((UsingBuffer0or1 + 1) & 0x01)*JMP_VECTORS_CHUNK_IMAGE2,
                             &IOU_CVCI2, JMP_VECTORS_CHUNK_IMAGE2, &TotalIOTime);
 
                 // if no piece of img2 is left, transfer from img1, if any left
-                if ((CurrentcnxvectorChunkImg1 + 1) != TotalcnxvectorChunksImg1) //if not last chunk in img1
-                    if (Img1ChunkVectorsLeftToBeTransferred > 0)
-                    {
-                        int Img1VectorsTransferNow = Img1TransferSubChunk;
-                        if (Img1VectorsTransferNow > Img1ChunkVectorsLeftToBeTransferred)
-                                Img1VectorsTransferNow = Img1ChunkVectorsLeftToBeTransferred;
 
-                        if ((CurrentcnxvectorChunkImg2 + 1) == TotalcnxvectorChunksImg2) //if lash chunk of img2, wait io img1 to transfer all remaining
-                            Img1VectorsTransferNow = Img1ChunkVectorsLeftToBeTransferred;
 
-                        //transfer next img1 chunk
-                        TransferIOChunk(SiftDescriptors1->SiftDescriptorsBasicFeatures[
-                                        //startoffset in feature
-                                        JMP_VECTORS_CHUNK_IMAGE1*((CurrentcnxvectorChunkImg1 + 1)% TotalcnxvectorChunksImg1)
-                                        + (JMP_VECTORS_CHUNK_IMAGE1 - Img1ChunkVectorsLeftToBeTransferred)
-                                        ],
-
-                                        //start offset in localstore
-                                        ((UsingImg1Buffer0or1 + 1) & 0x01) * JMP_VECTORS_CHUNK_IMAGE1 +
-                                        (JMP_VECTORS_CHUNK_IMAGE1 - Img1ChunkVectorsLeftToBeTransferred)
-                                        ,
-                                        &IOU_CVCI1,
-
-                                        //transfer size
-                                        Img1VectorsTransferNow,
-
-                                        &TotalIOTime);
-
-                        Img1ChunkVectorsLeftToBeTransferred -= Img1VectorsTransferNow;
-                    }
                 //We have no more work to do, so we wait for reduction (in fact batch execution) to happen */
                 {
                     int ExpectedBytesOfReductions = BYTES_IN_DWORD* JMP_VECTORS_CHUNK_IMAGE1 * JMP_VECTORS_CHUNK_IMAGE2;
@@ -908,55 +826,53 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
             //next: create or execute created batch
             else if (RunningMode == MODE_CREATE_BATCHES)
             {
-                BEGIN_BATCH(LoadToRxBatchNumber + UsingImg1Buffer0or1*2 + UsingImg2Buffer0or1);
-                    EXECUTE_IN_ALL
-                    (
-                    R28 = 1;
+                BEGIN_BATCH(LoadToRxBatchNumber + UsingBuffer0or1);
+                    R29 = 1;//reserved for increment with one
+
                     //forall subchunks of chunk of img 2
                     for(int CurrentcnxvectorSubChunkImg2 = 0; CurrentcnxvectorSubChunkImg2 < TotalcnxvectorSubChunksImg2; CurrentcnxvectorSubChunkImg2++)
                     {
                         //forall cnxvectors in subchunk of chunk of img (~30 cnxvectors) load cnxvector x to Rx
 
                         for(int x = 0; x < JMP_VECTORS_SUBCHUNK_IMAGE2; x++)
-                            R[x] = LS[2*JMP_VECTORS_CHUNK_IMAGE1 + UsingImg2Buffer0or1*JMP_VECTORS_CHUNK_IMAGE2 +
+                            R[x] = LS[JMP_VECTORS_CHUNK_IMAGE1 + UsingBuffer0or1*JMP_VECTORS_CHUNK_IMAGE2 +
                                         CurrentcnxvectorSubChunkImg2 * JMP_VECTORS_SUBCHUNK_IMAGE2 + x];
 
                         //forall 364 cnxvectors "y" in chunk of image 1
-                       R30 = UsingImg1Buffer0or1*JMP_VECTORS_CHUNK_IMAGE1;/* R30 is reserved for localstore loading location */
+                        //for (int y = 0; y < JMP_VECTORS_CHUNK_IMAGE1; y++)
+
+                       R30 = 0;/* R30 is reserved for localstore loading location */
                        REPEAT_X_TIMES(JMP_VECTORS_CHUNK_IMAGE1,
 
                             //R[JMP_VECTORS_SUBCHUNK_IMAGE2] = LS[y]; //load cnxvector y to R30 ; cout <<" LS[" <<y<<"] ====== "<<endl;
                             R[JMP_VECTORS_SUBCHUNK_IMAGE2] = LS[R30]; //load cnxvector y to R30 ; cout <<" LS[" <<y<<"] ====== "<<endl;
-                            R30 = R30 + R28;
+                            R30 = R30 + R29;
                             //forall registers with cnxvector-subchunk of img 2 (~30 cnxvectors in 30 registers)
                             for(int x = 0; x < JMP_VECTORS_SUBCHUNK_IMAGE2; x++)
                             {
                                 /*
-                                R0 ... R27 filled with one img2 subchunk
-                                R28 has one img1 descriptor
-                                R29 = man variable for the condsub
+                                R0 ... R26 filled with one img2 subchunk
+                                R27 has one img1 descriptor
+                                R28 = man variable for the condsub
+                                R29 = 1;//reserved for increment with one
                                 R30 is reserved for localstore loading location (looped jmp variable)
                                 R31 = we reduce this for the SAD
                                 */
 
                                 R31 = CONDSUB(R[JMP_VECTORS_SUBCHUNK_IMAGE2], R[x]);
-                                R29 = CONDSUB(R[x] , R[JMP_VECTORS_SUBCHUNK_IMAGE2]);
-                                FUSED_REDUCE(R31 = R31 + R29);
-                                //REDUCE(R31);
+                                R28 = CONDSUB(R[x] , R[JMP_VECTORS_SUBCHUNK_IMAGE2]);
+                                R31 = R31 + R28;
+                                REDUCE(R31);
                             }
                         )
                     }
                 NOP;
-                )
                 END_BATCH();
-                if ((UsingImg1Buffer0or1 == 1) && (UsingImg2Buffer0or1==1))
-                    return PASS; //no need to create more than 4 batches
+                if (UsingBuffer0or1 == 1) return PASS; //no need to create more than 2 batches
             }
 
-            UsingImg2Buffer0or1 = (UsingImg2Buffer0or1 + 1) & 0x01;
+            UsingBuffer0or1 = (UsingBuffer0or1 + 1) & 0x01;
         }
-
-        UsingImg1Buffer0or1 = (UsingImg1Buffer0or1 + 1) & 0x01;
     }
     //DEASM_BATCH(0);
     cout<<"   ___"<<endl;
@@ -978,6 +894,52 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
 
     cout<<"  |    Total FindGoodMatch time is "<<TotalFindGoodMatchTime<<" ms"<<endl;
     return PASS;
+}
+
+static void IntProofConcept()
+{
+    BEGIN_BATCH(5);
+    R30 = 0;
+    //for (int i=0; i <2; i++)
+    {
+        SET_JMP_LABEL(0);
+        //R[JMP_VECTORS_SUBCHUNK_IMAGE2] = LS[y]; //load cnxvector y to R30 ; cout <<" LS[" <<y<<"] ====== "<<endl;
+        R[JMP_VECTORS_SUBCHUNK_IMAGE2] = LS[R30]; //load cnxvector y to R30 ; cout <<" LS[" <<y<<"] ====== "<<endl;
+        R30 = R30 + R29;
+        //forall registers with cnxvector-subchunk of img 2 (~30 cnxvectors in 30 registers)
+        for(int x = 0; x < 1; x++)
+        {
+            R31 = R[JMP_VECTORS_SUBCHUNK_IMAGE2] - R[x];
+            R31 = R31 * R31;
+            REDUCE(R31);
+        }
+        JMP_TIMES_TO_LABEL(1,0);
+    }
+    {
+        SET_JMP_LABEL(0);
+        //R[JMP_VECTORS_SUBCHUNK_IMAGE2] = LS[y]; //load cnxvector y to R30 ; cout <<" LS[" <<y<<"] ====== "<<endl;
+        R[JMP_VECTORS_SUBCHUNK_IMAGE2] = LS[R30]; //load cnxvector y to R30 ; cout <<" LS[" <<y<<"] ====== "<<endl;
+        R30 = R30 + R29;
+        //forall registers with cnxvector-subchunk of img 2 (~30 cnxvectors in 30 registers)
+        for(int x = 0; x < 1; x++)
+        {
+            R31 = R[JMP_VECTORS_SUBCHUNK_IMAGE2] - R[x];
+            R31 = R31 * R31;
+            REDUCE(R31);
+        }
+        JMP_TIMES_TO_LABEL(1,0);
+    }
+
+    END_BATCH(5);
+    DEASM_BATCH(5);
+
+    EXECUTE_BATCH(5);
+    int ExpectedBytesOfReductions = 1*2*4*10;
+    int RealBytesOfReductions = GET_MULTIRED_RESULT(BasicMatchRedResults, ExpectedBytesOfReductions);
+    cout<<"RealBytesOfReductions = "<<RealBytesOfReductions<<endl;
+    cout<<"ExpectedBytesOfReductions = "<<ExpectedBytesOfReductions<<endl;
+
+
 }
 
 #define BASIC_MATCHING_BNR 0
@@ -1158,3 +1120,4 @@ int test_BasicMatching_All_SAD(char* fn1, char* fn2, FILE* logfile)
 //    free(BasicMatchRedResults);
 	return 0;
 }
+
