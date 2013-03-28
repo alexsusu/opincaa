@@ -926,6 +926,7 @@ enum SimpleBatchNumbers
     ISHL3_BNR        ,
 
     ADD_BNR         ,
+    FUSED_ADD_BNR   ,
     pADD_BNR        ,
     pzADD_BNR       ,
     sADD_BNR        ,
@@ -1001,6 +1002,8 @@ static TestFunction TestFunctionTable[] =
     {VLOAD_BNR,"VLOAD",InitKernel_Vload,{0x01,0x02,3*NUMBER_OF_MACHINES}},
 
     {ADD_BNR,"ADD",InitKernel_Add,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
+    {FUSED_ADD_BNR,"ADD",InitKernel_FusedAddReduce,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
+
 //    {pADD_BNR,"pADD",InitKernel_pAdd,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
 //    {pzADD_BNR,"pzADD",InitKernel_pzAdd,{0,0,(0 + 0)*NUMBER_OF_MACHINES}},
     {sADD_BNR,"sADD",InitKernel_sAdd,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
@@ -1107,7 +1110,7 @@ static void UpdateDatasetTable(int BatchNumber)
         case READ_BNR       ://fallthrough
         case IWRITE_BNR     ://fallthrough
         case IREAD_BNR      :{
-                                TestFunctionTable[i].ds.Param1 = randPar(2048);
+                                TestFunctionTable[i].ds.Param1 = randPar(LOCAL_STORE_SIZE);
                                 TestFunctionTable[i].ds.ExpectedResult = (NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2;
                                 break;
                              }

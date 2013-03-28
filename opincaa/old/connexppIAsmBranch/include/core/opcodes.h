@@ -76,7 +76,7 @@
     #define _READ    0b100100100
     #define _WRITE   0b100010100
 
-    #define _MULT    0b100001000
+    #define _MULT      0b100001000
     #define _MULT_LO   0b100101000
     #define _MULT_HI   0b100111000
 
@@ -97,5 +97,17 @@
 #else
 	#include "../../ms_visual_c/vc_opcodes.h"
 #endif
+
+    #define FUSED (1<<1)
+    #define GET_UNFUSED_OPCODE(instruction) (GET_OPCODE_9BITS(instruction) & ~FUSED)
+    inline static bool IS_INSTRUCTION_FUSED(UINT_INSTRUCTION instruction)
+    {
+        if ((GET_OPCODE_9BITS(instruction) != _CELL_SHL) &&
+            (GET_OPCODE_9BITS(instruction) != _WHERE_LT) &&
+            (GET_OPCODE_9BITS(instruction) != _END_WHERE)
+            )
+            return (GET_OPCODE_9BITS(instruction) & FUSED);
+        else return 0;
+    }
 
 #endif // OPCODES_H

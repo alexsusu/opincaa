@@ -90,6 +90,7 @@ int io_unit::vwriteNonBlocking(void *_iou)
      else
         result = FAIL;
 
+    //printf("Write done \n");
 	return result;
 }
 
@@ -101,14 +102,15 @@ void io_unit::preReadcnxvectors(UINT16 srcAddress,UINT16 numcnxvectors)
 int io_unit::vread(void *_iou)
 {
     io_unit *iou = (io_unit*)_iou;
+    //printf("Writing vread descriptor \n");
     if (DESCRIPTOR_SIZE_IN_BYTES == write(vpipe_write_32, &(iou->getIO_UNIT_CORE())->Descriptor, DESCRIPTOR_SIZE_IN_BYTES))
     {
         write(vpipe_write_32, NULL, 0); //flush
         //printf("Waiting for %d bytes \n", iou->getSize());
         if (iou->getSize() == read(vpipe_read_32, &(iou->getIO_UNIT_CORE())->Content, iou->getSize()))
         {
-            return PASS;
             //printf("Waiting for is over \n");
+            return PASS;
         }
     }
 

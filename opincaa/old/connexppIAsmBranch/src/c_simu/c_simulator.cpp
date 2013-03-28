@@ -176,7 +176,10 @@ int c_simulator::verifyBatch(UINT16 dwBatchNumber)
 const char* getOpCodeName(UINT_INSTRUCTION instruction)
 {
     UINT16 index;
-    instruction = GET_OPCODE_9BITS(instruction) & ~(1<<1);
+    if (IS_INSTRUCTION_FUSED(instruction))
+        instruction = GET_UNFUSED_OPCODE(instruction);
+    else
+        instruction = GET_OPCODE_9BITS(instruction);
 
     for (index = 0; index < sizeof(OpCodeDeAsms) / sizeof (OpCodeDeAsm); index++)
       if (instruction == OpCodeDeAsms[index].opcode) return OpCodeDeAsms[index].opcodeName;
@@ -247,7 +250,7 @@ int c_simulator::printDeAsmBatch(UINT16 dwBatchNumber)
         switch (((CurrentInstruction) >> OPCODE_9BITS_POS) & ((1 << OPCODE_9BITS_SIZE)-1))
             {
                 case _ADD:
-                case (_ADD | (1<<1)):
+                case (_ADD | FUSED):
                 case _ADDC:
 //                case _INC:
                 case _SUB:
@@ -261,7 +264,7 @@ int c_simulator::printDeAsmBatch(UINT16 dwBatchNumber)
                 case _SHR:
                 case _SHRA:
                         printLRD(CurrentInstruction);
-                        if ((((CurrentInstruction) >> OPCODE_9BITS_POS) & (1 << 1))) printFusedRED(CurrentInstruction);
+                        if (IS_INSTRUCTION_FUSED(CurrentInstruction)) printFusedRED(CurrentInstruction);
                         continue;
 
                 case _EQ:  printLRDP(CurrentInstruction);continue;
@@ -358,15 +361,15 @@ int c_simulator::DeAsmBatch(UINT16 dwBatchNumber)
 
         switch (((CI) >> OPCODE_9BITS_POS) & ((1 << OPCODE_9BITS_SIZE)-1))
             {
-                case (_ADD | (1<<1)):
-            case _ADD:{FOR_ALL_ACTIVE_MACHINES(
+                case (_ADD | FUSED):
+                case _ADD:{FOR_ALL_ACTIVE_MACHINES(
                                 CSimuRegs[MACHINE][GET_DEST(CI)] = CSimuRegs[MACHINE][GET_LEFT(CI)] + CSimuRegs[MACHINE][GET_RIGHT(CI)];
                                 if (CSimuRegs[MACHINE][GET_LEFT(CI)] + CSimuRegs[MACHINE][GET_RIGHT(CI)] > UINT_REGVALUE_TOP)
                                      CSimuCarryFlags[MACHINE] = 1;
                                 else CSimuCarryFlags[MACHINE] = 0;
                                      );
 
-                                if (((CI) >> OPCODE_9BITS_POS) & (1<<1))
+                                if (IS_INSTRUCTION_FUSED(CI))
                                     {UINT32 sum = 0; FOR_ALL_ACTIVE_MACHINES(sum += CSimuRegs[MACHINE][GET_DEST(CI)]);
                                         if (CSimuRedCnt < C_SIMU_RED_MAX) CSimuRed[CSimuRedCnt++] = sum & REDUCTION_SIZE_MASK; continue;}
                                 else
