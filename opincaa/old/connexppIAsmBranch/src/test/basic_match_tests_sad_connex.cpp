@@ -1,4 +1,3 @@
-
 /*
  *
  * File: basic_match_tests_sad_connex.cpp
@@ -1159,4 +1158,3 @@ int test_BasicMatching_All_SAD(char* fn1, char* fn2, FILE* logfile)
 //    free(BasicMatchRedResults);
 	return 0;
 }
-
