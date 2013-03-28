@@ -33,7 +33,7 @@
 #define FLOAT32 float
 #endif
 
-#define LOCAL_STORE_SIZE 2048
+#define LOCAL_STORE_SIZE 1024
 #define REGISTER_FILE_SIZE 32
 
 #define UINT_INSTRUCTION UINT32 // how long an instruction is

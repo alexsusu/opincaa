@@ -87,6 +87,11 @@ void cnxvector::replaceInstruction(UINT_INSTRUCTION instr, int index)
     dwBatch[dwBatchIndex][index] = instr;
 }
 
+void cnxvector::modifyLastInstruction(UINT_INSTRUCTION or_mask)
+{
+    if (bEstimationMode == 0)
+        dwBatch[dwBatchIndex][dwInBatchCounter[dwBatchIndex]-1] |= or_mask;
+}
 
 /****************************************************************************************************************************\
  *********************************************          OPERATORS           *************************************************
@@ -319,6 +324,11 @@ void cnxvector::operator=(UINT_PARAM imm_val)
 void cnxvector::reduce(cnxvector other_left)
 {
     appendInstruction((_REDUCE << OPCODE_9BITS_POS) + (other_left.mval << LEFT_POS));
+}
+
+void cnxvector::fusedReduce(void)
+{
+    modifyLastInstruction(1 << (OPCODE_9BITS_POS + 1));
 }
 
 void cnxvector::onlyOpcode(UINT_INSTRUCTION opcode)

@@ -155,7 +155,8 @@ int c_simulator::verifyBatchInstruction(UINT_INSTRUCTION CurrentInstruction)
         return PASS;
 
     for (index = 0; index < sizeof(OpCodeDeAsms) / sizeof (OpCodeDeAsm); index++)
-        if (GET_OPCODE_9BITS(CurrentInstruction) == OpCodeDeAsms[index].opcode) return PASS;
+        if ((GET_OPCODE_9BITS(CurrentInstruction) && (~(1 << 1))) == OpCodeDeAsms[index].opcode)
+            return PASS;
 
     perror (" Instruction's opcode is not recognized. This might be a sort of ... crappy code ;)");
     return FAIL;
@@ -175,7 +176,7 @@ int c_simulator::verifyBatch(UINT16 dwBatchNumber)
 const char* getOpCodeName(UINT_INSTRUCTION instruction)
 {
     UINT16 index;
-    instruction = GET_OPCODE_9BITS(instruction);
+    instruction = GET_OPCODE_9BITS(instruction) & ~(1<<1);
 
     for (index = 0; index < sizeof(OpCodeDeAsms) / sizeof (OpCodeDeAsm); index++)
       if (instruction == OpCodeDeAsms[index].opcode) return OpCodeDeAsms[index].opcodeName;
@@ -204,6 +205,7 @@ void printLDSH(UINT_INSTRUCTION instr){   printf("R%d = SHIFT_REG\n", GET_DEST(i
 
 void printWN(UINT_INSTRUCTION instr){   printf("%s\n", getOpCodeName(instr));}
 void printRED(UINT_INSTRUCTION instr){   printf("REDUCE(R%d)\n", GET_LEFT(instr));}
+void printFusedRED(UINT_INSTRUCTION instr){   printf("        previous instruction had FUSED_REDUCE(R%d)\n", GET_DEST(instr));}
 
 void printNOT(UINT_INSTRUCTION instr){   printf("R%d = %sR%d\n", GET_DEST(instr),getOpCodeName(instr),GET_LEFT(instr));}
 
@@ -245,6 +247,7 @@ int c_simulator::printDeAsmBatch(UINT16 dwBatchNumber)
         switch (((CurrentInstruction) >> OPCODE_9BITS_POS) & ((1 << OPCODE_9BITS_SIZE)-1))
             {
                 case _ADD:
+                case (_ADD | (1<<1)):
                 case _ADDC:
 //                case _INC:
                 case _SUB:
@@ -257,7 +260,9 @@ int c_simulator::printDeAsmBatch(UINT16 dwBatchNumber)
                 case _SHL:
                 case _SHR:
                 case _SHRA:
-                        printLRD(CurrentInstruction);continue;
+                        printLRD(CurrentInstruction);
+                        if ((((CurrentInstruction) >> OPCODE_9BITS_POS) & (1 << 1))) printFusedRED(CurrentInstruction);
+                        continue;
 
                 case _EQ:  printLRDP(CurrentInstruction);continue;
 
@@ -290,6 +295,7 @@ int c_simulator::printDeAsmBatch(UINT16 dwBatchNumber)
                 case _REDUCE:   printRED(CurrentInstruction);continue;
                 default: {
                             result= FAIL;
+                            //printf("%d", CurrentInstruction);
                             break;
                         }
             }
@@ -352,12 +358,18 @@ int c_simulator::DeAsmBatch(UINT16 dwBatchNumber)
 
         switch (((CI) >> OPCODE_9BITS_POS) & ((1 << OPCODE_9BITS_SIZE)-1))
             {
-                case _ADD:{FOR_ALL_ACTIVE_MACHINES(
+                case (_ADD | (1<<1)):
+            case _ADD:{FOR_ALL_ACTIVE_MACHINES(
                                 CSimuRegs[MACHINE][GET_DEST(CI)] = CSimuRegs[MACHINE][GET_LEFT(CI)] + CSimuRegs[MACHINE][GET_RIGHT(CI)];
                                 if (CSimuRegs[MACHINE][GET_LEFT(CI)] + CSimuRegs[MACHINE][GET_RIGHT(CI)] > UINT_REGVALUE_TOP)
                                      CSimuCarryFlags[MACHINE] = 1;
                                 else CSimuCarryFlags[MACHINE] = 0;
                                      );
+
+                                if (((CI) >> OPCODE_9BITS_POS) & (1<<1))
+                                    {UINT32 sum = 0; FOR_ALL_ACTIVE_MACHINES(sum += CSimuRegs[MACHINE][GET_DEST(CI)]);
+                                        if (CSimuRedCnt < C_SIMU_RED_MAX) CSimuRed[CSimuRedCnt++] = sum & REDUCTION_SIZE_MASK; continue;}
+                                else
                                 continue;}
 
                 case _ADDC:{FOR_ALL_ACTIVE_MACHINES(
@@ -541,7 +553,8 @@ int c_simulator::DeAsmBatch(UINT16 dwBatchNumber)
 
                 case _END_WHERE:{FOR_ALL_MACHINES(CSimuActiveFlags[MACHINE]= _ACTIVE);continue;}
                 case _NOP:      continue;
-                case _REDUCE:   {UINT32 sum = 0; FOR_ALL_ACTIVE_MACHINES(sum += CSimuRegs[MACHINE][GET_LEFT(CI)]);
+                case _REDUCE:
+                            {UINT32 sum = 0; FOR_ALL_ACTIVE_MACHINES(sum += CSimuRegs[MACHINE][GET_LEFT(CI)]);
                                 if (CSimuRedCnt < C_SIMU_RED_MAX) CSimuRed[CSimuRedCnt++] = sum & REDUCTION_SIZE_MASK; continue;}
                 default: result= FAIL; break;
             }

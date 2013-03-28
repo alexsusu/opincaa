@@ -942,8 +942,8 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
 
                                 R31 = CONDSUB(R[JMP_VECTORS_SUBCHUNK_IMAGE2], R[x]);
                                 R29 = CONDSUB(R[x] , R[JMP_VECTORS_SUBCHUNK_IMAGE2]);
-                                R31 = R31 + R29;
-                                REDUCE(R31);
+                                FUSED_REDUCE(R31 = R31 + R29);
+                                //REDUCE(R31);
                             }
                         )
                     }
@@ -979,52 +979,6 @@ static int connexJmpFindMatchesPass(int RunningMode,int LoadToRxBatchNumber,
 
     cout<<"  |    Total FindGoodMatch time is "<<TotalFindGoodMatchTime<<" ms"<<endl;
     return PASS;
-}
-
-static void IntProofConcept()
-{
-    BEGIN_BATCH(5);
-    R30 = 0;
-    //for (int i=0; i <2; i++)
-    {
-        SET_JMP_LABEL(0);
-        //R[JMP_VECTORS_SUBCHUNK_IMAGE2] = LS[y]; //load cnxvector y to R30 ; cout <<" LS[" <<y<<"] ====== "<<endl;
-        R[JMP_VECTORS_SUBCHUNK_IMAGE2] = LS[R30]; //load cnxvector y to R30 ; cout <<" LS[" <<y<<"] ====== "<<endl;
-        R30 = R30 + R29;
-        //forall registers with cnxvector-subchunk of img 2 (~30 cnxvectors in 30 registers)
-        for(int x = 0; x < 1; x++)
-        {
-            R31 = R[JMP_VECTORS_SUBCHUNK_IMAGE2] - R[x];
-            R31 = R31 * R31;
-            REDUCE(R31);
-        }
-        JMP_TIMES_TO_LABEL(1,0);
-    }
-    {
-        SET_JMP_LABEL(0);
-        //R[JMP_VECTORS_SUBCHUNK_IMAGE2] = LS[y]; //load cnxvector y to R30 ; cout <<" LS[" <<y<<"] ====== "<<endl;
-        R[JMP_VECTORS_SUBCHUNK_IMAGE2] = LS[R30]; //load cnxvector y to R30 ; cout <<" LS[" <<y<<"] ====== "<<endl;
-        R30 = R30 + R29;
-        //forall registers with cnxvector-subchunk of img 2 (~30 cnxvectors in 30 registers)
-        for(int x = 0; x < 1; x++)
-        {
-            R31 = R[JMP_VECTORS_SUBCHUNK_IMAGE2] - R[x];
-            R31 = R31 * R31;
-            REDUCE(R31);
-        }
-        JMP_TIMES_TO_LABEL(1,0);
-    }
-
-    END_BATCH(5);
-    DEASM_BATCH(5);
-
-    EXECUTE_BATCH(5);
-    int ExpectedBytesOfReductions = 1*2*4*10;
-    int RealBytesOfReductions = GET_MULTIRED_RESULT(BasicMatchRedResults, ExpectedBytesOfReductions);
-    cout<<"RealBytesOfReductions = "<<RealBytesOfReductions<<endl;
-    cout<<"ExpectedBytesOfReductions = "<<ExpectedBytesOfReductions<<endl;
-
-
 }
 
 #define BASIC_MATCHING_BNR 0

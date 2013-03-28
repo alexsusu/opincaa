@@ -85,6 +85,7 @@
 //#define BATCH(x) x
 
 #define REDUCE(x)       cnxvector::reduce(x)
+#define FUSED_REDUCE(x) x;cnxvector::fusedReduce()
 #define ADDC(x,y)       cnxvector::addc(x,y)
 //#define SUBC(x,y)       cnxvector::subc(x,y)
 //#define INC(x)       cnxvector::inc(x)
@@ -154,6 +155,7 @@ class cnxvector
         //methods: static
         static void appendInstruction(UINT_INSTRUCTION instr);
         static void replaceInstruction(UINT_INSTRUCTION instr, int index);
+        static void modifyLastInstruction(UINT_INSTRUCTION or_mask);
 
         static cnxvector addc(cnxvector other_left, cnxvector other_right);
         static cnxvector addc(cnxvector other_left, UINT_PARAM value);
@@ -172,7 +174,9 @@ class cnxvector
         static void cellshl(cnxvector other_left, cnxvector other_right);
         static void cellshr(cnxvector other_left, cnxvector other_right);
 
+        static void fusedReduce(void);
         static void reduce(cnxvector other_left);
+
         static cnxvector ult(cnxvector other_left, cnxvector other_right);
         static cnxvector ult(cnxvector other_left, UINT_PARAM value);
 

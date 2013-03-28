@@ -146,7 +146,16 @@ static void InitKernel_Jump3(int BatchNumber,INT32 Param1, INT32 Param2)
     END_BATCH(BatchNumber);
 }
 
-
+static void InitKernel_FusedAddReduce(int BatchNumber,INT32 Param1, INT32 Param2)
+{
+    BEGIN_BATCH(BatchNumber);
+        EXECUTE_IN_ALL(
+                        R1 = (UINT_PARAM)Param1;
+                        R2 = (UINT_PARAM)Param2;
+                        FUSED_REDUCE(R3 = R1 + R2);
+                      )
+    END_BATCH(BatchNumber);
+}
 
 static void InitKernel_Add(int BatchNumber,INT32 Param1, INT32 Param2);
 static void InitKernel_Vload(int BatchNumber,INT32 Param1, INT32 Param2)
