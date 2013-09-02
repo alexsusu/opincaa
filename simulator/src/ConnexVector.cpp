@@ -220,6 +220,15 @@ void ConnexVector::operator=(ConnexVector anotherVector)
     }
 }
 
+/*
+ * Copy vector not taking selection into account.
+ */
+void ConnexVector::copyFrom(ConnexVector anotherVector)
+{
+    memcpy(cells, anotherVector.cells, sizeof(cells));
+}
+
+
 /****************************************************************************
  * Assignment operator (used only for reset of active)
  */

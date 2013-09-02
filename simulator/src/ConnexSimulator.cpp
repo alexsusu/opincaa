@@ -318,8 +318,8 @@ void ConnexSimulator::executeInstruction(Instruction instruction)
  */
 void ConnexSimulator::handleShift(Instruction instruction)
 {
-	ConnexVector::shiftReg = registerFile[instruction.getLeft()];
-	ConnexVector::shiftCountReg = registerFile[instruction.getRight()];
+	ConnexVector::shiftReg.copyFrom(registerFile[instruction.getLeft()]);
+	ConnexVector::shiftCountReg.copyFrom(registerFile[instruction.getRight()]);
 
     ConnexVector::shiftReg.shift(instruction.getOpcode() == _CELL_SHL ? 1 : -1);
 }

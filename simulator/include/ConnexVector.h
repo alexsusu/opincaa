@@ -91,6 +91,11 @@ class ConnexVector
 		unsigned short* read();
 
         /*
+         * Copy vector not taking selection into account.
+         */
+         void copyFrom(ConnexVector anotherVector);
+         
+        /*
          * List of operators
          */
 		ConnexVector operator+(ConnexVector anotherVector);
