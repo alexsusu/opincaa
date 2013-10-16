@@ -157,12 +157,18 @@ class Kernel
         string getName();
 
         /*
-         * Returns a string representing the disassembled kernel, one
+         * Returns a string representing the dumped kernel, one
          * instruction per line.
          *
-         * @return the disassembled kernel
+         * @return the dumped kernel
          */
-        string disassemble();
+        string dump();
+
+	/*
+	 * Return a string representing the disassembled kernel.
+	 * One instruction per line.
+	 */
+	string disassemble();
 
 		/*
 		 * Resets the loop size counter so each appended instruction

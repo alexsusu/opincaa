@@ -168,13 +168,98 @@ unsigned Instruction::assemble()
     return instruction;
 }
 
-/************************************************************
- * Returns the string representing the disassembled instruction in 
- * OPINCAA format
- * 
- * @return string representing the disassembled instruction
+
+/**
+ * Returns the string representing the dissasembled instruction.
  */
 string Instruction::disassemble()
+{
+	stringstream stream;
+
+	stream << mnemonic(opcode);
+	switch(opcode) {
+	case _ADD:
+	case _ADDC:
+	case _SUB:
+	case _SUBC:
+	case _OR:
+	case _AND:
+	case _XOR:
+	case _EQ:
+	case _LT:
+	case _ULT:
+	case _SHL:
+	case _SHR:
+	case _SHRA:
+	case _CELL_SHL:
+	case _CELL_SHR:
+		stream << " " << registerName(dest);
+		stream << " " << registerName(left);
+		stream << " " << registerName(right);
+		break;
+	case _NOT:
+		stream << registerName(dest);
+		stream << " " << registerName(left);
+		break;
+	case _READ:
+		stream << registerName(dest);
+		stream << " " << registerName(right);
+		break;
+	case _ISHL:
+	case _ISHR:
+	case _ISHRA:
+		stream << " " << registerName(dest);
+		stream << " " << registerName(left);
+		stream << " " << right;
+		break;
+	case _LDIX:
+	case _LDSH:
+	case _MULT_LO:
+	case _MULT_HI:
+		stream << " " << registerName(dest);
+		break;
+	case _REDUCE:
+		stream << " " << registerName(left);
+		break;
+	case _WRITE:
+	case _MULT:
+		stream << " " << registerName(left);
+		stream << " " << registerName(right);
+		break;
+	case _VLOAD:
+	case _IREAD:
+		stream << " " << registerName(dest);
+		stream << " (" << value << ")";
+		break;
+	case _IWRITE:
+		stream << " (" << value << ")";
+		stream << " " << registerName(left);
+		break;
+	case _SETLC:
+		stream << " (" << value << ")";
+		/* fall through */
+	case _WHERE_CRY:
+	case _WHERE_EQ:
+	case _WHERE_LT:
+	case _END_WHERE:
+	case _IJMPNZ:
+	case _NOP:
+		break;
+        default: throw string("Invalid instruction opcode!");
+	}
+
+	stream << ";" << endl;
+
+	return stream.str();
+}
+
+/************************************************************
+ * Returns the string representing the dumped instruction in 
+ * OPINCAA format
+ * 
+ * @return string representing the dumped instruction
+ */
+string Instruction::dump()
 {
     stringstream stream;
     

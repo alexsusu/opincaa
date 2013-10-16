@@ -44,6 +44,11 @@ class ConnexMachine
          */
         static string disassembleKernel(string kernelName);
 
+	/*
+	 * Dump the specified kernel.
+	 */
+	static string dumpKernel(string kernelName);
+
 
 
         /*

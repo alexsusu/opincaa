@@ -74,21 +74,36 @@ void ConnexMachine::addKernel(Kernel *kernel)
 }
 
 /*
- * Disassembles the specified kernel
+ * Dumps the specified kernel
  *
- * @param kernelName the kernel to disassemble
+ * @param kernelName the kernel to dump
  *
- * @return the string representing the disassembled kernel,
+ * @return the string representing the dumped kernel,
  * one instruction per line
  */
-string ConnexMachine::disassembleKernel(string kernelName)
+string ConnexMachine::dumpKernel(string kernelName)
 {
     if(kernels.count(kernelName) == 0)
     {
-        throw string("Kernel ") + kernelName + string(" not found in ConnexMachine::disassembleKernel!");
+        throw string("Kernel ") + kernelName + string(" not found in ConnexMachine::dumpKernel!");
     }
     Kernel *kernel = kernels.find(kernelName)->second;
-    return kernel->disassemble();
+    return kernel->dump();
+}
+
+
+/*
+ * Disassembles the specified kernel.
+ */
+string ConnexMachine::disassembleKernel(string kernelName)
+{
+	if (!kernels.count(kernelName))
+		throw string("Kernel ") + kernelName +
+			string(" not found in ConnexMachine::disassembleKernel!");
+
+	Kernel *kernel = kernels.find(kernelName)->second;
+
+	return kernel->disassemble();
 }
 
 /*

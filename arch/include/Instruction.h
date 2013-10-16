@@ -207,12 +207,19 @@ class Instruction
         unsigned assemble();
 
         /*
-         * Returns the string representing the disassembled instruction in
+         * Returns the string representing the dump instruction in
          * OPINCAA format
          *
-         * @return string representing the disassembled instruction
+         * @return string representing the dumped instruction
          */
         string disassemble();
+
+	/*
+	 * Returns the string representing the disassemble instruction
+	 * in the following format:
+	 * 	MNEMONIC	DESTINATION	LEFT	 RIGHT
+	 */
+	string dump();
 
         /*
          * Returns a string representation of this instruction

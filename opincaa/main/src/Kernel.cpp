@@ -92,20 +92,37 @@ string Kernel::getName()
 }
 
 /************************************************************
- * Returns a string representing the disassembled kernel, one
+ * Returns a string representing the dumped kernel, one
  * instruction per line.
  *
  * @return the disassembled kernel
  */
-string Kernel::disassemble()
+string Kernel::dump()
 {
     string kernel;
     for(vector<unsigned>::iterator element = instructions.begin(); element != instructions.end(); element++)
     {
-        kernel += Instruction(*element).disassemble();
+        kernel += Instruction(*element).dump();
     }
 
     return kernel;
+}
+
+/*
+ * Returns a string representing the disassembled kernel.
+ * One instruction per line.
+ */
+string Kernel::disassemble()
+{
+	string kernel;
+
+	for (vector<unsigned>::iterator element = instructions.begin();
+	     element != instructions.end();
+	     element++) {
+		kernel += Instruction(*element).disassemble();
+	}
+
+	return kernel;
 }
 
 /************************************************************
