@@ -1,24 +1,52 @@
 #!/bin/bash
 
+CURRENT_PATH=$(pwd)
+USELESS=$CURRENT_PATH/.useless_debug
+
+echo "======================"
+echo "OPINCAA compiling..."
+echo "======================"
 pushd ../../opincaa/main &> /dev/null
-make
+make &> $USELESS
 popd &> /dev/null
 
+echo "======================"
+echo "Simulator compiling..."
+echo "======================"
 pushd ../../simulator &> /dev/null
-make
+make &>> $USELESS
 popd &> /dev/null
 
-# Use something like 'make NUM_ITER=2' to increase the size of the vector.
-# You should also force a recompilation before by
-# uncommenting the following line:
-#make clean
-make
+run_test()
+{
+	if [ $# -ne 3 ]; then
+		echo "Error when calling function $FUNCNAME."
+		echo "usage: $FUNCNAME  NUM_ITER  SORT_TYPE  TEST_NAME"
+		exit 1
+	fi
 
-../../simulator/build/simulator &
+	echo "======================"
+	echo $3
+	echo "======================"
 
-sleep 3
-export LD_LIBRARY_PATH=../../opincaa/main/libs; ./test
+	# Use something like 'make NUM_ITER=2' to increase the size of the vector.
+	make NUM_ITER=$1 &>> $USELESS
 
-killall -9 simulator
+	# Run simulator.
+	../../simulator/build/simulator  &>> $USELESS &
+	sleep 3
 
-rm -f *FIFO
+	# Run test.
+	export LD_LIBRARY_PATH=../../opincaa/main/libs; ./test $2
+
+	# Clean-up.
+	killall -9 simulator  &>> $USELESS
+	rm -f *FIFO &>> $USELESS
+	make clean &>> $USELESS
+	echo ""
+}
+
+#run_test 1 0 "Sorting 128 elements"
+run_test 100 1 "Sorting by merging chunks on host"
+
+

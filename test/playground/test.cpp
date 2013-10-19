@@ -10,7 +10,7 @@ using namespace std;
 #define NUM_ITER	1
 #endif
 
-static UINT16 data[NUMBER_OF_MACHINES * NUM_ITER];
+static UINT16 *data;
 
 #define SORT_ODD	"bubble_sort_odd"
 #define SORT_EVEN	"bubble_sort_even"
@@ -152,11 +152,82 @@ static void print_sorted_array(void)
 	cout << endl;
 }
 
-int main(void)
+static UINT16 get_minimum(UINT8 *indexes)
+{
+	UINT16 min = ~0x0;
+	UINT32 iter, min_iter = -1;
+
+	for (iter = 0; iter < NUM_ITER; iter++) {
+		if (indexes[iter] >= NUMBER_OF_MACHINES)
+			continue;
+		if (data[iter * NUMBER_OF_MACHINES + indexes[iter]] < min) {
+			min = data[iter * NUMBER_OF_MACHINES + indexes[iter]];
+			min_iter = iter;
+		}
+	}
+
+	indexes[min_iter]++;
+
+	return min;
+}
+
+static void merge_sort_on_host(void)
+{
+	UINT16 *temp = new UINT16[NUM_ITER * NUMBER_OF_MACHINES];
+	UINT8 *indexes = new UINT8[NUM_ITER]();
+	UINT32 iter, index = 0;
+
+	while (index < NUM_ITER * NUMBER_OF_MACHINES) {
+		temp[index] = get_minimum(indexes);
+		index++;
+	}
+
+	/* Copy data. */
+	for (iter = 0; iter < NUM_ITER * NUMBER_OF_MACHINES; iter++)
+		data[iter] = temp[iter];
+
+	delete temp;
+	delete indexes;
+}
+
+static void test_sort_chunks(ConnexMachine *connex)
 {
 	UINT32 iter;
-	int ret = 1;
 	int val = 1;
+
+	for (iter = 0; iter < NUM_ITER; iter++) {
+		bubble_sort_odd(iter);
+		bubble_sort_even(iter);
+	}
+
+	while (val) {
+		val = 0;
+
+		for (iter = 0; iter < NUM_ITER; iter++) {
+			connex->executeKernel(SORT_ODD + to_string(iter));
+			//cout << connex->disassembleKernel(SORT_ODD + to_string(iter));
+			val += connex->readReduction();
+		}
+
+		for (iter = 0; iter < NUM_ITER; iter++) {
+			connex->executeKernel(SORT_EVEN + to_string(iter));
+			val += connex->readReduction();
+		}
+	}
+
+}
+
+int main(int argc, char **argv)
+{
+	int ret = 1;
+	int type = 0;
+
+	if (argc != 2) {
+		fprintf(stderr, "Usage: %s ID\n", argv[0]);
+		return ret;
+	}
+
+	type = argv[1][0] - '0';
 
 	try {
 		connex = new ConnexMachine("distributionFIFO",
@@ -165,36 +236,39 @@ int main(void)
 					   "readFIFO");
 
 		cout << "Start testing..." << endl;
-		ret = 0;
 
-		for (iter = 0; iter < NUM_ITER; iter++) {
-			bubble_sort_odd(iter);
-			bubble_sort_even(iter);
-		}
-
+		data = new UINT16[NUMBER_OF_MACHINES * NUM_ITER];
 		send_data_to_LS();
 
-		while (val) {
-			val = 0;
-
-			for (iter = 0; iter < NUM_ITER; iter++) {
-				connex->executeKernel(SORT_ODD + to_string(iter));
-				//cout << connex->disassembleKernel(SORT_ODD + to_string(iter));
-				val += connex->readReduction();
-			}
-
-			for (iter = 0; iter < NUM_ITER; iter++) {
-				connex->executeKernel(SORT_EVEN + to_string(iter));
-				val += connex->readReduction();
-			}
+		switch (type) {
+		case 0:
+			/* Sort 128 elements. */
+			test_sort_chunks(connex);
+			get_data_from_LS();
+			break;
+		case 1:
+			/* Sort chunks + mergesort on host machine. */
+			test_sort_chunks(connex);
+			get_data_from_LS();
+			merge_sort_on_host();
+			break;
+		case 2:
+			/* TODO: bubblesort carry between blocks */
+		case 3:
+			/* TODO: modify kernels to sort end values */
+		case 4:
+			/* TODO: other algorithm */
+		default:
+			fprintf(stderr, "No such sorting type\n");
+			return ret;
 		}
 
-		get_data_from_LS();
-
 		print_sorted_array();
+		delete data;
 
 		cout << "================" << endl;
 
+		ret = 0;
 		delete connex;
 
 	} catch(string err) {
