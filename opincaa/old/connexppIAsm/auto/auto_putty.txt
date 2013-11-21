@@ -1,9 +1,0 @@
-cd Desktop &&
-
-cd connexppIAsm &&
-
-chmod 777 ./auto/make_run.sh &&
-
-./auto/make_run.sh &&
-
-exit
