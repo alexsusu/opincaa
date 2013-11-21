@@ -1,0 +1,50 @@
+#------------------------------------------------------------------------------#
+# Linux Makefile Template for OPINCAA API. Default arch = connex16-hm-generic. #
+#------------------------------------------------------------------------------#
+
+CXX = g++
+
+SRC_DIR = $(DEPTH)src
+INC_DIR = $(DEPTH)include
+
+BUILD_DIR = $(DEPTH)build
+LIB_DIR = $(DEPTH)libs
+
+CFLAGS = -fPIC -std=c++0x
+LDFLAGS_DEBUG =  $(LDFLAGS)
+
+SRC = $(wildcard $(DEPTH)core/*.cpp)
+OBJ = $(patsubst %.cpp, %.o, $(SRC))
+
+lib: make_paths build_arch build_utils build_core build_lib
+
+make_paths:
+	@test -d $(BUILD_DIR) || mkdir -p $(BUILD_DIR)
+	@test -d $(BUILD_DIR)/$(ARCH) || mkdir -p $(BUILD_DIR)/$(ARCH)
+	@test -d $(LIB_DIR) || mkdir -p $(LIB_DIR)
+	@test -d $(LIB_DIR)/$(ARCH) || mkdir -p $(LIB_DIR)/$(ARCH)
+
+build_arch:
+	$(CXX) $(CFLAGS) -I$(DEPTH)arch/$(ARCH)/include -c $(DEPTH)arch/$(ARCH)/src/Instruction.cpp -o $(BUILD_DIR)/$(ARCH)/Instruction.o
+
+build_utils:
+	$(CXX) $(CFLAGS) -I$(DEPTH)utils/include -c $(DEPTH)utils/src/NamedPipes.cpp -o $(BUILD_DIR)/$(ARCH)/NamedPipes.o
+
+build_core: $(OBJ)
+
+build_lib:
+	$(CXX) $(CFLAGS) $(BUILD_DIR)/$(ARCH)/*.o -lc -shared -Wl,-soname,libopincaa.so -o $(LIB_DIR)/$(ARCH)/libopincaa.so
+
+$(OBJ): %.o : %.cpp
+	$(eval obj = $(shell basename $@))
+	$(CXX) $(CFLAGS) -I$(INC_DIR) -I$(DEPTH)arch/$(ARCH)/include -I$(DEPTH)utils/include -c $< -o $(BUILD_DIR)/$(ARCH)/$(obj)
+
+
+install: lib
+	cp $(LIB_DIR)/libopincaa.so /usr/local/lib
+	chmod 0755 /usr/local/lib/libopincaa.so
+	ldconfig
+
+clean: 
+	rm -rf $(BUILD_DIR)
+	rm -rf $(LIB_DIR)
