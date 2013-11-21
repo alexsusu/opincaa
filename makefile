@@ -40,7 +40,7 @@ $(OBJ): %.o : %.cpp
 	$(CXX) $(CFLAGS) -I$(INC_DIR) -Iarch/$(ARCH)/include -Iutils/include -c $< -o $(BUILD_DIR)/$(ARCH)/$(obj)
 
 
-#install: lib
+install: lib
 	cp $(LIB_DIR)/libopincaa.so /usr/local/lib
 	chmod 0755 /usr/local/lib/libopincaa.so
 	ldconfig
