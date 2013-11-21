@@ -6,7 +6,7 @@ USELESS=$CURRENT_PATH/.useless_debug
 echo "======================"
 echo "OPINCAA compiling..."
 echo "======================"
-pushd ../../opincaa/main &> /dev/null
+pushd ../.. &> /dev/null
 make &> $USELESS
 popd &> /dev/null
 
@@ -37,7 +37,7 @@ run_test()
 	sleep 3
 
 	# Run test.
-	export LD_LIBRARY_PATH=../../opincaa/main/libs; ./test $2
+	export LD_LIBRARY_PATH=../../libs; ./test $2
 
 	# Clean-up.
 	killall -9 simulator  &>> $USELESS
