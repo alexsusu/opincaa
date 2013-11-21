@@ -17,7 +17,7 @@ CFLAGS = -fPIC -std=c++0x
 LDFLAGS_DEBUG =  $(LDFLAGS)
 
 test: test.o
-	$(CXX) -O3 $(CFLAGS)  $^ -L../../libs/ -o $@ -lopincaa -fopenmp
+	$(CXX) -O3 $(CFLAGS)  $^ -L../../libs/connex16-hm-generic -o $@ -lopincaa -fopenmp
 
 test.o: test.cpp
 	$(CXX) $(CFLAGS) -I../../include -I../../utils/include -I../../arch/connex16-hm-generic/include -c $^ -o $@ -DNUM_ITER=$(NUM_ITER)

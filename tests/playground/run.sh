@@ -37,7 +37,7 @@ run_test()
 	sleep 3
 
 	# Run test.
-	export LD_LIBRARY_PATH=../../libs; ./test $2
+	export LD_LIBRARY_PATH=../../libs/connex16-hm-generic; ./test $2
 
 	# Clean-up.
 	killall -9 simulator  &>> $USELESS
