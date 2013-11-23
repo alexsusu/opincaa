@@ -2,7 +2,7 @@
 # Linux Makefile for OPINCAA API.                                              #
 #------------------------------------------------------------------------------#
 
-ARCHITECTURES := connex16-hm-generic testing
+ARCHITECTURES := connex16-hm-generic
 
 .PHONY: build
 
