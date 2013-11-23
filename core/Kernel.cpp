@@ -7,7 +7,6 @@
  */
 
 #include "Kernel.h"
-#include "NamedPipes.h"
 #include <string.h>
 #include <stdio.h>
 #include <errno.h>
@@ -65,10 +64,10 @@ void Kernel::writeTo(void * buffer)
 */
 void Kernel::writeTo(int fileDescriptor)
 {
-    pwrite(fileDescriptor, instructions.data(), instructions.size() * sizeof(unsigned));
+    write(fileDescriptor, instructions.data(), instructions.size() * sizeof(unsigned));
 
     /* Flush the descriptor */
-    pwrite(fileDescriptor, NULL, 0);
+    write(fileDescriptor, NULL, 0);
 }
 
 /************************************************************

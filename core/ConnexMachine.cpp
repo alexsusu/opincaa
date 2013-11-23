@@ -7,7 +7,7 @@
  */
 
 #include "ConnexMachine.h"
-#include "NamedPipes.h"
+#include <fcntl.h>
 
 #define     VECTOR_LENGTH   128
 
@@ -125,10 +125,10 @@ ConnexMachine::ConnexMachine(string distributionDescriptorPath = DEFAULT_DISTRIB
     const char* wiopath = writeDescriptorPath.c_str();
     const char* riopath = readDescriptorPath.c_str();
 
-    distributionFifo = popen(distpath, O_WRONLY);
-    reductionFifo = popen(redpath, O_RDONLY);
-    ioWriteFifo = popen(wiopath, O_WRONLY);
-    ioReadFifo = popen(riopath, O_RDONLY);
+    distributionFifo = open(distpath, O_WRONLY);
+    reductionFifo = open(redpath, O_RDONLY);
+    ioWriteFifo = open(wiopath, O_WRONLY);
+    ioReadFifo = open(riopath, O_RDONLY);
 
     if(distributionFifo < 0 ||
         reductionFifo  <0 ||
@@ -168,10 +168,10 @@ ConnexMachine::ConnexMachine(int distributionFifo, int reductionFifo, int ioWrit
  */
 ConnexMachine::~ConnexMachine()
 {
-    if(distributionFifo > 0) pclose(distributionFifo);
-    if(reductionFifo > 0) pclose(reductionFifo);
-    if(ioWriteFifo > 0) pclose(ioWriteFifo);
-    if(ioReadFifo > 0) pclose(ioReadFifo);
+    if(distributionFifo > 0) close(distributionFifo);
+    if(reductionFifo > 0) close(reductionFifo);
+    if(ioWriteFifo > 0) close(ioWriteFifo);
+    if(ioReadFifo > 0) close(ioReadFifo);
 }
 
 /*
@@ -215,17 +215,17 @@ int ConnexMachine::writeDataToArray(void *buffer, unsigned vectorCount, unsigned
     connex_io_descriptor.vectorCount = VECTOR_COUNT(vectorCount);
 
     /* Issue the command */
-    pwrite(ioWriteFifo, &connex_io_descriptor, sizeof(connex_io_descriptor));
+    write(ioWriteFifo, &connex_io_descriptor, sizeof(connex_io_descriptor));
 
     /* Write the data */
-    int bytesWritten = pwrite(ioWriteFifo, buffer, vectorCount * VECTOR_LENGTH * 2);
+    int bytesWritten = write(ioWriteFifo, buffer, vectorCount * VECTOR_LENGTH * 2);
 
     /* Flush the descriptor */
-    pwrite(ioWriteFifo, NULL, 0);
+    write(ioWriteFifo, NULL, 0);
 
     /* Read the ACK, NOTE:this is blocking */
     int response;
-    pread(ioReadFifo, &response, sizeof(int));
+    read(ioReadFifo, &response, sizeof(int));
 
     //TODO: verify response
 
@@ -260,13 +260,13 @@ void* ConnexMachine::readDataFromArray(void *buffer, unsigned vectorCount, unsig
     connex_io_descriptor.vectorCount = VECTOR_COUNT(vectorCount);
 
     /* Issue the command */
-    pwrite(ioWriteFifo, &connex_io_descriptor, sizeof(connex_io_descriptor));
+    write(ioWriteFifo, &connex_io_descriptor, sizeof(connex_io_descriptor));
 
     /* Flush the descriptor */
-    pwrite(ioWriteFifo, NULL, 0);
+    write(ioWriteFifo, NULL, 0);
 
     /* Read the data */
-    if(pread(ioReadFifo, buffer, vectorCount * VECTOR_LENGTH * 2) < 0)
+    if(read(ioReadFifo, buffer, vectorCount * VECTOR_LENGTH * 2) < 0)
     {
 		threadMutex.unlock();
         throw string("Error reading from memory FIFO");
@@ -285,7 +285,7 @@ int ConnexMachine::readReduction()
 {
 	threadMutexIR.lock();
     int result;
-    if(pread(reductionFifo, &result, sizeof(int)) < 0)
+    if(read(reductionFifo, &result, sizeof(int)) < 0)
     {
 		threadMutexIR.unlock();
         throw string("Error reading from reduction FIFO");

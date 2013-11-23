@@ -16,7 +16,7 @@ LDFLAGS_DEBUG =  $(LDFLAGS)
 SRC = $(wildcard $(DEPTH)core/*.cpp)
 OBJ = $(patsubst %.cpp, %.o, $(SRC))
 
-lib: make_paths build_arch build_utils build_core build_lib
+lib: make_paths build_arch build_core build_lib
 
 make_paths:
 	@test -d $(BUILD_DIR) || mkdir -p $(BUILD_DIR)
@@ -26,9 +26,6 @@ make_paths:
 
 build_arch:
 	$(CXX) $(CFLAGS) -I$(DEPTH)arch/$(ARCH)/include -c $(DEPTH)arch/$(ARCH)/src/Instruction.cpp -o $(BUILD_DIR)/$(ARCH)/Instruction.o
-
-build_utils:
-	$(CXX) $(CFLAGS) -I$(DEPTH)utils/include -c $(DEPTH)utils/src/NamedPipes.cpp -o $(BUILD_DIR)/$(ARCH)/NamedPipes.o
 
 build_core: $(OBJ)
 
