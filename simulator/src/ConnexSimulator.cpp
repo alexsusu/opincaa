@@ -1,8 +1,9 @@
 
 #include <iostream>
 #include <thread>
+#include <fcntl.h>
+#include <sys/stat.h>
 #include "ConnexSimulator.h"
-#include "NamedPipes.h"
 
 /****************************************************************************
  *	Structure holding information for a IO transfer
@@ -70,10 +71,10 @@ int ConnexSimulator::openPipe(string pipePath, int mode)
 	/* Try and create the pipe, if it already exists, this will return
 	 * -1, but we don't care
 	 */
-	pmake(path, 0666);
+	mkfifo(path, 0666);
 
 	/* Try and attach to it */
-    if((fifoDescriptor = popen(path, mode)) < 0)
+    if((fifoDescriptor = open(path, mode)) < 0)
 	{
 		throw string("Unable to open FIFO ") + path;
     }
@@ -109,7 +110,7 @@ void ConnexSimulator::ioThreadHandler()
 	{
 
 		//cout<<"Simu: Waiting for receive "<<endl<<flush;
-		pread(writeDescriptor, &ioDescriptor, sizeof(ioDescriptor));
+		read(writeDescriptor, &ioDescriptor, sizeof(ioDescriptor));
 		//cout<<"Simu: Received "<<sizeof(ioDescriptor)<<" Bytes"<<endl<<flush;
 		performIO(ioDescriptor);
 		//cout<<"Simu: Perform IO "<<endl<<flush;
@@ -134,7 +135,7 @@ void ConnexSimulator::coreThreadHandler()
 		}
 		else
 		{
-			pread(distributionDescriptor, &instruction, sizeof(instruction));
+			read(distributionDescriptor, &instruction, sizeof(instruction));
 			Instruction *compiledInstruction = new Instruction(instruction);
 			instructionQueue->push(compiledInstruction);
 			executeInstruction(*compiledInstruction);
@@ -155,25 +156,25 @@ void ConnexSimulator::performIO(ConnexIoDescriptor ioDescriptor)
 	switch(ioDescriptor.type)
 	{
 		case IO_WRITE_OPERATION:
-			pread(writeDescriptor, connexVectors, sizeof(connexVectors));
+			read(writeDescriptor, connexVectors, sizeof(connexVectors));
 			for(unsigned int i=0; i<ioDescriptor.vectorCount + 1; i++)
 			{
 				localStore[ioDescriptor.lsAddress + i].write(connexVectors + i * CONNEX_VECTOR_LENGTH);
 			}
 
 			// TODO: Write the ACK with the correct data
-			pwrite(readDescriptor, connexVectors, 4);
-			pwrite(readDescriptor, NULL, 0);
+			write(readDescriptor, connexVectors, 4);
+			write(readDescriptor, NULL, 0);
 			break;
 
 		case IO_READ_OPERATION:
 			for(unsigned int i=0; i<ioDescriptor.vectorCount + 1; i++)
 			{
-				pwrite(readDescriptor,
+				write(readDescriptor,
 					  localStore[ioDescriptor.lsAddress + i].read(),
 					  2 * CONNEX_VECTOR_LENGTH);
 			}
-			pwrite(readDescriptor, NULL, 0);
+			write(readDescriptor, NULL, 0);
 			break;
 
 		default:
@@ -332,8 +333,7 @@ void ConnexSimulator::handleShift(Instruction instruction)
 void ConnexSimulator::handleReduction(Instruction instruction)
 {
 	int sum = registerFile[instruction.getLeft()].reduce();
-	pwrite(reductionDescriptor, &sum, sizeof(sum));
-	//printf(" reduced sum = %d\n", sum);
-	pwrite(reductionDescriptor, NULL, 0);
+	write(reductionDescriptor, &sum, sizeof(sum));
+	write(reductionDescriptor, NULL, 0);
 }
 
