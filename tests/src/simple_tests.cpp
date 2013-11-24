@@ -637,7 +637,7 @@ static void InitKernel_Cellshlrol(int BatchNumber, int32_t Param1, int32_t Param
                         R2 = Param1;
                         CELL_SHL(R1,R2);
                         R3 = Param2;// avoid compiler warning
-                        for (int x=0;x < NUMBER_OF_MACHINES - 1;x++)
+                        for (int x=0;x < CONNEX_VECTOR_LENGTH - 1;x++)
                             NOP;
 
                         R4 = SHIFT_REG;
@@ -880,77 +880,77 @@ enum SimpleBatchNumbers
 
 static TestFunction TestFunctionTable[] =
 {
-    {NOP_BNR,"NOP",InitKernel_Nop,{0x00,0x00,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
-    {IWRITE_BNR,"IWRITE",InitKernel_Iwrite,{0x01,0x02,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
-    {IREAD_BNR,"IREAD",InitKernel_Iread,{0x01,0x02,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
+    {NOP_BNR,"NOP",InitKernel_Nop,{0x00,0x00,(CONNEX_VECTOR_LENGTH-1)*CONNEX_VECTOR_LENGTH/2}},
+    {IWRITE_BNR,"IWRITE",InitKernel_Iwrite,{0x01,0x02,(CONNEX_VECTOR_LENGTH-1)*CONNEX_VECTOR_LENGTH/2}},
+    {IREAD_BNR,"IREAD",InitKernel_Iread,{0x01,0x02,(CONNEX_VECTOR_LENGTH-1)*CONNEX_VECTOR_LENGTH/2}},
 
-    {WRITE_BNR,"WRITE",InitKernel_Write,{0x01,0x02,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
+    {WRITE_BNR,"WRITE",InitKernel_Write,{0x01,0x02,(CONNEX_VECTOR_LENGTH-1)*CONNEX_VECTOR_LENGTH/2}},
 
-    {READ_BNR,"READ",InitKernel_Read,{0x01,0x02,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
+    {READ_BNR,"READ",InitKernel_Read,{0x01,0x02,(CONNEX_VECTOR_LENGTH-1)*CONNEX_VECTOR_LENGTH/2}},
 
-    {VLOAD_BNR,"VLOAD",InitKernel_Vload,{0x01,0x02,3*NUMBER_OF_MACHINES}},
+    {VLOAD_BNR,"VLOAD",InitKernel_Vload,{0x01,0x02,3*CONNEX_VECTOR_LENGTH}},
 
-    {ADD_BNR,"ADD",InitKernel_Add,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
-    {ADD_BNR,"ADD2",InitKernel_Add,{0xffff,0xffff,((uint16_t)(0xffff + 0xffff))*NUMBER_OF_MACHINES}},
-    //{pADD_BNR,"pADD",InitKernel_pAdd,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
-    //{pzADD_BNR,"pzADD",InitKernel_pzAdd,{0,0,(0 + 0)*NUMBER_OF_MACHINES}},
-    {sADD_BNR,"sADD",InitKernel_sAdd,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
+    {ADD_BNR,"ADD",InitKernel_Add,{0xff,0xf1,(0xff + 0xf1)*CONNEX_VECTOR_LENGTH}},
+    {ADD_BNR,"ADD2",InitKernel_Add,{0xffff,0xffff,((uint16_t)(0xffff + 0xffff))*CONNEX_VECTOR_LENGTH}},
+    //{pADD_BNR,"pADD",InitKernel_pAdd,{0xff,0xf1,(0xff + 0xf1)*CONNEX_VECTOR_LENGTH}},
+    //{pzADD_BNR,"pzADD",InitKernel_pzAdd,{0,0,(0 + 0)*CONNEX_VECTOR_LENGTH}},
+    {sADD_BNR,"sADD",InitKernel_sAdd,{0xff,0xf1,(0xff + 0xf1)*CONNEX_VECTOR_LENGTH}},
 
-    {ADDC_BNR,"ADDC",InitKernel_Addc,{0xf0,0x1,(0xf0 + 1 + 1)*NUMBER_OF_MACHINES}},
-    {ADDC_BNR,"ADDC2",InitKernel_Addc,{0xffff,0xffff,((uint16_t)(0xffff + 0xffff + 1))*NUMBER_OF_MACHINES}},
-    {ADDC_BNR,"ADDC3",InitKernel_Addc,{0xfffe,0xffff,(uint16_t)((0xffff + 0xfffe + 1))*NUMBER_OF_MACHINES}},
-    //{pADDC_BNR,"pADDC",InitKernel_pAddc,{0xf0,0x1,(0xf0 + 1 + 1)*NUMBER_OF_MACHINES}},
+    {ADDC_BNR,"ADDC",InitKernel_Addc,{0xf0,0x1,(0xf0 + 1 + 1)*CONNEX_VECTOR_LENGTH}},
+    {ADDC_BNR,"ADDC2",InitKernel_Addc,{0xffff,0xffff,((uint16_t)(0xffff + 0xffff + 1))*CONNEX_VECTOR_LENGTH}},
+    {ADDC_BNR,"ADDC3",InitKernel_Addc,{0xfffe,0xffff,(uint16_t)((0xffff + 0xfffe + 1))*CONNEX_VECTOR_LENGTH}},
+    //{pADDC_BNR,"pADDC",InitKernel_pAddc,{0xf0,0x1,(0xf0 + 1 + 1)*CONNEX_VECTOR_LENGTH}},
 
-    {SUB_BNR,"SUB",InitKernel_Sub,{0xffff,0xff8f, (0xffff - 0xff8f)*NUMBER_OF_MACHINES}},
-    {SUB_BNR,"SUB",InitKernel_Sub,{0x0,0xffff, ((uint16_t)(0 - 0xffff))*NUMBER_OF_MACHINES}},
-    //{pSUB_BNR,"pSUB",InitKernel_pSub,{0xffff,0xff8f, (0xffff - 0xff8f)*NUMBER_OF_MACHINES}},
-    {sSUB_BNR,"sSUB",InitKernel_sSub,{0xffff,0xff8f, (0xffff - 0xff8f)*NUMBER_OF_MACHINES}},
+    {SUB_BNR,"SUB",InitKernel_Sub,{0xffff,0xff8f, (0xffff - 0xff8f)*CONNEX_VECTOR_LENGTH}},
+    {SUB_BNR,"SUB",InitKernel_Sub,{0x0,0xffff, ((uint16_t)(0 - 0xffff))*CONNEX_VECTOR_LENGTH}},
+    //{pSUB_BNR,"pSUB",InitKernel_pSub,{0xffff,0xff8f, (0xffff - 0xff8f)*CONNEX_VECTOR_LENGTH}},
+    {sSUB_BNR,"sSUB",InitKernel_sSub,{0xffff,0xff8f, (0xffff - 0xff8f)*CONNEX_VECTOR_LENGTH}},
 
-    {SUBC_BNR,"SUBC",InitKernel_Subc,{0xffff,0xff8f,(0xffff - 0xff8f -1)*NUMBER_OF_MACHINES}},
-    {SUBC_BNR,"SUBC2",InitKernel_Subc,{0,0xffff,((uint16_t)(0 - 0xffff -1))*NUMBER_OF_MACHINES}},
-    //{pSUBC_BNR,"pSUBC",InitKernel_pSubc,{0xffff,0xff8f,(0xffff - 0xff8f -1)*NUMBER_OF_MACHINES}},
+    {SUBC_BNR,"SUBC",InitKernel_Subc,{0xffff,0xff8f,(0xffff - 0xff8f -1)*CONNEX_VECTOR_LENGTH}},
+    {SUBC_BNR,"SUBC2",InitKernel_Subc,{0,0xffff,((uint16_t)(0 - 0xffff -1))*CONNEX_VECTOR_LENGTH}},
+    //{pSUBC_BNR,"pSUBC",InitKernel_pSubc,{0xffff,0xff8f,(0xffff - 0xff8f -1)*CONNEX_VECTOR_LENGTH}},
 
-    {NOT_BNR,"NOT",InitKernel_Not,{0xfff0,0x00,(0xf)*NUMBER_OF_MACHINES}},
+    {NOT_BNR,"NOT",InitKernel_Not,{0xfff0,0x00,(0xf)*CONNEX_VECTOR_LENGTH}},
 
-    {OR_BNR,"OR",InitKernel_Or,{0x10,0x01,(0x10 | 0x01)*NUMBER_OF_MACHINES}},
-    //{pOR_BNR,"pOR",InitKernel_pOr,{0x10,0x01,(0x10 | 0x01)*NUMBER_OF_MACHINES}},
-    {sOR_BNR,"sOR",InitKernel_sOr,{0x10,0x01,(0x10 | 0x01)*NUMBER_OF_MACHINES}},
+    {OR_BNR,"OR",InitKernel_Or,{0x10,0x01,(0x10 | 0x01)*CONNEX_VECTOR_LENGTH}},
+    //{pOR_BNR,"pOR",InitKernel_pOr,{0x10,0x01,(0x10 | 0x01)*CONNEX_VECTOR_LENGTH}},
+    {sOR_BNR,"sOR",InitKernel_sOr,{0x10,0x01,(0x10 | 0x01)*CONNEX_VECTOR_LENGTH}},
 
-    {AND_BNR,"AND",InitKernel_And,{0xfffe,0x11,(0xfffe & 0x11)*NUMBER_OF_MACHINES}},
-    //{pAND_BNR,"pAND",InitKernel_pAnd,{0xfffe,0x11,(0xfffe & 0x11)*NUMBER_OF_MACHINES}},
-    {sAND_BNR,"sAND",InitKernel_sAnd,{0xfffe,0x11,(0xfffe & 0x11)*NUMBER_OF_MACHINES}},
+    {AND_BNR,"AND",InitKernel_And,{0xfffe,0x11,(0xfffe & 0x11)*CONNEX_VECTOR_LENGTH}},
+    //{pAND_BNR,"pAND",InitKernel_pAnd,{0xfffe,0x11,(0xfffe & 0x11)*CONNEX_VECTOR_LENGTH}},
+    {sAND_BNR,"sAND",InitKernel_sAnd,{0xfffe,0x11,(0xfffe & 0x11)*CONNEX_VECTOR_LENGTH}},
 
-    {XOR_BNR,"XOR",InitKernel_Xor,{0x01,0x10,(0x01 ^ 0x10)*NUMBER_OF_MACHINES}},
-    //{pXOR_BNR,"pXOR",InitKernel_pXor,{0x01,0x10,(0x01 ^ 0x10)*NUMBER_OF_MACHINES}},
-    {sXOR_BNR,"sXOR",InitKernel_sXor,{0x01,0x10,(0x01 ^ 0x10)*NUMBER_OF_MACHINES}},
+    {XOR_BNR,"XOR",InitKernel_Xor,{0x01,0x10,(0x01 ^ 0x10)*CONNEX_VECTOR_LENGTH}},
+    //{pXOR_BNR,"pXOR",InitKernel_pXor,{0x01,0x10,(0x01 ^ 0x10)*CONNEX_VECTOR_LENGTH}},
+    {sXOR_BNR,"sXOR",InitKernel_sXor,{0x01,0x10,(0x01 ^ 0x10)*CONNEX_VECTOR_LENGTH}},
 
-    {EQ_BNR,"EQ",InitKernel_Eq,{0xff3f,0xff3f,(0xff3f == 0xff3f)*NUMBER_OF_MACHINES}},
-    //{pEQ_BNR,"pEQ",InitKernel_pEq,{0xff3f,0xff3f,(0xff3f == 0xff3f)*NUMBER_OF_MACHINES}},
+    {EQ_BNR,"EQ",InitKernel_Eq,{0xff3f,0xff3f,(0xff3f == 0xff3f)*CONNEX_VECTOR_LENGTH}},
+    //{pEQ_BNR,"pEQ",InitKernel_pEq,{0xff3f,0xff3f,(0xff3f == 0xff3f)*CONNEX_VECTOR_LENGTH}},
 
-    {LT_BNR,"LT",InitKernel_Lt,{0xfffd,0xfffe,(-3 < -2)*NUMBER_OF_MACHINES}},
-    //{pLT_BNR,"pLT",InitKernel_pLt,{0xfffd,0xfffe,(-3 < 2)*NUMBER_OF_MACHINES}},
+    {LT_BNR,"LT",InitKernel_Lt,{0xfffd,0xfffe,(-3 < -2)*CONNEX_VECTOR_LENGTH}},
+    //{pLT_BNR,"pLT",InitKernel_pLt,{0xfffd,0xfffe,(-3 < 2)*CONNEX_VECTOR_LENGTH}},
 
-    {ULT_BNR,"ULT",InitKernel_Ult,{0xabcd,0xabcc,(0xabcdUL < 0xabccUL)*NUMBER_OF_MACHINES}},
+    {ULT_BNR,"ULT",InitKernel_Ult,{0xabcd,0xabcc,(0xabcdUL < 0xabccUL)*CONNEX_VECTOR_LENGTH}},
 
-    //{pULT_BNR,"pULT",InitKernel_pUlt,{0xabcd,0xabcc,(0xabcdUL < 0xabccUL)*NUMBER_OF_MACHINES}},
+    //{pULT_BNR,"pULT",InitKernel_pUlt,{0xabcd,0xabcc,(0xabcdUL < 0xabccUL)*CONNEX_VECTOR_LENGTH}},
 
-    {SHL_BNR,"SHL",InitKernel_Shl,{0xcd,3,((0xcd << 3)*NUMBER_OF_MACHINES)}},
+    {SHL_BNR,"SHL",InitKernel_Shl,{0xcd,3,((0xcd << 3)*CONNEX_VECTOR_LENGTH)}},
 
-    {SHR_BNR,"SHR",InitKernel_Shr,{0xabcd,3,((0xabcd >> 3)*NUMBER_OF_MACHINES)}},
-    {SHRA_BNR,"SHRA",InitKernel_Shra,{0x01cd,4,(0x01c)*NUMBER_OF_MACHINES}},//will fail: 128*big
+    {SHR_BNR,"SHR",InitKernel_Shr,{0xabcd,3,((0xabcd >> 3)*CONNEX_VECTOR_LENGTH)}},
+    {SHRA_BNR,"SHRA",InitKernel_Shra,{0x01cd,4,(0x01c)*CONNEX_VECTOR_LENGTH}},//will fail: 128*big
 
-    {ISHL_BNR,"ISHL",InitKernel_Ishl,{0xabcd,4,((0xbcd0UL)*NUMBER_OF_MACHINES)}},
+    {ISHL_BNR,"ISHL",InitKernel_Ishl,{0xabcd,4,((0xbcd0UL)*CONNEX_VECTOR_LENGTH)}},
 
-    {ISHR_BNR,"ISHR",InitKernel_Ishr,{0xabcd,4,((0x0abcUL)*NUMBER_OF_MACHINES)}},
-    {ISHRA_BNR,"ISHRA",InitKernel_Ishra,{0xabcd,4,((0xfabcUL)*NUMBER_OF_MACHINES)}},
-    //{PMOV_BNR,"pMOV",InitKernel_pMov,{0xabcd,4,(0xabcd + 4)*NUMBER_OF_MACHINES}},
+    {ISHR_BNR,"ISHR",InitKernel_Ishr,{0xabcd,4,((0x0abcUL)*CONNEX_VECTOR_LENGTH)}},
+    {ISHRA_BNR,"ISHRA",InitKernel_Ishra,{0xabcd,4,((0xfabcUL)*CONNEX_VECTOR_LENGTH)}},
+    //{PMOV_BNR,"pMOV",InitKernel_pMov,{0xabcd,4,(0xabcd + 4)*CONNEX_VECTOR_LENGTH}},
 
-    {MULTLO_BNR,"MULTLO",InitKernel_Multlo,{0x2,0x3,(0x2UL * 0x3UL)*NUMBER_OF_MACHINES}},
-    {pMULTLO_BNR,"pMULTLO",InitKernel_pMultlo,{0x2,0x3,(0x2UL * 0x3UL)*NUMBER_OF_MACHINES}},
-//    {p2MULTLO_BNR,"p2MULTLO",InitKernel_p2Multlo,{0x2,0x3,(0x2UL * 0x3UL)*NUMBER_OF_MACHINES}},
+    {MULTLO_BNR,"MULTLO",InitKernel_Multlo,{0x2,0x3,(0x2UL * 0x3UL)*CONNEX_VECTOR_LENGTH}},
+    {pMULTLO_BNR,"pMULTLO",InitKernel_pMultlo,{0x2,0x3,(0x2UL * 0x3UL)*CONNEX_VECTOR_LENGTH}},
+//    {p2MULTLO_BNR,"p2MULTLO",InitKernel_p2Multlo,{0x2,0x3,(0x2UL * 0x3UL)*CONNEX_VECTOR_LENGTH}},
 //    {p2zMULTLO_BNR,"p2zMULTLO",InitKernel_p2zMultlo,{0x2,0x3,0}},
 
-    {MULTHI_BNR,"MULTHI",InitKernel_Multhi,{0x8000,0x2,((0x8000UL * 0x2UL) >> 16)*NUMBER_OF_MACHINES}},
+    {MULTHI_BNR,"MULTHI",InitKernel_Multhi,{0x8000,0x2,((0x8000UL * 0x2UL) >> 16)*CONNEX_VECTOR_LENGTH}},
 
     {WHERE_EQ_BNR,"WHEREQ",InitKernel_Whereq,{27,50,50}},
 
@@ -958,18 +958,18 @@ static TestFunction TestFunctionTable[] =
     {WHERE_LT2_BNR,"WHERELT2",InitKernel_Wherelt2,{27,50,27*50}},
     {WHERE_CARRY_BNR,"WHERECRY",InitKernel_Wherecry,{(0x10000UL-10),50,118*50}},
 
-    //{IJMP_BNR,"IJMP",InitKernel_Jump,{(10), 2, (10-1 - 2)*NUMBER_OF_MACHINES}},
-    //{IJMP2_BNR,"IJMP2",InitKernel_Jump2,{(10), 2, (10-2)*NUMBER_OF_MACHINES}},
+    //{IJMP_BNR,"IJMP",InitKernel_Jump,{(10), 2, (10-1 - 2)*CONNEX_VECTOR_LENGTH}},
+    //{IJMP2_BNR,"IJMP2",InitKernel_Jump2,{(10), 2, (10-2)*CONNEX_VECTOR_LENGTH}},
 
 	{CELL_SHL_BNR,"CELLSHL",InitKernel_Cellshl,{2,5,5-2}},
     {CELL_SHR_BNR,"CELLSHR",InitKernel_Cellshr,{2,5,5+2}},
-    {CELL_SHLROL_BNR,"CELLSHLROL",InitKernel_Cellshlrol,{NUMBER_OF_MACHINES,0,(NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2}},
+    {CELL_SHLROL_BNR,"CELLSHLROL",InitKernel_Cellshlrol,{CONNEX_VECTOR_LENGTH,0,(CONNEX_VECTOR_LENGTH-1)*CONNEX_VECTOR_LENGTH/2}},
 
 
-	//{IO_WRITE_BNR,"IO_WRITE1",1,0,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,0)},
-    //{IO_WRITE_BNR,"IO_WRITE2",1024,1,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,NUMBER_OF_MACHINES)},
-    //{IO_WRITE_BNR,"IO_WRITE3",1024,1023,InitKernel_Iowrite,SumRedofFirstXnumbers(NUMBER_OF_MACHINES,NUMBER_OF_MACHINES*1023)},
-    //{IO_READ_BNR,"IO_READ",1024,0,InitKernel_Ioread, NUMBER_OF_MACHINES},
+	//{IO_WRITE_BNR,"IO_WRITE1",1,0,InitKernel_Iowrite,SumRedofFirstXnumbers(CONNEX_VECTOR_LENGTH,0)},
+    //{IO_WRITE_BNR,"IO_WRITE2",1024,1,InitKernel_Iowrite,SumRedofFirstXnumbers(CONNEX_VECTOR_LENGTH,CONNEX_VECTOR_LENGTH)},
+    //{IO_WRITE_BNR,"IO_WRITE3",1024,1023,InitKernel_Iowrite,SumRedofFirstXnumbers(CONNEX_VECTOR_LENGTH,CONNEX_VECTOR_LENGTH*1023)},
+    //{IO_READ_BNR,"IO_READ",1024,0,InitKernel_Ioread, CONNEX_VECTOR_LENGTH},
 
 };
 
@@ -994,7 +994,7 @@ static void UpdateDatasetTable(int BatchNumber, int loop)
         case IWRITE_BNR     ://fallthrough
         case IREAD_BNR      :{
                                 TestFunctionTable[i].ds.Param1 = randPar(1024);
-                                TestFunctionTable[i].ds.ExpectedResult = (NUMBER_OF_MACHINES-1)*NUMBER_OF_MACHINES/2;
+                                TestFunctionTable[i].ds.ExpectedResult = (CONNEX_VECTOR_LENGTH-1)*CONNEX_VECTOR_LENGTH/2;
                                 break;
                              }
 
@@ -1030,7 +1030,7 @@ static void UpdateDatasetTable(int BatchNumber, int loop)
                       }
                     while (TestFunctionTable[i].ds.Param1 + TestFunctionTable[i].ds.Param2 >= 0x10000);
                     TestFunctionTable[i].ds.ExpectedResult =
-                        (TestFunctionTable[i].ds.Param1 + TestFunctionTable[i].ds.Param2)*NUMBER_OF_MACHINES;
+                        (TestFunctionTable[i].ds.Param1 + TestFunctionTable[i].ds.Param2)*CONNEX_VECTOR_LENGTH;
                     break;
                 }
 
@@ -1039,14 +1039,14 @@ static void UpdateDatasetTable(int BatchNumber, int loop)
                 {
                      TestFunctionTable[i].ds.Param1 = randPar(0x10000);
                      TestFunctionTable[i].ds.Param2 = TestFunctionTable[i].ds.Param1;
-                     TestFunctionTable[i].ds.ExpectedResult = NUMBER_OF_MACHINES;
+                     TestFunctionTable[i].ds.ExpectedResult = CONNEX_VECTOR_LENGTH;
                     break;
                 }
 
         case NOT_BNR        :
                     {
                          TestFunctionTable[i].ds.Param1 = randPar(0x10000);
-                         TestFunctionTable[i].ds.ExpectedResult = ((~TestFunctionTable[i].ds.Param1) & REGISTER_SIZE_MASK) * NUMBER_OF_MACHINES;
+                         TestFunctionTable[i].ds.ExpectedResult = ((~TestFunctionTable[i].ds.Param1) & REGISTER_SIZE_MASK) * CONNEX_VECTOR_LENGTH;
                          break;
                     }
 
@@ -1063,7 +1063,7 @@ static void UpdateDatasetTable(int BatchNumber, int loop)
                                   }
                                 while (TestFunctionTable[i].ds.Param1 - TestFunctionTable[i].ds.Param2 <= -0x10000);
                                 TestFunctionTable[i].ds.ExpectedResult =
-                                    (TestFunctionTable[i].ds.Param1 - TestFunctionTable[i].ds.Param2)*NUMBER_OF_MACHINES;
+                                    (TestFunctionTable[i].ds.Param1 - TestFunctionTable[i].ds.Param2)*CONNEX_VECTOR_LENGTH;
                                 break;
                             }
 
@@ -1073,7 +1073,7 @@ static void UpdateDatasetTable(int BatchNumber, int loop)
                                TestFunctionTable[i].ds.Param1 = (randPar(0x10000) -32768);
                                TestFunctionTable[i].ds.Param2 = (randPar(0x10000) - 32768);
                                TestFunctionTable[i].ds.ExpectedResult =
-                                    (TestFunctionTable[i].ds.Param1 < TestFunctionTable[i].ds.Param2) * NUMBER_OF_MACHINES;
+                                    (TestFunctionTable[i].ds.Param1 < TestFunctionTable[i].ds.Param2) * CONNEX_VECTOR_LENGTH;
                                 break;
                             }
 
@@ -1086,7 +1086,7 @@ static void UpdateDatasetTable(int BatchNumber, int loop)
                                  TestFunctionTable[i].ds.Param1 = randPar(0x10000);
                                  TestFunctionTable[i].ds.Param2 = randPar(0x10000);
                                  TestFunctionTable[i].ds.ExpectedResult =
-                                    (TestFunctionTable[i].ds.Param1 | TestFunctionTable[i].ds.Param2) * NUMBER_OF_MACHINES;
+                                    (TestFunctionTable[i].ds.Param1 | TestFunctionTable[i].ds.Param2) * CONNEX_VECTOR_LENGTH;
                                 break;
                             }
 
@@ -1103,7 +1103,7 @@ static void UpdateDatasetTable(int BatchNumber, int loop)
                                   }
                                 while (TestFunctionTable[i].ds.Param1 + TestFunctionTable[i].ds.Param2 >= 0x10000);
                                 TestFunctionTable[i].ds.ExpectedResult =
-                                    (TestFunctionTable[i].ds.Param1 + TestFunctionTable[i].ds.Param2 + 1)*NUMBER_OF_MACHINES;
+                                    (TestFunctionTable[i].ds.Param1 + TestFunctionTable[i].ds.Param2 + 1)*CONNEX_VECTOR_LENGTH;
                                 break;
                             }
 
@@ -1113,7 +1113,7 @@ static void UpdateDatasetTable(int BatchNumber, int loop)
                                TestFunctionTable[i].ds.Param1 = randPar(0x10000);
                                TestFunctionTable[i].ds.Param2 = randPar(0x10000);
                                if (TestFunctionTable[i].ds.Param1 < TestFunctionTable[i].ds.Param2)
-                                    TestFunctionTable[i].ds.ExpectedResult = NUMBER_OF_MACHINES;
+                                    TestFunctionTable[i].ds.ExpectedResult = CONNEX_VECTOR_LENGTH;
                                else
                                     TestFunctionTable[i].ds.ExpectedResult = 0;
                                break;
@@ -1126,7 +1126,7 @@ static void UpdateDatasetTable(int BatchNumber, int loop)
                                  TestFunctionTable[i].ds.Param1 = randPar(0x10000);
                                  TestFunctionTable[i].ds.Param2 = randPar(0x10000);
                                  TestFunctionTable[i].ds.ExpectedResult =
-                                    (TestFunctionTable[i].ds.Param1 & TestFunctionTable[i].ds.Param2) * NUMBER_OF_MACHINES;
+                                    (TestFunctionTable[i].ds.Param1 & TestFunctionTable[i].ds.Param2) * CONNEX_VECTOR_LENGTH;
                                 break;
                             }
 
@@ -1140,7 +1140,7 @@ static void UpdateDatasetTable(int BatchNumber, int loop)
                                 TestFunctionTable[i].ds.Param1 = randPar(0x10000);
                                 TestFunctionTable[i].ds.Param2 = randPar(0x10000);
                                 TestFunctionTable[i].ds.ExpectedResult =
-                                (TestFunctionTable[i].ds.Param1 ^ TestFunctionTable[i].ds.Param2)*NUMBER_OF_MACHINES;
+                                (TestFunctionTable[i].ds.Param1 ^ TestFunctionTable[i].ds.Param2)*CONNEX_VECTOR_LENGTH;
                                 break;
                             }
     }
@@ -1155,9 +1155,9 @@ int test_ExtendedSimpleAll(ConnexMachine *connex)
 
             connex->executeKernel("simpleTest_" + to_string(ISHL2_BNR));
             val = connex->readReduction();
-            if (val != (i << j)* NUMBER_OF_MACHINES)
-                cout<<"ISHL2 failed: expected ("<<i<<" << "<<j<<") = NUMBER_OF_MACHINES* "<<(i<<j)<<" but received "<<val<<endl;
-            else cout<<"ISHL2 PASS: ("<<i<<" << "<<j<<") = NUMBER_OF_MACHINES * "<<(i<<j)<<endl;
+            if (val != (i << j)* CONNEX_VECTOR_LENGTH)
+                cout<<"ISHL2 failed: expected ("<<i<<" << "<<j<<") = CONNEX_VECTOR_LENGTH* "<<(i<<j)<<" but received "<<val<<endl;
+            else cout<<"ISHL2 PASS: ("<<i<<" << "<<j<<") = CONNEX_VECTOR_LENGTH * "<<(i<<j)<<endl;
         }
 	return 0;
 }
@@ -1257,7 +1257,7 @@ static int TestJmpMultiRed(ConnexMachine *connex, int RedValue, int SquareReds)
     int i;
     for (i=0; i < ExpectedBytesOfReductions / sizeof(UINT_RED_REG_VAL); i++)
     {
-        if (BasicMatchRedResults[i] != RedValue* NUMBER_OF_MACHINES)
+        if (BasicMatchRedResults[i] != RedValue* CONNEX_VECTOR_LENGTH)
         {
             cout <<"  Unexpected red result "<<BasicMatchRedResults[i]<<endl;
             break;

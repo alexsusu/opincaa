@@ -37,7 +37,7 @@ enum SimpleIoBatchNumbers
     MAX_BNR = 100
 };
 
-static uint16_t data[NUMBER_OF_MACHINES * CONNEX_MAX_MEMORY];
+static uint16_t data[CONNEX_VECTOR_LENGTH * CONNEX_MEM_SIZE];
 
 /**
     Param 1: Number of cnxvectors to be written.
@@ -52,7 +52,7 @@ static int testIowrite(ConnexMachine *connex, int BatchNumber,int32_t Param1, in
     uint16_t cnxvectorIndex;
     uint16_t testResult;
 
-    for (cnt = 0; cnt < NUMBER_OF_MACHINES*num_cnxvectors; cnt++) data[cnt] = cnt;
+    for (cnt = 0; cnt < CONNEX_VECTOR_LENGTH*num_cnxvectors; cnt++) data[cnt] = cnt;
 
     connex->writeDataToArray(data, num_cnxvectors, Param2);
 
@@ -60,7 +60,7 @@ static int testIowrite(ConnexMachine *connex, int BatchNumber,int32_t Param1, in
 
     //printf("Reading IO-wrote data, via Regs \n");
     for (cnxvectorIndex = 0; cnxvectorIndex < num_cnxvectors; cnxvectorIndex++)
-        for (cnt = 0; cnt < NUMBER_OF_MACHINES; cnt++)
+        for (cnt = 0; cnt < CONNEX_VECTOR_LENGTH; cnt++)
         // write data to local store
         {
             _BEGIN_KERNEL(BatchNumber);
@@ -78,10 +78,10 @@ static int testIowrite(ConnexMachine *connex, int BatchNumber,int32_t Param1, in
             //DEASM_KERNEL(BatchNumber);
             connex->executeKernel(TEST_PREFIX + to_string(BatchNumber));
             int result = connex->readReduction();
-            if (data[cnxvectorIndex * NUMBER_OF_MACHINES + cnt] != result)
+            if (data[cnxvectorIndex * CONNEX_VECTOR_LENGTH + cnt] != result)
             {
                 testResult = FAIL;
-                //cout<<cnxvectorIndex << " "<<cnt << " "<< EXECUTE_KERNEL_RED(BatchNumber)<< " "<<data[cnxvectorIndex * NUMBER_OF_MACHINES + cnt]<<endl;
+                //cout<<cnxvectorIndex << " "<<cnt << " "<< EXECUTE_KERNEL_RED(BatchNumber)<< " "<<data[cnxvectorIndex * CONNEX_VECTOR_LENGTH + cnt]<<endl;
             }
         }
    return  testResult;
@@ -99,14 +99,14 @@ static int testIoread(ConnexMachine *connex, int BatchNumber,int32_t Param1, int
     uint32_t cnt;
     uint16_t cnxvectorIndex;
     const int num_cnxvectors = Param1;
-//    uint16_t data[NUMBER_OF_MACHINES*num_cnxvectors];
+//    uint16_t data[CONNEX_VECTOR_LENGTH*num_cnxvectors];
     uint16_t testResult;
 
     // fill buffer with data to be written
-    for (cnt = 0; cnt < NUMBER_OF_MACHINES*num_cnxvectors; cnt++) data[cnt] = cnt;
+    for (cnt = 0; cnt < CONNEX_VECTOR_LENGTH*num_cnxvectors; cnt++) data[cnt] = cnt;
 
     for (cnxvectorIndex = 0; cnxvectorIndex < num_cnxvectors; cnxvectorIndex++)
-        for (cnt = 0; cnt < NUMBER_OF_MACHINES; cnt++)
+        for (cnt = 0; cnt < CONNEX_VECTOR_LENGTH; cnt++)
         // write data to local store
         {
             _BEGIN_KERNEL(BatchNumber);
@@ -114,7 +114,7 @@ static int testIoread(ConnexMachine *connex, int BatchNumber,int32_t Param1, int
                                 R1 = INDEX;
                                 R2 = cnt;
                                 R4 = (R1 == R2);
-                                R3 = data[cnxvectorIndex * NUMBER_OF_MACHINES + cnt];// ensured 1 slot between == and where_eq !
+                                R3 = data[cnxvectorIndex * CONNEX_VECTOR_LENGTH + cnt];// ensured 1 slot between == and where_eq !
                               )
                 EXECUTE_WHERE_EQ ( LS[cnxvectorIndex + Param2] = R3;)
             _END_KERNEL(BatchNumber);
@@ -128,16 +128,16 @@ static int testIoread(ConnexMachine *connex, int BatchNumber,int32_t Param1, int
 		
     // read data from local store
     {
-        static uint16_t Content[NUMBER_OF_MACHINES * CONNEX_MAX_MEMORY];
+        static uint16_t Content[CONNEX_VECTOR_LENGTH * CONNEX_MEM_SIZE];
         connex->readDataFromArray(Content, num_cnxvectors, Param2);
         
 //         cout << "Read data: " << endl;
 //         for(int i=0; i<num_cnxvectors; i++)
 //         {
 //             cout << "v[" << i <<"] = ";
-//             for(int j=0; j<NUMBER_OF_MACHINES; j++)
+//             for(int j=0; j<CONNEX_VECTOR_LENGTH; j++)
 //             {
-//                 cout << hex << Content[i * NUMBER_OF_MACHINES + j] << " ";
+//                 cout << hex << Content[i * CONNEX_VECTOR_LENGTH + j] << " ";
 //             }
 //             cout << endl; 
 //         }
@@ -146,10 +146,10 @@ static int testIoread(ConnexMachine *connex, int BatchNumber,int32_t Param1, int
         
         testResult = PASS;
         for (cnxvectorIndex = 0; cnxvectorIndex < num_cnxvectors; cnxvectorIndex++)
-            for (cnt = 0; cnt < NUMBER_OF_MACHINES; cnt++)
-                if (data[cnxvectorIndex * NUMBER_OF_MACHINES + cnt] != Content[cnxvectorIndex * NUMBER_OF_MACHINES + cnt])
+            for (cnt = 0; cnt < CONNEX_VECTOR_LENGTH; cnt++)
+                if (data[cnxvectorIndex * CONNEX_VECTOR_LENGTH + cnt] != Content[cnxvectorIndex * CONNEX_VECTOR_LENGTH + cnt])
                 {
-                    //cout<<cnxvectorIndex << " "<<cnt << "  "<<data[cnxvectorIndex * NUMBER_OF_MACHINES + cnt]<< " <> " << Content[cnxvectorIndex * NUMBER_OF_MACHINES + cnt] <<endl;
+                    //cout<<cnxvectorIndex << " "<<cnt << "  "<<data[cnxvectorIndex * CONNEX_VECTOR_LENGTH + cnt]<< " <> " << Content[cnxvectorIndex * CONNEX_VECTOR_LENGTH + cnt] <<endl;
                     testResult = FAIL;
                 }
     }
@@ -182,9 +182,9 @@ TestIoFunction TestIoFunctionTable[] =
     {IO_WRITE3_BNR,"IO_WRITE_3.1   ",testIowrite,{3,1}},
     {IO_READ3_BNR, "IO_READ_3.1    ",testIoread,{3,1}},
 
-    {IO_WRITE4_BNR,"IO_WRITE_1024.0",testIowrite,{CONNEX_MAX_MEMORY,0}},
-    {IO_READ4_BNR, "IO_READ_1024.0 ",testIoread,{CONNEX_MAX_MEMORY,0}},
-    {IO_WRITE4_BNR,"IO_WRITE_1024.0",testIowrite,{CONNEX_MAX_MEMORY,0}},
+    {IO_WRITE4_BNR,"IO_WRITE_1024.0",testIowrite,{CONNEX_MEM_SIZE,0}},
+    {IO_READ4_BNR, "IO_READ_1024.0 ",testIoread,{CONNEX_MEM_SIZE,0}},
+    {IO_WRITE4_BNR,"IO_WRITE_1024.0",testIowrite,{CONNEX_MEM_SIZE,0}},
 };
 
 static int getIndexTestIoFunctionTable(int BatchNumber)
@@ -203,21 +203,21 @@ static void UpdateDatasetTable(int BatchNumber)
     switch(BatchNumber)
     {
         case IO_WRITE1_BNR:
-        case IO_READ1_BNR      :{TestIoFunctionTable[i].ds.Param2 = randPar(CONNEX_MAX_MEMORY-1);break;}
+        case IO_READ1_BNR      :{TestIoFunctionTable[i].ds.Param2 = randPar(CONNEX_MEM_SIZE-1);break;}
 
         case IO_WRITE2_BNR:
-        case IO_READ2_BNR      :{TestIoFunctionTable[i].ds.Param2 = randPar(CONNEX_MAX_MEMORY-2);break;}
+        case IO_READ2_BNR      :{TestIoFunctionTable[i].ds.Param2 = randPar(CONNEX_MEM_SIZE-2);break;}
 
         case IO_WRITE3_BNR:
-        case IO_READ3_BNR      :{TestIoFunctionTable[i].ds.Param2 = randPar(CONNEX_MAX_MEMORY-3);break;}
+        case IO_READ3_BNR      :{TestIoFunctionTable[i].ds.Param2 = randPar(CONNEX_MEM_SIZE-3);break;}
 
         case IO_WRITE4_BNR:
         case IO_READ4_BNR      :{
-                                    TestIoFunctionTable[i].ds.Param2 = randPar(CONNEX_MAX_MEMORY);
+                                    TestIoFunctionTable[i].ds.Param2 = randPar(CONNEX_MEM_SIZE);
                                     do
                                     {
-                                        TestIoFunctionTable[i].ds.Param1 = randPar(CONNEX_MAX_MEMORY-1)+1;
-                                    }while (TestIoFunctionTable[i].ds.Param2 + TestIoFunctionTable[i].ds.Param1 > CONNEX_MAX_MEMORY);
+                                        TestIoFunctionTable[i].ds.Param1 = randPar(CONNEX_MEM_SIZE-1)+1;
+                                    }while (TestIoFunctionTable[i].ds.Param2 + TestIoFunctionTable[i].ds.Param1 > CONNEX_MEM_SIZE);
 									//cout<<endl<<"  IO test running with params "<< TestIoFunctionTable[i].ds.Param1 << " " << TestIoFunctionTable[i].ds.Param2;
 					break;
                                 }

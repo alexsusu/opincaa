@@ -39,3 +39,9 @@
 
 #define REGISTER_SIZE_MASK          ((1 << CONNEX_REGISTER_SIZE) -1)
 
+#define IO_WRITE_OPERATION          0x00000001
+#define IO_READ_OPERATION           0x00000000
+#define IO_LS_ADDRESS(x)               ((x) & 0x000003FF)
+#define IO_VECTOR_COUNT(x)             (((x) - 1) & 0x000003FF)
+
+

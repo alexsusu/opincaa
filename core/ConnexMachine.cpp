@@ -7,19 +7,13 @@
  */
 
 #include "ConnexMachine.h"
+#include "Architecture.h"
 #include <fcntl.h>
-
-#define     VECTOR_LENGTH   128
 
 #define DEFAULT_DISTRIBUTION_FIFO   "/dev/xillybus_write_arm2array_32"
 #define DEFAULT_REDUCTION_FIFO      "/dev/xillybus_read_array2arm_32"
 #define DEFAULT_IO_WRITE_FIFO       "/dev/xillybus_write_mem2array_32"
 #define DEFAULT_IO_READ_FIFO        "/dev/xillybus_read_array2mem_32"
-
-#define IO_WRITE_OPERATION          0x00000001
-#define IO_READ_OPERATION           0x00000000
-#define LS_ADDRESS(x)               ((x) & 0x000003FF)
-#define VECTOR_COUNT(x)             (((x) - 1) & 0x000003FF)
 
 /*
  * This descriptor is written to the IO_WRITE_FIFO in
@@ -111,7 +105,7 @@ string ConnexMachine::disassembleKernel(string kernelName)
  * result in destination. It blocks until all byteCount bytes
  * have been read.
  */
-unsigned readFromPipe(int descriptor, void* destination, unsigned byteCount)
+unsigned ConnexMachine::readFromPipe(int descriptor, void* destination, unsigned byteCount)
 {
     char* dest = (char*)destination;
     unsigned totalBytesRead = 0;
@@ -214,7 +208,7 @@ void ConnexMachine::executeKernel(string kernelName)
 * Writes the specified buffer to the array IO write FIFO
 *
 * @param buffer the buffer to be written to the FIFO, it should
-*   contain at least 2 * VECTOR_LENGTH * vectorCount bytes
+*   contain at least 2 * CONNEX_VECTOR_LENGTH * vectorCount bytes
 * @param vectorCount the number of vectors to fill
 * @param startVectorIndex the vector with which to start the writing operation
 *
@@ -225,16 +219,16 @@ int ConnexMachine::writeDataToArray(void *buffer, unsigned vectorCount, unsigned
 	threadMutex.lock();
 
     connex_io_descriptor.type = IO_WRITE_OPERATION;
-    /* Use LS_ADDRESS macro to mask the least significant 10 bits */
-    connex_io_descriptor.lsAddress = LS_ADDRESS(startVectorIndex);
-    /* Use VECTOR_COUNT macro to mask the least significant 10 bits */
-    connex_io_descriptor.vectorCount = VECTOR_COUNT(vectorCount);
+    /* Use IO_LS_ADDRESS macro to mask the least significant 10 bits */
+    connex_io_descriptor.lsAddress = IO_LS_ADDRESS(startVectorIndex);
+    /* Use IO_VECTOR_COUNT macro to mask the least significant 10 bits */
+    connex_io_descriptor.vectorCount = IO_VECTOR_COUNT(vectorCount);
 
     /* Issue the command */
     write(ioWriteFifo, &connex_io_descriptor, sizeof(connex_io_descriptor));
 
     /* Write the data */
-    int bytesWritten = write(ioWriteFifo, buffer, vectorCount * VECTOR_LENGTH * 2);
+    int bytesWritten = write(ioWriteFifo, buffer, vectorCount * CONNEX_VECTOR_LENGTH * 2);
 
     /* Flush the descriptor */
     write(ioWriteFifo, NULL, 0);
@@ -264,16 +258,16 @@ int ConnexMachine::writeDataToArray(void *buffer, unsigned vectorCount, unsigned
 void* ConnexMachine::readDataFromArray(void *buffer, unsigned vectorCount, unsigned vectorIndex)
 {
     if(buffer == NULL){
-        buffer = new short[vectorCount * VECTOR_LENGTH];
+        buffer = new short[vectorCount * CONNEX_VECTOR_LENGTH];
     }
 
 	threadMutex.lock();
 
     connex_io_descriptor.type = IO_READ_OPERATION;
-    /* Use LS_ADDRESS macro to mask the least significant 10 bits */
-    connex_io_descriptor.lsAddress = LS_ADDRESS(vectorIndex);
-    /* Use VECTOR_COUNT macro to mask the least significant 10 bits */
-    connex_io_descriptor.vectorCount = VECTOR_COUNT(vectorCount);
+    /* Use IO_LS_ADDRESS macro to mask the least significant 10 bits */
+    connex_io_descriptor.lsAddress = IO_LS_ADDRESS(vectorIndex);
+    /* Use IO_VECTOR_COUNT macro to mask the least significant 10 bits */
+    connex_io_descriptor.vectorCount = IO_VECTOR_COUNT(vectorCount);
 
     /* Issue the command */
     write(ioWriteFifo, &connex_io_descriptor, sizeof(connex_io_descriptor));
@@ -282,7 +276,7 @@ void* ConnexMachine::readDataFromArray(void *buffer, unsigned vectorCount, unsig
     write(ioWriteFifo, NULL, 0);
 
     /* Read the data */
-    if(readFromPipe(ioReadFifo, buffer, vectorCount * VECTOR_LENGTH * 2) < 0)
+    if(readFromPipe(ioReadFifo, buffer, vectorCount * CONNEX_VECTOR_LENGTH * 2) < 0)
     {
 		threadMutex.unlock();
         throw string("Error reading from memory FIFO");

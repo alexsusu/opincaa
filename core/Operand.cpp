@@ -6,6 +6,7 @@
  */
 
 #include "Operand.h"
+#include "Architecture.h"
 
 /*
  * Constructor for creating a new Operand
@@ -30,13 +31,13 @@ Operand::Operand(int type, unsigned short index, bool localStoreIndexImmediate, 
     switch(type)
     {
         case TYPE_REGISTER:
-            if(index >= CONNEX_MAX_REGS)
+            if(index >= CONNEX_REG_COUNT)
             {
                 throw string("Invalid register index in Operand constructor");
             }
             break;
         case TYPE_LOCAL_STORE:
-            if(index >= CONNEX_MAX_MEMORY)
+            if(index >= CONNEX_MEM_SIZE)
             {
                 throw string("Invalid local store index in Operand constructor");
             }
@@ -74,7 +75,7 @@ Operand::Operand(int type, unsigned short index, Kernel *kernel)
     switch(type)
     {
         case TYPE_REGISTER:
-            if(index >= CONNEX_MAX_REGS)
+            if(index >= CONNEX_REG_COUNT)
             {
                 throw string("Invalid register index in Operand constructor");
             }
@@ -362,7 +363,7 @@ Operand Operand::operator[](unsigned short value)
     {
         throw string("You can only apply the [] operator to the special LS descriptor");
     }
-    if(value < 0 || value >= CONNEX_MAX_MEMORY)
+    if(value < 0 || value >= CONNEX_MEM_SIZE)
     {
         throw string("Address value outside memory range in [value] operator");
     }
