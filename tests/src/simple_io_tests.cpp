@@ -8,10 +8,14 @@
 
 
 #include <iostream>
-#include "ConnexMachine.h"
-#include "utils.h"
-using namespace std;
 #include <iomanip>
+#include <cstdint>
+
+#include "ConnexMachine.h"
+#include "Architecture.h"
+#include "test.h"
+
+using namespace std;
 
 #define TEST_PREFIX "simpleIoTest_allowOverwrite"
 #define _BEGIN_KERNEL(x) BEGIN_KERNEL(TEST_PREFIX + to_string(x))
@@ -33,7 +37,7 @@ enum SimpleIoBatchNumbers
     MAX_BNR = 100
 };
 
-static UINT16 data[NUMBER_OF_MACHINES * CONNEX_MAX_MEMORY];
+static uint16_t data[NUMBER_OF_MACHINES * CONNEX_MAX_MEMORY];
 
 /**
     Param 1: Number of cnxvectors to be written.
@@ -41,12 +45,12 @@ static UINT16 data[NUMBER_OF_MACHINES * CONNEX_MAX_MEMORY];
     Warning: Test assumes that InitKernel is called right before Iowrite test is executed
 
 */
-static int testIowrite(ConnexMachine *connex, int BatchNumber,INT32 Param1, INT32 Param2)
+static int testIowrite(ConnexMachine *connex, int BatchNumber,int32_t Param1, int32_t Param2)
 {
-    UINT32 cnt;
+    uint32_t cnt;
     const int num_cnxvectors = Param1;
-    UINT16 cnxvectorIndex;
-    UINT16 testResult;
+    uint16_t cnxvectorIndex;
+    uint16_t testResult;
 
     for (cnt = 0; cnt < NUMBER_OF_MACHINES*num_cnxvectors; cnt++) data[cnt] = cnt;
 
@@ -90,13 +94,13 @@ Param1 = Number of cnxvectors to be read.
 Param2 = Location in local store where we read from.
 
 */
-static int testIoread(ConnexMachine *connex, int BatchNumber,INT32 Param1, INT32 Param2)
+static int testIoread(ConnexMachine *connex, int BatchNumber,int32_t Param1, int32_t Param2)
 {
-    UINT32 cnt;
-    UINT16 cnxvectorIndex;
+    uint32_t cnt;
+    uint16_t cnxvectorIndex;
     const int num_cnxvectors = Param1;
-//    UINT16 data[NUMBER_OF_MACHINES*num_cnxvectors];
-    UINT16 testResult;
+//    uint16_t data[NUMBER_OF_MACHINES*num_cnxvectors];
+    uint16_t testResult;
 
     // fill buffer with data to be written
     for (cnt = 0; cnt < NUMBER_OF_MACHINES*num_cnxvectors; cnt++) data[cnt] = cnt;
@@ -124,7 +128,7 @@ static int testIoread(ConnexMachine *connex, int BatchNumber,INT32 Param1, INT32
 		
     // read data from local store
     {
-        static UINT16 Content[NUMBER_OF_MACHINES * CONNEX_MAX_MEMORY];
+        static uint16_t Content[NUMBER_OF_MACHINES * CONNEX_MAX_MEMORY];
         connex->readDataFromArray(Content, num_cnxvectors, Param2);
         
 //         cout << "Read data: " << endl;
@@ -155,15 +159,15 @@ static int testIoread(ConnexMachine *connex, int BatchNumber,INT32 Param1, INT32
 
 struct Dataset
 {
-   INT32 Param1;
-   INT32 Param2;
+   int32_t Param1;
+   int32_t Param2;
 };
 
 struct TestIoFunction
 {
    int BatchNumber;
    const char *TestName;
-   int (*runTest)(ConnexMachine *connex, int BatchNumber,INT32 Param1,INT32 Param2);
+   int (*runTest)(ConnexMachine *connex, int BatchNumber,int32_t Param1,int32_t Param2);
    Dataset ds;
 };
 

@@ -9,11 +9,16 @@
  */
 
 #include <iostream>
-#include "ConnexMachine.h"
-#include "utils.h"
 #include <stdlib.h>
-using namespace std;
 #include <iomanip>
+#include <cstdint>
+
+#include "ConnexMachine.h"
+#include "Architecture.h"
+#include "test.h"
+
+using namespace std;
+
 
 #define TEST_PREFIX "simpleTest_allowOverwrite"
 #define _BEGIN_KERNEL(x) BEGIN_KERNEL(TEST_PREFIX + to_string(x))
@@ -21,26 +26,26 @@ using namespace std;
 
 struct Dataset
 {
-   INT32 Param1;
-   INT32 Param2;
-   INT32 ExpectedResult;
+   int32_t Param1;
+   int32_t Param2;
+   int32_t ExpectedResult;
 };
 
 struct TestFunction
 {
    int BatchNumber;
    const char *OperationName;
-   void (*initKernel)(int BatchNumber,INT32 Param1,INT32 Param2);
+   void (*initKernel)(int BatchNumber,int32_t Param1,int32_t Param2);
    Dataset ds;
 };
 
-static void InitKernel_Write(int BatchNumber,INT32 Param1, INT32 Param2);
-static void InitKernel_Nop(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Write(int BatchNumber,int32_t Param1, int32_t Param2);
+static void InitKernel_Nop(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     InitKernel_Write(BatchNumber, Param1, Param2);
 }
 
-static void InitKernel_Iwrite(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Iwrite(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
        EXECUTE_IN_ALL(
@@ -54,12 +59,12 @@ static void InitKernel_Iwrite(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Iread(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Iread(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     InitKernel_Iwrite(BatchNumber, Param1, Param2);
 }
 
-static void InitKernel_Write(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Write(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -77,7 +82,7 @@ static void InitKernel_Write(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Read(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Read(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -93,7 +98,7 @@ static void InitKernel_Read(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Jump(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Jump(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -111,7 +116,7 @@ static void InitKernel_Jump(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Jump2(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Jump2(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -125,7 +130,7 @@ static void InitKernel_Jump2(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Jump3(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Jump3(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -142,13 +147,13 @@ static void InitKernel_Jump3(int BatchNumber,INT32 Param1, INT32 Param2)
 }
 
 
-static void InitKernel_Add(int BatchNumber,INT32 Param1, INT32 Param2);
-static void InitKernel_Vload(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Add(int BatchNumber,int32_t Param1, int32_t Param2);
+static void InitKernel_Vload(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     InitKernel_Add(BatchNumber,Param1, Param2);
 }
 
-static void InitKernel_Add(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Add(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -161,7 +166,7 @@ static void InitKernel_Add(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_pAdd(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_pAdd(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -175,7 +180,7 @@ static void InitKernel_pAdd(int BatchNumber,INT32 Param1, INT32 Param2)
 }
 
 // pseudo instruction with zero
-static void InitKernel_pzAdd(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_pzAdd(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -188,7 +193,7 @@ static void InitKernel_pzAdd(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_sAdd(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_sAdd(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -201,7 +206,7 @@ static void InitKernel_sAdd(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Addc(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Addc(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -217,7 +222,7 @@ static void InitKernel_Addc(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_pAddc(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_pAddc(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -232,7 +237,7 @@ static void InitKernel_pAddc(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Sub(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Sub(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -245,7 +250,7 @@ static void InitKernel_Sub(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_sSub(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_sSub(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -258,7 +263,7 @@ static void InitKernel_sSub(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_pSub(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_pSub(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -270,7 +275,7 @@ static void InitKernel_pSub(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Subc(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Subc(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -287,7 +292,7 @@ static void InitKernel_Subc(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_pSubc(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_pSubc(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -303,7 +308,7 @@ static void InitKernel_pSubc(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Not(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Not(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -316,7 +321,7 @@ static void InitKernel_Not(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Or(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Or(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -329,7 +334,7 @@ static void InitKernel_Or(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_sOr(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_sOr(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -342,7 +347,7 @@ static void InitKernel_sOr(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_pOr(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_pOr(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -354,7 +359,7 @@ static void InitKernel_pOr(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_And(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_And(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -367,7 +372,7 @@ static void InitKernel_And(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_sAnd(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_sAnd(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -380,7 +385,7 @@ static void InitKernel_sAnd(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_pAnd(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_pAnd(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -392,7 +397,7 @@ static void InitKernel_pAnd(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Xor(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Xor(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -405,7 +410,7 @@ static void InitKernel_Xor(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_sXor(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_sXor(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -418,7 +423,7 @@ static void InitKernel_sXor(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_pXor(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_pXor(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -430,7 +435,7 @@ static void InitKernel_pXor(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Eq(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Eq(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -443,7 +448,7 @@ static void InitKernel_Eq(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_pEq(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_pEq(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -455,7 +460,7 @@ static void InitKernel_pEq(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Lt(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Lt(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -468,7 +473,7 @@ static void InitKernel_Lt(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_pLt(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_pLt(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -480,7 +485,7 @@ static void InitKernel_pLt(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Ult(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Ult(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -493,7 +498,7 @@ static void InitKernel_Ult(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Ult2(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Ult2(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -506,7 +511,7 @@ static void InitKernel_Ult2(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_pUlt(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_pUlt(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -518,7 +523,7 @@ static void InitKernel_pUlt(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Shl(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Shl(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -531,7 +536,7 @@ static void InitKernel_Shl(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Shr(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Shr(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -544,7 +549,7 @@ static void InitKernel_Shr(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Shra(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Shra(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -557,7 +562,7 @@ static void InitKernel_Shra(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Ishl(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Ishl(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -568,7 +573,7 @@ static void InitKernel_Ishl(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Ishr(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Ishr(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -581,7 +586,7 @@ static void InitKernel_Ishr(int BatchNumber,INT32 Param1, INT32 Param2)
 }
 
 // pseudo-instruction for mov
-static void InitKernel_pMov(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_pMov(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -593,7 +598,7 @@ static void InitKernel_pMov(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Ishra(int BatchNumber,INT32 Param1, INT32 Param2)
+static void InitKernel_Ishra(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -604,7 +609,7 @@ static void InitKernel_Ishra(int BatchNumber,INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Cellshl(int BatchNumber, INT32 Param1, INT32 Param2)
+static void InitKernel_Cellshl(int BatchNumber, int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -624,7 +629,7 @@ static void InitKernel_Cellshl(int BatchNumber, INT32 Param1, INT32 Param2)
 }
 
 /* Check if CELL_SHL is shift or rotation */
-static void InitKernel_Cellshlrol(int BatchNumber, INT32 Param1, INT32 Param2)
+static void InitKernel_Cellshlrol(int BatchNumber, int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -641,7 +646,7 @@ static void InitKernel_Cellshlrol(int BatchNumber, INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Cellshr(int BatchNumber, INT32 Param1, INT32 Param2)
+static void InitKernel_Cellshr(int BatchNumber, int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -660,7 +665,7 @@ static void InitKernel_Cellshr(int BatchNumber, INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Multlo(int BatchNumber, INT32 Param1, INT32 Param2)
+static void InitKernel_Multlo(int BatchNumber, int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -675,7 +680,7 @@ static void InitKernel_Multlo(int BatchNumber, INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_pMultlo(int BatchNumber, INT32 Param1, INT32 Param2)
+static void InitKernel_pMultlo(int BatchNumber, int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
        EXECUTE_IN_ALL(
@@ -688,7 +693,7 @@ static void InitKernel_pMultlo(int BatchNumber, INT32 Param1, INT32 Param2)
 }
 
 /*
-static void InitKernel_p2Multlo(int BatchNumber, INT32 Param1, INT32 Param2)
+static void InitKernel_p2Multlo(int BatchNumber, int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -699,7 +704,7 @@ static void InitKernel_p2Multlo(int BatchNumber, INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_p2zMultlo(int BatchNumber, INT32 Param1, INT32 Param2)
+static void InitKernel_p2zMultlo(int BatchNumber, int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -710,7 +715,7 @@ static void InitKernel_p2zMultlo(int BatchNumber, INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 */
-static void InitKernel_Multhi(int BatchNumber, INT32 Param1, INT32 Param2)
+static void InitKernel_Multhi(int BatchNumber, int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -725,7 +730,7 @@ static void InitKernel_Multhi(int BatchNumber, INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Whereq(int BatchNumber, INT32 Param1, INT32 Param2)
+static void InitKernel_Whereq(int BatchNumber, int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -739,7 +744,7 @@ static void InitKernel_Whereq(int BatchNumber, INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Wherelt(int BatchNumber, INT32 Param1, INT32 Param2)
+static void InitKernel_Wherelt(int BatchNumber, int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -753,7 +758,7 @@ static void InitKernel_Wherelt(int BatchNumber, INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Wherelt2(int BatchNumber, INT32 Param1, INT32 Param2)
+static void InitKernel_Wherelt2(int BatchNumber, int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -769,7 +774,7 @@ static void InitKernel_Wherelt2(int BatchNumber, INT32 Param1, INT32 Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Wherecry(int BatchNumber, INT32 Param1, INT32 Param2)
+static void InitKernel_Wherecry(int BatchNumber, int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
 	   EXECUTE_IN_ALL(
@@ -886,23 +891,23 @@ static TestFunction TestFunctionTable[] =
     {VLOAD_BNR,"VLOAD",InitKernel_Vload,{0x01,0x02,3*NUMBER_OF_MACHINES}},
 
     {ADD_BNR,"ADD",InitKernel_Add,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
-    {ADD_BNR,"ADD2",InitKernel_Add,{0xffff,0xffff,((UINT16)(0xffff + 0xffff))*NUMBER_OF_MACHINES}},
+    {ADD_BNR,"ADD2",InitKernel_Add,{0xffff,0xffff,((uint16_t)(0xffff + 0xffff))*NUMBER_OF_MACHINES}},
     //{pADD_BNR,"pADD",InitKernel_pAdd,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
     //{pzADD_BNR,"pzADD",InitKernel_pzAdd,{0,0,(0 + 0)*NUMBER_OF_MACHINES}},
     {sADD_BNR,"sADD",InitKernel_sAdd,{0xff,0xf1,(0xff + 0xf1)*NUMBER_OF_MACHINES}},
 
     {ADDC_BNR,"ADDC",InitKernel_Addc,{0xf0,0x1,(0xf0 + 1 + 1)*NUMBER_OF_MACHINES}},
-    {ADDC_BNR,"ADDC2",InitKernel_Addc,{0xffff,0xffff,((UINT16)(0xffff + 0xffff + 1))*NUMBER_OF_MACHINES}},
-    {ADDC_BNR,"ADDC3",InitKernel_Addc,{0xfffe,0xffff,(UINT16)((0xffff + 0xfffe + 1))*NUMBER_OF_MACHINES}},
+    {ADDC_BNR,"ADDC2",InitKernel_Addc,{0xffff,0xffff,((uint16_t)(0xffff + 0xffff + 1))*NUMBER_OF_MACHINES}},
+    {ADDC_BNR,"ADDC3",InitKernel_Addc,{0xfffe,0xffff,(uint16_t)((0xffff + 0xfffe + 1))*NUMBER_OF_MACHINES}},
     //{pADDC_BNR,"pADDC",InitKernel_pAddc,{0xf0,0x1,(0xf0 + 1 + 1)*NUMBER_OF_MACHINES}},
 
     {SUB_BNR,"SUB",InitKernel_Sub,{0xffff,0xff8f, (0xffff - 0xff8f)*NUMBER_OF_MACHINES}},
-    {SUB_BNR,"SUB",InitKernel_Sub,{0x0,0xffff, ((UINT16)(0 - 0xffff))*NUMBER_OF_MACHINES}},
+    {SUB_BNR,"SUB",InitKernel_Sub,{0x0,0xffff, ((uint16_t)(0 - 0xffff))*NUMBER_OF_MACHINES}},
     //{pSUB_BNR,"pSUB",InitKernel_pSub,{0xffff,0xff8f, (0xffff - 0xff8f)*NUMBER_OF_MACHINES}},
     {sSUB_BNR,"sSUB",InitKernel_sSub,{0xffff,0xff8f, (0xffff - 0xff8f)*NUMBER_OF_MACHINES}},
 
     {SUBC_BNR,"SUBC",InitKernel_Subc,{0xffff,0xff8f,(0xffff - 0xff8f -1)*NUMBER_OF_MACHINES}},
-    {SUBC_BNR,"SUBC2",InitKernel_Subc,{0,0xffff,((UINT16)(0 - 0xffff -1))*NUMBER_OF_MACHINES}},
+    {SUBC_BNR,"SUBC2",InitKernel_Subc,{0,0xffff,((uint16_t)(0 - 0xffff -1))*NUMBER_OF_MACHINES}},
     //{pSUBC_BNR,"pSUBC",InitKernel_pSubc,{0xffff,0xff8f,(0xffff - 0xff8f -1)*NUMBER_OF_MACHINES}},
 
     {NOT_BNR,"NOT",InitKernel_Not,{0xfff0,0x00,(0xf)*NUMBER_OF_MACHINES}},
@@ -1160,12 +1165,12 @@ int test_ExtendedSimpleAll(ConnexMachine *connex)
 static int TestJmpMultiRed(ConnexMachine *connex, int RedValue, int SquareReds);
 int test_Simple_All(ConnexMachine *connex, bool stress)
 {
-    UINT16 i = 0;
-    INT16 j = 0;
-    UINT16 stressLoops;
-    INT32 result;
+    uint16_t i = 0;
+    uint16_t j = 0;
+    uint16_t stressLoops;
+    int32_t result;
 
-    UINT16 testFails = 0;
+    uint16_t testFails = 0;
 
     if (stress == true) { stressLoops = 10;} else stressLoops = 1;
     cout<< "\nStarting SimpleTests: "<<endl;
@@ -1238,7 +1243,7 @@ static int TestJmpMultiRed(ConnexMachine *connex, int RedValue, int SquareReds)
     //cout<<connex->disassembleKernel(TEST_PREFIX + to_string(IJMP3_BNR));
     connex->executeKernel(TEST_PREFIX + to_string(IJMP3_BNR));
 
-    int ExpectedBytesOfReductions = SquareReds*SquareReds*BYTES_IN_DWORD;
+    int ExpectedBytesOfReductions = SquareReds*SquareReds*sizeof(UINT_RED_REG_VAL);
     static UINT_RED_REG_VAL *BasicMatchRedResults;
     BasicMatchRedResults = (UINT_RED_REG_VAL*)malloc(8192*1024 * sizeof(UINT_RED_REG_VAL));
     if (BasicMatchRedResults == NULL) {cout<<"Could not allocate memory for reductions "<<endl;return 0;};
@@ -1250,7 +1255,7 @@ static int TestJmpMultiRed(ConnexMachine *connex, int RedValue, int SquareReds)
     }
 
     int i;
-    for (i=0; i < ExpectedBytesOfReductions / BYTES_IN_DWORD; i++)
+    for (i=0; i < ExpectedBytesOfReductions / sizeof(UINT_RED_REG_VAL); i++)
     {
         if (BasicMatchRedResults[i] != RedValue* NUMBER_OF_MACHINES)
         {
@@ -1259,15 +1264,15 @@ static int TestJmpMultiRed(ConnexMachine *connex, int RedValue, int SquareReds)
         }
     }
     free(BasicMatchRedResults);
-    if ((i == ExpectedBytesOfReductions/BYTES_IN_DWORD) && (RealBytesOfReductions == ExpectedBytesOfReductions))
+    if ((i == ExpectedBytesOfReductions/sizeof(UINT_RED_REG_VAL)) && (RealBytesOfReductions == ExpectedBytesOfReductions))
         cout<<"Test JMP-MultiRed PASSED "<<endl;
     else
     {
         cout<<"Test JMP-MultiRed FAILED with args "<<RedValue<<" "<<SquareReds<<endl;
         if (RealBytesOfReductions != ExpectedBytesOfReductions)
             cout<<"Test JMP-MultiRed FAILED with different number of reductions "
-            <<RealBytesOfReductions/BYTES_IN_DWORD<<" instead of "
-            <<ExpectedBytesOfReductions/BYTES_IN_DWORD<<endl;
+            <<RealBytesOfReductions/sizeof(UINT_RED_REG_VAL)<<" instead of "
+            <<ExpectedBytesOfReductions/sizeof(UINT_RED_REG_VAL)<<endl;
         else
             cout<<"Test JMP-MultiRed FAILED with different value of reduction"<<endl;
 

@@ -4,6 +4,12 @@
  * Holds information regarding the machine configuration.
  */
 
+#include <cstdint>
+
+#ifndef CONNEX_REGISTER_SIZE
+#define CONNEX_REGISTER_SIZE 		16
+#endif
+
 #ifndef CONNEX_VECTOR_LENGTH
 #define CONNEX_VECTOR_LENGTH 		128
 #endif
@@ -22,3 +28,14 @@
 #define REG_MAX_VAL 				0xffff
 
 #define INSTRUCTION_QUEUE_LENGTH	1024
+
+#define UINT_INSTRUCTION            uint32_t
+#define UINT_RED_REG_VAL            uint32_t
+#define UINT_REGISTER_VAL           uint16_t
+#define UINT_PARAM                  uint16_t
+
+#define REDUCTION_SIZE              (7 + CONNEX_REGISTER_SIZE)
+#define REDUCTION_SIZE_MASK         ((1 << REDUCTION_SIZE) -1)
+
+#define REGISTER_SIZE_MASK          ((1 << CONNEX_REGISTER_SIZE) -1)
+

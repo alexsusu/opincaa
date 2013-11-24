@@ -7,6 +7,5 @@
  *
  */
 
-#include "utils.h"
 int test_Simple_All(ConnexMachine *connex, bool);
 int test_ExtendedSimpleAll(ConnexMachine *connex);
