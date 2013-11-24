@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #make opincaa, simulator and tests
-cd ../opincaa/main && make && cd -
+cd ../ && make && cd -
 cd ../simulator && make && cd -
 make
 
@@ -10,7 +10,7 @@ make
 
 #run the test
 sleep 3
-LD_LIBRARY_PATH=../opincaa/main/libs
+LD_LIBRARY_PATH=../libs/$1
 export LD_LIBRARY_PATH
 ./build/test
 

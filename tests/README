@@ -1,0 +1,5 @@
+Steps to run the tests against the OPINCAA library and simulator:
+
+1) ./test_harness.sh <architecture>
+
+That's all folks!
