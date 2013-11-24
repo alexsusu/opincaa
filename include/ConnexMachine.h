@@ -15,6 +15,8 @@
 #include <map>
 #include <mutex>
 
+#include <unistd.h>
+
 /* to be moved in architecture.h */
 #define CONNEX_MAX_REGS     32
 #define CONNEX_MAX_MEMORY   1024
