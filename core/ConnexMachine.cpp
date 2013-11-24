@@ -107,6 +107,22 @@ string ConnexMachine::disassembleKernel(string kernelName)
 }
 
 /*
+ * Reads byteCount bytes from descriptor and places the 
+ * result in destination. It blocks until all byteCount bytes
+ * have been read.
+ */
+unsigned readFromPipe(int descriptor, void* destination, unsigned byteCount)
+{
+    char* dest = (char*)destination;
+    unsigned totalBytesRead = 0;
+    do{
+        totalBytesRead += read(descriptor, dest + totalBytesRead, byteCount - totalBytesRead);
+    }while(byteCount != totalBytesRead);
+    
+    return byteCount;
+}
+
+/*
  * Constructor for creating a new ConnexMachine
  *
  * @param  distributionDescriptorPath the file descriptor of the distribution FIFO (write only)
@@ -225,7 +241,7 @@ int ConnexMachine::writeDataToArray(void *buffer, unsigned vectorCount, unsigned
 
     /* Read the ACK, NOTE:this is blocking */
     int response;
-    read(ioReadFifo, &response, sizeof(int));
+    readFromPipe(ioReadFifo, &response, sizeof(int));
 
     //TODO: verify response
 
@@ -266,7 +282,7 @@ void* ConnexMachine::readDataFromArray(void *buffer, unsigned vectorCount, unsig
     write(ioWriteFifo, NULL, 0);
 
     /* Read the data */
-    if(read(ioReadFifo, buffer, vectorCount * VECTOR_LENGTH * 2) < 0)
+    if(readFromPipe(ioReadFifo, buffer, vectorCount * VECTOR_LENGTH * 2) < 0)
     {
 		threadMutex.unlock();
         throw string("Error reading from memory FIFO");
@@ -285,7 +301,7 @@ int ConnexMachine::readReduction()
 {
 	threadMutexIR.lock();
     int result;
-    if(read(reductionFifo, &result, sizeof(int)) < 0)
+    if(readFromPipe(reductionFifo, &result, sizeof(int)) < 0)
     {
 		threadMutexIR.unlock();
         throw string("Error reading from reduction FIFO");

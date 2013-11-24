@@ -46,12 +46,17 @@ class ConnexMachine
          */
         static string disassembleKernel(string kernelName);
 
-	/*
-	 * Dump the specified kernel.
-	 */
-	static string dumpKernel(string kernelName);
+        /*
+         * Dump the specified kernel.
+         */
+        static string dumpKernel(string kernelName);
 
-
+        /*
+         * Reads byteCount bytes from descriptor and places the 
+         * result in destination. It blocks until all byteCount bytes
+         * have been read.
+         */
+        unsigned readFromPipe(int descriptor, void* destination, unsigned byteCount);
 
         /*
          * Constructor for creating a new ConnexMachine
