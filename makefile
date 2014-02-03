@@ -14,6 +14,9 @@ $(ARCHITECTURES):
 install: build
 	make -C arch/$(ARCHITECTURES) install
 
+test: build
+	@cd tests && ./test_harness.sh && cd ..
+
 clean:
 	@rm -rf build
 	@rm -rf libs
