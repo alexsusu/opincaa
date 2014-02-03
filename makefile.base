@@ -38,7 +38,7 @@ $(OBJ): %.o : %.cpp
 
 
 install: lib
-	cp $(LIB_DIR)/libopincaa.so /usr/local/lib
+	cp $(LIB_DIR)/$(ARCH)/libopincaa.so /usr/local/lib
 	chmod 0755 /usr/local/lib/libopincaa.so
 	ldconfig
 

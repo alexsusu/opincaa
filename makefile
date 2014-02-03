@@ -11,6 +11,9 @@ build: $(ARCHITECTURES)
 $(ARCHITECTURES):
 	make -C arch/$@
 
+install: build
+	make -C arch/$(ARCHITECTURES) install
+
 clean:
 	@rm -rf build
 	@rm -rf libs
