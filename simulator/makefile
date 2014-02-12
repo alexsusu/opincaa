@@ -12,7 +12,7 @@ BUILD_DIR = build
 SRC_DIR = src
 LIB_DIR = libs
 
-CFLAGS = --std=c++0x
+CFLAGS = -g --std=c++0x -fpermissive
 LDFLAGS_DEBUG =  $(LDFLAGS)
 
 OBJ = $(BUILD_DIR)/ConnexVector.o $(BUILD_DIR)/ConnexSimulator.o $(BUILD_DIR)/Instruction.o $(BUILD_DIR)/InstructionQueue.o
