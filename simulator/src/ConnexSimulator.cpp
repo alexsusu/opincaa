@@ -111,6 +111,12 @@ void ConnexSimulator::ioThreadHandler()
 
 		//cout<<"Simu: Waiting for receive "<<endl<<flush;
 		read(writeDescriptor, &ioDescriptor, sizeof(ioDescriptor));
+#if 0
+                printf("ioDescriptor:\n");
+                printf("              type = %d\n", ioDescriptor.type);
+                printf("              lsAddress = %d\n", ioDescriptor.lsAddress);
+                printf("              vectorCount = %d\n", ioDescriptor.vectorCount);
+#endif
 		//cout<<"Simu: Received "<<sizeof(ioDescriptor)<<" Bytes"<<endl<<flush;
 		performIO(ioDescriptor);
 		//cout<<"Simu: Perform IO "<<endl<<flush;
@@ -145,6 +151,19 @@ void ConnexSimulator::coreThreadHandler()
 	}
 }
 
+
+ssize_t
+force_all_io(ssize_t (*io)(int, void*, size_t), int fd, void *buf, size_t count)
+{
+        ssize_t total = 0;
+
+        do {
+                total += io(fd, (char *)buf + total, count - total);
+        } while (total != count);
+
+        return total;
+}
+
 /****************************************************************************
  * Performs an IO operation specified by the IO descriptor
  *
@@ -156,7 +175,7 @@ void ConnexSimulator::performIO(ConnexIoDescriptor ioDescriptor)
 	switch(ioDescriptor.type)
 	{
 		case IO_WRITE_OPERATION:
-			read(writeDescriptor, connexVectors, sizeof(connexVectors));
+			force_all_io(read, writeDescriptor, connexVectors, sizeof(connexVectors));
 			for(unsigned int i=0; i<ioDescriptor.vectorCount + 1; i++)
 			{
 				localStore[ioDescriptor.lsAddress + i].write(connexVectors + i * CONNEX_VECTOR_LENGTH);
@@ -170,7 +189,7 @@ void ConnexSimulator::performIO(ConnexIoDescriptor ioDescriptor)
 		case IO_READ_OPERATION:
 			for(unsigned int i=0; i<ioDescriptor.vectorCount + 1; i++)
 			{
-				write(readDescriptor,
+				force_all_io(write, readDescriptor, 
 					  localStore[ioDescriptor.lsAddress + i].read(),
 					  2 * CONNEX_VECTOR_LENGTH);
 			}
