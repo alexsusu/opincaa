@@ -18,8 +18,8 @@
 using namespace std;
 
 #define TEST_PREFIX "simpleIoTest_allowOverwrite"
-#define _BEGIN_KERNEL(x) BEGIN_KERNEL(TEST_PREFIX + to_string(x))
-#define _END_KERNEL(x) END_KERNEL(TEST_PREFIX + to_string(x))
+#define _BEGIN_KERNEL(x) BEGIN_KERNEL(TEST_PREFIX + to_string((long long int)x))
+#define _END_KERNEL(x) END_KERNEL(TEST_PREFIX + to_string((long long int)x))
 
 enum SimpleIoBatchNumbers
 {
@@ -76,7 +76,7 @@ static int testIowrite(ConnexMachine *connex, int BatchNumber,int32_t Param1, in
             _END_KERNEL(BatchNumber);
 
             //DEASM_KERNEL(BatchNumber);
-            connex->executeKernel(TEST_PREFIX + to_string(BatchNumber));
+            connex->executeKernel(TEST_PREFIX + to_string((long long int)BatchNumber));
             int result = connex->readReduction();
             if (data[cnxvectorIndex * CONNEX_VECTOR_LENGTH + cnt] != result)
             {
@@ -118,7 +118,7 @@ static int testIoread(ConnexMachine *connex, int BatchNumber,int32_t Param1, int
                               )
                 EXECUTE_WHERE_EQ ( LS[cnxvectorIndex + Param2] = R3;)
             _END_KERNEL(BatchNumber);
-            connex->executeKernel(TEST_PREFIX + to_string(BatchNumber));
+            connex->executeKernel(TEST_PREFIX + to_string((long long int)BatchNumber));
         }
         //c_simulator::printLS(Param2+1);
 		

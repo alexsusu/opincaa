@@ -21,8 +21,8 @@ using namespace std;
 
 
 #define TEST_PREFIX "simpleTest_allowOverwrite"
-#define _BEGIN_KERNEL(x) BEGIN_KERNEL(TEST_PREFIX + to_string(x))
-#define _END_KERNEL(x) END_KERNEL(TEST_PREFIX + to_string(x))
+#define _BEGIN_KERNEL(x) BEGIN_KERNEL(TEST_PREFIX + to_string((long long int)x))
+#define _END_KERNEL(x) END_KERNEL(TEST_PREFIX + to_string((long long int)x))
 
 struct Dataset
 {
@@ -1153,7 +1153,7 @@ int test_ExtendedSimpleAll(ConnexMachine *connex)
         {
             InitKernel_Ishl(ISHL2_BNR, i, j);
 
-            connex->executeKernel("simpleTest_" + to_string(ISHL2_BNR));
+            connex->executeKernel("simpleTest_" + to_string((long long int)ISHL2_BNR));
             val = connex->readReduction();
             if (val != (i << j)* CONNEX_VECTOR_LENGTH)
                 cout<<"ISHL2 failed: expected ("<<i<<" << "<<j<<") = CONNEX_VECTOR_LENGTH* "<<(i<<j)<<" but received "<<val<<endl;
@@ -1184,14 +1184,14 @@ int test_Simple_All(ConnexMachine *connex, bool stress)
                   TestFunctionTable[i].ds.Param1,
                   TestFunctionTable[i].ds.Param2);
 
-            connex->executeKernel(TEST_PREFIX + to_string(TestFunctionTable[i].BatchNumber));
+            connex->executeKernel(TEST_PREFIX + to_string((long long int)TestFunctionTable[i].BatchNumber));
             result = connex->readReduction();
             if (result != TestFunctionTable[i].ds.ExpectedResult)
             {
                cout<< "Test "<< setw(8) << left << TestFunctionTable[i].OperationName <<" FAILED with result "
                <<result << " (expected " <<TestFunctionTable[i].ds.ExpectedResult<<" ) !" << " params are "
                << TestFunctionTable[i].ds.Param1 << " and " << TestFunctionTable[i].ds.Param2 <<endl;
-               cout<<connex->disassembleKernel(TEST_PREFIX + to_string(TestFunctionTable[i].BatchNumber));
+               cout<<connex->disassembleKernel(TEST_PREFIX + to_string((long long int)TestFunctionTable[i].BatchNumber));
                testFails++;
                if (j == (stressLoops - 1)) break;
                //return testFails;
@@ -1241,7 +1241,7 @@ static int TestJmpMultiRed(ConnexMachine *connex, int RedValue, int SquareReds)
 {
     InitKernel_Jump3(IJMP3_BNR, RedValue,SquareReds);
     //cout<<connex->disassembleKernel(TEST_PREFIX + to_string(IJMP3_BNR));
-    connex->executeKernel(TEST_PREFIX + to_string(IJMP3_BNR));
+    connex->executeKernel(TEST_PREFIX + to_string((long long int)IJMP3_BNR));
 
     int ExpectedBytesOfReductions = SquareReds*SquareReds*sizeof(UINT_RED_REG_VAL);
     static UINT_RED_REG_VAL *BasicMatchRedResults;
@@ -1276,7 +1276,7 @@ static int TestJmpMultiRed(ConnexMachine *connex, int RedValue, int SquareReds)
         else
             cout<<"Test JMP-MultiRed FAILED with different value of reduction"<<endl;
 
-        cout<<connex->disassembleKernel(TEST_PREFIX + to_string(IJMP3_BNR));
+        cout<<connex->disassembleKernel(TEST_PREFIX + to_string((long long int)IJMP3_BNR));
         cout << "Press ENTER to continue...";
         cin.ignore( numeric_limits <streamsize> ::max(), '\n' );
     }
