@@ -293,14 +293,28 @@ void* ConnexMachine::readDataFromArray(void *buffer, unsigned vectorCount, unsig
  */
 int ConnexMachine::readReduction()
 {
-	threadMutexIR.lock();
     int result;
-    if(readFromPipe(reductionFifo, &result, sizeof(int)) < 0)
+    readMultiReduction(1, &result);
+    return result;
+}
+
+/*
+ * Reads multiple values from the reduction FIFO
+ *
+ * @param count the number of int to be read
+ * @buffer the memory area where the results will be put
+ */
+void ConnexMachine::readMultiReduction(int count, void* buffer)
+{
+    int result;
+    threadMutexIR.lock();
+
+    if(readFromPipe(reductionFifo, buffer, count*sizeof(int)) < 0)
     {
-		threadMutexIR.unlock();
+        threadMutexIR.unlock();
         throw string("Error reading from reduction FIFO");
     }
 
     threadMutexIR.unlock();
-    return result;
 }
+

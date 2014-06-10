@@ -124,6 +124,7 @@ class ConnexMachine
          * @return the value read from the reduction FIFO
          */
         int readReduction();
+        void readMultiReduction(int count, void* buffer);
     private:
 
         /*
