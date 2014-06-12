@@ -214,7 +214,7 @@ void ConnexMachine::executeKernel(string kernelName)
 *
 * @return number of bytes written or -1 in case of error
 */
-int ConnexMachine::writeDataToArray(void *buffer, unsigned vectorCount, unsigned startVectorIndex)
+int ConnexMachine::writeDataToArray(const void *buffer, unsigned vectorCount, unsigned startVectorIndex)
 {
 	threadMutex.lock();
 
