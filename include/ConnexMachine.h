@@ -105,7 +105,7 @@ class ConnexMachine
          *
          * @return number of bytes written or -1 in case of error
          */
-        int writeDataToArray(void *buffer, unsigned vectorCount, unsigned vectorIndex);
+        int writeDataToArray(const void *buffer, unsigned vectorCount, unsigned vectorIndex);
 
         /*
          * Reads the specified amounf of bytes to the specified buffer
