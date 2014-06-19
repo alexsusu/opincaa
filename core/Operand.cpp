@@ -494,6 +494,15 @@ Instruction Operand::ult(Operand op1, unsigned short value)
     throw string("Unsuported operation ult (operand, value)");
 }
 //-----------------------------------------------------------
+Instruction Operand::popcnt(Operand op)
+{
+    if(op.type != TYPE_REGISTER)
+    {
+        throw string("Invalid operand type for reduce operator");
+    }
+    op.kernel->append(Instruction(_POPCNT, 0, op.index, 0));
+}
+//-----------------------------------------------------------
 void Operand::reduce(Operand op)
 {
     if(op.type != TYPE_REGISTER)

@@ -80,6 +80,7 @@ using namespace std;
 #define NOP                         __kernel->append(Instruction(_NOP, 0, 0, 0));
 
 #define REDUCE(x)                   Operand::reduce(x);
+#define POPCNT(x)                   Operand::popcnt(x);
 #define ADDC(x,y)                   Operand::addc(x,y);
 #define SUBC(x,y)                   Operand::subc(x,y);
 #define ULT(x,y)                    Operand::ult(x,y);

@@ -126,6 +126,7 @@ class Operand
         static Instruction ult(Operand op1, Operand op2);
         static Instruction ult(Operand op1, unsigned short value);
 
+        static Instruction popcnt(Operand op);
         static void reduce(Operand op);
     private:
 

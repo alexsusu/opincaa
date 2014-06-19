@@ -22,6 +22,8 @@ string Instruction::mnemonic(int opcode)
         case _ADDC:     return string("addc");
         case _SUB:      return string("sub");      
         case _SUBC:     return string("subc");
+
+	case _POPCNT:   return string("popcnt");
         
         case _NOT:      return string("not");
         case _OR:       return string("or");
@@ -219,6 +221,7 @@ string Instruction::disassemble()
 		stream << " " << registerName(dest);
 		break;
 	case _REDUCE:
+	case _POPCNT:
 		stream << " " << registerName(left);
 		break;
 	case _WRITE:
@@ -296,6 +299,7 @@ string Instruction::dump()
         case _WHERE_LT: stream << "WHERE_LT"; break; 
         case _END_WHERE:  stream << "END_WHERE"; break;
         case _REDUCE: stream << "REDUCE(" << registerName(left) << ")"; break;
+        case _POPCNT: stream << "POPCNT(" << registerName(left) << ")"; break;
         case _NOP: stream << "NOP"; break;
         case _VLOAD: stream << registerName(dest) << " = " << value; break;
         case _IREAD: stream << registerName(dest) << " = LS[" << value << "]"; break;
