@@ -498,9 +498,9 @@ Instruction Operand::popcnt(Operand op)
 {
     if(op.type != TYPE_REGISTER)
     {
-        throw string("Invalid operand type for reduce operator");
+        throw string("Invalid operand type for popcnt operator");
     }
-    op.kernel->append(Instruction(_POPCNT, 0, op.index, 0));
+    return Instruction(_POPCNT, 0, op.index, 0);
 }
 //-----------------------------------------------------------
 void Operand::reduce(Operand op)
