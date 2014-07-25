@@ -1185,7 +1185,8 @@ int test_Simple_All(ConnexMachine *connex, bool stress)
                   TestFunctionTable[i].ds.Param2);
 
             connex->executeKernel(TEST_PREFIX + to_string((long long int)TestFunctionTable[i].BatchNumber));
-            result = connex->readReduction();
+            //treat the reduction result as an unsigned number by masking out sign bits
+            result = connex->readReduction() & 0x007fffff;
             if (result != TestFunctionTable[i].ds.ExpectedResult)
             {
                cout<< "Test "<< setw(8) << left << TestFunctionTable[i].OperationName <<" FAILED with result "
