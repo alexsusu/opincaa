@@ -208,6 +208,7 @@ void ConnexSimulator::performIO(ConnexIoDescriptor ioDescriptor)
  */
 void ConnexSimulator::executeInstruction(Instruction instruction)
 {
+	cout << instruction.disassemble() << flush;
 	switch(instruction.getOpcode())
     {
         case _ADD:
