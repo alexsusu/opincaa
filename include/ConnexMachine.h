@@ -105,7 +105,7 @@ class ConnexMachine
          *
          * @return number of bytes written or -1 in case of error
          */
-        int writeDataToArray(void *buffer, unsigned vectorCount, unsigned vectorIndex);
+        int writeDataToArray(const void *buffer, unsigned vectorCount, unsigned vectorIndex);
 
         /*
          * Reads the specified amounf of bytes to the specified buffer
@@ -124,6 +124,7 @@ class ConnexMachine
          * @return the value read from the reduction FIFO
          */
         int readReduction();
+        void readMultiReduction(int count, void* buffer);
     private:
 
         /*
