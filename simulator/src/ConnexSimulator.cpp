@@ -189,7 +189,7 @@ void ConnexSimulator::performIO(ConnexIoDescriptor ioDescriptor)
 		case IO_READ_OPERATION:
 			for(unsigned int i=0; i<ioDescriptor.vectorCount + 1; i++)
 			{
-				force_all_io(write, readDescriptor, 
+				force_all_io(write, readDescriptor,
 					  localStore[ioDescriptor.lsAddress + i].read(),
 					  2 * CONNEX_VECTOR_LENGTH);
 			}
@@ -208,7 +208,7 @@ void ConnexSimulator::performIO(ConnexIoDescriptor ioDescriptor)
  */
 void ConnexSimulator::executeInstruction(Instruction instruction)
 {
-	cout << instruction.disassemble() << flush;
+	// cout << instruction.disassemble() << flush;
 	switch(instruction.getOpcode())
     {
         case _ADD:
