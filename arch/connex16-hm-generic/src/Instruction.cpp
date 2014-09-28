@@ -23,7 +23,7 @@ string Instruction::mnemonic(int opcode)
         case _SUB:      return string("sub");      
         case _SUBC:     return string("subc");
 
-	case _POPCNT:   return string("popcnt");
+        case _POPCNT:   return string("popcnt");
         
         case _NOT:      return string("not");
         case _OR:       return string("or");
@@ -62,9 +62,9 @@ string Instruction::mnemonic(int opcode)
         case _IREAD:    return string("iread");
         case _IWRITE:   return string("iwrite");
         
-		case _SETLC:    return string("setlc");
+        case _SETLC:    return string("setlc");
         case _IJMPNZ:   return string("ijmpnz");
-		
+
         default: throw string("Unknown opcode in Instruction::mnemonic");
     }
 }
@@ -176,84 +176,84 @@ unsigned Instruction::assemble()
  */
 string Instruction::disassemble()
 {
-	stringstream stream;
+        stringstream stream;
 
-	stream << mnemonic(opcode);
-	switch(opcode) {
-	case _ADD:
-	case _ADDC:
-	case _SUB:
-	case _SUBC:
-	case _OR:
-	case _AND:
-	case _XOR:
-	case _EQ:
-	case _LT:
-	case _ULT:
-	case _SHL:
-	case _SHR:
-	case _SHRA:
-	case _CELL_SHL:
-	case _CELL_SHR:
-		stream << " " << registerName(dest);
-		stream << " " << registerName(left);
-		stream << " " << registerName(right);
-		break;
-	case _NOT:
-		stream << registerName(dest);
-		stream << " " << registerName(left);
-		break;
-	case _READ:
-		stream << registerName(dest);
-		stream << " " << registerName(right);
-		break;
-	case _ISHL:
-	case _ISHR:
-	case _ISHRA:
-		stream << " " << registerName(dest);
-		stream << " " << registerName(left);
-		stream << " " << right;
-		break;
-	case _LDIX:
-	case _LDSH:
-	case _MULT_LO:
-	case _MULT_HI:
-		stream << " " << registerName(dest);
-		break;
-	case _REDUCE:
-	case _POPCNT:
-		stream << " " << registerName(left);
-		break;
-	case _WRITE:
-	case _MULT:
-		stream << " " << registerName(left);
-		stream << " " << registerName(right);
-		break;
-	case _VLOAD:
-	case _IREAD:
-		stream << " " << registerName(dest);
-		stream << " (" << value << ")";
-		break;
-	case _IWRITE:
-		stream << " (" << value << ")";
-		stream << " " << registerName(left);
-		break;
-	case _SETLC:
-		stream << " (" << value << ")";
-		/* fall through */
-	case _WHERE_CRY:
-	case _WHERE_EQ:
-	case _WHERE_LT:
-	case _END_WHERE:
-	case _IJMPNZ:
-	case _NOP:
-		break;
+        stream << mnemonic(opcode);
+        switch(opcode) {
+        case _ADD:
+        case _ADDC:
+        case _SUB:
+        case _SUBC:
+        case _OR:
+        case _AND:
+        case _XOR:
+        case _EQ:
+        case _LT:
+        case _ULT:
+        case _SHL:
+        case _SHR:
+        case _SHRA:
+        case _CELL_SHL:
+        case _CELL_SHR:
+                stream << " " << registerName(dest);
+                stream << " " << registerName(left);
+                stream << " " << registerName(right);
+                break;
+        case _NOT:
+        stream << registerName(dest);
+        stream << " " << registerName(left);
+        break;
+        case _READ:
+                stream << registerName(dest);
+                stream << " " << registerName(right);
+                break;
+        case _ISHL:
+        case _ISHR:
+        case _ISHRA:
+                stream << " " << registerName(dest);
+                stream << " " << registerName(left);
+                stream << " " << right;
+                break;
+        case _LDIX:
+        case _LDSH:
+        case _MULT_LO:
+        case _MULT_HI:
+                stream << " " << registerName(dest);
+                break;
+        case _REDUCE:
+        case _POPCNT:
+                stream << " " << registerName(left);
+                break;
+        case _WRITE:
+        case _MULT:
+                stream << " " << registerName(left);
+                stream << " " << registerName(right);
+                break;
+        case _VLOAD:
+        case _IREAD:
+                stream << " " << registerName(dest);
+                stream << " (" << value << ")";
+                break;
+        case _IWRITE:
+                stream << " (" << value << ")";
+                stream << " " << registerName(left);
+                break;
+        case _SETLC:
+                stream << " (" << value << ")";
+                /* fall through */
+        case _WHERE_CRY:
+        case _WHERE_EQ:
+        case _WHERE_LT:
+        case _END_WHERE:
+        case _IJMPNZ:
+        case _NOP:
+                break;
         default: throw string("Invalid instruction opcode!");
-	}
+        }
 
-	stream << ";" << endl;
+        stream << ";" << endl;
 
-	return stream.str();
+        return stream.str();
 }
 
 /************************************************************
@@ -304,7 +304,7 @@ string Instruction::dump()
         case _VLOAD: stream << registerName(dest) << " = " << value; break;
         case _IREAD: stream << registerName(dest) << " = LS[" << value << "]"; break;
         case _IWRITE: stream << "LS[" << value << "] = " << registerName(left); break;
-		case _SETLC: stream << "REPEAT(" << value << ")"; break;
+        case _SETLC: stream << "REPEAT(" << value << ")"; break;
         case _IJMPNZ: stream << "END_REPEAT"; break;
         default: throw string("Invalid instruction opcode!");
     }
