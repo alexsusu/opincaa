@@ -41,7 +41,7 @@ install: lib
 	cp $(LIB_DIR)/$(ARCH)/libopincaa.so /usr/local/lib
 	chmod 0755 /usr/local/lib/libopincaa.so
 	ldconfig
-	cp include/*.h /usr/include/.
+	cp $(DEPTH)include/*.h /usr/include/.
 	cp $(DEPTH)arch/$(ARCH)/include/*.h /usr/include/.
 
 clean:
