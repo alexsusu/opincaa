@@ -223,6 +223,9 @@ void ConnexSimulator::executeInstruction(Instruction instruction)
         case _SUBC:
 			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] - registerFile[instruction.getRight()] - ConnexVector::carryFlag;
 			return;
+        case _POPCNT:
+            registerFile[instruction.getDest()] = registerFile[instruction.getLeft()].popcount();
+            return;
         case _NOT:
 			registerFile[instruction.getDest()] = ~registerFile[instruction.getLeft()];
 			return;

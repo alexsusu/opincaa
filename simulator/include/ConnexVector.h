@@ -131,6 +131,11 @@ class ConnexVector
 		ConnexVector ishra(unsigned short value);
 
         /*
+         * Computes the population count of each element of this Vector
+         */
+        ConnexVector popcount();
+
+        /*
          * Shift the vector in the specified direction, with the number
          * of cells specified by ConnexVector::shiftCount
          *
