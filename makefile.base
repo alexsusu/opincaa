@@ -34,7 +34,7 @@ build_lib:
 
 $(OBJ): %.o : %.cpp
 	$(eval obj = $(shell basename $@))
-	$(CXX) $(CFLAGS) -I$(INC_DIR) -I$(DEPTH)arch/$(ARCH)/include -I$(DEPTH)utils/include -c $< -o $(BUILD_DIR)/$(ARCH)/$(obj)
+	$(CXX) $(CFLAGS) -DTARGET_ARCH=\"$(ARCH)\" -I$(INC_DIR) -I$(DEPTH)arch/$(ARCH)/include -I$(DEPTH)utils/include -c $< -o $(BUILD_DIR)/$(ARCH)/$(obj)
 
 
 install: lib

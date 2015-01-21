@@ -52,6 +52,22 @@ class ConnexMachine
         unsigned readFromPipe(int descriptor, void* destination, unsigned byteCount);
 
         /*
+        * Constructor for creating a new ConnexMachine
+        *
+        * @param  distributionDescriptorPath the file descriptor of the distribution FIFO (write only)
+        * @param  reductionDescriptorPath the file descriptor of the reduction FIFO (read only)
+        * @param  writeDescriptorPath the file descriptor of the IO write FIFO (write only)
+        * @param  readDescriptorPath the file descriptor of the IO read FIFO (read only)
+        * @param  registerInterfacePath the file descriptor of the FPGA register interface (read only)
+        *
+        */
+        ConnexMachine(string distributionDescriptorPath,
+                                string reductionDescriptorPath,
+                                string writeDescriptorPath,
+                                string readDescriptorPath,
+                                string registerInterfacePath);
+        
+        /*
          * Constructor for creating a new ConnexMachine
          *
          * @param  distributionDescriptorPath the file of the distribution FIFO (write only)
@@ -64,19 +80,6 @@ class ConnexMachine
                                 string reductionDescriptorPath,
                                 string writeDescriptorPath,
                                 string readDescriptorPath);
-
-
-
-        /*
-         * Constructor for creating a new ConnexMachine
-         *
-         * @param  distributionFifo the file descriptor of the distribution FIFO (write only)
-         * @param  reductionFifo the file descriptor of the reduction FIFO (read only)
-         * @param  ioWriteFifo the file descriptor of the IO write FIFO (write only)
-         * @param  ioReadFifo the file descriptor of the IO read FIFO (read only)
-         *
-         */
-        ConnexMachine(int distributionFifo, int reductionFifo, int ioWriteFifo, int ioReadFifo);
 
         /*
          * Destructor for the ConnexMachine class
@@ -124,9 +127,24 @@ class ConnexMachine
          * @return the value read from the reduction FIFO
          */
         int readReduction();
+        
+        /*
+        * Reads multiple values from the reduction FIFO
+        *
+        * @param count the number of int to be read
+        * @param buffer the memory area where the results will be put
+        */
         void readMultiReduction(int count, void* buffer);
+        
     private:
 
+        /*
+        * Checks the FPGA accelerator architecture against the OPINCAA target architecture
+        *
+        * @return accelerator revision string
+        */
+        string checkAcceleratorArchitecture();
+        
         /*
          * The file descriptor of the distribution FIFO (write only)
          */
@@ -148,6 +166,11 @@ class ConnexMachine
         int ioReadFifo;
 
         /*
+         * The file descriptor of the FPGA register interface (read only)
+         */
+        int registerFile;
+        
+        /*
          * The map of the kernels available in the system
          */
         static map<string, Kernel*> kernels;
@@ -162,6 +185,11 @@ class ConnexMachine
          * The mutex used to sync the kernel map operations
          */
 		static mutex mapMutex;
+        
+        /*
+         * The name of the architecture for which OPINCAA was compiled
+         */
+        static string targetArchitecture;
 };
 
 #endif // CONNEX_INTERFACE_H
