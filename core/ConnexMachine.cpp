@@ -153,7 +153,7 @@ ConnexMachine::ConnexMachine(string distributionDescriptorPath = DEFAULT_DISTRIB
         throw string("Unable to access accelerator registers");
     }
 
-    printf("Accelerator revision is %s",checkAcceleratorArchitecture().c_str());
+    printf("Accelerator revision is %s\n",checkAcceleratorArchitecture().c_str());
 
     distributionFifo = open(distpath, O_WRONLY);
     reductionFifo = open(redpath, O_RDONLY);
