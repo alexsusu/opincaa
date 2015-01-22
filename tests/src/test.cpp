@@ -38,7 +38,8 @@ int RunAll(bool stress)
         ConnexMachine *connex = new ConnexMachine("distributionFIFO",
                                                 "reductionFIFO",
                                                 "writeFIFO",
-                                                "readFIFO");
+                                                "readFIFO",
+                                                "regFile");
 		
         result = test_Simple_All(connex, stress);
         result += test_Simple_IO_All(connex, stress);
