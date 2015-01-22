@@ -174,27 +174,6 @@ ConnexMachine::ConnexMachine(string distributionDescriptorPath = DEFAULT_DISTRIB
 }
 
 /*
- * Constructor for creating a new ConnexMachine
- *
- * @param  distributionDescriptorPath the file descriptor of the distribution FIFO (write only)
- * @param  reductionDescriptorPath the file descriptor of the reduction FIFO (read only)
- * @param  writeDescriptorPath the file descriptor of the IO write FIFO (write only)
- * @param  readDescriptorPath the file descriptor of the IO read FIFO (read only)
- *
- */
-ConnexMachine::ConnexMachine(string distributionDescriptorPath = DEFAULT_DISTRIBUTION_FIFO,
-                                string reductionDescriptorPath = DEFAULT_REDUCTION_FIFO,
-                                string writeDescriptorPath = DEFAULT_IO_WRITE_FIFO,
-                                string readDescriptorPath = DEFAULT_IO_READ_FIFO)
-              :ConnexMachine(   distributionDescriptorPath,
-                                reductionDescriptorPath,
-                                writeDescriptorPath,
-                                readDescriptorPath,
-                                DEFAULT_REGISTER_FILE){}
-
-
-
-/*
  * Destructor for the ConnexMachine class
  *
  * Disposes of the kernel map and closes the associated file
