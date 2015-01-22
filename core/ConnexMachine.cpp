@@ -359,7 +359,8 @@ string ConnexMachine::checkAcceleratorArchitecture()
     volatile unsigned int *regs = (volatile unsigned int *)map_addr;
 
     std::string archName = std::string((char*)regs);
-
+    archName = string(archName.rbegin(), archName.rend());
+    
     if(archName.compare(targetArchitecture) != 0)
     {
         throw string("Accelerator architecture ("+archName+") does not match OPINCAA target architecture ("+targetArchitecture+")");
