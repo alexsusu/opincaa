@@ -328,7 +328,7 @@ void ConnexMachine::readMultiReduction(int count, void* buffer)
  */
 string ConnexMachine::checkAcceleratorArchitecture()
 {
-    void *map_addr = mmap(NULL, 64, PROT_READ | PROT_WRITE, MAP_SHARED, registerFile, 0);
+    void *map_addr = mmap(NULL, 64, PROT_READ, MAP_SHARED, registerFile, 0);
     
     if(map_addr == MAP_FAILED)
     {
