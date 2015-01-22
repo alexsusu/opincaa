@@ -363,7 +363,7 @@ ConnexVector ConnexVector::popcount()
         for(int j=0; j<CONNEX_REGISTER_SIZE; j++)
         {
             count += arg & 1;
-            count = count >> 1;
+            arg = arg >> 1;
         }
         result.cells[i] = count;
     }
