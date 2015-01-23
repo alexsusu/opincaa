@@ -308,6 +308,18 @@ static void InitKernel_pSubc(int BatchNumber,int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
+static void InitKernel_Popcount(int BatchNumber,int32_t Param1, int32_t Param2)
+{
+    _BEGIN_KERNEL(BatchNumber);
+        EXECUTE_IN_ALL(
+                        R1 = Param1;
+                        R2 = POPCNT(R1);
+                        REDUCE(R2);
+                        )
+
+    _END_KERNEL(BatchNumber);
+}
+
 static void InitKernel_Not(int BatchNumber,int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
@@ -828,6 +840,8 @@ enum SimpleBatchNumbers
     EQ_BNR          ,
     pEQ_BNR         ,
 
+    POPCNT_BNR      ,
+    
     NOT_BNR         ,
     SHR_BNR         ,
     ISHR_BNR        ,
@@ -910,6 +924,8 @@ static TestFunction TestFunctionTable[] =
     {SUBC_BNR,"SUBC2",InitKernel_Subc,{0,0xffff,((uint16_t)(0 - 0xffff -1))*CONNEX_VECTOR_LENGTH}},
     //{pSUBC_BNR,"pSUBC",InitKernel_pSubc,{0xffff,0xff8f,(0xffff - 0xff8f -1)*CONNEX_VECTOR_LENGTH}},
 
+    {POPCNT_BNR,"POPCNT",InitKernel_Popcount,{0x137f,0x00,10*CONNEX_VECTOR_LENGTH}},
+    
     {NOT_BNR,"NOT",InitKernel_Not,{0xfff0,0x00,(0xf)*CONNEX_VECTOR_LENGTH}},
 
     {OR_BNR,"OR",InitKernel_Or,{0x10,0x01,(0x10 | 0x01)*CONNEX_VECTOR_LENGTH}},
@@ -1043,6 +1059,9 @@ static void UpdateDatasetTable(int BatchNumber, int loop)
                     break;
                 }
 
+                                
+        case POPCNT_BNR     :break;
+                
         case NOT_BNR        :
                     {
                          TestFunctionTable[i].ds.Param1 = randPar(0x10000);

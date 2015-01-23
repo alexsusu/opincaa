@@ -348,6 +348,29 @@ ConnexVector ConnexVector::ishra(unsigned short value)
 }
 
 /****************************************************************************
+* Computes the population count (number of set bits) in each element of the 
+* argument vector. Argument is treated as unsigned, result is unsigned
+*/
+ConnexVector ConnexVector::popcount()
+{
+    ConnexVector result;
+    unsigned short arg;
+    unsigned short count;
+    for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+    {
+        arg = (unsigned short)cells[i];
+        count = 0;
+        for(int j=0; j<CONNEX_REGISTER_SIZE; j++)
+        {
+            count += arg & 1;
+            arg = arg >> 1;
+        }
+        result.cells[i] = count;
+    }
+    return result;
+}
+
+/****************************************************************************
  * Shift the vector in the specified direction, with the number
  * of cells specified by ConnexVector::shiftCount
  *

@@ -8,12 +8,15 @@
 
 #include "ConnexMachine.h"
 #include "Architecture.h"
+#include <string>
 #include <fcntl.h>
+#include <sys/mman.h>
 
 #define DEFAULT_DISTRIBUTION_FIFO   "/dev/xillybus_write_arm2array_32"
 #define DEFAULT_REDUCTION_FIFO      "/dev/xillybus_read_array2arm_32"
 #define DEFAULT_IO_WRITE_FIFO       "/dev/xillybus_write_mem2array_32"
 #define DEFAULT_IO_READ_FIFO        "/dev/xillybus_read_array2mem_32"
+#define DEFAULT_REGISTER_FILE       "/dev/uio0"
 
 /*
  * This descriptor is written to the IO_WRITE_FIFO in
@@ -39,6 +42,11 @@ map<string, Kernel*> ConnexMachine::kernels;
 mutex ConnexMachine::mapMutex;
 
 /*
+ * The name of the architecture for which OPINCAA was compiled
+ */
+string ConnexMachine::targetArchitecture = TARGET_ARCH;
+
+/*
  * Adds a kernel to the static kernel map.
  *
  * @param kernel the new kernel to add
@@ -49,7 +57,7 @@ void ConnexMachine::addKernel(Kernel *kernel)
 {
     string name = kernel->getName();
     const string allowOverwrite = "allowOverwrite";
-	mapMutex.lock();
+    mapMutex.lock();
     if(kernels.count(name) > 0)
     {
         if (name.find(allowOverwrite) == std::string::npos) //no explicit request for overwrite
@@ -64,7 +72,7 @@ void ConnexMachine::addKernel(Kernel *kernel)
     }
 
     kernels.insert(map<string, Kernel*>::value_type(name, kernel));
-	mapMutex.unlock();
+    mapMutex.unlock();
 }
 
 /*
@@ -123,17 +131,29 @@ unsigned ConnexMachine::readFromPipe(int descriptor, void* destination, unsigned
  * @param  reductionDescriptorPath the file descriptor of the reduction FIFO (read only)
  * @param  writeDescriptorPath the file descriptor of the IO write FIFO (write only)
  * @param  readDescriptorPath the file descriptor of the IO read FIFO (read only)
+ * @param  registerInterfacePath the file descriptor of the FPGA register interface (read only)
  *
  */
 ConnexMachine::ConnexMachine(string distributionDescriptorPath = DEFAULT_DISTRIBUTION_FIFO,
                                 string reductionDescriptorPath = DEFAULT_REDUCTION_FIFO,
                                 string writeDescriptorPath = DEFAULT_IO_WRITE_FIFO,
-                                string readDescriptorPath = DEFAULT_IO_READ_FIFO)
+                                string readDescriptorPath = DEFAULT_IO_READ_FIFO,
+                                string registerInterfacePath = DEFAULT_REGISTER_FILE)
 {
     const char* distpath = distributionDescriptorPath.c_str();
     const char* redpath = reductionDescriptorPath.c_str();
     const char* wiopath = writeDescriptorPath.c_str();
     const char* riopath = readDescriptorPath.c_str();
+    const char* regpath = registerInterfacePath.c_str();
+    
+    registerFile = open(regpath, O_RDONLY);
+
+    if(registerFile < 0)
+    {
+        throw string("Unable to access accelerator registers");
+    }
+
+    printf("Accelerator revision is %s\n",checkAcceleratorArchitecture().c_str());
 
     distributionFifo = open(distpath, O_WRONLY);
     reductionFifo = open(redpath, O_RDONLY);
@@ -146,28 +166,11 @@ ConnexMachine::ConnexMachine(string distributionDescriptorPath = DEFAULT_DISTRIB
         ioReadFifo < 0
         )
     {
-        throw string("Unable to open file descriptor");
+        throw string("Unable to open one or more accelerator FIFOs");
     }
 
     printf("ConnexMachine created !\n");
     fflush(stdout);
-}
-
-/*
- * Constructor for creating a new ConnexMachine
- *
- * @param  distributionFifo the file descriptor of the distribution FIFO (write only)
- * @param  reductionFifo the file descriptor of the reduction FIFO (read only)
- * @param  ioWriteFifo the file descriptor of the IO write FIFO (write only)
- * @param  ioReadFifo the file descriptor of the IO read FIFO (read only)
- *
- */
-ConnexMachine::ConnexMachine(int distributionFifo, int reductionFifo, int ioWriteFifo, int ioReadFifo)
-{
-    this->distributionFifo = distributionFifo;
-    this->reductionFifo = reductionFifo;
-    this->ioWriteFifo = ioWriteFifo;
-    this->ioReadFifo = ioReadFifo;
 }
 
 /*
@@ -302,7 +305,7 @@ int ConnexMachine::readReduction()
  * Reads multiple values from the reduction FIFO
  *
  * @param count the number of int to be read
- * @buffer the memory area where the results will be put
+ * @param buffer the memory area where the results will be put
  */
 void ConnexMachine::readMultiReduction(int count, void* buffer)
 {
@@ -318,3 +321,37 @@ void ConnexMachine::readMultiReduction(int count, void* buffer)
     threadMutexIR.unlock();
 }
 
+/*
+ * Checks the FPGA accelerator architecture against the OPINCAA target architecture
+ *
+ * @return accelerator revision string
+ */
+string ConnexMachine::checkAcceleratorArchitecture()
+{
+    void *map_addr = mmap(NULL, 64, PROT_READ, MAP_SHARED, registerFile, 0);
+    
+    if(map_addr == MAP_FAILED)
+    {
+        throw string("Failed to mmap accelerator register interface");
+    }
+    
+    volatile unsigned int *regs = (volatile unsigned int *)map_addr;
+
+    std::string archName = std::string((char*)regs);
+    archName = string(archName.rbegin(), archName.rend());
+    
+    if(archName.compare(targetArchitecture) != 0)
+    {
+        throw string("Accelerator architecture ("+archName+") does not match OPINCAA target architecture ("+targetArchitecture+")");
+    }
+    
+    std::string accRevision = std::to_string(regs[11])+
+                              std::to_string(regs[10])+
+                              std::to_string(regs[9])+
+                              std::to_string(regs[8])+
+                              std::to_string(regs[7])+
+                              std::to_string(regs[6]);
+
+    return accRevision;
+                           
+}

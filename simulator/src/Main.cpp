@@ -12,7 +12,7 @@ int main()
 
 	try
 	{
-        ConnexSimulator simulator("distributionFIFO", "reductionFIFO", "writeFIFO", "readFIFO");
+        ConnexSimulator simulator("distributionFIFO", "reductionFIFO", "writeFIFO", "readFIFO", "regFile");
         simulator.waitFinish();
 	}
 	catch(string ex)

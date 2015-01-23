@@ -39,7 +39,8 @@ class ConnexSimulator
 		ConnexSimulator(string distributionDescriptorPath,
 						string reductionDescriptorPath,
 						string writeDescriptorPath,
-						string readDescriptorPath);
+						string readDescriptorPath,
+                        string accInfoPath);
 
 		/*
 		 * Destructor for class ConnexSimulator
@@ -99,7 +100,7 @@ class ConnexSimulator
 		 * The write FIFO descriptor
 		 */
 		int writeDescriptor;
-
+        
         thread ioThread;
         thread coreThread;
 
@@ -112,6 +113,13 @@ class ConnexSimulator
 		 */
 		int openPipe(string path, int mode);
 
+        /*
+         * Creates a file with the identification of the simulated accelerator
+         *
+         * @param path the path to the FIFO
+         */
+        void setupAccInfo(string infoPath);
+        
 		/*
 		 * Starts the threads for program and data transfer.
 		 * NB: They don't stop unless killed.

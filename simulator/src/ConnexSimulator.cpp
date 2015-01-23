@@ -1,5 +1,6 @@
 
 #include <iostream>
+#include <fstream>
 #include <thread>
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -23,11 +24,13 @@ struct ConnexIoDescriptor
  * @param reductionDescriptorPath the path to the reduction FIFO on the file system
  * @param writeDescriptorPath the path to the write FIFO (ARM -> ARRAY) on the file system
  * @param readDescriptorPath the path to the read FIFO (ARRAY -> ARM) on the file system
+ * @param accInfoPath the path to the accelerator identification file on the file system
  */
 ConnexSimulator::ConnexSimulator(string distributionDescriptorPath,
 						string reductionDescriptorPath,
 						string writeDescriptorPath,
-						string readDescriptorPath)
+						string readDescriptorPath,
+                        string accInfoPath)
 {
     //cout<<"Opening simu:"<<distributionDescriptorPath<<endl;
     distributionDescriptor = openPipe(distributionDescriptorPath, O_RDWR);
@@ -41,6 +44,8 @@ ConnexSimulator::ConnexSimulator(string distributionDescriptorPath,
 	//cout<<"Opening simu:"<<readDescriptorPath<<endl;
 	readDescriptor = openPipe(readDescriptorPath, O_RDWR);
 
+    setupAccInfo(accInfoPath);
+    
 	instructionQueue = new InstructionQueue(INSTRUCTION_QUEUE_LENGTH);
 
 	codeInLoop = false;
@@ -81,6 +86,24 @@ int ConnexSimulator::openPipe(string pipePath, int mode)
 
 	cout << "FIFO " << pipePath << " succesfully opened!" << endl<<flush;
 	return fifoDescriptor;
+}
+
+/****************************************************************************
+ * Creates a file with the identification of the simulated accelerator
+ *
+ * @param path the path to the FIFO
+ */
+void ConnexSimulator::setupAccInfo(string infoPath)
+{
+    ofstream infoFile;
+  
+    infoFile.open(infoPath);
+    string archName("connex16-hm-generic");
+    archName = string(archName.rbegin(), archName.rend());
+    
+    infoFile << archName << '\0';
+    for(int i=infoFile.tellp(); i<48; i++) infoFile << " ";
+    infoFile.close();
 }
 
 /****************************************************************************
@@ -223,6 +246,9 @@ void ConnexSimulator::executeInstruction(Instruction instruction)
         case _SUBC:
 			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] - registerFile[instruction.getRight()] - ConnexVector::carryFlag;
 			return;
+        case _POPCNT:
+            registerFile[instruction.getDest()] = registerFile[instruction.getLeft()].popcount();
+            return;
         case _NOT:
 			registerFile[instruction.getDest()] = ~registerFile[instruction.getLeft()];
 			return;
