@@ -12,10 +12,10 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 
-#define DEFAULT_DISTRIBUTION_FIFO   "/dev/xillybus_write_arm2array_32"
-#define DEFAULT_REDUCTION_FIFO      "/dev/xillybus_read_array2arm_32"
-#define DEFAULT_IO_WRITE_FIFO       "/dev/xillybus_write_mem2array_32"
-#define DEFAULT_IO_READ_FIFO        "/dev/xillybus_read_array2mem_32"
+#define DEFAULT_DISTRIBUTION_FIFO   "/dev/xillybus_connex_instruction_32"
+#define DEFAULT_REDUCTION_FIFO      "/dev/xillybus_connex_reduction_32"
+#define DEFAULT_IO_WRITE_FIFO       "/dev/xillybus_connex_iowrite_32"
+#define DEFAULT_IO_READ_FIFO        "/dev/xillybus_connex_ioread_32"
 #define DEFAULT_REGISTER_FILE       "/dev/uio0"
 
 /*
