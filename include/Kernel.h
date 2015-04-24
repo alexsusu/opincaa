@@ -79,13 +79,11 @@ using namespace std;
 
 #define NOP                         __kernel->append(Instruction(_NOP, 0, 0, 0));
 
-#define REDUCE(x)                   Operand::reduce(x);
-#define POPCNT(x)                   Operand::popcnt(x);
+#define REDUCE(x)                   Operand::red(x);
 #define ADDC(x,y)                   Operand::addc(x,y);
 #define SUBC(x,y)                   Operand::subc(x,y);
 #define ULT(x,y)                    Operand::ult(x,y);
 #define SHRA(x,y)                   Operand::shra(x,y);
-#define ISHRA(x,y)                  Operand::ishra(x,y);
 #define CELL_SHL(x,y)               Operand::cellshl(x,y);
 #define CELL_SHR(x,y)               Operand::cellshr(x,y);
 
@@ -97,9 +95,9 @@ using namespace std;
 							__kernel->append(Instruction(_SETLC, x-1, 0, 0)); \
 							__kernel->resetLoopDestination();
 
-#define REPEAT_X_TIMES(x)   REPEAT(x)
+#define REPEAT_X_TIMES(x)               REPEAT(x)
 #define END_REPEAT			__kernel->appendLoopInstruction(); \
-							__kernel->append(Instruction(_NOP, 0, 0, 0));
+					__kernel->append(Instruction(_NOP, 0, 0, 0));
 
 #define END_KERNEL(x)               ConnexMachine::addKernel(__kernel);}
 

@@ -60,18 +60,20 @@ class Operand
          ***********************************************************/
 
         /* Addition */
-        Instruction operator+(Operand op);
-        Instruction operator+(unsigned short value);
-        void operator+=(Operand op);
-
+        Instruction operator+(Operand op);//ok
+        Instruction operator+(unsigned short value);//ok
+        void operator+=(Operand op);//ok
+	void operator+=(unsigned short value);//ok
+ 
         /* Subtraction */
-        Instruction operator-(Operand op);
-        Instruction operator-(unsigned short value);
-        void operator-=(Operand op);
+        Instruction operator-(Operand op);//ok
+        Instruction operator-(unsigned short value);//ok
+        void operator-=(Operand op);//ok
+	void operator-=(unsigned short value);//ok
 
         /* Multiplication */
-        Instruction operator*(Operand op);
-        Instruction operator*(unsigned short value);
+        Instruction operator*(Operand op);//ok
+        Instruction operator*(unsigned short value);//ok
 
         /* Assignment */
         void operator=(Operand op);
@@ -79,55 +81,59 @@ class Operand
         void operator=(Instruction insn);
 
         /* Logical */
-        Instruction operator~();
+        Instruction operator~();//ok
 
-        Instruction operator|(Operand op);
-        Instruction operator|(unsigned short value);
-        void operator|=(Operand op);
+        Instruction operator|(Operand op);//ok
+        Instruction operator|(unsigned short value);//ok
+        void operator|=(Operand op);//ok
+	void operator|=(unsigned short value);//ok
 
-        Instruction operator&(Operand op);
-        Instruction operator&(unsigned short value);
-        void operator&=(Operand op);
+        Instruction operator&(Operand op);//ok
+        Instruction operator&(unsigned short value);//ok
+        void operator&=(Operand op);//ok
+	void operator&=(unsigned short value);//ok
 
-        Instruction operator==(Operand op);
-        Instruction operator==(unsigned short value);
+        Instruction operator==(Operand op);//ok
+        Instruction operator==(unsigned short value);//ok
 
-        Instruction operator<(Operand op);
-        Instruction operator<(unsigned short value);
+        Instruction operator<(Operand op);//ok
+        Instruction operator<(unsigned short value);//ok
 
-        Instruction operator^(Operand op);
-        Instruction operator^(unsigned short value);
-        void operator^=(Operand op);
+        Instruction operator^(Operand op);//ok
+        Instruction operator^(unsigned short value);//ok
+        void operator^=(Operand op);//ok
+	void operator^=(unsigned short value);//ok
 
-        Operand operator[](Operand op);
-        Operand operator[](unsigned short value);
+        Operand operator[](Operand op);//ok
+        Operand operator[](unsigned short value);//ok
 
-        Instruction operator<<(Operand op);
-        Instruction operator<<(unsigned short value);
+        Instruction operator<<(Operand op);//ok
+        Instruction operator<<(unsigned short value);//ok
 
-        Instruction operator>>(Operand op);
-        Instruction operator>>(unsigned short value);
+        Instruction operator>>(Operand op);//ok
+        Instruction operator>>(unsigned short value);//ok
 
-        static Instruction addc(Operand op1, Operand op2);
-        static Instruction addc(Operand op1, unsigned short value);
+        static Instruction addc(Operand op1, Operand op2);//ok
+        static Instruction addc(Operand op1, unsigned short value);//ok
 
-        static Instruction subc(Operand op1, Operand op2);
-        static Instruction subc(Operand op1, unsigned short value);
+        static Instruction subc(Operand op1, Operand op2);//ok
+        static Instruction subc(Operand op1, unsigned short value);//ok
 
-        static Instruction shra(Operand op1, Operand op2);
-        static Instruction ishra(Operand op1, unsigned short value);
+        static Instruction shra(Operand op1, Operand op2);//ok
+        static Instruction shra(Operand op1, unsigned short value);//ok
 
-        static Instruction multhi();
-        static Instruction multlo();
+        static Instruction multhi();//ok
+        static Instruction multlo();//ok
 
-        static void cellshl(Operand op1, Operand op2);
-        static void cellshr(Operand op1, Operand op2);
+        static void cellshl(Operand op1, Operand op2);//ok
+	static void cellshl(Operand op1, unsigned short value);//ok
+        static void cellshr(Operand op1, Operand op2);//ok
+	static void cellshr(Operand op1, unsigned short valu);//ok
 
-        static Instruction ult(Operand op1, Operand op2);
-        static Instruction ult(Operand op1, unsigned short value);
+        static Instruction ult(Operand op1, Operand op2);//ok
+        static Instruction ult(Operand op1, unsigned short value);//ok
 
-        static Instruction popcnt(Operand op);
-        static void reduce(Operand op);
+        static void red(Operand op);//ok
     private:
 
         /*

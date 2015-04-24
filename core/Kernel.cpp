@@ -140,5 +140,5 @@ void Kernel::resetLoopDestination()
  */
 void Kernel::appendLoopInstruction()
 {
-	append(Instruction(_IJMPNZ, loopDestination, 0, 0));
+	append(Instruction(_IJMPNZDEC, loopDestination, 0, 0));
 }

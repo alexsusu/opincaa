@@ -94,11 +94,11 @@ Operand::Operand(int type, unsigned short index, Kernel *kernel)
     this->localStoreIndexImmediate = false;
 }
 
-/***********************************************************
+/********************************************************************************
 * Start of overloaded operators
-***********************************************************/
+********************************************************************************/
 
-/* Addition */
+/************************************ Addition *****************************/
 //-----------------------------------------------------------
 Instruction Operand::operator+(Operand op)
 {
@@ -111,7 +111,11 @@ Instruction Operand::operator+(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator+(unsigned short value)
 {
-    throw string("Unsuported operation +value ");
+    if(type != TYPE_REGISTER)
+    {
+        throw string("Invalid operand type for + value operator");
+    }
+    return Instruction(_IADD, value, index, 0);
 }
 //-----------------------------------------------------------
 void Operand::operator+=(Operand op)
@@ -122,8 +126,18 @@ void Operand::operator+=(Operand op)
     }
     kernel->append(Instruction(_ADD, index, op.index, index));
 }
+//-----------------------------------------------------------
+void Operand::operator+=(unsigned short value)
+{
+    if(type != TYPE_REGISTER)
+    {
+        throw string("Invalid operand type for + value operator");
+    }
+    kernel->append(Instruction(_IADD, value, op.index, index));
+}
 
-/* Subtraction */
+
+/*********************************** Subtraction ***************************/
 //-----------------------------------------------------------
 Instruction Operand::operator-(Operand op)
 {
@@ -136,7 +150,11 @@ Instruction Operand::operator-(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator-(unsigned short value)
 {
-    throw string("Unsuported operation -value ");
+    if(type != TYPE_REGISTER)
+    {
+        throw string("Invalid operand type for - value operator");
+    }
+    return Instruction(_ISUB, value, index, 0);
 }
 //-----------------------------------------------------------
 void Operand::operator-=(Operand op)
@@ -147,8 +165,17 @@ void Operand::operator-=(Operand op)
     }
     kernel->append(Instruction(_SUB, op.index, index, index));
 }
+//----------------------------------------------------------
+void Operand::operator-=(unsigned short value)
+{
+    if(type != TYPE_REGISTER)
+    {
+        throw string("Invalid operand type for - value operator");
+    }
+    kernel->append(Instruction(_ISUB, value, op.index, index));
+}
 
-/* Multiplication */
+/*********************************** Multiplication ***************************/
 //-----------------------------------------------------------
 Instruction Operand::operator*(Operand op)
 {
@@ -163,10 +190,15 @@ Instruction Operand::operator*(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator*(unsigned short value)
 {
-    throw string("Unsuported operation *value ");
+    if(type != TYPE_REGISTER)
+    {
+        throw string("Invalid operand type for * value operator");
+    }
+    Instruction instruction = Instruction(_IMULT, value, index, 0);
+    kernel->append(instruction);
+    return instruction;
 }
-
-/* Assignment */
+/*********************************** Assignment ********************************/
 //-----------------------------------------------------------
 void Operand::operator=(Operand op)
 {
@@ -223,7 +255,12 @@ void Operand::operator=(Operand op)
 //-----------------------------------------------------------
 void Operand::operator=(unsigned short value)
 {
-    kernel->append(Instruction(_VLOAD, value, 0, index));
+    if (type == TYPE_REGISTER)
+    {
+	kernel->append(Instruction(_VLOAD, value, 0, index));
+    } else {
+    	throw string("Unknown destination type for operand=");
+    }
 }
 //-----------------------------------------------------------
 void Operand::operator=(Instruction insn)
@@ -239,9 +276,8 @@ void Operand::operator=(Instruction insn)
     }
 
 }
-
-/* Logical */
-//-----------------------------------------------------------
+/*********************************** Logical ***************************/
+//NOT--------------------------------------------------------
 Instruction Operand::operator~()
 {
     if(type != TYPE_REGISTER)
@@ -250,7 +286,9 @@ Instruction Operand::operator~()
     }
     return Instruction(_NOT, 0, index, 0);
 }
-//-----------------------------------------------------------
+
+
+//OR-----------------------------------------------------------------------
 Instruction Operand::operator|(Operand op)
 {
     if(op.type != TYPE_REGISTER || type != TYPE_REGISTER)
@@ -262,7 +300,11 @@ Instruction Operand::operator|(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator|(unsigned short value)
 {
-    throw string("Unsuported operation |value ");
+    if(type != TYPE_REGISTER)
+    {
+        throw string("Invalid operand type for | value operator");
+    }
+    return Instruction(_IOR, value, index, 0);
 }
 //-----------------------------------------------------------
 void Operand::operator|=(Operand op)
@@ -274,6 +316,17 @@ void Operand::operator|=(Operand op)
     kernel->append(Instruction(_OR, op.index, index, index));
 }
 //-----------------------------------------------------------
+void Operand::operator|=(unsigned short value)
+{
+    if(type != TYPE_REGISTER)
+    {
+        throw string("Invalid operand type for |= operator");
+    }
+    kernel->append(Instruction(_IOR, value, index, index));
+}
+
+
+//AND-----------------------------------------------------------------------
 Instruction Operand::operator&(Operand op)
 {
     if(op.type != TYPE_REGISTER || type != TYPE_REGISTER)
@@ -285,7 +338,11 @@ Instruction Operand::operator&(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator&(unsigned short value)
 {
-    throw string("Unsuported operation &value ");
+    if(type != TYPE_REGISTER)
+    {
+        throw string("Invalid operand type for & value operator");
+    }
+    return Instruction(_IAND, value, index, 0);
 }
 //-----------------------------------------------------------
 void Operand::operator&=(Operand op)
@@ -297,6 +354,17 @@ void Operand::operator&=(Operand op)
     kernel->append(Instruction(_AND, op.index, index, index));
 }
 //-----------------------------------------------------------
+void Operand::operator&=(unsigned short value)
+{
+    if(type != TYPE_REGISTER)
+    {
+        throw string("Invalid operand type for &= value operator");
+    }
+    kernel->append(Instruction(_IAND, value, index, index));
+}
+
+
+//EQ------------------------------------------------------------------------
 Instruction Operand::operator==(Operand op)
 {
     if(op.type != TYPE_REGISTER || type != TYPE_REGISTER)
@@ -308,9 +376,14 @@ Instruction Operand::operator==(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator==(unsigned short value)
 {
-    throw string("Unsuported operation ==value ");
+    if(type != TYPE_REGISTER)
+    {
+        throw string("Invalid operand type for == operator");
+    }
+    return Instruction(_IEQ, value, index, 0);
 }
-//-----------------------------------------------------------
+
+//LT-------------------------------------------------------------------------
 Instruction Operand::operator<(Operand op)
 {
     if(op.type != TYPE_REGISTER || type != TYPE_REGISTER)
@@ -322,9 +395,15 @@ Instruction Operand::operator<(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator<(unsigned short value)
 {
-    throw string("Unsuported operation <value ");
+    if(type != TYPE_REGISTER)
+    {
+        throw string("Invalid operand type for < value operator");
+    }
+    return Instruction(_ILT, value, index, 0);
 }
-//-----------------------------------------------------------
+
+
+//XOR------------------------------------------------------------------------
 Instruction Operand::operator^(Operand op)
 {
     if(op.type != TYPE_REGISTER || type != TYPE_REGISTER)
@@ -336,7 +415,11 @@ Instruction Operand::operator^(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator^(unsigned short value)
 {
-    throw string("Unsuported operation ^value ");
+    if(type != TYPE_REGISTER)
+    {
+        throw string("Invalid operand type for ^ value operator");
+    }
+    return Instruction(_XOR, value, index, 0);
 }
 //-----------------------------------------------------------
 void Operand::operator^=(Operand op)
@@ -348,6 +431,17 @@ void Operand::operator^=(Operand op)
     kernel->append(Instruction(_XOR, op.index, index, index));
 }
 //-----------------------------------------------------------
+void Operand::operator^=(unsigned short value)
+{
+    if(type != TYPE_REGISTER)
+    {
+        throw string("Invalid operand type for ^= value operator");
+    }
+    kernel->append(Instruction(_XOR, value, index, index));
+}
+
+
+//LS--------------------------------------------------------------------------
 Operand Operand::operator[](Operand op)
 {
     if(type != TYPE_LS_DESCRIPTOR)
@@ -369,7 +463,9 @@ Operand Operand::operator[](unsigned short value)
     }
     return Operand(TYPE_LOCAL_STORE, value, true /*immediate*/, kernel);
 }
-//-----------------------------------------------------------
+
+
+//SHL----------------------------------------------------------------------
 Instruction Operand::operator<<(Operand op)
 {
     if(op.type != TYPE_REGISTER || type != TYPE_REGISTER)
@@ -387,7 +483,9 @@ Instruction Operand::operator<<(unsigned short value)
     }
     return Instruction(_ISHL, value, index, 0);
 }
-//-----------------------------------------------------------
+
+
+//SHR--------------------------------------------------------------------------
 Instruction Operand::operator>>(Operand op)
 {
     if(op.type != TYPE_REGISTER || type != TYPE_REGISTER)
@@ -405,21 +503,29 @@ Instruction Operand::operator>>(unsigned short value)
     }
     return Instruction(_ISHR, value, index, 0);
 }
-//-----------------------------------------------------------
+
+
+//ADDC-------------------------------------------------------------------------
 Instruction Operand::addc(Operand op1, Operand op2)
 {
     if(op1.type != TYPE_REGISTER || op2.type != TYPE_REGISTER)
     {
         throw string("Invalid operand type for addc operation");
     }
-    return Instruction(_ADDC, op1.index, op2.index, 0);
+    return Instruction(_ADDC, op2.index, op1.index, 0);
 }
 //-----------------------------------------------------------
 Instruction Operand::addc(Operand op1, unsigned short value)
 {
-    throw string("Unsuported operation addc(operand, value) ");
+    if(op1.type != TYPE_REGISTER)
+    {
+        throw string("Invalid operand type for addc value operation");
+    }
+    return Instruction(_IADDC, value, op1.index, 0);
 }
-//-----------------------------------------------------------
+
+
+//SUBBC-----------------------------------------------------------------------
 Instruction Operand::subc(Operand op1, Operand op2)
 {
     if(op1.type != TYPE_REGISTER || op2.type != TYPE_REGISTER)
@@ -431,9 +537,15 @@ Instruction Operand::subc(Operand op1, Operand op2)
 //-----------------------------------------------------------
 Instruction Operand::subc(Operand op1, unsigned short value)
 {
-    throw string("Unsuported operation subc(operand, value) ");
+    if(op1.type != TYPE_REGISTER)
+    {
+        throw string("Invalid operand type for subc value operator");
+    }
+    return Instruction(_ISUBC, value, op1.index, 0);
 }
-//-----------------------------------------------------------
+
+
+//SHRA-----------------------------------------------------------
 Instruction Operand::shra(Operand op1, Operand op2)
 {
     if(op1.type != TYPE_REGISTER || op2.type != TYPE_REGISTER)
@@ -443,7 +555,7 @@ Instruction Operand::shra(Operand op1, Operand op2)
     return Instruction(_SHRA, op2.index, op1.index, 0);
 }
 //-----------------------------------------------------------
-Instruction Operand::ishra(Operand op1, unsigned short value)
+Instruction Operand::shra(Operand op1, unsigned short value)
 {
     if(op1.type != TYPE_REGISTER)
     {
@@ -451,17 +563,23 @@ Instruction Operand::ishra(Operand op1, unsigned short value)
     }
     return Instruction(_ISHRA, value, op1.index, 0);
 }
-//-----------------------------------------------------------
+
+
+//MULT_HI-----------------------------------------------------------
 Instruction Operand::multhi()
 {
     return Instruction(_MULT_HI, 0, 0, 0);
 }
-//-----------------------------------------------------------
+
+
+//MULT_LO-----------------------------------------------------------
 Instruction Operand::multlo()
 {
     return Instruction(_MULT_LO, 0, 0, 0);
 }
-//-----------------------------------------------------------
+
+
+//CELLSHL---------------------------------------------------------------------
 void Operand::cellshl(Operand op1, Operand op2)
 {
     if(op1.type != TYPE_REGISTER || op2.type != TYPE_REGISTER)
@@ -471,6 +589,16 @@ void Operand::cellshl(Operand op1, Operand op2)
     op1.kernel->append(Instruction(_CELL_SHL, op2.index, op1.index, 0));
 }
 //-----------------------------------------------------------
+void Operand::cellshl(Operand op1, unsigned short value)
+{
+    if(op1.type != TYPE_REGISTER)
+    {
+        throw string("Invalid operand type for cellshl value operator");
+    }
+    op1.kernel->append(Instruction(_ICELL_SHL, value, op1.index, 0));
+}
+
+//CELLSHR-----------------------------------------------------------------------
 void Operand::cellshr(Operand op1, Operand op2)
 {
     if(op1.type != TYPE_REGISTER || op2.type != TYPE_REGISTER)
@@ -480,6 +608,16 @@ void Operand::cellshr(Operand op1, Operand op2)
     op1.kernel->append(Instruction(_CELL_SHR, op2.index, op1.index, 0));
 }
 //-----------------------------------------------------------
+void Operand::cellshr(Operand op1, unsigned short value)
+{
+    if(op1.type != TYPE_REGISTER)
+    {
+        throw string("Invalid operand type for cellshr value operator");
+    }
+    op1.kernel->append(Instruction(_ICELL_SHR, value, op1.index, 0));
+}
+
+//ULT----------------------------------------------------------------------------
 Instruction Operand::ult(Operand op1, Operand op2)
 {
     if(op1.type != TYPE_REGISTER || op2.type != TYPE_REGISTER)
@@ -491,23 +629,20 @@ Instruction Operand::ult(Operand op1, Operand op2)
 //-----------------------------------------------------------
 Instruction Operand::ult(Operand op1, unsigned short value)
 {
-    throw string("Unsuported operation ult (operand, value)");
-}
-//-----------------------------------------------------------
-Instruction Operand::popcnt(Operand op)
-{
-    if(op.type != TYPE_REGISTER)
+    if(op1.type != TYPE_REGISTER)
     {
-        throw string("Invalid operand type for popcnt operator");
+        throw string("Invalid operand type for ult value operator");
     }
-    return Instruction(_POPCNT, 0, op.index, 0);
+    op1.kernel->append(Instruction(_IULT, value, op1.index, 0));
 }
-//-----------------------------------------------------------
-void Operand::reduce(Operand op)
+
+
+//RED---------------------------------------------------------------------------
+void Operand::red(Operand op)
 {
     if(op.type != TYPE_REGISTER)
     {
         throw string("Invalid operand type for reduce operator");
     }
-    op.kernel->append(Instruction(_REDUCE, 0, op.index, 0));
+    op.kernel->append(Instruction(_RED, 0, op.index, 0));
 }
