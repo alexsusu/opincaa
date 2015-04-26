@@ -49,7 +49,7 @@ using namespace std;
 #define     R27         (Operand(TYPE_REGISTER, 27, __kernel))
 #define     R28         (Operand(TYPE_REGISTER, 28, __kernel))
 #define     R29         (Operand(TYPE_REGISTER, 29, __kernel))
-#define     R30         (Operand(TYPE_REGISTER, 20, __kernel))
+#define     R30         (Operand(TYPE_REGISTER, 30, __kernel))
 #define     R31         (Operand(TYPE_REGISTER, 31, __kernel))
 
 #define     R(x)        (Operand(TYPE_REGISTER, x, __kernel))
