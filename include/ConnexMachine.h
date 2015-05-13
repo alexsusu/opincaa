@@ -24,12 +24,12 @@ class Kernel;
 class ConnexMachine
 {
     public:
-        /*
+        /**
          * Adds a kernel to the static kernel map.
          */
         static void addKernel(Kernel *kernel);
 
-        /*
+        /**
          * Disassembles the specified kernel
          *
          * @param kernelName the kernel to disassemble
@@ -39,19 +39,19 @@ class ConnexMachine
          */
         static string disassembleKernel(string kernelName);
 
-        /*
+        /**
          * Dump the specified kernel.
          */
         static string dumpKernel(string kernelName);
 
-        /*
-         * Reads byteCount bytes from descriptor and places the 
+        /**
+         * Reads byteCount bytes from descriptor and places the
          * result in destination. It blocks until all byteCount bytes
          * have been read.
          */
         unsigned readFromPipe(int descriptor, void* destination, unsigned byteCount);
 
-        /*
+        /**
         * Constructor for creating a new ConnexMachine
         *
         * @param  distributionDescriptorPath the file descriptor of the distribution FIFO (write only)
@@ -66,8 +66,8 @@ class ConnexMachine
                                 string writeDescriptorPath,
                                 string readDescriptorPath,
                                 string registerInterfacePath);
-        
-        /*
+
+        /**
          * Constructor for creating a new ConnexMachine
          *
          * @param  distributionDescriptorPath the file of the distribution FIFO (write only)
@@ -81,7 +81,7 @@ class ConnexMachine
                                 string writeDescriptorPath,
                                 string readDescriptorPath);
 
-        /*
+        /**
          * Destructor for the ConnexMachine class
          *
          * Disposes of the batch map and closes the associated file
@@ -89,7 +89,7 @@ class ConnexMachine
          */
         ~ConnexMachine();
 
-        /*
+        /**
          * Executes the kernel on the current ConnexMachine
          *
          * @param kernelName the name of the kernel to execute
@@ -98,7 +98,7 @@ class ConnexMachine
          */
         void executeKernel(string kernelName);
 
-        /*
+        /**
          * Writes the specified buffer to the array IO write FIFO
          *
          * @param buffer the buffer to be written to the FIFO, it should
@@ -110,7 +110,7 @@ class ConnexMachine
          */
         int writeDataToArray(const void *buffer, unsigned vectorCount, unsigned vectorIndex);
 
-        /*
+        /**
          * Reads the specified amounf of bytes to the specified buffer
          * from the array IO read FIFO
          *
@@ -121,72 +121,79 @@ class ConnexMachine
          */
         void* readDataFromArray(void *buffer, unsigned vectorCount, unsigned vectorIndex);
 
-        /*
+        /**
          * Reads one int from the reduction FIFO
          *
          * @return the value read from the reduction FIFO
          */
         int readReduction();
-        
-        /*
+
+        /**
         * Reads multiple values from the reduction FIFO
         *
         * @param count the number of int to be read
         * @param buffer the memory area where the results will be put
         */
         void readMultiReduction(int count, void* buffer);
-        
+
+        /**
+         * Writes the specified command to the instruction FIFO (use with caution).
+         *
+         * @param command the command to write.
+         */
+        void writeCommand(unsigned command);
+
     private:
 
-        /*
+        /**
         * Checks the FPGA accelerator architecture against the OPINCAA target architecture
         *
         * @return accelerator revision string
         */
         string checkAcceleratorArchitecture();
-        
-        /*
+
+        /**
          * The file descriptor of the distribution FIFO (write only)
          */
         int distributionFifo;
 
-        /*
+        /**
          * The file descriptor of the reduction FIFO (read only)
          */
         int reductionFifo;
 
-        /*
+        /**
          * The file descriptor of the IO write FIFO (write only)
          */
         int ioWriteFifo;
 
-        /*
+        /**
          * The file descriptor of the IO read FIFO (read only)
          */
         int ioReadFifo;
 
-        /*
+        /**
          * The file descriptor of the FPGA register interface (read only)
          */
         int registerFile;
-        
-        /*
+
+        /**
          * The map of the kernels available in the system
          */
         static map<string, Kernel*> kernels;
 
-		/*
+		/**
          * The mutex used to sync the IO operations.
          */
 		mutex threadMutex;
 		mutex threadMutexIR;
 
-		/*
+		/**
          * The mutex used to sync the kernel map operations
          */
 		static mutex mapMutex;
-        
-        /*
+
+        /**
          * The name of the architecture for which OPINCAA was compiled
          */
         static string targetArchitecture;

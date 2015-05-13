@@ -109,7 +109,7 @@ string ConnexMachine::disassembleKernel(string kernelName)
 }
 
 /*
- * Reads byteCount bytes from descriptor and places the 
+ * Reads byteCount bytes from descriptor and places the
  * result in destination. It blocks until all byteCount bytes
  * have been read.
  */
@@ -120,7 +120,7 @@ unsigned ConnexMachine::readFromPipe(int descriptor, void* destination, unsigned
     do{
         totalBytesRead += read(descriptor, dest + totalBytesRead, byteCount - totalBytesRead);
     }while(byteCount != totalBytesRead);
-    
+
     return byteCount;
 }
 
@@ -145,7 +145,7 @@ ConnexMachine::ConnexMachine(string distributionDescriptorPath = DEFAULT_DISTRIB
     const char* wiopath = writeDescriptorPath.c_str();
     const char* riopath = readDescriptorPath.c_str();
     const char* regpath = registerInterfacePath.c_str();
-    
+
     registerFile = open(regpath, O_RDONLY);
 
     if(registerFile < 0)
@@ -329,22 +329,22 @@ void ConnexMachine::readMultiReduction(int count, void* buffer)
 string ConnexMachine::checkAcceleratorArchitecture()
 {
     void *map_addr = mmap(NULL, 64, PROT_READ, MAP_SHARED, registerFile, 0);
-    
+
     if(map_addr == MAP_FAILED)
     {
         throw string("Failed to mmap accelerator register interface");
     }
-    
+
     volatile unsigned int *regs = (volatile unsigned int *)map_addr;
 
     std::string archName = std::string((char*)regs);
     archName = string(archName.rbegin(), archName.rend());
-    
+
     if(archName.compare(targetArchitecture) != 0)
     {
         throw string("Accelerator architecture ("+archName+") does not match OPINCAA target architecture ("+targetArchitecture+")");
     }
-    
+
     std::string accRevision = std::to_string(regs[11])+
                               std::to_string(regs[10])+
                               std::to_string(regs[9])+
@@ -353,5 +353,16 @@ string ConnexMachine::checkAcceleratorArchitecture()
                               std::to_string(regs[6]);
 
     return accRevision;
-                           
+
+}
+
+/**
+ * Writes the specified command to the instruction FIFO (use with caution).
+ *
+ * @param command the command to write.
+ */
+void ConnexMachine::writeCommand(unsigned command){
+    if(write(distributionFifo, &command, sizeof command) != sizeof command){
+        throw string("Unable to write command to instruction FIFO.");
+    }
 }
