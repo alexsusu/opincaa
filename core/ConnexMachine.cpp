@@ -373,7 +373,11 @@ vector<int> ConnexMachine::getConnexInstructionsCounter(){
 	return connexInstructionsCounter;
 }
 
-
+/***************************************************************************************************/
+void ConnexMachine::getKernelHistogram(string kernelName){
+    Kernel *kernel = kernels.find(kernelName)->second;
+    kernel->kernelHistogram();
+}
 
 
 

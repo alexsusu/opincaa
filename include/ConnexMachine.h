@@ -138,7 +138,7 @@ class ConnexMachine
 
 	vector<int> getConnexInstructionsCounter();
       
-
+    static void getKernelHistogram(string kernelName);
         
     private:
 

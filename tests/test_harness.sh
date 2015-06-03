@@ -10,8 +10,7 @@ make
 
 #run the test
 sleep 3
-#LD_LIBRARY_PATH=../libs/$1
-LD_LIBRARY_PATH=/home/vpopescu/Documents/git/opincaa/libs/connex-rc
+LD_LIBRARY_PATH=../libs/$1
 export LD_LIBRARY_PATH
 
 #cd .. ; make && sudo make install ; cd -

@@ -86,6 +86,7 @@ void test_kernel(){
      cout<<ConnexMachine::dumpKernel("Test_kernel")<<endl;
      cout<<"Disassamble version"<<endl; 
      cout<<ConnexMachine::disassembleKernel("Test_kernel")<<endl;
+     ConnexMachine::getKernelHistogram("Test_kernel");
      //cout<<endl<<endl<<"Instructions counter"<<endl;
      //h = ConnexMachine::getConnexInstructionsCounter(); 
 }
