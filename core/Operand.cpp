@@ -7,6 +7,7 @@
 
 #include "Operand.h"
 #include "Architecture.h"
+#include <iostream>
 
 /*
  * Constructor for creating a new Operand
@@ -133,7 +134,7 @@ void Operand::operator+=(unsigned short value)
     {
         throw string("Invalid operand type for + value operator");
     }
-    kernel->append(Instruction(_IADD, value, op.index, index));
+    kernel->append(Instruction(_IADD, value, index, index));
 }
 
 
@@ -172,7 +173,7 @@ void Operand::operator-=(unsigned short value)
     {
         throw string("Invalid operand type for - value operator");
     }
-    kernel->append(Instruction(_ISUB, value, op.index, index));
+    kernel->append(Instruction(_ISUB, value, index, index));
 }
 
 /*********************************** Multiplication ***************************/
@@ -209,7 +210,7 @@ void Operand::operator=(Operand op)
         {
             case TYPE_REGISTER:
                 /* Use an ISHL operation with 0 shift to simulate move */
-                kernel->append(Instruction(_ISHL, 0, op.index, index));
+                kernel->append(Instruction(_VLOAD, op.index, 0, index));
                 break;
             case TYPE_LOCAL_STORE:
                 kernel->append(Instruction(op.localStoreIndexImmediate ? _IREAD : _READ,
@@ -257,7 +258,7 @@ void Operand::operator=(unsigned short value)
 {
     if (type == TYPE_REGISTER)
     {
-	kernel->append(Instruction(_VLOAD, value, 0, index));
+	kernel->append(Instruction(_IVLOAD, value, 0, index));
     } else {
     	throw string("Unknown destination type for operand=");
     }
@@ -265,6 +266,8 @@ void Operand::operator=(unsigned short value)
 //-----------------------------------------------------------
 void Operand::operator=(Instruction insn)
 {
+   // cout<<"Instruction is in op.cpp: "<<ins<<endl;
+
     if(insn.getOpcode() == _MULT)
     {
         kernel->append(Instruction(_MULT_LO, 0, 0, index));
@@ -411,6 +414,7 @@ Instruction Operand::operator^(Operand op)
         throw string("Invalid operand type for ^ operator");
     }
     return Instruction(_XOR, op.index, index, 0);
+
 }
 //-----------------------------------------------------------
 Instruction Operand::operator^(unsigned short value)
@@ -419,7 +423,7 @@ Instruction Operand::operator^(unsigned short value)
     {
         throw string("Invalid operand type for ^ value operator");
     }
-    return Instruction(_XOR, value, index, 0);
+    return Instruction(_IXOR, value, index, 0);
 }
 //-----------------------------------------------------------
 void Operand::operator^=(Operand op)
@@ -437,7 +441,7 @@ void Operand::operator^=(unsigned short value)
     {
         throw string("Invalid operand type for ^= value operator");
     }
-    kernel->append(Instruction(_XOR, value, index, index));
+    kernel->append(Instruction(_IXOR, value, index, index));
 }
 
 
@@ -448,7 +452,7 @@ Operand Operand::operator[](Operand op)
     {
         throw string("You can only apply the [] operator to the special LS descriptor");
     }
-    return Operand(TYPE_LOCAL_STORE, op.index, false /*immediate*/, kernel);
+    return Operand(TYPE_LOCAL_STORE, op.index, false , kernel);
 }
 //-----------------------------------------------------------
 Operand Operand::operator[](unsigned short value)
@@ -525,7 +529,7 @@ Instruction Operand::addc(Operand op1, unsigned short value)
 }
 
 
-//SUBBC-----------------------------------------------------------------------
+//SUBC-----------------------------------------------------------------------
 Instruction Operand::subc(Operand op1, Operand op2)
 {
     if(op1.type != TYPE_REGISTER || op2.type != TYPE_REGISTER)
@@ -622,7 +626,7 @@ Instruction Operand::ult(Operand op1, Operand op2)
 {
     if(op1.type != TYPE_REGISTER || op2.type != TYPE_REGISTER)
     {
-        throw string("Invalid operand type for cellshr operator");
+        throw string("Invalid operand type for ult operator");
     }
     return Instruction(_ULT, op2.index, op1.index, 0);
 }
@@ -633,7 +637,7 @@ Instruction Operand::ult(Operand op1, unsigned short value)
     {
         throw string("Invalid operand type for ult value operator");
     }
-    op1.kernel->append(Instruction(_IULT, value, op1.index, 0));
+    return Instruction(_IULT, value, op1.index, 0);
 }
 
 

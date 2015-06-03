@@ -2,7 +2,7 @@
 # Linux Makefile for OPINCAA API.                                              #
 #------------------------------------------------------------------------------#
 
-ARCH = connex16-hm-generic
+ARCH = connex-rc
 DEPTH = ../../
 # Don't forget about the last '/'
 

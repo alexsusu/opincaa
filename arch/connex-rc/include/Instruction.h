@@ -73,8 +73,6 @@ enum{
 /* 6-bit opcodes */
 
 #define _NOP          0x00       /* 0b000000 */
-#define _SETLC        0x01	 /* 0b000001 */
-#define _IJMPNZDEC    0x02	 /* 0b000010 */
 #define _RED          0x03       /* 0b000011 */
 #define _WHERE_LT     0x04       /* 0b000100 */
 #define _WHERE_EQ     0x05       /* 0b000101 */
@@ -144,6 +142,8 @@ enum{
 #define _XOR          0x1F       /* 0b011111 */
 #define _IXOR         0x3F       /* 0b111111 */
 
+#define _SETLC        0x21	 /* 0b100001 */
+#define _IJMPNZDEC    0x22	 /* 0b100010 */
 
 /* INSTRUCTION_TYPE_UNKNOWN if opcode is not valid,
  * INSTRUCTION_TYPE_NO_VALUE if it's type 1,
@@ -151,9 +151,9 @@ enum{
  */
 
 static const int type_for_opcode[1 << OPCODE_SIZE] = {
-    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  //   0 -  15
+    1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  //   0 -  15
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  //  16 -  31
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2,  //  32 -  47
+    0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2,  //  32 -  47
     2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2,  //  48 -  63
 };
 

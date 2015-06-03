@@ -1,5 +1,6 @@
 #include "controller_tests.h"
 #include "ConnexMachine.h"
+#include <iostream>
 
 void jump_kernel_init(int n){
     BEGIN_KERNEL("jump_test")
@@ -24,6 +25,9 @@ int jump_test(int n, ConnexMachine * connex){
 
     printf("Running jump kernel\n");
     connex->executeKernel("jump_test");
+/////////////////////////////////////////////////////////
+    cout<<connex->disassembleKernel("jump_test")<<endl;
+/////////////////////////////////////////////////////////    
 
     for(i=0;i<n;i++){
         printf("%x\n",connex->readReduction());

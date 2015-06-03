@@ -10,7 +10,7 @@ INC_DIR = $(DEPTH)include
 BUILD_DIR = $(DEPTH)build
 LIB_DIR = $(DEPTH)libs
 
-CFLAGS = -fPIC -std=c++0x
+CFLAGS = -fPIC -std=c++0x -g
 LDFLAGS_DEBUG =  $(LDFLAGS)
 
 SRC = $(wildcard $(DEPTH)core/*.cpp)

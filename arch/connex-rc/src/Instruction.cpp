@@ -10,7 +10,7 @@
 #include <string>
 #include <stdio.h>
 #include <sstream>
-
+#include <iostream>
 /************************************************************
 * Returns a string representation of specified opcode
 */
@@ -18,77 +18,77 @@ string Instruction::mnemonic(int opcode)
 {
     switch(opcode)
     {
-	case _NOP: 		return string("nop");
- 	case _SETLC:		return string("setlc");        
+	case _NOP: 		return string("nop      ");
+ 	case _SETLC:		return string("setlc    ");        
  	case _IJMPNZDEC:	return string("ijmpnzdec");    
- 	case _RED:   		return string("red");
- 	case _WHERE_LT: 	return string("wherelt");   
- 	case _WHERE_EQ: 	return string("whereeq"); 
- 	case _WHERE_CRY:	return string("wherecry");  
- 	case _END_WHERE:	return string("endwhere"); 
- 	case _LDSH:    		return string("ldsh"); 
- 	case _LDIX:    		return string("ldix");    
- 	case _MULT_LO:  	return string("multlo");  
- 	case _MULT_HI:  	return string("multhi");    
+ 	case _RED:   		return string("red      ");
+ 	case _WHERE_LT: 	return string("wherelt  ");   
+ 	case _WHERE_EQ: 	return string("whereeq  "); 
+ 	case _WHERE_CRY:	return string("wherecry ");  
+ 	case _END_WHERE:	return string("endwhere "); 
+ 	case _LDSH:    		return string("ldsh     "); 
+ 	case _LDIX:    		return string("ldix     ");    
+ 	case _MULT_LO:  	return string("multlo   ");  
+ 	case _MULT_HI:  	return string("multhi   ");    
 
- 	case _CELL_SHR: 	return string("cellshr");  
- 	case _ICELL_SHR: 	return string("icellshr"); 
+ 	case _CELL_SHR: 	return string("cellshr  ");  
+ 	case _ICELL_SHR: 	return string("icellshr "); 
 
- 	case _CELL_SHL:  	return string("cellshl");   	
- 	case _ICELL_SHL: 	return string("icellshl"); 
+ 	case _CELL_SHL:  	return string("cellshl  ");   	
+ 	case _ICELL_SHL: 	return string("icellshl "); 
 
- 	case _WRITE:  		return string("write");  
- 	case _IWRITE:		return string("iwrite");    
+ 	case _WRITE:  		return string("write    ");  
+ 	case _IWRITE:		return string("iwrite   ");    
 
- 	case _READ:  		return string("read");   
- 	case _IREAD: 		return string("iread");    
+ 	case _READ:  		return string("read     ");   
+ 	case _IREAD: 		return string("iread    ");    
 
- 	case _VLOAD:  		return string("vload");   
- 	case _IVLOAD: 		return string("ivload");    
+ 	case _VLOAD:  		return string("vload    ");   
+ 	case _IVLOAD: 		return string("ivload   ");    
 
- 	case _EQ:     		return string("eq"); 
-	case _IEQ:   		return string("ieq");   
+ 	case _EQ:     		return string("eq       "); 
+	case _IEQ:   		return string("ieq      ");   
 
- 	case _ULT:     		return string("ult");  
- 	case _IULT:  		return string("iult");   
+ 	case _ULT:     		return string("ult      ");  
+ 	case _IULT:  		return string("iult     ");   
 
- 	case _LT:      		return string("lt");   
- 	case _ILT:    		return string("ilt");    
+ 	case _LT:      		return string("lt       ");   
+ 	case _ILT:    		return string("ilt      ");    
 
- 	case _SHL:     		return string("shl");   
- 	case _ISHL:   		return string("ishl");     
+ 	case _SHL:     		return string("shl      ");   
+ 	case _ISHL:   		return string("ishl     ");     
 
- 	case _SHR:      	return string("shr");  
- 	case _ISHR:    	        return string("ishr");   
+ 	case _SHR:      	return string("shr      ");  
+ 	case _ISHR:    	        return string("ishr     ");     
 
- 	case _SHRA:     	return string("shra");   
- 	case _ISHRA:    	return string("ishra");    
+ 	case _SHRA:     	return string("shra     ");   
+ 	case _ISHRA:    	return string("ishra    ");    
 
- 	case _MULT:     	return string("mult");    
- 	case _IMULT:    	return string("imult");    
+ 	case _MULT:     	return string("mult     ");    
+ 	case _IMULT:    	return string("imult    ");    
 
- 	case _ADD:       	return string("add");  
- 	case _IADD:     	return string("iadd");   
+ 	case _ADD:       	return string("add      ");  
+ 	case _IADD:     	return string("iadd     ");   
 
- 	case _SUB:      	return string("sub");  
- 	case _ISUB:     	return string("isub");   
+ 	case _SUB:      	return string("sub      ");  
+ 	case _ISUB:     	return string("isub     ");   
 
- 	case _ADDC:     	return string("addc");  
- 	case _IADDC:		return string("iaddc");
+ 	case _ADDC:     	return string("addc     ");  
+ 	case _IADDC:		return string("iaddc    ");
       
- 	case _SUBC:		return string("subc");
- 	case _ISUBC:    	return string("isubc");    
+ 	case _SUBC:		return string("subc     ");
+ 	case _ISUBC:    	return string("isubc    ");    
 
- 	case _NOT:      	return string("not");   
+ 	case _NOT:      	return string("not      ");   
 
- 	case _OR:       	return string("or");   
- 	case _IOR:      	return string("ior");   
+ 	case _OR:       	return string("or       ");   
+ 	case _IOR:      	return string("ior      ");   
 
- 	case _AND:      	return string("and");  	
- 	case _IAND:     	return string("iand");    	
+ 	case _AND:      	return string("and      ");  	
+ 	case _IAND:     	return string("iand     ");    	
 
- 	case _XOR:      	return string("xor"); 
- 	case _IXOR:     	return string("ixor");   
+ 	case _XOR:      	return string("xor      "); 
+ 	case _IXOR:     	return string("ixor     ");   
 
         default: throw string("Unknown opcode in Instruction::mnemonic");
     }
@@ -125,12 +125,12 @@ Instruction::Instruction(unsigned instruction)
             value = GET_IMM(instruction);
             break;
     }
-    
+
+    opcode = GET_OPCODE(instruction);
     if(type_for_opcode[opcode] != type)
     {
         throw string("Invalid type in Instruction::Instruction(unsigned)");
     }
-    opcode = GET_OPCODE(instruction);
     left  = GET_LEFT(instruction);
     dest = GET_DEST(instruction);
 }
@@ -148,6 +148,7 @@ Instruction::Instruction(unsigned instruction)
 Instruction::Instruction(int opcode, int rightOrValue, int left, int dest)
 {
     type = type_for_opcode[opcode];
+    //cout << "Opcode is: " << hex << opcode << " and type is " << dec << type << "right is: "<<rightOrValue << endl;
     this->opcode = opcode;
     switch(type)
     {
@@ -173,6 +174,10 @@ Instruction::Instruction(int opcode, int rightOrValue, int left, int dest)
 unsigned Instruction::assemble()
 {
     unsigned instruction;
+    /*cout<<"Opcode is: "<<hex<<opcode<<dec<<endl;
+    cout<<"Right is: "<<right<<endl;
+    cout<<"Left is: "<<left<<endl;
+    cout<<"Dest is: "<<dest<<endl;*/	
     instruction = opcode << OPCODE_POS;
     switch(type)
     {
@@ -180,15 +185,14 @@ unsigned Instruction::assemble()
             instruction |= right << RIGHT_POS;
             break;
         case INSTRUCTION_TYPE_WITH_VALUE:    
-            instruction |= value << IMMEDIATE_VALUE_POS;
-            break;
+            {instruction |= value << IMMEDIATE_VALUE_POS;
+            break;}
         default:
-            throw string("Illegal instruction-type in Instruction::assemble");
+            throw string("Illegal instruction-type in Instruction::assemble: ") + to_string(type);
     }
 
     instruction |= left << LEFT_POS;
     instruction |= dest << DEST_POS;
-    
     return instruction;
 }
 
@@ -198,7 +202,6 @@ unsigned Instruction::assemble()
 string Instruction::disassemble()
 {
         stringstream stream;
-
         stream << mnemonic(opcode);
         switch(opcode) {
         case _ADD:
@@ -214,8 +217,7 @@ string Instruction::disassemble()
         case _SHL:
         case _SHR:
         case _SHRA:
-	case _CELL_SHL:  
-	case _CELL_SHR:
+
                 stream << " " << registerName(dest);
                 stream << " " << registerName(left);
                 stream << " " << registerName(right);
@@ -233,24 +235,22 @@ string Instruction::disassemble()
         case _ISUBC:        
         case _IULT:           
         case _IXOR:
-   	case _ICELL_SHL:  
-	case _ICELL_SHR:
                 stream << " " << registerName(dest);
                 stream << " " << registerName(left);
                 stream << " (" << value << ")";
                 break;
         case _NOT:
-        	stream << registerName(dest);
+        	stream << " " << registerName(dest);
         	stream << " " << registerName(left);
         	break;
         case _READ:
 	case _VLOAD: 
-                stream << registerName(dest);
+                stream << " " << registerName(dest);
                 stream << " " << registerName(right);
                 break;
         case _IREAD:
 	case _IVLOAD:
-                stream << registerName(dest);
+                stream << " " << registerName(dest);
 		stream << " (" << value << ")";
                 break;
         case _LDIX:
@@ -264,25 +264,35 @@ string Instruction::disassemble()
                 break;
         case _WRITE:
         case _MULT:
+	case _CELL_SHL:  
+	case _CELL_SHR:
                 stream << " " << registerName(left);
                 stream << " " << registerName(right);
                 break;
 	case _IWRITE:
-        case _IMULT:  
+        case _IMULT: 
+   	case _ICELL_SHL:  
+	case _ICELL_SHR:
                 stream << " " << registerName(left);
                 stream << " (" << value << ")";
                 break;
         case _SETLC:
+		stream << " (" << value + 1 << ")";
+                break;
+	case _IJMPNZDEC:
                 stream << " (" << value << ")";
+                break;
                 /* fall through */
         case _WHERE_CRY:
         case _WHERE_EQ:
         case _WHERE_LT:
         case _END_WHERE:
-        case _IJMPNZDEC:
+        //case _IJMPNZDEC:
         case _NOP:
                 break;
-        default: throw string("Invalid instruction opcode!");
+        default: { 
+
+		throw string("Invalid instruction opcode!");}
         }
 
         stream << ";" << endl;
@@ -299,6 +309,7 @@ string Instruction::disassemble()
 string Instruction::dump()
 {
     stringstream stream;
+    //cout<<"enter dump"<<endl;
     
     switch(opcode)
     {
@@ -331,13 +342,13 @@ string Instruction::dump()
         case _ISHRA: stream << registerName(dest) << " = SHRA(" << registerName(left) << ", " << value << ")";              break;
         case _LDIX:  stream << registerName(dest) << " = INDEX";                                                             break;
         case _LDSH:  stream << registerName(dest) << " = SHIFT_REG";                                                         break;
-        case _CELL_SHL:  stream << registerName(dest) << " = CELL_SHL(" << registerName(left) << ", " << registerName(right) << ")";
+        case _CELL_SHL:  stream << "CELL_SHL(" << registerName(left) << ", " << registerName(right) << ")";
                          break;
-	case _ICELL_SHL: stream << registerName(dest) << " = CELL_SHL(" << registerName(left) << ", " << value << ")";
+	case _ICELL_SHL: stream << "CELL_SHL(" << registerName(left) << ", " << value << ")";
                          break;
-        case _CELL_SHR:  stream << registerName(dest) << " = CELL_SHR(" << registerName(left) << ", " << registerName(right) << ")"; 
+        case _CELL_SHR:  stream << "CELL_SHR(" << registerName(left) << ", " << registerName(right) << ")"; 
                          break;
-	case _ICELL_SHR: stream << registerName(dest) << " = CELL_SHR(" << registerName(left) << ", " << value << ")"; 
+	case _ICELL_SHR: stream << "CELL_SHR(" << registerName(left) << ", " << value << ")"; 
                          break;
 	case _READ:      stream << registerName(dest) << " = LS[" << registerName(right) << "]";                             break;
         case _IREAD:     stream << registerName(dest) << " = LS[" << value << "]";                                           break;
@@ -351,13 +362,14 @@ string Instruction::dump()
         case _WHERE_EQ:  stream << "WHERE_EQ";                                                                               break;
         case _WHERE_LT:  stream << "WHERE_LT";                                                                               break; 
         case _END_WHERE: stream << "END_WHERE";                                                                              break;
-        case _RED:       stream << "REDUCE(" << registerName(left) << ")";                                                      break;
+        case _RED:       stream << "REDUCE(" << registerName(left) << ")";                                                   break;
         case _NOP:       stream << "NOP";                                                                                    break;
         case _VLOAD:     stream << registerName(dest) << " = " << registerName(right);                                       break;
 	case _IVLOAD:    stream << registerName(dest) << " = " << value;                                                     break;
-        case _SETLC:     stream << "REPEAT(" << value << ")";                                                                break;
+        case _SETLC:     stream << "REPEAT_X_TIMES(" << value + 1 << ")";      break;
         case _IJMPNZDEC: stream << "END_REPEAT";                                                                             break;
-        default:   throw string("Invalid instruction opcode!");
+        default:  { cout<<"dump_throw"<<endl;
+                   throw string("Invalid instruction opcode!");}
     }
     
     stream << ";" << endl;

@@ -41,9 +41,14 @@ int RunAll(bool stress)
                                                 "readFIFO",
                                                 "regFile");
 		
-        result = test_Simple_All(connex, stress);
-        result += test_Simple_IO_All(connex, stress);
+        cout<<"Test simple all"<<endl;
+	result = test_Simple_All(connex, false);
+	cout<<"Test simple IO"<<endl;
+        result += test_Simple_IO_All(connex, false);
+        cout<<"terminate_Test simple IO"<<endl;
         jump_test(5,connex);
+	//cout<<"Kernel_test"<<endl;
+	
 
         delete connex;
     }

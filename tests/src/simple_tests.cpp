@@ -976,7 +976,7 @@ static TestFunction TestFunctionTable[] =
     //{IJMP_BNR,"IJMP",InitKernel_Jump,{(10), 2, (10-1 - 2)*CONNEX_VECTOR_LENGTH}},
     //{IJMP2_BNR,"IJMP2",InitKernel_Jump2,{(10), 2, (10-2)*CONNEX_VECTOR_LENGTH}},
 
-	{CELL_SHL_BNR,"CELLSHL",InitKernel_Cellshl,{2,5,5-2}},
+    {CELL_SHL_BNR,"CELLSHL",InitKernel_Cellshl,{2,5,5-2}},
     {CELL_SHR_BNR,"CELLSHR",InitKernel_Cellshr,{2,5,5+2}},
     {CELL_SHLROL_BNR,"CELLSHLROL",InitKernel_Cellshlrol,{CONNEX_VECTOR_LENGTH,0,(CONNEX_VECTOR_LENGTH-1)*CONNEX_VECTOR_LENGTH/2}},
 
@@ -1168,8 +1168,12 @@ int test_ExtendedSimpleAll(ConnexMachine *connex)
         {
             InitKernel_Ishl(ISHL2_BNR, i, j);
 
-            connex->executeKernel("simpleTest_" + to_string((long long int)ISHL2_BNR));
-            val = connex->readReduction();
+            //connex->executeKernel("simpleTest_" + to_string((long long int)ISHL2_BNR));
+/////////////////////////////////////////////////////////////////////////////////
+	    cout<<connex->disassembleKernel("simpleTest_" + to_string((long long int)ISHL2_BNR))<<endl;
+	    //cout<<connex->dumpKernel("simpleTest_" + to_string((long long int)ISHL2_BNR))<<endl;
+/////////////////////////////////////////////////////////////////////////////////
+            //val = connex->readReduction();
             if (val != (i << j)* CONNEX_VECTOR_LENGTH)
                 cout<<"ISHL2 failed: expected ("<<i<<" << "<<j<<") = CONNEX_VECTOR_LENGTH* "<<(i<<j)<<" but received "<<val<<endl;
             else cout<<"ISHL2 PASS: ("<<i<<" << "<<j<<") = CONNEX_VECTOR_LENGTH * "<<(i<<j)<<endl;
@@ -1198,16 +1202,21 @@ int test_Simple_All(ConnexMachine *connex, bool stress)
                 ( TestFunctionTable[i].BatchNumber,
                   TestFunctionTable[i].ds.Param1,
                   TestFunctionTable[i].ds.Param2);
-
-            connex->executeKernel(TEST_PREFIX + to_string((long long int)TestFunctionTable[i].BatchNumber));
+            cout<<"TestFunctionTable"<<i<<endl;
+            //connex->executeKernel(TEST_PREFIX + to_string((long long int)TestFunctionTable[i].BatchNumber));
+/////////////////////////////////////////////////////////////////////////////
+            cout<<to_string((long long int)TestFunctionTable[i].BatchNumber)<<endl;
+            cout<<connex->disassembleKernel(TEST_PREFIX + to_string((long long int)TestFunctionTable[i].BatchNumber))<<endl;
+            //cout<<connex->dumpKernel(TEST_PREFIX + to_string((long long int)TestFunctionTable[i].BatchNumber))<<endl;
+/////////////////////////////////////////////////////////////////////////////
             //treat the reduction result as an unsigned number by masking out sign bits
-            result = connex->readReduction() & 0x007fffff;
+            //result = connex->readReduction() & 0x007fffff;
             if (result != TestFunctionTable[i].ds.ExpectedResult)
             {
                cout<< "Test "<< setw(8) << left << TestFunctionTable[i].OperationName <<" FAILED with result "
                <<result << " (expected " <<TestFunctionTable[i].ds.ExpectedResult<<" ) !" << " params are "
                << TestFunctionTable[i].ds.Param1 << " and " << TestFunctionTable[i].ds.Param2 <<endl;
-               cout<<connex->disassembleKernel(TEST_PREFIX + to_string((long long int)TestFunctionTable[i].BatchNumber));
+               cout<<connex->disassembleKernel(TEST_PREFIX + to_string((long long int)TestFunctionTable[i].BatchNumber))<<endl;
                testFails++;
                if (j == (stressLoops - 1)) break;
                //return testFails;
@@ -1257,7 +1266,11 @@ static int TestJmpMultiRed(ConnexMachine *connex, int RedValue, int SquareReds)
 {
     InitKernel_Jump3(IJMP3_BNR, RedValue,SquareReds);
     //cout<<connex->disassembleKernel(TEST_PREFIX + to_string(IJMP3_BNR));
-    connex->executeKernel(TEST_PREFIX + to_string((long long int)IJMP3_BNR));
+    //connex->executeKernel(TEST_PREFIX + to_string((long long int)IJMP3_BNR));
+////////////////////////////////////////////////////////////////////////////
+    cout<<connex->disassembleKernel(TEST_PREFIX + to_string((long long int)IJMP3_BNR));
+    //cout<<connex->dumpKernel(TEST_PREFIX + to_string((long long int)IJMP3_BNR));
+////////////////////////////////////////////////////////////////////////////
 
     int ExpectedBytesOfReductions = SquareReds*SquareReds*sizeof(UINT_RED_REG_VAL);
     static UINT_RED_REG_VAL *BasicMatchRedResults;
@@ -1267,7 +1280,7 @@ static int TestJmpMultiRed(ConnexMachine *connex, int RedValue, int SquareReds)
     int RealBytesOfReductions = 0;
     for (RealBytesOfReductions=0 ; RealBytesOfReductions < ExpectedBytesOfReductions; RealBytesOfReductions+=4)
     {
-        BasicMatchRedResults[RealBytesOfReductions>>2] = connex->readReduction();
+        //BasicMatchRedResults[RealBytesOfReductions>>2] = connex->readReduction();
     }
 
     int i;

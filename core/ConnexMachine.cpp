@@ -6,6 +6,7 @@
  *
  */
 
+#include <iostream>
 #include "ConnexMachine.h"
 #include "Architecture.h"
 #include <string>
@@ -18,7 +19,7 @@
 #define DEFAULT_IO_READ_FIFO        "/dev/xillybus_connex_ioread_32"
 #define DEFAULT_REGISTER_FILE       "/dev/uio0"
 
-/*
+/***************************************************************************************************
  * This descriptor is written to the IO_WRITE_FIFO in
  * order to initiate a transfer.
  *
@@ -31,22 +32,22 @@ static struct
     unsigned vectorCount;
 } connex_io_descriptor;
 
-/*
+/***************************************************************************************************
  * The static kernel map
  */
 map<string, Kernel*> ConnexMachine::kernels;
 
-/*
+/***************************************************************************************************
  * The mutex used to sync the kernel map operations
  */
 mutex ConnexMachine::mapMutex;
 
-/*
+/***************************************************************************************************
  * The name of the architecture for which OPINCAA was compiled
  */
 string ConnexMachine::targetArchitecture = TARGET_ARCH;
 
-/*
+/***************************************************************************************************
  * Adds a kernel to the static kernel map.
  *
  * @param kernel the new kernel to add
@@ -70,12 +71,11 @@ void ConnexMachine::addKernel(Kernel *kernel)
             kernels.erase(name);
         }
     }
-
     kernels.insert(map<string, Kernel*>::value_type(name, kernel));
     mapMutex.unlock();
 }
 
-/*
+/***************************************************************************************************
  * Dumps the specified kernel
  *
  * @param kernelName the kernel to dump
@@ -94,21 +94,22 @@ string ConnexMachine::dumpKernel(string kernelName)
 }
 
 
-/*
+/***************************************************************************************************
  * Disassembles the specified kernel.
  */
 string ConnexMachine::disassembleKernel(string kernelName)
 {
-	if (!kernels.count(kernelName))
+        cout<<kernelName<<endl;
+	if (!kernels.count(kernelName)){
 		throw string("Kernel ") + kernelName +
 			string(" not found in ConnexMachine::disassembleKernel!");
-
+        }
 	Kernel *kernel = kernels.find(kernelName)->second;
 
 	return kernel->disassemble();
 }
 
-/*
+/***************************************************************************************************
  * Reads byteCount bytes from descriptor and places the 
  * result in destination. It blocks until all byteCount bytes
  * have been read.
@@ -124,7 +125,7 @@ unsigned ConnexMachine::readFromPipe(int descriptor, void* destination, unsigned
     return byteCount;
 }
 
-/*
+/***************************************************************************************************
  * Constructor for creating a new ConnexMachine
  *
  * @param  distributionDescriptorPath the file descriptor of the distribution FIFO (write only)
@@ -168,12 +169,12 @@ ConnexMachine::ConnexMachine(string distributionDescriptorPath = DEFAULT_DISTRIB
     {
         throw string("Unable to open one or more accelerator FIFOs");
     }
-
+    connexInstructionsCounter.assign((1 << OPCODE_SIZE), 0);
     printf("ConnexMachine created !\n");
     fflush(stdout);
 }
 
-/*
+/***************************************************************************************************
  * Destructor for the ConnexMachine class
  *
  * Disposes of the kernel map and closes the associated file
@@ -187,7 +188,7 @@ ConnexMachine::~ConnexMachine()
     if(ioReadFifo > 0) close(ioReadFifo);
 }
 
-/*
+/***************************************************************************************************
  * Executes the kernel on the current ConnexMachine
  *
  * @param kernelName the name of the kernel to execute
@@ -196,18 +197,24 @@ ConnexMachine::~ConnexMachine()
  */
 void ConnexMachine::executeKernel(string kernelName)
 {
-	threadMutexIR.lock();
+    threadMutexIR.lock();
+    vector<int> h;
     if(kernels.count(kernelName) == 0)
     {
-		threadMutexIR.unlock();
+	threadMutexIR.unlock();
         throw string("Kernel ") + kernelName + string(" not found in ConnexMachine::executeKernel!");
     }
     Kernel *kernel = kernels.find(kernelName)->second;
+    h = kernel->getInstructionsCounter();
+    for(int i=0; i<(1 <<OPCODE_SIZE); i++){
+	connexInstructionsCounter[i] += h[i];
+    }
+
     kernel->writeTo(distributionFifo);
-	threadMutexIR.unlock();
+    threadMutexIR.unlock();
 }
 
-/*
+/***************************************************************************************************
 * Writes the specified buffer to the array IO write FIFO
 *
 * @param buffer the buffer to be written to the FIFO, it should
@@ -247,7 +254,7 @@ int ConnexMachine::writeDataToArray(const void *buffer, unsigned vectorCount, un
     return bytesWritten;
 }
 
-/*
+/***************************************************************************************************
 * Reads the specified amounf of bytes to the specified buffer
 * from the array IO read FIFO
 *
@@ -289,7 +296,7 @@ void* ConnexMachine::readDataFromArray(void *buffer, unsigned vectorCount, unsig
     return buffer;
 }
 
-/*
+/***************************************************************************************************
  * Reads one int from the reduction FIFO
  *
  * @return the value read from the reduction FIFO
@@ -301,7 +308,7 @@ int ConnexMachine::readReduction()
     return result;
 }
 
-/*
+/***************************************************************************************************
  * Reads multiple values from the reduction FIFO
  *
  * @param count the number of int to be read
@@ -321,7 +328,7 @@ void ConnexMachine::readMultiReduction(int count, void* buffer)
     threadMutexIR.unlock();
 }
 
-/*
+/***************************************************************************************************
  * Checks the FPGA accelerator architecture against the OPINCAA target architecture
  *
  * @return accelerator revision string
@@ -355,3 +362,18 @@ string ConnexMachine::checkAcceleratorArchitecture()
     return accRevision;
                            
 }
+
+
+/***************************************************************************************************/
+vector<int> ConnexMachine::getConnexInstructionsCounter(){
+	
+       /* for(int i=0; i<(1 <<OPCODE_SIZE); i++){
+	    cout<<connexInstructionsCounter[i]<<endl;
+        }*/
+	return connexInstructionsCounter;
+}
+
+
+
+
+

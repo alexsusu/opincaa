@@ -77,6 +77,9 @@ static int testIowrite(ConnexMachine *connex, int BatchNumber,int32_t Param1, in
 
             //DEASM_KERNEL(BatchNumber);
             connex->executeKernel(TEST_PREFIX + to_string((long long int)BatchNumber));
+//////////////////////////////////////////////////////////////
+	    cout<<connex->disassembleKernel(to_string((long long int)BatchNumber))<<endl;
+///////////////////////////////////////////////////////////////
             int result = connex->readReduction();
             if (data[cnxvectorIndex * CONNEX_VECTOR_LENGTH + cnt] != result)
             {
@@ -84,6 +87,7 @@ static int testIowrite(ConnexMachine *connex, int BatchNumber,int32_t Param1, in
                 //cout<<cnxvectorIndex << " "<<cnt << " "<< EXECUTE_KERNEL_RED(BatchNumber)<< " "<<data[cnxvectorIndex * CONNEX_VECTOR_LENGTH + cnt]<<endl;
             }
         }
+
    return  testResult;
 
 }
@@ -119,11 +123,17 @@ static int testIoread(ConnexMachine *connex, int BatchNumber,int32_t Param1, int
                 EXECUTE_WHERE_EQ ( LS[cnxvectorIndex + Param2] = R3;)
             _END_KERNEL(BatchNumber);
             connex->executeKernel(TEST_PREFIX + to_string((long long int)BatchNumber));
+//////////////////////////////////////////////////////////
+            cout<<connex->disassembleKernel(to_string((long long int)BatchNumber))<<endl;
+////////////////////////////////////////////////////////////
         }
         //c_simulator::printLS(Param2+1);
 		
 	/* execute a reduction so we're sure the software's done executing */
-	connex->executeKernel("waitfor");
+        connex->executeKernel("waitfor");
+///////////////////////////////////////////////////////////////
+        cout<<connex->disassembleKernel(to_string((long long int)BatchNumber))<<endl;
+///////////////////////////////////////////////////////////////
 	connex->readReduction();
 		
     // read data from local store

@@ -98,7 +98,7 @@ void ConnexSimulator::setupAccInfo(string infoPath)
     ofstream infoFile;
   
     infoFile.open(infoPath);
-    string archName("connex16-hm-generic");
+    string archName("connex-rc");
     archName = string(archName.rbegin(), archName.rend());
     
     infoFile << archName << '\0';

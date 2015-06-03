@@ -37,6 +37,7 @@ Kernel::~Kernel()
 
 }
 
+
 /************************************************************
 * Appends an existing instruction to the kernel
 *
@@ -100,14 +101,14 @@ string Kernel::dump()
 {
     string kernel;
     for(vector<unsigned>::iterator element = instructions.begin(); element != instructions.end(); element++)
-    {
-        kernel += Instruction(*element).dump();
+    {   //cout<<hex<<*element<<dec<<endl;
+        kernel += Instruction(*element).dump();    
     }
 
     return kernel;
 }
 
-/*
+/***********************************************************
  * Returns a string representing the disassembled kernel.
  * One instruction per line.
  */
@@ -115,9 +116,8 @@ string Kernel::disassemble()
 {
 	string kernel;
 
-	for (vector<unsigned>::iterator element = instructions.begin();
-	     element != instructions.end();
-	     element++) {
+	for (vector<unsigned>::iterator element = instructions.begin();element != instructions.end();element++) {
+		cout<<hex<<*element<<dec<< " " <<endl;
 		kernel += Instruction(*element).disassemble();
 	}
 
@@ -141,4 +141,34 @@ void Kernel::resetLoopDestination()
 void Kernel::appendLoopInstruction()
 {
 	append(Instruction(_IJMPNZDEC, loopDestination, 0, 0));
+}
+
+/************************************************************
+*This will increment the element of instructions_counter
+*corresponding to the instruction opcode
+*/
+void Kernel::kernelHistogram()
+{
+    instructionsCounter.assign((1 <<OPCODE_SIZE), 0);
+    int a, nrOfJmp;
+    Instruction instr(0,0,0,0);	
+    for(vector<unsigned>::iterator element = instructions.begin(); element != instructions.end(); element++)
+        {   
+     	 a = (*element) >> OPCODE_POS;
+         if (a == 33) {nrOfJmp = Instruction(*element).getValue(); } 
+ 	 if(a == 34){
+		instructionsCounter[a] += (nrOfJmp + 1);
+         } else {
+	 	instructionsCounter[a]++;
+         }
+        }
+    for(int i=0; i<(1 <<OPCODE_SIZE); i++){
+        if (((i<35) && (i != 2) && (i != 1) && (i != 32)) || ((i>43) && (i != 60))){
+            cout<<instr.mnemonic(i)<< " : " <<instructionsCounter[i]<<endl;
+        }
+    }
+}
+
+vector<int> Kernel::getInstructionsCounter(){
+       	return instructionsCounter;
 }

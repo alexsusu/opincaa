@@ -14,7 +14,7 @@
 #include <string>
 #include <map>
 #include <mutex>
-
+#include <vector>
 #include <unistd.h>
 
 using namespace std;
@@ -135,6 +135,10 @@ class ConnexMachine
         * @param buffer the memory area where the results will be put
         */
         void readMultiReduction(int count, void* buffer);
+
+	vector<int> getConnexInstructionsCounter();
+      
+
         
     private:
 
@@ -190,6 +194,11 @@ class ConnexMachine
          * The name of the architecture for which OPINCAA was compiled
          */
         static string targetArchitecture;
+          
+        /*The vector containing the number of used instructions 
+        * from all kernels
+        */ 
+        vector<int> connexInstructionsCounter;
 };
 
 #endif // CONNEX_INTERFACE_H

@@ -25,7 +25,7 @@
 #define IO_WRITE_OPERATION          0x00000001
 #define IO_READ_OPERATION           0x00000000
 
-#define REG_MAX_VAL 				0xffff
+#define REG_MAX_VAL 		    0xffff
 
 #define INSTRUCTION_QUEUE_LENGTH	1024
 

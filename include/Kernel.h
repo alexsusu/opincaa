@@ -13,6 +13,8 @@
 #include "ConnexMachine.h"
 #include <vector>
 #include <string>
+#include <iostream>
+#include <string.h>
 
 using namespace std;
 
@@ -63,8 +65,8 @@ using namespace std;
 /**************************************************
  * This defines Macros for OPINCAA code definition
  **************************************************/
-#define BEGIN_KERNEL(kernelName)    {Kernel *__kernel = new Kernel(kernelName);
-
+#define BEGIN_KERNEL(kernelName)    {Kernel *__kernel = new Kernel(kernelName); 
+                                      
 #define EXECUTE_IN_ALL(code)        __kernel->append(Instruction(_END_WHERE, 0, 0, 0));     \
                                     code
 
@@ -92,14 +94,16 @@ using namespace std;
 
 #define REPEAT(x)			__kernel->append(Instruction(_SETLC, x-1, 0, 0));	\
                             /* Hw workaround */                             \
-							__kernel->append(Instruction(_SETLC, x-1, 0, 0)); \
-							__kernel->resetLoopDestination();
+					__kernel->append(Instruction(_SETLC, x-1, 0, 0)); \
+					__kernel->resetLoopDestination();
 
 #define REPEAT_X_TIMES(x)               REPEAT(x)
 #define END_REPEAT			__kernel->appendLoopInstruction(); \
 					__kernel->append(Instruction(_NOP, 0, 0, 0));
 
-#define END_KERNEL(x)               ConnexMachine::addKernel(__kernel);}
+#define END_KERNEL(x)                   __kernel->kernelHistogram(); \
+                                        ConnexMachine::addKernel(__kernel); \
+                                     }
 
 class Kernel
 {
@@ -169,18 +173,26 @@ class Kernel
 	 */
 	string disassemble();
 
-		/*
-		 * Resets the loop size counter so each appended instruction
-		 * after this one increments it with 1. It is used to determine
-		 * where the jump needs to be made
-		 */
-		void resetLoopDestination();
+	/*
+	* Resets the loop size counter so each appended instruction
+	* after this one increments it with 1. It is used to determine
+        * where the jump needs to be made
+	*/
+	void resetLoopDestination();
 
-		/*
-		 * This will append the jump instruction to the kernel by
-		 * using the loop destination
-		 */
-		void appendLoopInstruction();
+	/*
+	* This will append the jump instruction to the kernel by
+	* using the loop destination
+	*/
+	void appendLoopInstruction();
+
+	/*
+	* This will increment the element of instructions_counter
+	* corresponding to the instruction opcode
+	*/
+	void kernelHistogram();
+
+        vector<int> getInstructionsCounter();
 
     private:
 
@@ -194,11 +206,17 @@ class Kernel
          */
         vector<unsigned> instructions;
 
-		/*
-		 *	The counter used for the loop
-		 * NOTE: This will become a queue when we support nested loops
-		 */
-		 unsigned short loopDestination;
+	/*
+	*	The counter used for the loop
+	* NOTE: This will become a queue when we support nested loops
+	*/
+	unsigned short loopDestination;
+
+	/*
+	The vector containing the number of used instructions 
+	*/
+	vector<int> instructionsCounter;
+ 
 };
 
 #endif // BATCH_H

@@ -6,13 +6,18 @@ cd ../simulator && make && cd -
 make
 
 #start the simulator
-./../simulator/build/simulator &
+#./../simulator/build/simulator &
 
 #run the test
 sleep 3
-LD_LIBRARY_PATH=../libs/$1
+#LD_LIBRARY_PATH=../libs/$1
+LD_LIBRARY_PATH=/home/vpopescu/Documents/git/opincaa/libs/connex-rc
 export LD_LIBRARY_PATH
-./build/test
+
+#cd .. ; make && sudo make install ; cd -
+make build/test_connex-rc
+
+./build/test_connex-rc
 
 #kill simulator
-killall -9 simulator
+#killall -9 simulator
