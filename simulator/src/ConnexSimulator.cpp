@@ -5,6 +5,10 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include "ConnexSimulator.h"
+#include "Instruction.h"
+#include "Non-immediate.h"
+#include "Immediate.h"
+
 
 /****************************************************************************
  *	Structure holding information for a IO transfer
@@ -12,8 +16,8 @@
 struct ConnexIoDescriptor
 {
 	unsigned type;
-    unsigned lsAddress;
-    unsigned vectorCount;
+    	unsigned lsAddress;
+    	unsigned vectorCount;
 };
 
 
@@ -45,7 +49,7 @@ ConnexSimulator::ConnexSimulator(string distributionDescriptorPath,
 	readDescriptor = openPipe(readDescriptorPath, O_RDWR);
 
     setupAccInfo(accInfoPath);
-    
+
 	instructionQueue = new InstructionQueue(INSTRUCTION_QUEUE_LENGTH);
 
 	codeInLoop = false;
@@ -96,11 +100,11 @@ int ConnexSimulator::openPipe(string pipePath, int mode)
 void ConnexSimulator::setupAccInfo(string infoPath)
 {
     ofstream infoFile;
-  
+
     infoFile.open(infoPath);
     string archName("connex-rc");
     archName = string(archName.rbegin(), archName.rend());
-    
+
     infoFile << archName << '\0';
     for(int i=infoFile.tellp(); i<48; i++) infoFile << " ";
     infoFile.close();
@@ -127,22 +131,26 @@ void ConnexSimulator::waitFinish()
  */
 void ConnexSimulator::ioThreadHandler()
 {
-	cout << "Starting IO Thread..." << endl << flush;
-	ConnexIoDescriptor ioDescriptor;
-	while(1)
-	{
+	try{
+		cout << "Starting IO Thread..." << endl << flush;
+		ConnexIoDescriptor ioDescriptor;
+		while(1)
+		{
 
-		//cout<<"Simu: Waiting for receive "<<endl<<flush;
-		read(writeDescriptor, &ioDescriptor, sizeof(ioDescriptor));
-#if 0
-                printf("ioDescriptor:\n");
-                printf("              type = %d\n", ioDescriptor.type);
-                printf("              lsAddress = %d\n", ioDescriptor.lsAddress);
-                printf("              vectorCount = %d\n", ioDescriptor.vectorCount);
-#endif
-		//cout<<"Simu: Received "<<sizeof(ioDescriptor)<<" Bytes"<<endl<<flush;
-		performIO(ioDescriptor);
-		//cout<<"Simu: Perform IO "<<endl<<flush;
+			//cout<<"Simu: Waiting for receive "<<endl<<flush;
+			read(writeDescriptor, &ioDescriptor, sizeof(ioDescriptor));
+	#if 0
+		        printf("ioDescriptor:\n");
+		        printf("              type = %d\n", ioDescriptor.type);
+		        printf("              lsAddress = %d\n", ioDescriptor.lsAddress);
+		        printf("              vectorCount = %d\n", ioDescriptor.vectorCount);
+	#endif
+			//cout<<"Simu: Received "<<sizeof(ioDescriptor)<<" Bytes"<<endl<<flush;
+			performIO(ioDescriptor);
+			//cout<<"Simu: Perform IO "<<endl<<flush;
+		}
+	}catch(string ex){
+		cout << "Exception on IO thread: " << ex << endl;
 	}
 }
 
@@ -153,24 +161,30 @@ void ConnexSimulator::coreThreadHandler()
 {
 	cout << "Starting Core Thread..." << endl << flush;
 	int instruction;
-	while(1)
-	{
-		if(codeInLoop)
+	try{
+		while(1)
 		{
-		    Instruction *compiledInstruction = (instructionQueue->read());
-			executeInstruction(*compiledInstruction);
-			//cout<<" Loop running "<< compiledInstruction->toString()<<endl;
-			//cout <<" R0 ="<<this->registerFile->cells[0]<<endl;
+			if(codeInLoop)
+			{
+			    Instruction *compiledInstruction = (instructionQueue->read());
+
+				executeInstruction(*compiledInstruction);
+				//cout<<" Loop running "<< compiledInstruction->toString()<<endl;
+				//cout <<" R0 ="<<this->registerFile->cells[0]<<endl;
+			}
+			else
+			{
+				read(distributionDescriptor, &instruction, sizeof(instruction));
+				//cout << "DEBUG; Instruction: " << hex << instruction << dec << endl;
+				Instruction *compiledInstruction = new Instruction(instruction);
+				instructionQueue->push(compiledInstruction);
+				executeInstruction(*compiledInstruction);
+				//cout<<" Running "<< compiledInstruction->toString()<<endl;
+				//cout <<" R0 ="<<this->registerFile->cells[0]<<endl;
+			}
 		}
-		else
-		{
-			read(distributionDescriptor, &instruction, sizeof(instruction));
-			Instruction *compiledInstruction = new Instruction(instruction);
-			instructionQueue->push(compiledInstruction);
-			executeInstruction(*compiledInstruction);
-			//cout<<" Running "<< compiledInstruction->toString()<<endl;
-			//cout <<" R0 ="<<this->registerFile->cells[0]<<endl;
-		}
+	}catch(string ex){
+		cout << "Exception on Core thread: " << ex << endl;
 	}
 }
 
@@ -237,38 +251,68 @@ void ConnexSimulator::executeInstruction(Instruction instruction)
         case _ADD:
 			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] + registerFile[instruction.getRight()];
 			return;
+        case _IADD:
+                        registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] + instruction.getValue() ;
+			return;
         case _ADDC:
 			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] + registerFile[instruction.getRight()] + ConnexVector::carryFlag;
+			return;
+	case _IADDC:
+			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] + instruction.getValue() + ConnexVector::carryFlag;
 			return;
         case _SUB:
 			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] - registerFile[instruction.getRight()];
 			return;
+	case _ISUB:
+			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] - instruction.getValue();
+			return;
         case _SUBC:
 			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] - registerFile[instruction.getRight()] - ConnexVector::carryFlag;
 			return;
-        case _POPCNT:
+	case _ISUBC:
+			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] - instruction.getValue() - ConnexVector::carryFlag;
+			return;
+       /* case _POPCNT:
             registerFile[instruction.getDest()] = registerFile[instruction.getLeft()].popcount();
-            return;
+            return;*/
         case _NOT:
 			registerFile[instruction.getDest()] = ~registerFile[instruction.getLeft()];
 			return;
         case _OR:
 			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] | registerFile[instruction.getRight()];
 			return;
+	case _IOR:
+			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] | instruction.getValue();
+			return;
         case _AND:
 			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] & registerFile[instruction.getRight()];
+			return;
+	case _IAND:
+			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] & instruction.getValue();
 			return;
         case _XOR:
 			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] ^ registerFile[instruction.getRight()];
 			return;
+	case _IXOR:
+			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] ^ instruction.getValue();
+			return;
         case _EQ:
 			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] == registerFile[instruction.getRight()];
+			return;
+	case _IEQ:
+			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] == instruction.getValue();
 			return;
         case _LT:
 			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] < registerFile[instruction.getRight()];
 			return;
+	case _ILT:
+			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] < instruction.getValue();
+			return;
         case _ULT:
 			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()].ult(registerFile[instruction.getRight()]);
+			return;
+	case _IULT:
+			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()].ult(instruction.getValue());
 			return;
         case _SHL:
 			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] << registerFile[instruction.getRight()];
@@ -277,16 +321,16 @@ void ConnexSimulator::executeInstruction(Instruction instruction)
 			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()].shr(registerFile[instruction.getRight()]);
 			return;
         case _SHRA:
-			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] >> registerFile[instruction.getRight()];
+			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()].shra(registerFile[instruction.getRight()]);
 			return;
         case _ISHL:
-			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] << instruction.getRight();
+			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] << instruction.getValue();
 			return;
         case _ISHR:
-			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()] >> instruction.getRight();
+			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()].ishr(instruction.getValue());
 			return;
         case _ISHRA:
-			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()].ishra(instruction.getRight());
+			registerFile[instruction.getDest()] = registerFile[instruction.getLeft()].ishra(instruction.getValue());
 			return;
         case _LDIX:
 			registerFile[instruction.getDest()].loadIndex();
@@ -294,7 +338,7 @@ void ConnexSimulator::executeInstruction(Instruction instruction)
         case _LDSH:
 			registerFile[instruction.getDest()] = ConnexVector::shiftReg;
 			return;
-		case _WHERE_CRY:
+	case _WHERE_CRY:
 			ConnexVector::Unconditioned_Setactive(ConnexVector::carryFlag);
 			return;
         case _WHERE_EQ:
@@ -308,16 +352,27 @@ void ConnexSimulator::executeInstruction(Instruction instruction)
 			return;
         case _CELL_SHL:
         case _CELL_SHR:
+        case _ICELL_SHL:
+        case _ICELL_SHR:
 			handleShift(instruction);
 			return;
         case _READ:
-            registerFile[instruction.getDest()].loadFrom(localStore, registerFile[instruction.getRight()]);
+                        registerFile[instruction.getDest()].loadFrom(localStore, registerFile[instruction.getRight()]);
+			return;
+	case _IREAD:
+			registerFile[instruction.getDest()] = localStore[instruction.getValue()];
 			return;
         case _WRITE:
-            registerFile[instruction.getLeft()].storeTo(localStore, registerFile[instruction.getRight()]);
+                        registerFile[instruction.getLeft()].storeTo(localStore, registerFile[instruction.getRight()]);
+			return;
+	case _IWRITE:
+			localStore[instruction.getValue()] = registerFile[instruction.getLeft()];
 			return;
         case _MULT:
 			registerFile[instruction.getLeft()] * registerFile[instruction.getRight()];
+			return;
+	case _IMULT:
+			registerFile[instruction.getLeft()] * instruction.getValue();
 			return;
         case _MULT_LO:
 			registerFile[instruction.getDest()] = ConnexVector::multLow;
@@ -325,24 +380,34 @@ void ConnexSimulator::executeInstruction(Instruction instruction)
         case _MULT_HI:
 			registerFile[instruction.getDest()] = ConnexVector::multHigh;
 			return;
-        case _REDUCE:
+        case _RED:      {
 			handleReduction(instruction);
-			return;
+                        /*for(int i=0; i<CONNEX_VECTOR_LENGTH; i++){
+ 				cout<<"CELL "<<i<<" ";
+                                cout<<"Carry: "<<ConnexVector::carryFlag.getElement(i)<<"  ";
+				cout<<"Lt: "<<ConnexVector::ltFlag.getElement(i)<<"  ";
+				cout<<"Eq: "<<ConnexVector::eqFlag.getElement(i)<<"  "<<endl;
+                 	}*/ //used for debug
+ 			return;
+                        }
         case _NOP:
 			return;
         case _VLOAD:
-			registerFile[instruction.getDest()] = (unsigned short int)instruction.getValue();
+            {
+			registerFile[instruction.getDest()] = registerFile[instruction.getRight()];
+			ConnexVector::setFlagVload(registerFile[instruction.getRight()]);
 			return;
-        case _IREAD:
-			registerFile[instruction.getDest()] = localStore[instruction.getValue()];
+            }
+	case _IVLOAD:
+            {
+			registerFile[instruction.getDest()] = (short)instruction.getValue();
+			ConnexVector::setFlagVload((short)instruction.getValue());
 			return;
-        case _IWRITE:
-			localStore[instruction.getValue()] = registerFile[instruction.getLeft()];
-			return;
-		case _SETLC:
+            }
+	case _SETLC:
 			repeatCounter = instruction.getValue();
 			return;
-        case _IJMPNZ:
+        case _IJMPNZDEC:
 			if(!repeatCounter)
 			{
 				codeInLoop = false;
@@ -365,10 +430,19 @@ void ConnexSimulator::executeInstruction(Instruction instruction)
  */
 void ConnexSimulator::handleShift(Instruction instruction)
 {
+        unsigned short data[CONNEX_VECTOR_LENGTH];
 	ConnexVector::shiftReg.copyFrom(registerFile[instruction.getLeft()]);
-	ConnexVector::shiftCountReg.copyFrom(registerFile[instruction.getRight()]);
-
-    ConnexVector::shiftReg.shift(instruction.getOpcode() == _CELL_SHL ? 1 : -1);
+        //cout<<"type: "<<instruction.getType()<<endl;
+	if(instruction.getType() == INSTRUCTION_TYPE_NO_VALUE){
+	  	ConnexVector::shiftCountReg.copyFrom(registerFile[instruction.getRight()]);
+                ConnexVector::shiftReg.shift(instruction.getOpcode() == _CELL_SHL ? 1 : -1);
+        } else {
+          	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++){
+                        data[i]=instruction.getValue(); cout<<data[i];
+          	}
+                ConnexVector::shiftCountReg.write(data);
+                ConnexVector::shiftReg.shift(instruction.getOpcode() == _ICELL_SHL ? 1 : -1);
+        }
 }
 
 /****************************************************************************

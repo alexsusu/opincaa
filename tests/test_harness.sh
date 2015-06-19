@@ -10,14 +10,17 @@ make
 
 #run the test
 sleep 3
-#LD_LIBRARY_PATH=../libs/$1
-LD_LIBRARY_PATH=/home/vpopescu/Documents/git/opincaa/libs/connex-rc
+LD_LIBRARY_PATH=../libs/$1
 export LD_LIBRARY_PATH
 
 #cd .. ; make && sudo make install ; cd -
-make build/test_connex-rc
+make build/test_connex-rc_sim && ./build/test_connex-rc_sim
 
-./build/test_connex-rc
+
+#make build/test_connex-rc
+#./build/test_connex-rc
+
+
 
 #kill simulator
 #killall -9 simulator

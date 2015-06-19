@@ -138,7 +138,11 @@ class ConnexMachine
 
 	vector<int> getConnexInstructionsCounter();
       
+        static void getKernelHistogram(string kernelName);
+     
+        void setEnableMachineHistogram(bool enableMachineHistogram);
 
+        bool getEnableMachineHistogram();
         
     private:
 
@@ -199,6 +203,10 @@ class ConnexMachine
         * from all kernels
         */ 
         vector<int> connexInstructionsCounter;
+        
+        /* The enable variable used for histogram at kernel execution
+        */
+	bool enableMachineHistogram;
 };
 
 #endif // CONNEX_INTERFACE_H

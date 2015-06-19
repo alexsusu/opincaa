@@ -154,13 +154,15 @@ ConnexMachine::ConnexMachine(string distributionDescriptorPath = DEFAULT_DISTRIB
         throw string("Unable to access accelerator registers");
     }
 
-    printf("Accelerator revision is %s\n",checkAcceleratorArchitecture().c_str());
+   // printf("Accelerator revision is %s\n",checkAcceleratorArchitecture().c_str());
+   
+    cout << "Dist: " << distpath << "; red:" << redpath << "; Wiopath: " << wiopath << "; riopath" << riopath << endl;
 
     distributionFifo = open(distpath, O_WRONLY);
     reductionFifo = open(redpath, O_RDONLY);
     ioWriteFifo = open(wiopath, O_WRONLY);
     ioReadFifo = open(riopath, O_RDONLY);
-
+    
     if(distributionFifo < 0 ||
         reductionFifo  <0 ||
         ioWriteFifo < 0 ||
@@ -170,6 +172,7 @@ ConnexMachine::ConnexMachine(string distributionDescriptorPath = DEFAULT_DISTRIB
         throw string("Unable to open one or more accelerator FIFOs");
     }
     connexInstructionsCounter.assign((1 << OPCODE_SIZE), 0);
+    enableMachineHistogram = false;
     printf("ConnexMachine created !\n");
     fflush(stdout);
 }
@@ -198,18 +201,19 @@ ConnexMachine::~ConnexMachine()
 void ConnexMachine::executeKernel(string kernelName)
 {
     threadMutexIR.lock();
-    vector<int> h;
     if(kernels.count(kernelName) == 0)
     {
 	threadMutexIR.unlock();
         throw string("Kernel ") + kernelName + string(" not found in ConnexMachine::executeKernel!");
     }
     Kernel *kernel = kernels.find(kernelName)->second;
-    h = kernel->getInstructionsCounter();
-    for(int i=0; i<(1 <<OPCODE_SIZE); i++){
-	connexInstructionsCounter[i] += h[i];
+    if(enableMachineHistogram == true){
+    	vector<int> h;
+    	h = kernel->getInstructionsCounter();
+    	for(int i=0; i<(1 <<OPCODE_SIZE); i++){
+		connexInstructionsCounter[i] += h[i];
+    	}
     }
-
     kernel->writeTo(distributionFifo);
     threadMutexIR.unlock();
 }
@@ -373,7 +377,18 @@ vector<int> ConnexMachine::getConnexInstructionsCounter(){
 	return connexInstructionsCounter;
 }
 
+/***************************************************************************************************/
+void ConnexMachine::getKernelHistogram(string kernelName){
+	Kernel *kernel = kernels.find(kernelName)->second;
+	kernel->kernelHistogram();
+}
 
+/***************************************************************************************************/
+void ConnexMachine::setEnableMachineHistogram(bool enableMachineHistogram){
+	this->enableMachineHistogram = enableMachineHistogram;
+}
 
-
-
+/***************************************************************************************************/
+bool ConnexMachine::getEnableMachineHistogram(){
+	return enableMachineHistogram;
+}

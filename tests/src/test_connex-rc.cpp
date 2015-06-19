@@ -63,7 +63,7 @@ static void Kernel1()
                 R0 = 5;
                 //rest of instructions
                 CELL_SHR(R0, R1);
-                CELL_SHL(R1,R2);
+                CELL_SHL(R1, R2);
 		CELL_SHR(R0, 5);
 		CELL_SHL(R0, 5);
                 R0 = SHIFT_REG;
@@ -81,19 +81,31 @@ static void Kernel1()
     END_KERNEL("Test_kernel");
 }
 
-void test_kernel(){
-     //vector<int> h;
-     cout<<ConnexMachine::dumpKernel("Test_kernel")<<endl;
+void test_kernel(ConnexMachine *connex){
+     vector<int> h;
+     (*connex).setEnableMachineHistogram(true);
+     cout<<connex->dumpKernel("Test_kernel")<<endl;
      cout<<"Disassamble version"<<endl; 
-     cout<<ConnexMachine::disassembleKernel("Test_kernel")<<endl;
-     //cout<<endl<<endl<<"Instructions counter"<<endl;
-     //h = ConnexMachine::getConnexInstructionsCounter(); 
+     cout<<connex->disassembleKernel("Test_kernel")<<endl;
+     cout<<endl<<endl<<"Instructions counter"<<endl;
+     connex->executeKernel("Test_kernel");
+     h = (*connex).getConnexInstructionsCounter();
+     for(int i=0; i<h.size(); i++){
+	cout<<h[i]<<endl;
+     } 
+     //ConnexMachine::getKernelHistogram("Test_kernel");
+     cout<<"enableMachineHistogram: "<<(*connex).getEnableMachineHistogram()<<endl;
 }
 
 int main(){
+	ConnexMachine *connex = new ConnexMachine("distributionFIFO",
+                                                "reductionFIFO",
+                                                "writeFIFO",
+                                                "readFIFO",
+                                                "regFile");
 	try{
 		Kernel1();
-		test_kernel();
+		test_kernel(connex);
 	}catch(std::string ex){
 		cout << "Exception thrown: " << ex << endl;
 	}

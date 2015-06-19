@@ -129,6 +129,7 @@ Instruction::Instruction(unsigned instruction)
     opcode = GET_OPCODE(instruction);
     if(type_for_opcode[opcode] != type)
     {
+	cout << "opcode: " << opcode << "type: " << type << "type_for_opcode: " << type_for_opcode[opcode] << endl;
         throw string("Invalid type in Instruction::Instruction(unsigned)");
     }
     left  = GET_LEFT(instruction);

@@ -5,94 +5,11 @@
  *
  */
 
-
 #include "ConnexVector.h"
 #include <string.h>
-
-/****************************************************************************
- * Help macro to ease defining the binary operators
- */
-#define BINARY_OP(op)												\
-BINARY_OP_COMMON_START(op)                                          \
-BINARY_OP_COMMON_END(op)
-
-/****************************************************************************
- * Help macro to ease defining the binary operators (overwrites flags)
- */
-
-#define BINARY_OP_COMMON_START(op)                                  \
-ConnexVector ConnexVector::operator op(ConnexVector anotherVector)	\
-{																	\
-	ConnexVector result;											\
-	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)						\
-	{																\
-		result.cells[i] = cells[i] op anotherVector.cells[i];
-
-#define BINARY_OP_COMMON_END(op)                                    \
-	}																\
-	return result;													\
-}
-
-#define BINARY_OP_FLAGS_EQ(op)                                      \
-		if (cells[i] == anotherVector.cells[i])                     \
-            eqFlag.cells[i] = 1;                                    \
-        else eqFlag.cells[i] = 0;
-
-#define BINARY_OP_FLAGS_LT(op)                                      \
-		if ((short)cells[i] < (short)anotherVector.cells[i])                      \
-            ltFlag.cells[i] = 1;                                    \
-        else ltFlag.cells[i] = 0;
-
-#define BINARY_OP_FLAGS_CARRY_ADD(op)                               \
-        if (((unsigned)cells[i]) + ((unsigned)anotherVector.cells[i]) > REG_MAX_VAL) \
-            carryFlag.cells[i] = 1;                                 \
-        else carryFlag.cells[i] = 0;
-
-#define BINARY_OP_FLAGS_CARRY_ADDC(op)                              \
-        if (((unsigned)cells[i]) + ((unsigned)carryFlag.cells[i]) + ((unsigned)anotherVector.cells[i]) > REG_MAX_VAL) \
-            carryFlag.cells[i] = 1;                                 \
-        else                                                        \
-            carryFlag.cells[i] = 0;
-
-#define BINARY_OP_FLAGS_CARRY_SUB(op)                               \
-        if (cells[i] + anotherVector.cells[i] > REG_MAX_VAL)        \
-            carryFlag.cells[i] = 1;                                 \
-        else carryFlag.cells[i] = 0;
-
-#define BINARY_OP_FLAGS_CARRY_SUBC(op)                               \
-        if (((unsigned)cells[i]) + ((unsigned)carryFlag.cells[i]) + ((unsigned)anotherVector.cells[i]) > REG_MAX_VAL) \
-            carryFlag.cells[i] = 1;                                 \
-        else carryFlag.cells[i] = 0;
-
-
-#define BINARY_OP_FLAGS_LIKE_ADD(op)								\
-BINARY_OP_COMMON_START(op)                                          \
-    BINARY_OP_FLAGS_EQ(op)                                          \
-    BINARY_OP_FLAGS_LT(op)                                          \
-    BINARY_OP_FLAGS_CARRY_ADD(op)                                   \
-BINARY_OP_COMMON_END(op)
-
-#define BINARY_OP_FLAGS_LIKE_ADDC(op)								\
-BINARY_OP_COMMON_START(op)                                          \
-    BINARY_OP_FLAGS_EQ(op)                                          \
-    BINARY_OP_FLAGS_LT(op)                                          \
-    BINARY_OP_FLAGS_CARRY_ADDC(op)                                   \
-BINARY_OP_COMMON_END(op)
-
-#define BINARY_OP_FLAGS_LIKE_SUB(op)								\
-BINARY_OP_COMMON_START(op)                                          \
-    BINARY_OP_FLAGS_EQ(op)                                          \
-    BINARY_OP_FLAGS_LT(op)                                          \
-    BINARY_OP_FLAGS_CARRY_SUB(op)                                   \
-BINARY_OP_COMMON_END(op)
-
-#define BINARY_OP_FLAGS_LIKE_SUBC(op)								\
-BINARY_OP_COMMON_START(op)                                          \
-    BINARY_OP_FLAGS_EQ(op)                                          \
-    BINARY_OP_FLAGS_LT(op)                                          \
-    BINARY_OP_FLAGS_CARRY_SUBC(op)                                   \
-BINARY_OP_COMMON_END(op)
-
+#include <iostream>
+#include "Non-immediate.h"
+#include "Immediate.h"
 /****************************************************************************
  * The active cell flags
  */
@@ -199,16 +116,25 @@ unsigned short* ConnexVector::read()
  * Binary operators (except assignment)
  * These are not conditioned by active flags
  */
-BINARY_OP_FLAGS_LIKE_ADD(+)
-BINARY_OP_FLAGS_LIKE_SUB(-)
-BINARY_OP_FLAGS_LIKE_ADD(<<)
-BINARY_OP_FLAGS_LIKE_SUB(>>)
-BINARY_OP_FLAGS_LIKE_ADD(==)
-BINARY_OP_FLAGS_LIKE_SUB(<)
-BINARY_OP_FLAGS_LIKE_SUB(|)
-BINARY_OP_FLAGS_LIKE_ADDC(&)
-BINARY_OP_FLAGS_LIKE_SUBC(^)
+BINARY_OP_ARITH_ADD(+)
+BINARY_OP_ARITH_SUB(-)
+BINARY_OP(<<)
+//BINARY_OP(>>)
+BINARY_OP(|)
+BINARY_OP(&)
+BINARY_OP(^)
+BINARY_OP_EQ(==)
+BINARY_OP_LT(<)
 
+IBINARY_OP_ARITH_ADD(+)
+IBINARY_OP_ARITH_SUB(-)
+IBINARY_OP(<<)
+//IBINARY_OP(>>)
+IBINARY_OP(|)
+IBINARY_OP(&)
+IBINARY_OP(^)
+IBINARY_OP_EQ(==)
+IBINARY_OP_LT(<)
 /****************************************************************************
  * Assignment operator, conditioned by active flags
  */
@@ -220,7 +146,7 @@ void ConnexVector::operator=(ConnexVector anotherVector)
     }
 }
 
-/*
+/****************************************************************************
  * Copy vector not taking selection into account.
  */
 void ConnexVector::copyFrom(ConnexVector anotherVector)
@@ -244,9 +170,9 @@ void ConnexVector::operator=(bool value)
 }
 
 /****************************************************************************
- * Assignment operator (for vload insn), conditioned by active flags
+ * Assignment operator (for vload insn and immediate value assignement), conditioned by active flags
  */
-void ConnexVector::operator=(unsigned short value)
+void ConnexVector::operator=(short value)
 {
 	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
 	{
@@ -262,95 +188,158 @@ void ConnexVector::operator*(ConnexVector anotherVector)
 	int result;
 	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
 	{
-		result = cells[i] * anotherVector.cells[i];
-		multLow.cells[i] = (short)result;
-		multHigh.cells[i] = (short)(result >> 16);
+        if(active.cells[i]==1){
+		  result = cells[i] * anotherVector.cells[i];
+   	      multLow.cells[i] = (short)result;
+		  multHigh.cells[i] = (short)(result >> 16);
+       }
 	}
 }
 
 /****************************************************************************
- * Unary negation operator, not conditioned by active flags
+ * Multiplication operator with immediate value, conditioned by active flags
+ */
+void ConnexVector::operator*(unsigned short value)
+{
+	int result;
+	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+	{
+        if(active.cells[i]==1){    
+		  result = cells[i] * value;
+		  multLow.cells[i] = (short)result;
+		  multHigh.cells[i] = (short)(result >> 16);
+       }
+	}
+}
+
+/****************************************************************************
+ * Unary negation operator, conditioned by active flags
  */
 ConnexVector ConnexVector::operator~()
 {
 	ConnexVector result;
 	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
 	{
-		result.cells[i] = ~cells[i];
+        if(active.cells[i]==1){
+		    result.cells[i] = ~cells[i];
+        }
 	}
 	return result;
 }
 
 /****************************************************************************
- * Unsigned less than, not conditioned by active flags
+ * Unsigned less than, conditioned by active flags
  */
 ConnexVector ConnexVector::ult(ConnexVector anotherVector)
 {
 	ConnexVector result;
 	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
 	{
-		result.cells[i] = (unsigned)cells[i] < (unsigned)anotherVector.cells[i];
+		if(active.cells[i]==1){
+           		result.cells[i] = (unsigned)cells[i] < (unsigned)anotherVector.cells[i];
+		   	if(result.cells[i] == 1) 
+             			ltFlag.cells[i] = 1;
+		   	else 
+             			ltFlag.cells[i] = 0;
+		   	if(((unsigned)cells[i]) == ((unsigned)anotherVector.cells[i])) 
+              			eqFlag.cells[i] = 1;
+		   	else 
+              			eqFlag.cells[i] = 0; 
+        	}
 	}
 	return result;
 }
 
 /****************************************************************************
- * Shift left with immediate value, not conditioned by active flags
+ * Unsigned less than with immediate value, conditioned by active flags
  */
-ConnexVector ConnexVector::operator <<(unsigned short value)
+ConnexVector ConnexVector::ult(unsigned short value)
 {
-    ConnexVector result;
-    for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
-    {
-        result.cells[i] = cells[i] << value;
-    }
-    return result;
+	ConnexVector result;
+	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+	{
+		if(active.cells[i]==1){
+          		result.cells[i] = (unsigned)cells[i] < value;
+		  	if(result.cells[i] == 1) 
+             			ltFlag.cells[i] = 1;
+   	      		else 
+             			ltFlag.cells[i] = 0;
+		  	if(((unsigned)cells[i]) == value) 
+              			eqFlag.cells[i] = 1;
+		  	else 
+              			eqFlag.cells[i] = 0;
+        	}
+	}
+	return result;
 }
 
 /****************************************************************************
- * Shift right with immediate value, not conditioned by active flags
- */
-ConnexVector ConnexVector::operator >>(unsigned short value)
-{
-    ConnexVector result;
-    for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
-    {
-        result.cells[i] = cells[i] >> value;
-    }
-    return result;
-}
-
-/****************************************************************************
- * Shift right (logical), need casting to unsigned, not conditioned by active flags
+ * Shift right (logical), need casting to unsigned, conditioned by active flags
  */
 ConnexVector ConnexVector::shr(ConnexVector anotherVector)
 {
 	ConnexVector result;
 	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
 	{
-		result.cells[i] = (unsigned short)cells[i] >> anotherVector.cells[i];
+        if(active.cells[i]==1){
+		  result.cells[i] = (unsigned short)cells[i] >> anotherVector.cells[i];
+        } 
+	}
+	return result;
+}
+
+/****************************************************************************
+ * Shift right (logical) with immediate value, need casting to unsigned, conditioned by active flags
+ */
+ConnexVector ConnexVector::ishr(unsigned short value)
+{
+	ConnexVector result;
+	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+	{
+        if(active.cells[i]==1){
+		  result.cells[i] = (unsigned short)cells[i] >> value;
+        } 
+	}
+	return result;
+}
+
+/****************************************************************************
+ * Shift right (arithmetic), needs casting to signed,conditioned by active flags
+ */
+ConnexVector ConnexVector::shra(ConnexVector anotherVector)
+{
+	ConnexVector result;
+	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+	{
+        if(active.cells[i]==1){
+		  result.cells[i] = ((short)cells[i]) >> anotherVector.cells[i];
+        }
 	}
 	return result;
 }
 
 /****************************************************************************
  * Shift right (arithmetic) with immediate value, needs casting to signed,
- * not conditioned by active flags
+ * conditioned by active flags
  */
 ConnexVector ConnexVector::ishra(unsigned short value)
 {
 	ConnexVector result;
 	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
 	{
-		result.cells[i] = ((short)cells[i]) >> value;
+        if(active.cells[i]==1){
+		  result.cells[i] = (short)cells[i] >> value;
+        }
 	}
 	return result;
 }
+
 
 /****************************************************************************
 * Computes the population count (number of set bits) in each element of the 
 * argument vector. Argument is treated as unsigned, result is unsigned
 */
+/*
 ConnexVector ConnexVector::popcount()
 {
     ConnexVector result;
@@ -369,7 +358,7 @@ ConnexVector ConnexVector::popcount()
     }
     return result;
 }
-
+*/
 /****************************************************************************
  * Shift the vector in the specified direction, with the number
  * of cells specified by ConnexVector::shiftCount
@@ -445,3 +434,44 @@ void ConnexVector::Unconditioned_Setactive(bool value)
         for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
             active.cells[i] = 0;
 }
+
+
+/****************************************************************************
+ * Sets flags for vload
+ */
+void ConnexVector::setFlagVload(ConnexVector anotherVector){
+        int i;
+	for(i=0; i<CONNEX_VECTOR_LENGTH; i++){
+	    eqFlag.cells[i] = anotherVector.cells[i] == 0;                                        
+	    ltFlag.cells[i] = (short)anotherVector.cells[i] < 0;
+	}
+}
+
+/****************************************************************************
+ * Sets flags for ivload
+ */
+void ConnexVector::setFlagVload(short value){
+	int i;
+	for(i=0; i<CONNEX_VECTOR_LENGTH; i++){
+	    eqFlag.cells[i] = value == 0;                                        
+	    ltFlag.cells[i] = value < 0;                                        
+	}
+}
+
+/****************************************************************************
+/* Return element from pos position in cells
+ */
+unsigned short ConnexVector::getElement(int pos){
+	return cells[pos];
+}
+
+
+
+
+
+
+
+
+
+
+
