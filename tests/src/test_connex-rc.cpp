@@ -86,8 +86,7 @@ void test_kernel(ConnexMachine *connex){
      (*connex).setEnableMachineHistogram(true);
      cout<<connex->dumpKernel("Test_kernel")<<endl;
      cout<<"Disassamble version"<<endl; 
-     cout<<connex->disassembleKernel("Test_kernel")<<endl;
-     cout<<endl<<endl<<"Instructions counter"<<endl;
+     cout<<ConnexMachine::disassembleKernel("Test_kernel")<<endl;
      connex->executeKernel("Test_kernel");
      h = (*connex).getConnexInstructionsCounter();
      for(int i=0; i<h.size(); i++){

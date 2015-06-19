@@ -27,7 +27,7 @@ make_paths:
 	mkdir -p $(BUILD_DIR)
 
 $(BUILD_DIR)/test_connex-rc_sim: $(SRC_DIR)/test_connex-rc_sim.cpp
-	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../include -I../arch/$(ARCH)/include $(SRC_DIR)/test_connex-rc_sim.cpp -o $(BUILD_DIR)/test_connex-rc_sim -lopincaa 
+	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../include -I../arch/$(ARCH)/include $(SRC_DIR)/test_connex-rc_sim.cpp  -L../libs/$(ARCH)/ -o $(BUILD_DIR)/test_connex-rc_sim -lopincaa 
 
 #build: $(OBJ)
 #	$(CXX) -O3 $(CFLAGS) -I$(INC_DIR) $(OBJ) -L../libs/$(ARCH) -o $(BUILD_DIR)/test -lopincaa -fopenmp
