@@ -60,7 +60,7 @@ class Operand
          ***********************************************************/
 
         /* Addition */
-        Instruction operator+(Operand op);//ok
+	Instruction operator+(Operand op);//ok
         Instruction operator+(unsigned short value);//ok
         void operator+=(Operand op);//ok
 	void operator+=(unsigned short value);//ok

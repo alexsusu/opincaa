@@ -1,0 +1,36 @@
+#------------------------------------------------------------------------------#
+# Linux Makefile for CONNEX TESTS                                              #
+#------------------------------------------------------------------------------#
+
+
+WORKDIR = `pwd`
+
+CXX = g++
+
+INC_DIR = include
+BUILD_DIR = build
+SRC_DIR = src
+LIB_DIR = libs
+
+CFLAGS = -fPIC -std=c++0x -g
+LDFLAGS_DEBUG =  $(LDFLAGS)
+
+#OBJ = $(BUILD_DIR)/test.o $(BUILD_DIR)/simple_tests.o $(BUILD_DIR)/simple_io_tests.o $(BUILD_DIR)/controller_tests.o
+
+ARCH = connex-rc
+
+.PHONY: all
+all: make_paths build
+
+.PHONY: make_paths
+make_paths: 
+	mkdir -p $(BUILD_DIR)
+
+$(BUILD_DIR)/test_connex-rc_comb: $(SRC_DIR)/test_connex-rc_comb.cpp
+	$(CXX) $(CFLAGS) -I$(INC_DIR) -I../include -I../arch/$(ARCH)/include $(SRC_DIR)/test_connex-rc_comb.cpp  -L../libs/$(ARCH)/ -o $(BUILD_DIR)/test_connex-rc_comb -lopincaa 
+
+.PHONY: clean
+clean: 
+	rm -rf $(BUILD_DIR)
+
+

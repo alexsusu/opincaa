@@ -12,6 +12,7 @@
 #include <string>
 #include <fcntl.h>
 #include <sys/mman.h>
+#include <fstream>
 
 #define DEFAULT_DISTRIBUTION_FIFO   "/dev/xillybus_connex_instruction_32"
 #define DEFAULT_REDUCTION_FIFO      "/dev/xillybus_connex_reduction_32"
@@ -27,9 +28,9 @@
  */
 static struct
 {
-    unsigned type;
-    unsigned lsAddress;
-    unsigned vectorCount;
+	unsigned type;
+	unsigned lsAddress;
+	unsigned vectorCount;
 } connex_io_descriptor;
 
 /***************************************************************************************************
@@ -56,23 +57,23 @@ string ConnexMachine::targetArchitecture = TARGET_ARCH;
  */
 void ConnexMachine::addKernel(Kernel *kernel)
 {
-    string name = kernel->getName();
-    const string allowOverwrite = "allowOverwrite";
-    mapMutex.lock();
-    if(kernels.count(name) > 0)
-    {
-        if (name.find(allowOverwrite) == std::string::npos) //no explicit request for overwrite
-        {
-            mapMutex.unlock();
-            throw string("Kernel ") + name + string(" already exists in ConnexMachine::addKernel");
-        }
-        else
-        {
-            kernels.erase(name);
-        }
-    }
-    kernels.insert(map<string, Kernel*>::value_type(name, kernel));
-    mapMutex.unlock();
+	string name = kernel->getName();
+	const string allowOverwrite = "allowOverwrite";
+	mapMutex.lock();
+	if(kernels.count(name) > 0)
+	{
+		if (name.find(allowOverwrite) == std::string::npos) //no explicit request for overwrite
+		{
+			mapMutex.unlock();
+			throw string("Kernel ") + name + string(" already exists in ConnexMachine::addKernel");
+		}
+		else
+		{
+			kernels.erase(name);
+		}
+	}
+	kernels.insert(map<string, Kernel*>::value_type(name, kernel));
+	mapMutex.unlock();
 }
 
 /***************************************************************************************************
@@ -85,12 +86,12 @@ void ConnexMachine::addKernel(Kernel *kernel)
  */
 string ConnexMachine::dumpKernel(string kernelName)
 {
-    if(kernels.count(kernelName) == 0)
-    {
-        throw string("Kernel ") + kernelName + string(" not found in ConnexMachine::dumpKernel!");
-    }
-    Kernel *kernel = kernels.find(kernelName)->second;
-    return kernel->dump();
+	if(kernels.count(kernelName) == 0)
+	{
+		throw string("Kernel ") + kernelName + string(" not found in ConnexMachine::dumpKernel!");
+	}
+	Kernel *kernel = kernels.find(kernelName)->second;
+	return kernel->dump();
 }
 
 
@@ -116,13 +117,13 @@ string ConnexMachine::disassembleKernel(string kernelName)
  */
 unsigned ConnexMachine::readFromPipe(int descriptor, void* destination, unsigned byteCount)
 {
-    char* dest = (char*)destination;
-    unsigned totalBytesRead = 0;
-    do{
-        totalBytesRead += read(descriptor, dest + totalBytesRead, byteCount - totalBytesRead);
-    }while(byteCount != totalBytesRead);
+	char* dest = (char*)destination;
+	unsigned totalBytesRead = 0;
+	do{
+		totalBytesRead += read(descriptor, dest + totalBytesRead, byteCount - totalBytesRead);
+	}while(byteCount != totalBytesRead);
     
-    return byteCount;
+	return byteCount;
 }
 
 /***************************************************************************************************
@@ -141,40 +142,36 @@ ConnexMachine::ConnexMachine(string distributionDescriptorPath = DEFAULT_DISTRIB
                                 string readDescriptorPath = DEFAULT_IO_READ_FIFO,
                                 string registerInterfacePath = DEFAULT_REGISTER_FILE)
 {
-    const char* distpath = distributionDescriptorPath.c_str();
-    const char* redpath = reductionDescriptorPath.c_str();
-    const char* wiopath = writeDescriptorPath.c_str();
-    const char* riopath = readDescriptorPath.c_str();
-    const char* regpath = registerInterfacePath.c_str();
+	const char* distpath = distributionDescriptorPath.c_str();
+	const char* redpath = reductionDescriptorPath.c_str();
+	const char* wiopath = writeDescriptorPath.c_str();
+	const char* riopath = readDescriptorPath.c_str();
+	const char* regpath = registerInterfacePath.c_str();
     
-    registerFile = open(regpath, O_RDONLY);
+	registerFile = open(regpath, O_RDONLY);
 
-    if(registerFile < 0)
-    {
-        throw string("Unable to access accelerator registers");
-    }
+	if(registerFile < 0)
+	{
+		throw string("Unable to access accelerator registers");
+	}
 
-   // printf("Accelerator revision is %s\n",checkAcceleratorArchitecture().c_str());
+	printf("Accelerator revision is %s\n",checkAcceleratorArchitecture().c_str());
    
-    cout << "Dist: " << distpath << "; red:" << redpath << "; Wiopath: " << wiopath << "; riopath" << riopath << endl;
+	cout << "Dist: " << distpath << "; red:" << redpath << "; Wiopath: " << wiopath << "; riopath" << riopath << endl;
 
-    distributionFifo = open(distpath, O_WRONLY);
-    reductionFifo = open(redpath, O_RDONLY);
-    ioWriteFifo = open(wiopath, O_WRONLY);
-    ioReadFifo = open(riopath, O_RDONLY);
+	distributionFifo = open(distpath, O_WRONLY);
+	reductionFifo = open(redpath, O_RDONLY);
+	ioWriteFifo = open(wiopath, O_WRONLY);
+	ioReadFifo = open(riopath, O_RDONLY);
     
-    if(distributionFifo < 0 ||
-        reductionFifo  <0 ||
-        ioWriteFifo < 0 ||
-        ioReadFifo < 0
-        )
-    {
-        throw string("Unable to open one or more accelerator FIFOs");
-    }
-    connexInstructionsCounter.assign((1 << OPCODE_SIZE), 0);
-    enableMachineHistogram = false;
-    printf("ConnexMachine created !\n");
-    fflush(stdout);
+	if(distributionFifo < 0 || reductionFifo  <0 || ioWriteFifo < 0 || ioReadFifo < 0)
+	{
+		throw string("Unable to open one or more accelerator FIFOs");
+	}
+	connexInstructionsCounter.assign((1 << OPCODE_SIZE), 0);
+	enableMachineHistogram = false;
+	printf("ConnexMachine created !\n");
+	fflush(stdout);
 }
 
 /***************************************************************************************************
@@ -185,10 +182,10 @@ ConnexMachine::ConnexMachine(string distributionDescriptorPath = DEFAULT_DISTRIB
  */
 ConnexMachine::~ConnexMachine()
 {
-    if(distributionFifo > 0) close(distributionFifo);
-    if(reductionFifo > 0) close(reductionFifo);
-    if(ioWriteFifo > 0) close(ioWriteFifo);
-    if(ioReadFifo > 0) close(ioReadFifo);
+	if(distributionFifo > 0) close(distributionFifo);
+	if(reductionFifo > 0) close(reductionFifo);
+	if(ioWriteFifo > 0) close(ioWriteFifo);
+	if(ioReadFifo > 0) close(ioReadFifo);
 }
 
 /***************************************************************************************************
@@ -200,22 +197,22 @@ ConnexMachine::~ConnexMachine()
  */
 void ConnexMachine::executeKernel(string kernelName)
 {
-    threadMutexIR.lock();
-    if(kernels.count(kernelName) == 0)
-    {
-	threadMutexIR.unlock();
-        throw string("Kernel ") + kernelName + string(" not found in ConnexMachine::executeKernel!");
-    }
-    Kernel *kernel = kernels.find(kernelName)->second;
-    if(enableMachineHistogram == true){
-    	vector<int> h;
-    	h = kernel->getInstructionsCounter();
-    	for(int i=0; i<(1 <<OPCODE_SIZE); i++){
-		connexInstructionsCounter[i] += h[i];
+	threadMutexIR.lock();
+	if(kernels.count(kernelName) == 0)
+	{
+		threadMutexIR.unlock();
+		throw string("Kernel ") + kernelName + string(" not found in ConnexMachine::executeKernel!");
+	}
+	Kernel *kernel = kernels.find(kernelName)->second;
+	if(enableMachineHistogram == true){
+		vector<int> h;
+		h = kernel->getInstructionsCounter();
+		for(int i=0; i<(1 <<OPCODE_SIZE); i++){
+			connexInstructionsCounter[i] += h[i];
+    		}
     	}
-    }
-    kernel->writeTo(distributionFifo);
-    threadMutexIR.unlock();
+    	kernel->writeTo(distributionFifo);
+    	threadMutexIR.unlock();
 }
 
 /***************************************************************************************************
@@ -232,30 +229,30 @@ int ConnexMachine::writeDataToArray(const void *buffer, unsigned vectorCount, un
 {
 	threadMutex.lock();
 
-    connex_io_descriptor.type = IO_WRITE_OPERATION;
-    /* Use IO_LS_ADDRESS macro to mask the least significant 10 bits */
-    connex_io_descriptor.lsAddress = IO_LS_ADDRESS(startVectorIndex);
-    /* Use IO_VECTOR_COUNT macro to mask the least significant 10 bits */
-    connex_io_descriptor.vectorCount = IO_VECTOR_COUNT(vectorCount);
+	connex_io_descriptor.type = IO_WRITE_OPERATION;
+	/*Use IO_LS_ADDRESS macro to mask the least significant 10 bits */
+    	connex_io_descriptor.lsAddress = IO_LS_ADDRESS(startVectorIndex);
+    	/* Use IO_VECTOR_COUNT macro to mask the least significant 10 bits */
+    	connex_io_descriptor.vectorCount = IO_VECTOR_COUNT(vectorCount);
 
-    /* Issue the command */
-    write(ioWriteFifo, &connex_io_descriptor, sizeof(connex_io_descriptor));
+    	/* Issue the command */
+    	write(ioWriteFifo, &connex_io_descriptor, sizeof(connex_io_descriptor));
 
-    /* Write the data */
-    int bytesWritten = write(ioWriteFifo, buffer, vectorCount * CONNEX_VECTOR_LENGTH * 2);
+    	/* Write the data */
+    	int bytesWritten = write(ioWriteFifo, buffer, vectorCount * CONNEX_VECTOR_LENGTH * 2);
 
-    /* Flush the descriptor */
-    write(ioWriteFifo, NULL, 0);
+    	/* Flush the descriptor */
+    	write(ioWriteFifo, NULL, 0);
 
-    /* Read the ACK, NOTE:this is blocking */
-    int response;
-    readFromPipe(ioReadFifo, &response, sizeof(int));
+    	/* Read the ACK, NOTE:this is blocking */
+    	int response;
+    	readFromPipe(ioReadFifo, &response, sizeof(int));
 
-    //TODO: verify response
+   	 //TODO: verify response
 
 	threadMutex.unlock();
 
-    return bytesWritten;
+	return bytesWritten;
 }
 
 /***************************************************************************************************
@@ -271,33 +268,33 @@ int ConnexMachine::writeDataToArray(const void *buffer, unsigned vectorCount, un
 */
 void* ConnexMachine::readDataFromArray(void *buffer, unsigned vectorCount, unsigned vectorIndex)
 {
-    if(buffer == NULL){
-        buffer = new short[vectorCount * CONNEX_VECTOR_LENGTH];
-    }
+    	if(buffer == NULL){
+        	buffer = new short[vectorCount * CONNEX_VECTOR_LENGTH];
+	}
 
 	threadMutex.lock();
 
-    connex_io_descriptor.type = IO_READ_OPERATION;
-    /* Use IO_LS_ADDRESS macro to mask the least significant 10 bits */
-    connex_io_descriptor.lsAddress = IO_LS_ADDRESS(vectorIndex);
-    /* Use IO_VECTOR_COUNT macro to mask the least significant 10 bits */
-    connex_io_descriptor.vectorCount = IO_VECTOR_COUNT(vectorCount);
+	connex_io_descriptor.type = IO_READ_OPERATION;
+    	/* Use IO_LS_ADDRESS macro to mask the least significant 10 bits */
+	connex_io_descriptor.lsAddress = IO_LS_ADDRESS(vectorIndex);
+    	/* Use IO_VECTOR_COUNT macro to mask the least significant 10 bits */
+	connex_io_descriptor.vectorCount = IO_VECTOR_COUNT(vectorCount);
 
-    /* Issue the command */
-    write(ioWriteFifo, &connex_io_descriptor, sizeof(connex_io_descriptor));
+	/* Issue the command */
+	write(ioWriteFifo, &connex_io_descriptor, sizeof(connex_io_descriptor));
 
-    /* Flush the descriptor */
-    write(ioWriteFifo, NULL, 0);
+   	/* Flush the descriptor */
+    	write(ioWriteFifo, NULL, 0);
 
-    /* Read the data */
-    if(readFromPipe(ioReadFifo, buffer, vectorCount * CONNEX_VECTOR_LENGTH * 2) < 0)
-    {
+    	/* Read the data */
+	if(readFromPipe(ioReadFifo, buffer, vectorCount * CONNEX_VECTOR_LENGTH * 2) < 0)
+	{
 		threadMutex.unlock();
-        throw string("Error reading from memory FIFO");
-    }
+		throw string("Error reading from memory FIFO");
+	}
 
 	threadMutex.unlock();
-    return buffer;
+	return buffer;
 }
 
 /***************************************************************************************************
@@ -307,9 +304,9 @@ void* ConnexMachine::readDataFromArray(void *buffer, unsigned vectorCount, unsig
  */
 int ConnexMachine::readReduction()
 {
-    int result;
-    readMultiReduction(1, &result);
-    return result;
+	int result;
+	readMultiReduction(1, &result);
+	return result;
 }
 
 /***************************************************************************************************
@@ -320,16 +317,16 @@ int ConnexMachine::readReduction()
  */
 void ConnexMachine::readMultiReduction(int count, void* buffer)
 {
-    int result;
-    threadMutexIR.lock();
+    	int result;
+    	threadMutexIR.lock();
 
-    if(readFromPipe(reductionFifo, buffer, count*sizeof(int)) < 0)
-    {
-        threadMutexIR.unlock();
-        throw string("Error reading from reduction FIFO");
-    }
+    	if(readFromPipe(reductionFifo, buffer, count*sizeof(int)) < 0)
+    	{
+      		threadMutexIR.unlock();
+      		throw string("Error reading from reduction FIFO");
+    	}
 
-    threadMutexIR.unlock();
+    	threadMutexIR.unlock();
 }
 
 /***************************************************************************************************
@@ -339,41 +336,46 @@ void ConnexMachine::readMultiReduction(int count, void* buffer)
  */
 string ConnexMachine::checkAcceleratorArchitecture()
 {
-    void *map_addr = mmap(NULL, 64, PROT_READ, MAP_SHARED, registerFile, 0);
+    	void *map_addr = mmap(NULL, 64, PROT_READ, MAP_SHARED, registerFile, 0);
     
-    if(map_addr == MAP_FAILED)
-    {
-        throw string("Failed to mmap accelerator register interface");
-    }
+    	if(map_addr == MAP_FAILED)
+    	{
+       		throw string("Failed to mmap accelerator register interface");
+    	}
     
-    volatile unsigned int *regs = (volatile unsigned int *)map_addr;
+	volatile unsigned int *regs = (volatile unsigned int *)map_addr;
 
-    std::string archName = std::string((char*)regs);
-    archName = string(archName.rbegin(), archName.rend());
+	std::string archName = std::string((char*)regs);
+	archName = string(archName.rbegin(), archName.rend());
     
-    if(archName.compare(targetArchitecture) != 0)
-    {
-        throw string("Accelerator architecture ("+archName+") does not match OPINCAA target architecture ("+targetArchitecture+")");
-    }
+	if(archName.compare(targetArchitecture) != 0)
+    	{
+		throw string("Accelerator architecture ("+archName+") does not match OPINCAA target architecture ("+targetArchitecture+")");
+    	}
     
-    std::string accRevision = std::to_string(regs[11])+
-                              std::to_string(regs[10])+
-                              std::to_string(regs[9])+
-                              std::to_string(regs[8])+
-                              std::to_string(regs[7])+
-                              std::to_string(regs[6]);
+	std::string accRevision = std::to_string(regs[11])+
+                              	std::to_string(regs[10])+
+                              	std::to_string(regs[9])+
+                              	std::to_string(regs[8])+
+                              	std::to_string(regs[7])+
+                              	std::to_string(regs[6]);
 
-    return accRevision;
+	return accRevision;
                            
 }
 
 
 /***************************************************************************************************/
 vector<int> ConnexMachine::getConnexInstructionsCounter(){
-	
-       /* for(int i=0; i<(1 <<OPCODE_SIZE); i++){
-	    cout<<connexInstructionsCounter[i]<<endl;
-        }*/
+	ofstream g("ConnexMachineHistogram");
+	Instruction instr(0,0,0,0);	
+	g<<endl<<endl;
+	for(int i=0; i<(1 <<OPCODE_SIZE); i++){
+		if (((i<35) && (i != 2) && (i != 1) && (i != 32)) || ((i>43) && (i != 60))){		
+			g<<instr.mnemonic(i)<< " : " <<connexInstructionsCounter[i]<<endl;
+        	}
+    	}
+	g.close();
 	return connexInstructionsCounter;
 }
 

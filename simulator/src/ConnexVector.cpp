@@ -99,7 +99,7 @@ void ConnexVector::loadIndex()
  */
 void ConnexVector::write(unsigned short *data)
 {
-    memcpy(cells, data, CONNEX_VECTOR_LENGTH * sizeof(unsigned short));
+	memcpy(cells, data, CONNEX_VECTOR_LENGTH * sizeof(unsigned short));
 }
 
 /****************************************************************************
@@ -109,7 +109,7 @@ void ConnexVector::write(unsigned short *data)
  */
 unsigned short* ConnexVector::read()
 {
-    return cells;
+	return cells;
 }
 
 /****************************************************************************
@@ -140,10 +140,10 @@ IBINARY_OP_LT(<)
  */
 void ConnexVector::operator=(ConnexVector anotherVector)
 {
-    for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
-    {
-        cells[i] = (active.cells[i] * anotherVector.cells[i]) | (!active.cells[i] * cells[i]);
-    }
+	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+	{
+	cells[i] = (active.cells[i] * anotherVector.cells[i]) | (!active.cells[i] * cells[i]);
+	}
 }
 
 /****************************************************************************
@@ -151,7 +151,7 @@ void ConnexVector::operator=(ConnexVector anotherVector)
  */
 void ConnexVector::copyFrom(ConnexVector anotherVector)
 {
-    memcpy(cells, anotherVector.cells, sizeof(cells));
+	memcpy(cells, anotherVector.cells, sizeof(cells));
 }
 
 
@@ -163,9 +163,9 @@ void ConnexVector::operator=(bool value)
 	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
 	{
 		if (value == true)
-            active.cells[i] = 1;
+			active.cells[i] = 1;
 		else
-            active.cells[i] = 0;
+			active.cells[i] = 0;
 	}
 }
 
@@ -188,11 +188,11 @@ void ConnexVector::operator*(ConnexVector anotherVector)
 	int result;
 	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
 	{
-        if(active.cells[i]==1){
-		  result = cells[i] * anotherVector.cells[i];
-   	      multLow.cells[i] = (short)result;
-		  multHigh.cells[i] = (short)(result >> 16);
-       }
+        	if(active.cells[i]==1){
+			result = cells[i] * anotherVector.cells[i];
+			multLow.cells[i] = (short)result;
+			multHigh.cells[i] = (short)(result >> 16);
+       		}
 	}
 }
 
@@ -220,9 +220,9 @@ ConnexVector ConnexVector::operator~()
 	ConnexVector result;
 	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
 	{
-        if(active.cells[i]==1){
-		    result.cells[i] = ~cells[i];
-        }
+		if(active.cells[i]==1){
+			result.cells[i] = ~cells[i];
+		}
 	}
 	return result;
 }
@@ -281,9 +281,9 @@ ConnexVector ConnexVector::shr(ConnexVector anotherVector)
 	ConnexVector result;
 	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
 	{
-        if(active.cells[i]==1){
-		  result.cells[i] = (unsigned short)cells[i] >> anotherVector.cells[i];
-        } 
+		if(active.cells[i]==1){
+			result.cells[i] = (unsigned short)cells[i] >> anotherVector.cells[i];
+		} 
 	}
 	return result;
 }
@@ -296,9 +296,9 @@ ConnexVector ConnexVector::ishr(unsigned short value)
 	ConnexVector result;
 	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
 	{
-        if(active.cells[i]==1){
-		  result.cells[i] = (unsigned short)cells[i] >> value;
-        } 
+		if(active.cells[i]==1){
+			result.cells[i] = (unsigned short)cells[i] >> value;
+		} 
 	}
 	return result;
 }
@@ -311,9 +311,9 @@ ConnexVector ConnexVector::shra(ConnexVector anotherVector)
 	ConnexVector result;
 	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
 	{
-        if(active.cells[i]==1){
-		  result.cells[i] = ((short)cells[i]) >> anotherVector.cells[i];
-        }
+		if(active.cells[i]==1){
+			result.cells[i] = ((short)cells[i]) >> anotherVector.cells[i];
+		}
 	}
 	return result;
 }
@@ -327,9 +327,9 @@ ConnexVector ConnexVector::ishra(unsigned short value)
 	ConnexVector result;
 	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
 	{
-        if(active.cells[i]==1){
-		  result.cells[i] = (short)cells[i] >> value;
-        }
+		if(active.cells[i]==1){
+			result.cells[i] = (short)cells[i] >> value;
+		}
 	}
 	return result;
 }
@@ -371,23 +371,22 @@ void ConnexVector::shift(int direction)
 {
     bool done;
     ConnexVector tmp;
-    do
-    {
+	do
+	{
         done = true;
-        for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
-        {
-            if(ConnexVector::shiftCountReg.cells[i] > 0)
-            {
-                //tmp.cells[i] = cells[(i + direction + CONNEX_VECTOR_LENGTH) % CONNEX_VECTOR_LENGTH];
-                tmp.cells[i] = cells[(i + direction) & (CONNEX_VECTOR_LENGTH - 1)];
-                ConnexVector::shiftCountReg.cells[i]--;
-            }
-
-            done = done && (!ConnexVector::shiftCountReg.cells[i]);
-        }
-        memcpy(cells, tmp.cells, sizeof(cells));
-    }
-    while(!done);
+		for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+		{
+			if(ConnexVector::shiftCountReg.cells[i] > 0)
+			{
+				//tmp.cells[i] = cells[(i + direction + CONNEX_VECTOR_LENGTH) % CONNEX_VECTOR_LENGTH];
+				tmp.cells[i] = cells[(i + direction) & (CONNEX_VECTOR_LENGTH - 1)];
+				ConnexVector::shiftCountReg.cells[i]--;
+			}
+			done = done && (!ConnexVector::shiftCountReg.cells[i]);
+		}
+		memcpy(cells, tmp.cells, sizeof(cells));
+	}
+	while(!done);
 }
 
 /****************************************************************************
@@ -398,11 +397,11 @@ void ConnexVector::shift(int direction)
  */
 void ConnexVector::loadFrom(ConnexVector *localStore, ConnexVector addresses)
 {
-    for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
-    {
-        cells[i] = localStore[addresses.cells[i]].cells[i] * active.cells[i] | cells[i] * !active.cells[i];
-    }
-}
+	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+    	{
+		cells[i] = localStore[addresses.cells[i]].cells[i] * active.cells[i] | cells[i] * !active.cells[i];
+    	}
+}	
 
 /****************************************************************************
  * Writes this vector to the localStore, using addresses vector for addresses
@@ -412,27 +411,27 @@ void ConnexVector::loadFrom(ConnexVector *localStore, ConnexVector addresses)
  */
 void ConnexVector::storeTo(ConnexVector *localStore, ConnexVector addresses)
 {
-    for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
-    {
-        short value = localStore[addresses.cells[i]].cells[i];
-        localStore[addresses.cells[i]].cells[i] = cells[i] * active.cells[i] | value * !active.cells[i];
-    }
+	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+	{
+		short value = localStore[addresses.cells[i]].cells[i];
+        	localStore[addresses.cells[i]].cells[i] = cells[i] * active.cells[i] | value * !active.cells[i];
+	}
 }
 
 void ConnexVector::Unconditioned_Setactive(ConnexVector anotherVector)
 {
-    for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
-        active.cells[i] = anotherVector.cells[i];
+	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+		active.cells[i] = anotherVector.cells[i];
 }
 
 void ConnexVector::Unconditioned_Setactive(bool value)
 {
-    if (value == true)
-        for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
-            active.cells[i] = 1;
-    else
-        for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
-            active.cells[i] = 0;
+	if (value == true)
+        	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+			active.cells[i] = 1;
+	else
+        	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
+			active.cells[i] = 0;
 }
 
 
@@ -442,8 +441,8 @@ void ConnexVector::Unconditioned_Setactive(bool value)
 void ConnexVector::setFlagVload(ConnexVector anotherVector){
         int i;
 	for(i=0; i<CONNEX_VECTOR_LENGTH; i++){
-	    eqFlag.cells[i] = anotherVector.cells[i] == 0;                                        
-	    ltFlag.cells[i] = (short)anotherVector.cells[i] < 0;
+		eqFlag.cells[i] = anotherVector.cells[i] == 0;                                        
+		ltFlag.cells[i] = (short)anotherVector.cells[i] < 0;
 	}
 }
 
@@ -453,8 +452,8 @@ void ConnexVector::setFlagVload(ConnexVector anotherVector){
 void ConnexVector::setFlagVload(short value){
 	int i;
 	for(i=0; i<CONNEX_VECTOR_LENGTH; i++){
-	    eqFlag.cells[i] = value == 0;                                        
-	    ltFlag.cells[i] = value < 0;                                        
+		eqFlag.cells[i] = value == 0;                                        
+		ltFlag.cells[i] = value < 0;                                        
 	}
 }
 

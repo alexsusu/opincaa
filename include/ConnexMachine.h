@@ -186,13 +186,13 @@ class ConnexMachine
 		/*
          * The mutex used to sync the IO operations.
          */
-		mutex threadMutex;
-		mutex threadMutexIR;
+	mutex threadMutex;
+	mutex threadMutexIR;
 
-		/*
+	/*
          * The mutex used to sync the kernel map operations
          */
-		static mutex mapMutex;
+	static mutex mapMutex;
         
         /*
          * The name of the architecture for which OPINCAA was compiled

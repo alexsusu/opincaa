@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <errno.h>
 #include <iostream>
+#include <fstream>
+//ofstream g("histogram.txt");
 
 /************************************************************
 * Constructor for creating a new Kernel
@@ -21,11 +23,11 @@
 */
 Kernel::Kernel(string name)
 {
-    if(name.length() == 0)
-    {
-        throw new string("Invalid kernel name");
-    }
-    this->name = name;
+	if(name.length() == 0)
+	{
+		throw new string("Invalid kernel name");
+	}
+	this->name = name;
 }
 
 /************************************************************
@@ -45,7 +47,7 @@ Kernel::~Kernel()
 */
 void Kernel::append(Instruction instruction)
 {
-    instructions.push_back(instruction.assemble());
+	instructions.push_back(instruction.assemble());
 	loopDestination++;
 }
 
@@ -56,7 +58,7 @@ void Kernel::append(Instruction instruction)
 */
 void Kernel::writeTo(void * buffer)
 {
-    memcpy(buffer, instructions.data(), instructions.size() * sizeof(unsigned));
+	memcpy(buffer, instructions.data(), instructions.size() * sizeof(unsigned));
 }
 
 /************************************************************
@@ -65,10 +67,10 @@ void Kernel::writeTo(void * buffer)
 */
 void Kernel::writeTo(int fileDescriptor)
 {
-    write(fileDescriptor, instructions.data(), instructions.size() * sizeof(unsigned));
+	write(fileDescriptor, instructions.data(), instructions.size() * sizeof(unsigned));
 
-    /* Flush the descriptor */
-    write(fileDescriptor, NULL, 0);
+	/* Flush the descriptor */
+	write(fileDescriptor, NULL, 0);
 }
 
 /************************************************************
@@ -78,7 +80,7 @@ void Kernel::writeTo(int fileDescriptor)
  */
 unsigned Kernel::size()
 {
-    return instructions.size();
+	return instructions.size();
 }
 
 /************************************************************
@@ -88,7 +90,7 @@ unsigned Kernel::size()
  */
 string Kernel::getName()
 {
-    return name;
+	return name;
 }
 
 /************************************************************
@@ -100,12 +102,12 @@ string Kernel::getName()
 string Kernel::dump()
 {
     string kernel;
-    for(vector<unsigned>::iterator element = instructions.begin(); element != instructions.end(); element++)
-    {   //cout<<hex<<*element<<dec<<endl;
-        kernel += Instruction(*element).dump();    
-    }
+	for(vector<unsigned>::iterator element = instructions.begin(); element != instructions.end(); element++)
+	{   //cout<<hex<<*element<<dec<<endl;
+		kernel += Instruction(*element).dump();    
+	}
 
-    return kernel;
+	return kernel;
 }
 
 /***********************************************************
@@ -149,24 +151,34 @@ void Kernel::appendLoopInstruction()
 */
 void Kernel::kernelHistogram()
 {
-    instructionsCounter.assign((1 <<OPCODE_SIZE), 0);
-    int a, nrOfJmp;
-    Instruction instr(0,0,0,0);	
-    for(vector<unsigned>::iterator element = instructions.begin(); element != instructions.end(); element++)
+	instructionsCounter.assign((1 <<OPCODE_SIZE), 0);
+	int a, nrOfJmp;
+	bool inLoop = false;
+	ofstream g(name);
+	Instruction instr(0,0,0,0);	
+	for(vector<unsigned>::iterator element = instructions.begin(); element != instructions.end(); element++)
         {   
      	 	a = (*element) >> OPCODE_POS;
-         	if (a == 33) {nrOfJmp = Instruction(*element).getValue(); } 
- 	 	if(a == 34){
-			instructionsCounter[a] += (nrOfJmp + 1);
-         	} else {
-	 		instructionsCounter[a]++;
-         	}
+         	if (a == 33) {
+			nrOfJmp = Instruction(*element).getValue();
+			instructionsCounter[a]++;
+			inLoop = true;
+		} else {
+			if(inLoop == true) {
+				instructionsCounter[a] += (nrOfJmp+1); 
+ 	 			if(a == 34){inLoop = false;}
+			} else {
+				instructionsCounter[a]++;
+         		}
+		}
         }
-    /*for(int i=0; i<(1 <<OPCODE_SIZE); i++){
-        if (((i<35) && (i != 2) && (i != 1) && (i != 32)) || ((i>43) && (i != 60))){
-            cout<<instr.mnemonic(i)<< " : " <<instructionsCounter[i]<<endl;
-        }
-    }*/ //used just for debug
+	g<<endl<<endl<<name<<endl<<endl;
+	for(int i=0; i<(1 <<OPCODE_SIZE); i++){
+		if (((i<35) && (i != 2) && (i != 1) && (i != 32)) || ((i>43) && (i != 60))){		
+			g<<instr.mnemonic(i)<< " : " <<instructionsCounter[i]<<endl;
+        	}
+    	}
+	g.close();	
 }
 
 vector<int> Kernel::getInstructionsCounter(){

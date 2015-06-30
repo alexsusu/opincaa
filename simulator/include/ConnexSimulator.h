@@ -47,38 +47,38 @@ class ConnexSimulator
 		 */
 		~ConnexSimulator();
 
-        /* Waits for the threads for program and data transfer to end.
+        	/* Waits for the threads for program and data transfer to end.
 		 * NB: They don't stop unless killed.
 		 */
 		void waitFinish();
 
 	private:
 
-        /*
-         * The register file for this simulator
-         */
+               /*
+         	* The register file for this simulator
+         	*/
 		ConnexVector registerFile[CONNEX_REG_COUNT];
 
-        /*
-         * The local store for this simulator
-         */
+               /*
+         	* The local store for this simulator
+         	*/
 		ConnexVector localStore[CONNEX_MEM_SIZE];
 
-		/*
-         * The controller instruction queue
-         */
+	       /*
+         	* The controller instruction queue
+         	*/
 		InstructionQueue *instructionQueue;
 		
-		/*
-         * The controller loop repeat Counter
-         */
+	       /*
+         	* The controller loop repeat Counter
+         	*/
 		unsigned short repeatCounter;
 		
 		/*
-         * A flag which is true when the array is executing a loop, 
+         	 * A flag which is true when the array is executing a loop, 
 		 * meaning the instructions are read from the local queue,
 		 * rather then the Named Pipe
-         */
+         	 */
 		bool codeInLoop;
 		
 		/*
@@ -101,8 +101,8 @@ class ConnexSimulator
 		 */
 		int writeDescriptor;
         
-        thread ioThread;
-        thread coreThread;
+        	thread ioThread;
+        	thread coreThread;
 
 		/*
 		 * Opens the FIFO at the specified path in the specified mode
@@ -113,12 +113,12 @@ class ConnexSimulator
 		 */
 		int openPipe(string path, int mode);
 
-        /*
-         * Creates a file with the identification of the simulated accelerator
-         *
-         * @param path the path to the FIFO
-         */
-        void setupAccInfo(string infoPath);
+        	/*
+        	 * Creates a file with the identification of the simulated accelerator
+         	 *
+        	 * @param path the path to the FIFO
+        	 */
+        	void setupAccInfo(string infoPath);
         
 		/*
 		 * Starts the threads for program and data transfer.

@@ -36,19 +36,19 @@ ConnexSimulator::ConnexSimulator(string distributionDescriptorPath,
 						string readDescriptorPath,
                         string accInfoPath)
 {
-    //cout<<"Opening simu:"<<distributionDescriptorPath<<endl;
-    distributionDescriptor = openPipe(distributionDescriptorPath, O_RDWR);
+    	//cout<<"Opening simu:"<<distributionDescriptorPath<<endl;
+    	distributionDescriptor = openPipe(distributionDescriptorPath, O_RDWR);
 
 	//cout<<"Opening simu:"<<writeDescriptorPath<<endl;
 	writeDescriptor = openPipe(writeDescriptorPath, O_RDWR);
 
-    //cout<<"Opening simu:"<<reductionDescriptorPath<<endl;
-    reductionDescriptor = openPipe(reductionDescriptorPath, O_RDWR);
+    	//cout<<"Opening simu:"<<reductionDescriptorPath<<endl;
+	reductionDescriptor = openPipe(reductionDescriptorPath, O_RDWR);
 
 	//cout<<"Opening simu:"<<readDescriptorPath<<endl;
 	readDescriptor = openPipe(readDescriptorPath, O_RDWR);
 
-    setupAccInfo(accInfoPath);
+	setupAccInfo(accInfoPath);
 
 	instructionQueue = new InstructionQueue(INSTRUCTION_QUEUE_LENGTH);
 
@@ -83,10 +83,10 @@ int ConnexSimulator::openPipe(string pipePath, int mode)
 	mkfifo(path, 0666);
 
 	/* Try and attach to it */
-    if((fifoDescriptor = open(path, mode)) < 0)
+	if((fifoDescriptor = open(path, mode)) < 0)
 	{
 		throw string("Unable to open FIFO ") + path;
-    }
+    	}
 
 	cout << "FIFO " << pipePath << " succesfully opened!" << endl<<flush;
 	return fifoDescriptor;
@@ -99,15 +99,15 @@ int ConnexSimulator::openPipe(string pipePath, int mode)
  */
 void ConnexSimulator::setupAccInfo(string infoPath)
 {
-    ofstream infoFile;
+	ofstream infoFile;
 
-    infoFile.open(infoPath);
-    string archName("connex-rc");
-    archName = string(archName.rbegin(), archName.rend());
+	infoFile.open(infoPath);
+	string archName("connex-rc");
+	archName = string(archName.rbegin(), archName.rend());
 
-    infoFile << archName << '\0';
-    for(int i=infoFile.tellp(); i<48; i++) infoFile << " ";
-    infoFile.close();
+	infoFile << archName << '\0';
+	for(int i=infoFile.tellp(); i<48; i++) infoFile << " ";
+	infoFile.close();
 }
 
 /****************************************************************************
@@ -116,14 +116,14 @@ void ConnexSimulator::setupAccInfo(string infoPath)
  */
 void ConnexSimulator::initiateThreads()
 {
-    ioThread = thread(&ConnexSimulator::ioThreadHandler, this);
-    coreThread = thread(&ConnexSimulator::coreThreadHandler, this);
+	ioThread = thread(&ConnexSimulator::ioThreadHandler, this);
+	coreThread = thread(&ConnexSimulator::coreThreadHandler, this);
 }
 
 void ConnexSimulator::waitFinish()
 {
-    ioThread.join();
-    coreThread.join();
+	ioThread.join();
+	coreThread.join();
 }
 
 /****************************************************************************
@@ -194,7 +194,7 @@ force_all_io(ssize_t (*io)(int, void*, size_t), int fd, void *buf, size_t count)
 {
         ssize_t total = 0;
 
-        do {
+	do {
                 total += io(fd, (char *)buf + total, count - total);
         } while (total != count);
 
