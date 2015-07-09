@@ -13,6 +13,7 @@
 #include "Kernel.h"
 #include <string>
 #include <map>
+#include <vector>
 #include <mutex>
 
 #include <unistd.h>
@@ -142,6 +143,13 @@ class ConnexMachine
          * @param command the command to write.
          */
         void writeCommand(unsigned command);
+		
+		/**
+		 * Writes the specified commands to the instruction FIFO (use with caution).
+		 *
+		 * @param commands the commands to write.
+		 */
+		void writeCommands(std::vector<unsigned> commands);
 
     private:
 

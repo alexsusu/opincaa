@@ -366,3 +366,14 @@ void ConnexMachine::writeCommand(unsigned command){
         throw string("Unable to write command to instruction FIFO.");
     }
 }
+
+/**
+ * Writes the specified command to the instruction FIFO (use with caution).
+ *
+ * @param command the command to write.
+ */
+void ConnexMachine::writeCommands(vector<unsigned> commands){
+	if(write(distributionFifo, &commands[0], commands.size() * sizeof(unsigned)) != commands.size() * sizeof(unsigned)){
+		throw string("Unable to write command to instruction FIFO.");
+	}
+}
