@@ -174,6 +174,43 @@ ConnexMachine::ConnexMachine(string distributionDescriptorPath = DEFAULT_DISTRIB
 }
 
 /*
+ * Constructor for creating a new ConnexMachine
+ *
+ * @param  distributionDescriptorPath the file descriptor of the distribution FIFO (write only)
+ * @param  reductionDescriptorPath the file descriptor of the reduction FIFO (read only)
+ * @param  writeDescriptorPath the file descriptor of the IO write FIFO (write only)
+ * @param  readDescriptorPath the file descriptor of the IO read FIFO (read only)
+ *
+ */
+ConnexMachine::ConnexMachine(string distributionDescriptorPath = DEFAULT_DISTRIBUTION_FIFO,
+                                string reductionDescriptorPath = DEFAULT_REDUCTION_FIFO,
+                                string writeDescriptorPath = DEFAULT_IO_WRITE_FIFO,
+                                string readDescriptorPath = DEFAULT_IO_READ_FIFO)
+{
+    const char* distpath = distributionDescriptorPath.c_str();
+    const char* redpath = reductionDescriptorPath.c_str();
+    const char* wiopath = writeDescriptorPath.c_str();
+    const char* riopath = readDescriptorPath.c_str();
+
+    distributionFifo = open(distpath, O_WRONLY);
+    reductionFifo = open(redpath, O_RDONLY);
+    ioWriteFifo = open(wiopath, O_WRONLY);
+    ioReadFifo = open(riopath, O_RDONLY);
+
+    if(distributionFifo < 0 ||
+        reductionFifo  <0 ||
+        ioWriteFifo < 0 ||
+        ioReadFifo < 0
+        )
+    {
+        throw string("Unable to open one or more accelerator FIFOs");
+    }
+
+    printf("ConnexMachine created !\n");
+    fflush(stdout);
+}
+
+/*
  * Destructor for the ConnexMachine class
  *
  * Disposes of the kernel map and closes the associated file
