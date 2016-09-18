@@ -12,7 +12,7 @@ make
 sleep 3
 LD_LIBRARY_PATH=../libs/$1
 export LD_LIBRARY_PATH
-./build/test
+./build/test distributionFIFO reductionFIFO writeFIFO readFIFO regFile
 
 #kill simulator
 killall -9 simulator

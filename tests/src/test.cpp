@@ -30,20 +30,31 @@ void eatRand(int times)
 
 }
 
-int RunAll(bool stress)
+int RunAll(bool stress, ConnexMachine *connex)
 {
     int result = FAIL;
+
+    result = test_Simple_All(connex, stress);
+    result += test_Simple_IO_All(connex, stress);
+    jump_test(5,connex);
+
+    return result;
+
+}
+
+int main(int argc, char *argv[]){
+
+    if(argc < 6)
+    {
+        printf("Usage: %s insn red iowr iord regs\n",argv[0]);
+        return 0;
+    }
+
     try
     {
-        ConnexMachine *connex = new ConnexMachine("distributionFIFO",
-                                                "reductionFIFO",
-                                                "writeFIFO",
-                                                "readFIFO",
-                                                "regFile");
+        ConnexMachine *connex = new ConnexMachine(argv[1],argv[2],argv[3],argv[4],argv[5]);
 		
-        result = test_Simple_All(connex, stress);
-        result += test_Simple_IO_All(connex, stress);
-        jump_test(5,connex);
+        RunAll(true,connex);
 
         delete connex;
     }
@@ -53,11 +64,5 @@ int RunAll(bool stress)
         cout << err << endl;
     }
 
-    return result;
-
-}
-
-int main(){
-    RunAll(true);
 }
 
