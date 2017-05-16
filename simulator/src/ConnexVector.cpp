@@ -159,7 +159,7 @@ int ConnexVector::reduce()
 	int sum = 0;
 	for(int i=0; i<CONNEX_VECTOR_LENGTH; i++)
 	{
-		sum += cells[i];
+		sum += active.cells[i] * cells[i];
 	}
 	return sum;
 }
@@ -348,7 +348,7 @@ ConnexVector ConnexVector::ishra(unsigned short value)
 }
 
 /****************************************************************************
-* Computes the population count (number of set bits) in each element of the 
+* Computes the population count (number of set bits) in each element of the
 * argument vector. Argument is treated as unsigned, result is unsigned
 */
 ConnexVector ConnexVector::popcount()
