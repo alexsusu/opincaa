@@ -94,7 +94,7 @@ class ConnexVector
          * Copy vector not taking selection into account.
          */
          void copyFrom(ConnexVector anotherVector);
-         
+
         /*
          * List of operators
          */
@@ -169,7 +169,7 @@ class ConnexVector
         /*
          * The cell data for this vector
          */
-		unsigned short cells[CONNEX_VECTOR_LENGTH];
+		short cells[CONNEX_VECTOR_LENGTH];
 };
 
 #endif // CONNEX_VECTOR_H
