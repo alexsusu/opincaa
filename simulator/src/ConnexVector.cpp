@@ -190,7 +190,7 @@ void ConnexVector::write(unsigned short *data)
  *
  * @return the array of shorts taken from each cell
  */
-unsigned short* ConnexVector::read()
+short* ConnexVector::read()
 {
     return cells;
 }

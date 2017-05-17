@@ -88,7 +88,7 @@ class ConnexVector
          *
          * @return the array of shorts taken from each cell
          */
-		unsigned short* read();
+		short* read();
 
         /*
          * Copy vector not taking selection into account.
