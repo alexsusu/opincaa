@@ -18,6 +18,7 @@
 
 #include <unistd.h>
 
+
 using namespace std;
 
 class Kernel;
@@ -44,6 +45,9 @@ class ConnexMachine
          * Dump the specified kernel.
          */
         static string dumpKernel(string kernelName);
+
+        static Kernel *getKernel(string kernelName);
+        static string genLLVMISelManualCode(string kernelName);
 
         /**
          * Reads byteCount bytes from descriptor and places the
@@ -109,18 +113,35 @@ class ConnexMachine
          *
          * @return number of bytes written or -1 in case of error
          */
-        int writeDataToArray(const void *buffer, unsigned vectorCount, unsigned vectorIndex);
+        int writeDataToConnex(const void *buffer, unsigned vectorCount, unsigned vectorIndex);
+
+        int writeDataToConnexPartial(const void *buffer, unsigned vectorCount, unsigned numElemCount, unsigned vectorIndex);
 
         /**
          * Reads the specified amounf of bytes to the specified buffer
          * from the array IO read FIFO
          *
          * @param buffer the buffer to write the data to (if NULL, it will be created)
-         * @param bufferSize the amount of bytes to read
+         * @param vectorCount the amount of vectors to read --> bytes to read is vectorCount * CONNEX_VECTOR_LENGTH * sizeof(short)
          *
          * @return the buffer which the data was written to
          */
-        void* readDataFromArray(void *buffer, unsigned vectorCount, unsigned vectorIndex);
+        void* readDataFromConnex(void *buffer, unsigned vectorCount, unsigned vectorIndex);
+
+        /**
+         * Reads the specified amounf of bytes, numElemCount, to the specified buffer
+         * from the array IO read FIFO
+         *
+         * We use this function only for vector loop + residual loop
+         * (i.e., when numElemCount is NOT multiple of CONNEX_VECTOR_LENGTH),
+         * that is for less than a vector.
+         *
+         * @param buffer the buffer to write the data to (if NULL, it will be created)
+         * @param numElemCount the amount of bytes to read
+         *
+         * @return the buffer which the data was written to
+         */
+        void* readDataFromConnexPartial(void *buffer, unsigned vectorCount, unsigned numElemCount, unsigned vectorIndex);
 
         /**
          * Reads one int from the reduction FIFO
@@ -135,7 +156,20 @@ class ConnexMachine
         * @param count the number of int to be read
         * @param buffer the memory area where the results will be put
         */
-        void readMultiReduction(int count, void* buffer);
+        //void readMultiReduction(int count, void* buffer);
+        // Alex:
+        int readMultiReduction(int count, void* buffer);
+
+        /*
+         * Sign extend and write the numResults reduction results from the FIFO in the
+             possibly smaller or bigger array bufferRes.
+         * @param count the number of int to be read
+         * @param bufferRes the memory area where the correct results will be put
+         *
+         *  NOTE: currently works only for bufferRes of type short.
+         */
+        int readCorrectReductionResults(int count, void *bufferRes, int sizeOfPtr);
+
 
         /**
          * Writes the specified command to the instruction FIFO (use with caution).
@@ -143,13 +177,13 @@ class ConnexMachine
          * @param command the command to write.
          */
         void writeCommand(unsigned command);
-		
-		/**
-		 * Writes the specified commands to the instruction FIFO (use with caution).
-		 *
-		 * @param commands the commands to write.
-		 */
-		void writeCommands(std::vector<unsigned> commands);
+
+        /**
+         * Writes the specified commands to the instruction FIFO (use with caution).
+         *
+         * @param commands the commands to write.
+         */
+        void writeCommands(std::vector<unsigned> commands);
 
     private:
 
@@ -190,16 +224,16 @@ class ConnexMachine
          */
         static map<string, Kernel*> kernels;
 
-		/**
+        /**
          * The mutex used to sync the IO operations.
          */
-		mutex threadMutex;
-		mutex threadMutexIR;
+         mutex threadMutex;
+         mutex threadMutexIR;
 
-		/**
+        /**
          * The mutex used to sync the kernel map operations
          */
-		static mutex mapMutex;
+        static mutex mapMutex;
 
         /**
          * The name of the architecture for which OPINCAA was compiled

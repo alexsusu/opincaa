@@ -127,6 +127,8 @@ class Operand
         static Instruction ult(Operand op1, unsigned short value);
 
         static Instruction popcnt(Operand op);
+        static Instruction bitreverse(Operand op); // Alex: experimental
+
         static void reduce(Operand op);
     private:
 

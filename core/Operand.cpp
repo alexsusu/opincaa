@@ -23,12 +23,12 @@
  */
 Operand::Operand(int type, unsigned short index, bool localStoreIndexImmediate, Kernel *kernel)
 {
-    if(kernel == NULL)
+    if (kernel == NULL)
     {
         throw string("Invalid kernel reference in Operand constructor");
     }
 
-    switch(type)
+    switch (type)
     {
         case TYPE_REGISTER:
             if(index >= CONNEX_REG_COUNT)
@@ -111,7 +111,8 @@ Instruction Operand::operator+(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator+(unsigned short value)
 {
-    throw string("Unsuported operation +value ");
+    // Alex: TODO: try to print more info as from where it gives error: We can do this at disassembly time either in simulator or client for Opincaa-lib
+    throw string("Unsupported operation +value ");
 }
 //-----------------------------------------------------------
 void Operand::operator+=(Operand op)
@@ -136,7 +137,7 @@ Instruction Operand::operator-(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator-(unsigned short value)
 {
-    throw string("Unsuported operation -value ");
+    throw string("Unsupported operation -value ");
 }
 //-----------------------------------------------------------
 void Operand::operator-=(Operand op)
@@ -163,7 +164,7 @@ Instruction Operand::operator*(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator*(unsigned short value)
 {
-    throw string("Unsuported operation *value ");
+    throw string("Unsupported operation *value ");
 }
 
 /* Assignment */
@@ -262,7 +263,7 @@ Instruction Operand::operator|(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator|(unsigned short value)
 {
-    throw string("Unsuported operation |value ");
+    throw string("Unsupported operation |value ");
 }
 //-----------------------------------------------------------
 void Operand::operator|=(Operand op)
@@ -285,7 +286,7 @@ Instruction Operand::operator&(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator&(unsigned short value)
 {
-    throw string("Unsuported operation &value ");
+    throw string("Unsupported operation &value ");
 }
 //-----------------------------------------------------------
 void Operand::operator&=(Operand op)
@@ -308,7 +309,7 @@ Instruction Operand::operator==(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator==(unsigned short value)
 {
-    throw string("Unsuported operation ==value ");
+    throw string("Unsupported operation ==value ");
 }
 //-----------------------------------------------------------
 Instruction Operand::operator<(Operand op)
@@ -322,7 +323,7 @@ Instruction Operand::operator<(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator<(unsigned short value)
 {
-    throw string("Unsuported operation <value ");
+    throw string("Unsupported operation <value ");
 }
 //-----------------------------------------------------------
 Instruction Operand::operator^(Operand op)
@@ -336,7 +337,7 @@ Instruction Operand::operator^(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator^(unsigned short value)
 {
-    throw string("Unsuported operation ^value ");
+    throw string("Unsupported operation ^value ");
 }
 //-----------------------------------------------------------
 void Operand::operator^=(Operand op)
@@ -417,7 +418,7 @@ Instruction Operand::addc(Operand op1, Operand op2)
 //-----------------------------------------------------------
 Instruction Operand::addc(Operand op1, unsigned short value)
 {
-    throw string("Unsuported operation addc(operand, value) ");
+    throw string("Unsupported operation addc(operand, value) ");
 }
 //-----------------------------------------------------------
 Instruction Operand::subc(Operand op1, Operand op2)
@@ -431,7 +432,7 @@ Instruction Operand::subc(Operand op1, Operand op2)
 //-----------------------------------------------------------
 Instruction Operand::subc(Operand op1, unsigned short value)
 {
-    throw string("Unsuported operation subc(operand, value) ");
+    throw string("Unsupported operation subc(operand, value) ");
 }
 //-----------------------------------------------------------
 Instruction Operand::shra(Operand op1, Operand op2)
@@ -491,7 +492,7 @@ Instruction Operand::ult(Operand op1, Operand op2)
 //-----------------------------------------------------------
 Instruction Operand::ult(Operand op1, unsigned short value)
 {
-    throw string("Unsuported operation ult (operand, value)");
+    throw string("Unsupported operation ult (operand, value)");
 }
 //-----------------------------------------------------------
 Instruction Operand::popcnt(Operand op)
@@ -501,6 +502,13 @@ Instruction Operand::popcnt(Operand op)
         throw string("Invalid operand type for popcnt operator");
     }
     return Instruction(_POPCNT, 0, op.index, 0);
+}
+//-----------------------------------------------------------
+Instruction Operand::bitreverse(Operand op) {
+    if(op.type != TYPE_REGISTER) {
+        throw string("Invalid operand type for popcnt operator");
+    }
+    return Instruction(_BIT_REVERSE, 0, op.index, 0);
 }
 //-----------------------------------------------------------
 void Operand::reduce(Operand op)

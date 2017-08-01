@@ -1,5 +1,3 @@
-
-
 #include "ConnexSimulator.h"
 #include <string>
 #include <iostream>
@@ -7,21 +5,18 @@
 
 using namespace std;
 
-int main()
-{
-
-	try
-	{
+int main() {
+    try {
         ConnexSimulator simulator("distributionFIFO", "reductionFIFO", "writeFIFO", "readFIFO", "regFile");
         simulator.waitFinish();
-	}
-	catch(string ex)
-	{
-		cout << "Exception occured: " << ex << endl;
-	}
-	catch(system_error syserr)
-	{
-		cout << "System error:: " << syserr.what() << endl;
-	}
-	return 0;
+    }
+    catch(string ex) {
+        cout << "Exception occured: " << ex << endl;
+    }
+    catch(system_error syserr) {
+        cout << "System error!" << endl;
+        //cout << "System error:: " << syserr.what() << endl;
+    }
+
+    return 0;
 }

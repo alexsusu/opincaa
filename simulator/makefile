@@ -6,13 +6,15 @@
 WORKDIR = `pwd`
 
 CXX = g++
+CXXFLAGS = -g
 
 INC_DIR = include
 BUILD_DIR = build
 SRC_DIR = src
 LIB_DIR = libs
 
-CFLAGS = -g --std=c++0x -fpermissive
+# Alex: added $(CXXFLAGS) that can allow to compile with debugging support
+CFLAGS = --std=c++0x -fpermissive $(CXXFLAGS)
 LDFLAGS_DEBUG =  $(LDFLAGS)
 
 OBJ = $(BUILD_DIR)/ConnexVector.o $(BUILD_DIR)/ConnexSimulator.o $(BUILD_DIR)/Instruction.o $(BUILD_DIR)/InstructionQueue.o
@@ -46,5 +48,3 @@ $(BUILD_DIR)/InstructionQueue.o:  $(SRC_DIR)/InstructionQueue.cpp
 	
 clean: 
 	rm -rf $(BUILD_DIR)
-
-
