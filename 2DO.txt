@@ -1,0 +1,15 @@
+Correct problem in simulator - readMultiReduction() blocks; or at least add in readMultiReduction() special case #ifdef SIMULATOR_MODE
+
+In Opincaa simulator, to ease debugging, change simulator to write the value of all operands (input and output) for each instruction
+
+hit a ~strange error in Opincaa simulator - because I had a REPEAT loop with more than 1024 instructions in it it gave at the end of the program (in readReduction() it seems) error:
+    << terminate called after throwing an instance of 'std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >' >>
+
+
+Related to additions to Connex ISA:
+  Tell Lucian and prof Stefan, etc to add to Connex ISA the following instructions:
+    - NOP immediate_operand_specifying_how_many_cycles_should_processor_stall
+    - maybe scan, permute (partly, like in Intel AVX/SSE)
+    - (added already in Opincaa simulator:)
+        - BitReverse operation
+        - a MAX-reduce REPEAT in hardware - how costly is it? (does not seem more than sum-reduce)
