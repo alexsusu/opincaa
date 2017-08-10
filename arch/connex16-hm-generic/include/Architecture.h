@@ -31,13 +31,15 @@
 #endif
 
 #ifndef CONNEX_REG_COUNT
-  #define CONNEX_REG_COUNT            32
-  //#define CONNEX_REG_COUNT            64
+  //#define CONNEX_REG_COUNT            32
+
+  // This we use normally (only) for the Kernel::genLLVMISelManualCode() method:
+  #define CONNEX_REG_COUNT            64
 #endif
 
 #ifndef CONNEX_MEM_SIZE
- #define CONNEX_MEM_1024_LINES
- //#define CONNEX_MEM_2048_LINES
+ //#define CONNEX_MEM_1024_LINES
+ #define CONNEX_MEM_2048_LINES
 
  #ifdef CONNEX_MEM_1024_LINES
    #define CONNEX_MEM_SIZE             1024

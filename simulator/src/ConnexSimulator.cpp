@@ -406,12 +406,28 @@ void ConnexSimulator::executeInstruction(Instruction instruction) {
         case _VLOAD:
             registerFile[instruction.getDest()] = (TYPE_ELEMENT)instruction.getValue();
             return;
-        case _IREAD:
-            registerFile[instruction.getDest()] = localStore[instruction.getValue()];
+        case _IREAD: {
+            TYPE_ELEMENT addr = instruction.getValue();
+
+            // Alex: checking for out-of-bounds case
+            if ( !(addr >= 0 && addr < CONNEX_MEM_SIZE))
+                printf("iread access outside of bounds of Connex LS memory: addr = %d\n", addr);
+            assert(addr >= 0 && addr < CONNEX_MEM_SIZE && "iread access outside of bounds of Connex LS memory");
+
+            registerFile[instruction.getDest()] = localStore[addr];
             return;
-        case _IWRITE:
-            localStore[instruction.getValue()] = registerFile[instruction.getLeft()];
+        }
+        case _IWRITE: {
+            TYPE_ELEMENT addr = instruction.getLeft();
+
+            // Alex: checking for out-of-bounds case
+            if ( !(addr >= 0 && addr < CONNEX_MEM_SIZE))
+                printf("iwrite access outside of bounds of Connex LS memory: addr = %d\n", addr);
+            assert(addr >= 0 && addr < CONNEX_MEM_SIZE && "iwrite access outside of bounds of Connex LS memory");
+
+            localStore[instruction.getValue()] = registerFile[addr];
             return;
+        }
         case _SETLC:
             repeatCounter = instruction.getValue();
             return;

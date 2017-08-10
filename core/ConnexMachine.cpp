@@ -149,12 +149,16 @@ string ConnexMachine::genLLVMISelManualCode(string kernelName)
  * result in destination. It blocks until all byteCount bytes
  * have been read.
  */
-unsigned ConnexMachine::readFromPipe(int descriptor, void* destination, unsigned byteCount)
-{
+unsigned ConnexMachine::readFromPipe(int descriptor, void *destination, unsigned byteCount) {
     char *dest = (char *)destination;
     unsigned totalBytesRead = 0;
     do {
         totalBytesRead += read(descriptor, dest + totalBytesRead, byteCount - totalBytesRead);
+
+      #ifdef MY_DEBUG
+        printf("ConnexMachine::readFromPipe(): totalBytesRead = %d\n", totalBytesRead);
+        fflush(stdout);
+      #endif
     } while (byteCount != totalBytesRead);
 
     return byteCount;
@@ -580,21 +584,42 @@ int ConnexMachine::readMultiReduction(int count, void* buffer) {
  *
  *  NOTE: currently works only for bufferRes of type short.
  */
-int ConnexMachine::readCorrectReductionResults(int count, void *bufferRes, int sizeOfPtr) {
-    assert(sizeOfPtr == 2);
+int ConnexMachine::readCorrectReductionResults(int count, void *bufferRes, int sizeOfArrayElement) {
+    //assert(sizeOfArrayElement == 2);
+    //int countOrig = count;
 
-    int *buffer = (int *)malloc(count * sizeof(int));
+    // We implement a RED i32 by reading 2 RED i16 results and combining them
+    int numRedResultsToReadActually = count * sizeOfArrayElement / sizeof(short);
+    printf("numRedResultsToReadActually = %d\n", numRedResultsToReadActually);
+
+    // The Connex processor returns a reduction result only on i32
+    int *buffer = (int *)malloc(numRedResultsToReadActually * sizeof(int));
     assert(buffer != NULL);
 
-    //connexGlobal->readMultiReduction(count, buffer);
-    int res = readMultiReduction(count, buffer);
+    printf("Calling readMultiReduction()\n");
+    fflush(stdout);
+
+    int res = readMultiReduction(numRedResultsToReadActually, buffer);
     assert(res == 0);
 
-    for (int i = 0; i < count; i++) {
-        //printf("i = %d : calling readReduction()\n", i);
-        //fflush(stdout);
-        //*((short *)(bufferRes) + i) = buffer[i] | 0xFF800000; // for CONNEX_VECTOR_LENGTH = 128
-        *((short *)(bufferRes) + i) = buffer[i] & 0xFFFF; // for CONNEX_VECTOR_LENGTH = 128
+    if (sizeOfArrayElement == sizeof(short)) {
+        for (int i = 0; i < numRedResultsToReadActually; i++) {
+            //printf("i = %d : calling readReduction()\n", i);
+            //fflush(stdout);
+            //*((short *)(bufferRes) + i) = buffer[i] | 0xFF800000; // for CONNEX_VECTOR_LENGTH = 128
+            *((short *)(bufferRes) + i) = buffer[i] & 0xFFFF;
+        }
+    }
+    else
+    if (sizeOfArrayElement == sizeof(int)) {
+        int bufferIndex = 0;
+        for (int i = 0; i < count; i++) {
+            /* The RED i32 operation I emulate on Connex returns 2 results:
+             *   - one with result of RED i16 for lower 16 bits of the i32s
+             *   - one with result of RED i16 for higher 16 bits of the i32s.
+             */
+            *((int *)(bufferRes) + i) = buffer[bufferIndex++] + (buffer[bufferIndex++] << 16);
+        }
     }
 
     free(buffer);

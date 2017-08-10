@@ -74,7 +74,7 @@ ConnexVector ConnexVector::operator op(ConnexVector anotherVector)  \
 // TODO (Alex): NOT sure if 100% correct
 //if (((unsigned)cells[i]) + ((unsigned)carryFlag.cells[i]) + ((unsigned)anotherVector.cells[i]) > REG_MAX_VAL)
 #define BINARY_OP_FLAGS_CARRY_ADDC(op)                              \
-        if ( (* ((unsigned short *)&cells[i]) ) + (* ((unsigned short *)&carryFlag.cells[i])) + (* ((unsigned short *)&anotherVector.cells[i])) > REG_MAX_VAL )                      \
+        if ( ((unsigned TYPE_ELEMENT)cells[i]) + ((unsigned TYPE_ELEMENT)carryFlag.cells[i]) + ((unsigned TYPE_ELEMENT)anotherVector.cells[i]) > REG_MAX_VAL )                      \
             carryFlag.cells[i] = 1;                                 \
         else                                                        \
             carryFlag.cells[i] = 0;
@@ -84,14 +84,14 @@ ConnexVector ConnexVector::operator op(ConnexVector anotherVector)  \
 //        if ( ((unsigned short)(cells[i])) < ((unsigned short)(anotherVector.cells[i])) )
 // For subtraction, carry is actually borrow (for subtraction with borrow) - see e.g. https://en.wikipedia.org/wiki/Carry_flag
 #define BINARY_OP_FLAGS_CARRY_SUB(op)                               \
-        if ( (* ((unsigned short *)&cells[i]) ) < (* ((unsigned short *)&anotherVector.cells[i])) )                      \
+        if ( ((unsigned TYPE_ELEMENT)cells[i]) < ((unsigned TYPE_ELEMENT)anotherVector.cells[i]) )                      \
             carryFlag.cells[i] = 1;                                 \
         else carryFlag.cells[i] = 0;
 
 // TODO (Alex): NOT sure if 100% correct
 //        if (((unsigned)cells[i]) + ((unsigned)carryFlag.cells[i]) + ((unsigned)anotherVector.cells[i]) > REG_MAX_VAL)
 #define BINARY_OP_FLAGS_CARRY_SUBC(op)                              \
-        if ( (* ((unsigned short *)&cells[i]) ) < (* ((unsigned short *)&carryFlag.cells[i])) + (* ((unsigned short *)&anotherVector.cells[i])) )                      \
+        if ( ((unsigned TYPE_ELEMENT)cells[i]) < ((unsigned TYPE_ELEMENT)carryFlag.cells[i]) + ((unsigned TYPE_ELEMENT)anotherVector.cells[i]) )                      \
             carryFlag.cells[i] = 1;                                 \
         else carryFlag.cells[i] = 0;
 
@@ -191,12 +191,12 @@ ConnexVector::~ConnexVector()
 int ConnexVector::reduce() {
     int sum = 0;
     for (int i = 0; i < CONNEX_VECTOR_LENGTH; i++) {
-      #define U16_REDUCE_WORKING_FOR_I32_REDUCE
+      #define REDUCE_TAKES_U16_VALUES_INSTEAD_OF_I16_TO_WORK_FOR_I32_REDUCE
 
-      #ifdef U16_REDUCE_WORKING_FOR_I32_REDUCE
+      #ifdef REDUCE_TAKES_U16_VALUES_INSTEAD_OF_I16_TO_WORK_FOR_I32_REDUCE
         // Alex: we do this typecast to avoid sign extension (at least on x86) from i16 to i32
         //sum += *((unsigned short *)(&cells[i])); // This works with our example RED_i32
-        sum += active.cells[i] * (*((unsigned short *)(&cells[i]))); // This works with our example RED_i32
+        sum += active.cells[i] * ((unsigned TYPE_ELEMENT)cells[i]); // This works with our example RED_i32
       #else
         //sum += cells[i];
         // Reduction is performed only on selected cells
@@ -335,7 +335,7 @@ void ConnexVector::operator*(ConnexVector anotherVector) {
         multHigh.cells[i] = (result >> 16) & 0xFFFF;
       #else
         // We have an unsigned multiplier (From Jul 2017)
-        result = *((unsigned short *) &cells[i]) * (*((unsigned short *) &anotherVector.cells[i]));
+        result = ((unsigned TYPE_ELEMENT)cells[i]) * ((unsigned TYPE_ELEMENT)anotherVector.cells[i]);
 
         //printf("result = 0x%08x\n", result);
         multLow.cells[i] = (TYPE_ELEMENT)result;
@@ -348,13 +348,13 @@ void ConnexVector::operator*(ConnexVector anotherVector) {
  * Unsigned-multiplication operator, not conditioned by active flags
  */
 void ConnexVector::umult(ConnexVector anotherVector) {
-    int result;
+    unsigned int result;
 
     assert(0 && "This is NOT following Connex ISA exactly - talk a bit with Lucian P. and decide what to do exactly.");
 
     for (int i = 0; i < CONNEX_VECTOR_LENGTH; i++) {
         // WRONG for negative i16: result = cells[i] * anotherVector.cells[i];
-        result = *((unsigned TYPE_ELEMENT *) &cells[i]) * (*((unsigned TYPE_ELEMENT *) &anotherVector.cells[i]));
+        result = ((unsigned TYPE_ELEMENT)cells[i]) * ((unsigned TYPE_ELEMENT)anotherVector.cells[i]);
 
         //printf("result = 0x%08x\n", result);
         multLow.cells[i] = (TYPE_ELEMENT)result;
@@ -522,6 +522,13 @@ void ConnexVector::shift(int direction) {
 void ConnexVector::loadFrom(ConnexVector *localStore, ConnexVector addresses)
 {
     for (int i = 0; i < CONNEX_VECTOR_LENGTH; i++) {
+        // Alex: checking for out-of-bounds cases
+        if (active.cells[i]) {
+            if ( !(addresses.cells[i] >= 0 && addresses.cells[i] < CONNEX_MEM_SIZE))
+                printf("read access outside of bounds of Connex LS memory for lane i = %d: addresses.cells[i] = %d\n", i, addresses.cells[i]);
+            assert(addresses.cells[i] >= 0 && addresses.cells[i] < CONNEX_MEM_SIZE && "read access outside of bounds of Connex LS memory for lane i");
+        }
+
         cells[i] = localStore[addresses.cells[i]].cells[i] * active.cells[i] | cells[i] * !active.cells[i];
     }
 }
@@ -535,6 +542,13 @@ void ConnexVector::loadFrom(ConnexVector *localStore, ConnexVector addresses)
 void ConnexVector::storeTo(ConnexVector *localStore, ConnexVector addresses)
 {
     for (int i = 0; i<CONNEX_VECTOR_LENGTH; i++) {
+        // Alex: checking for out-of-bounds cases
+        if (active.cells[i]) {
+            if ( !(addresses.cells[i] >= 0 && addresses.cells[i] < CONNEX_MEM_SIZE))
+                printf("write access outside of bounds of Connex LS memory for lane i = %d: addresses.cells[i] = %d\n", i, addresses.cells[i]);
+            assert(addresses.cells[i] >= 0 && addresses.cells[i] < CONNEX_MEM_SIZE && "write access outside of bounds of Connex LS memory for lane i");
+        }
+
         TYPE_ELEMENT value = localStore[addresses.cells[i]].cells[i];
         localStore[addresses.cells[i]].cells[i] = cells[i] * active.cells[i] | value * !active.cells[i];
     }

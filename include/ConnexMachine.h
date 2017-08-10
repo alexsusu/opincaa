@@ -158,7 +158,52 @@ class ConnexMachine
         */
         //void readMultiReduction(int count, void* buffer);
         // Alex:
-        int readMultiReduction(int count, void* buffer);
+    #ifdef SIMULATOR_MODE
+        int readMultiReduction(int count, void *buffer) {
+            int result;
+
+            /* Alex: In simulator mode it blocks if reading multiple ints, so we read
+               each one separated.
+               Note: GCC seems NOT to complain about defining here this method and
+                having also another definition in core/ConnexMachine.cpp,
+                int ConnexMachine::readMultiReduction(int count, void* buffer).
+
+               TODO: We can make more efficient the read for the simulator, but it
+                should not matter that much, because the I/O performance is not supposed
+                to reflect the performance of a real system, such as Zynq ZedBoard.
+            */
+            printf("Alex: executing simulator mode readMultiReduction!\n");
+            printf("Alex: count = %d\n", count);
+            fflush(stdout);
+
+            int countActual = 1;
+
+            threadMutexIR.lock();
+
+            for (int i = 0; i < count; i++) {
+                /*
+                printf("  i = %d\n", i);
+                fflush(stdout);
+                */
+                //threadMutexIR.lock();
+
+                if (readFromPipe(reductionFifo, ((int *)buffer) + i, countActual * sizeof(int)) < 0) {
+                    threadMutexIR.unlock();
+                    throw string("Error reading from reduction FIFO");
+                    // TODO
+                    return -1;
+                }
+
+                //threadMutexIR.unlock();
+            }
+
+            threadMutexIR.unlock();
+
+            return 0;
+        }
+    #else
+        int readMultiReduction(int count, void *buffer);
+    #endif
 
         /*
          * Sign extend and write the numResults reduction results from the FIFO in the

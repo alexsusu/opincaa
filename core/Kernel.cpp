@@ -17,6 +17,9 @@
 //#include <ostream>
 #include <sstream>
 
+#include <unordered_map>
+
+
 /************************************************************
 * Constructor for creating a new Kernel
 *
@@ -145,8 +148,95 @@ inline bool isRequiredGlueOrChainOutput(Instruction &instrCrt, Instruction &inst
     return true;
 }
 
+//#define instructionsSimple (instructions.begin() + offsetKernelToStartCodegenFrom)
+//#define instructionsSimple instructions
+// TODO: defining the array with this macro with iterator is kind-of abusive, so try to avoid it 
+#define instructionsSimple (partlySSAInstrs.begin() - offsetKernelToStartCodegenFrom)
 
-/* We generate C++ (manual) ISel code for an intrinsic.
+string GenerateIfRequiredCopyToReg(int &iInstr,
+                                    Instruction &instrCrt,
+                                    int &numInstructionsToCodegen,
+                                    int &offsetKernelToStartCodegenFrom,
+                                    /*
+                                    //vector<unsigned> &instructionsSimple,
+
+                                    A bit complicated but it works (adjust
+                                     accordingly if something changes in the
+                                     future */
+                                    //Instruction *instructionsSimple,
+                                    vector<Instruction> &partlySSAInstrs,
+                                    string &varName,
+                                    int *countInstr,
+                                    int *virtRegVarNameIdRegDef) {
+
+    #define ID_GET_COPYTOREG ((1UL << OPCODE_9BITS_SIZE) + 1)
+    #define ID_VIRTREG ((1UL << OPCODE_9BITS_SIZE) + 2)
+
+    /*
+    printf("Alex: countInstr = %p in GenerateIfRequiredCopyToReg()\n", countInstr);
+    printf("Alex: virtRegVarNameIdRegDef = %p in GenerateIfRequiredCopyToReg()\n", virtRegVarNameIdRegDef);
+    */
+    stringstream ss2;
+
+    /* We codegen a getCopyToReg() if we have after instrCrt a def to the
+       same register as the dest register of instrCrt. */
+    for (int iInstrAfter = iInstr + 1;
+          iInstrAfter < offsetKernelToStartCodegenFrom + numInstructionsToCodegen;
+          iInstrAfter++) {
+
+        Instruction instrAfter(instructionsSimple[iInstrAfter]);
+
+        if (instrAfter.getDest() != -1 &&
+                instrCrt.getDest() == instrAfter.getDest()) {
+
+            printf("  WAW (output) dependency: Since instrAfter's dest reg is assigned also before " \
+                     "(more than once): we create CopyToReg for use for _SPECIAL_H SDNode " \
+                     "(which has tied-to operands constraint)!\n");
+            printf("    iInstrAfter = %d\n", iInstrAfter);
+            printf("    instrAfter = %s", instrAfter.dump().c_str());
+            printf("    (doing it only once for instrCrt)\n");
+            //printf("  instrCrt.getDest() = %d\n", instrCrt.getDest());
+
+            // NOTE: we copy to register for use for _SPECIAL_H SDNode
+            int idInstrVR = countInstr[ID_VIRTREG];
+            countInstr[ID_VIRTREG]++;
+            string varNameVR = "virtReg" + to_string(idInstrVR);
+
+            virtRegVarNameIdRegDef[instrCrt.getDest()] = idInstrVR;
+
+            int idInstrCTR = countInstr[ID_GET_COPYTOREG];
+            countInstr[ID_GET_COPYTOREG]++;
+            string varNameCTR = "copyToReg" + to_string(idInstrCTR);
+
+            // MAYBE check also if the instruction has input the dest reg
+            //      "                   SDValue(" << varName << ", " << numInputsInstr[indexInstr] << "),\n"
+            ss2 << "unsigned " << varNameVR << " = RegInfo->createVirtualRegister(&Connex::MSA128HRegClass);\n";
+            ss2 << "SDValue " << varNameCTR << " = CurDAG->getCopyToReg(\n" \
+                  "                   // glue (or chain) input edge\n" \
+                  "                   SDValue(" << varName << ", 1),\n" \
+                  "                   DL,\n" \
+                  "                   " << varNameVR << ",\n" \
+                  "                   // Value copied to register\n" \
+                  "                   SDValue(" << varName << ", 0)\n" \
+                  "                   // Glue\n" \
+                  "                  );\n\n";
+
+            /* IMPORTANT NOTE: CopyToReg SDNode does NOT have chain or
+                 glue output edges.
+            predVarName = varNameCTR; */
+            break;
+        }
+    }
+
+    //return string(""); //std::to_string(0);
+    return ss2.str();
+} // END GenerateIfRequiredCopyToReg()
+
+
+/* TODO TODO TODO TODO: in case a _SPECIAL instr inside a WHERE block does not
+      have an UNpredicated predecessor instruction we should give a warning.
+
+   We generate C++ (manual) ISel code for an intrinsic.
    IMPORTANT: We advise the kernel to have registers allocated from last one
        (CONNEX_REG_COUNT) downwards.
     we ~require to have ASM code in "partly SSA-form" i.e., every register
@@ -164,8 +254,7 @@ inline bool isRequiredGlueOrChainOutput(Instruction &instrCrt, Instruction &inst
      solution - we would have to bundle instructions after ISel.
 
 
-
-    Some important rules:
+   Some important rules:
     Rule #1 is:
       To be selected nodes (except CopyToReg at least that does not have output
          chain or glue edges), need to be "chained" in the graph in the sense that
@@ -210,87 +299,11 @@ string Kernel::genLLVMISelManualCode() {
     //string res;
     int i;
 
-    ss << "// Code auto-generated by Opincaa lib (method Kernel::genLLVMISelManualCode()).\n";
+    assert(numInstructionsToCodegen != -1 && "You need to initialize numInstructionsToCodegen");
+    assert(offsetKernelToStartCodegenFrom != -1 && "You need to initialize offsetKernelToStartCodegenFrom");
+
+    ss << "// Code auto-generated by method Kernel::genLLVMISelManualCode() from Opincaa lib.\n";
     //cout << "ss = " << ss.str();
-
-
-    /*
-    #define BUFFER_LEN 32768
-    static char buffer[BUFFER_LEN];
-    //std::stringbuf *pbuf = ss.rdbuf();
-    // From http://www.cplusplus.com/reference/streambuf/streambuf/pubsetbuf/
-    ss.rdbuf()->pubsetbuf(buffer, BUFFER_LEN);
-    //ss.rdbuf()->pubseekpos(0);
-    // From https://stackoverflow.com/questions/1494182/setting-the-internal-buffer-used-by-a-standard-stream-pubsetbuf
-    //ostreambuf<char> ostreamBuffer(buffer, size);
-    //std::ostream messageStream(&ostreamBuffer);
-    */
-
-/* IMPORTANT: "nodeOpSrcCast1" and "nodeOpSrcCast2" are the input SDNodes that
- contain the <CONNEX_VECTOR_LENGTH x i16> values to be used for the arithmetic
- operator intrinsic we want to select. */
-
-    // Used to "update" a virtual register
-    int virtRegVarNameIdRegDef[CONNEX_REG_COUNT];
-    for (i = 0; i < CONNEX_REG_COUNT; i++) {
-        virtRegVarNameIdRegDef[i] = -1;
-    }
-
-    /* sdNodeVarNameRegDef is the var-name of the SDNode we generate
-         that updated last the reg regDef.
-       It keeps track of the dataflow between instructions */
-    //string sdNodeVarNameRegDef[CONNEX_REG_COUNT];
-    for (i = 0; i < CONNEX_REG_COUNT; i++) {
-        if (sdNodeVarNameRegDef[i].empty() == true)
-            sdNodeVarNameRegDef[i] = "[NOT_INITIALIZED]";
-    }
-
-    // We initialize here the SDValues that are fed in the intrinsic we codegen
-//#define ADD_I32_KERNEL
-//#define SUB_I32_KERNEL
-//#define MUL_I32_KERNEL
-
-/* Represents the offset in kernel of the 1st END_WHERE: */
-//#define OFFSET_INSTRUCTIONS_TO_START_CODEGEN (11 + 1)
-
-#ifdef ADD_I32_KERNEL
-    sdNodeVarNameRegDef[28] = "nodeOpSrcCast1";
-    sdNodeVarNameRegDef[27] = "nodeOpSrcCast2";
-    // For ADD_i32:
-    #define NUM_INSTRUCTIONS_TO_CODEGEN 15
-    #define USE_GLUE
-#endif
-
-#ifdef SUB_I32_KERNEL
-    sdNodeVarNameRegDef[28] = "nodeOpSrcCast1";
-    sdNodeVarNameRegDef[27] = "nodeOpSrcCast2";
-    // For ADD_i32:
-    #define NUM_INSTRUCTIONS_TO_CODEGEN 15
-    #define USE_GLUE
-#endif
-
-
-#ifdef MUL_I32_KERNEL
-    sdNodeVarNameRegDef[28] = "nodeOpSrcCast1";
-    sdNodeVarNameRegDef[27] = "nodeOpSrcCast2";
-
-    //#define OFFSET_INSTRUCTIONS_TO_START_CODEGEN (11 + 1)
-
-    // For MUL_i32 (both simple and power efficient versions):
-    #define NUM_INSTRUCTIONS_TO_CODEGEN 99
-
-    /* We use chain, since with glue with get a lot or weird scheduling errors:
-    #define USE_GLUE
-    */
-
-    // IMPORTANT: to convert in 'partly SSA form' we require ~64 registers
-    assert(CONNEX_REG_COUNT != 32);
-#endif
-
-    int N = NUM_INSTRUCTIONS_TO_CODEGEN;
-    assert(this->size() >= OFFSET_INSTRUCTIONS_TO_START_CODEGEN +
-                            NUM_INSTRUCTIONS_TO_CODEGEN);
-
 
     //std::vector<bool>
     /*
@@ -301,13 +314,8 @@ string Kernel::genLLVMISelManualCode() {
 
     #define NUM_SDNODE_OPS ((1UL << OPCODE_9BITS_SIZE) + 100)
     #define ID_GET_CONSTANT ((1UL << OPCODE_9BITS_SIZE) + 0)
-    #define ID_GET_COPYTOREG ((1UL << OPCODE_9BITS_SIZE) + 1)
-    #define ID_VIRTREG ((1UL << OPCODE_9BITS_SIZE) + 2)
 
-    int iInstr;
     int countInstr[NUM_SDNODE_OPS];
-
-
     bool isDefined[CONNEX_REG_COUNT];
     for (i = 0; i < CONNEX_REG_COUNT; i++) {
         isDefined[i] = false;
@@ -321,6 +329,98 @@ string Kernel::genLLVMISelManualCode() {
         countInstr[i] = 0;
     }
 
+    /*
+    #define BUFFER_LEN 32768
+    static char buffer[BUFFER_LEN];
+    //std::stringbuf *pbuf = ss.rdbuf();
+    // From http://www.cplusplus.com/reference/streambuf/streambuf/pubsetbuf/
+    ss.rdbuf()->pubsetbuf(buffer, BUFFER_LEN);
+    //ss.rdbuf()->pubseekpos(0);
+    // From https://stackoverflow.com/questions/1494182/setting-the-internal-buffer-used-by-a-standard-stream-pubsetbuf
+    //ostreambuf<char> ostreamBuffer(buffer, size);
+    //std::ostream messageStream(&ostreamBuffer);
+    */
+
+    /* IMPORTANT: the kernel auto-generated here for ISel takes
+       input SDNodes
+       (with names like "nodeOpSrcCast1", "nodeOpSrcCast2", or "nodeOpSrcCast",
+       etc) that have as result the <CONNEX_VECTOR_LENGTH x i16> values to be
+       used for the arithmetic operator intrinsic we want to select. */
+
+    /* Used to "update" a virtual register.
+       More exactly, we use this to map a register index to an Id of the
+         virtual register was created.
+         For example, when we generate instr-selection code like:
+            SDNode *ldsh0 = CurDAG->getMachineNode(...);
+            unsigned virtReg0 = RegInfo->createVirtualRegister(&Connex::MSA128HRegClass);
+            SDValue copyToReg0 = CurDAG->getCopyToReg(...);
+          and later want to use this virtReg0 in:
+            SDNode *sub0 = CurDAG->getMachineNode(
+                                    Connex::SUBV_SPECIAL_H,
+                                    DL,
+                                    TYPE_VECTOR_I16,
+                                    MVT::Other,
+                                    SDValue(vload0, 0),
+                                    SDValue(ldsh0, 0),
+                                    CurDAG->getRegister(virtReg0, TYPE_VECTOR_I16),
+                                    SDValue(whereeq0, 1)
+                                    );
+        we need to remember the id/number of virtReg0 for this SDNode above (sub0) we print.
+    */
+    int virtRegVarNameIdRegDef[CONNEX_REG_COUNT];
+    for (i = 0; i < CONNEX_REG_COUNT; i++) {
+        virtRegVarNameIdRegDef[i] = -1;
+    }
+
+    /* In the code doing ISel for this piece of kernel,
+       we define some SDNodes manually which handle the input vector registers
+       for this piece of kernel - the SDNodes use "bogus" instructions like
+       NOP_BITCONVERT_HW/WH.
+     We keep track of these register and their associated SDNode variable
+       names.
+    */
+    unordered_map<int, string> inputRegistersKernelAndSDNodeVarName;
+    string lastInputRegisterKernelSDNodeVarName;
+
+    /* sdNodeVarNameRegDef is the var-name of the SDNode we generate
+         that updated last the reg regDef.
+       It keeps track of the dataflow between instructions */
+    //string sdNodeVarNameRegDef[CONNEX_REG_COUNT];
+
+    bool kernelHasInputRegistersSpecified = false;
+    for (i = 0; i < CONNEX_REG_COUNT; i++) {
+        if (sdNodeVarNameRegDef[i].empty() == true) {
+            sdNodeVarNameRegDef[i] = "[NOT_INITIALIZED]";
+        }
+        else {
+            printf("Alex: sdNodeVarNameRegDef[%d] = %s --> initializing isDefined, etc\n",
+                    i, sdNodeVarNameRegDef[i].c_str());
+
+            // We initialize as isDefined the input registers to this kernel
+            isDefined[i] = true;
+
+            //inputRegistersKernel.push_back(i);
+            inputRegistersKernelAndSDNodeVarName[i] = sdNodeVarNameRegDef[i];
+            lastInputRegisterKernelSDNodeVarName = sdNodeVarNameRegDef[i];
+
+            kernelHasInputRegistersSpecified = true;
+        }
+    }
+    // We check if we specified input registers to this kernel
+    assert(kernelHasInputRegistersSpecified == true && "NO input registers specified to the kernel");
+
+    /* Represents the offset in the kernel of the 1st instruction of our region
+     *  to codegen: */
+    //offsetKernelToStartCodegenFrom = 12;
+
+
+    int N = numInstructionsToCodegen;
+    assert(this->size() >= offsetKernelToStartCodegenFrom +
+                            numInstructionsToCodegen);
+
+
+    int iInstr;
+
 
     printf("Kernel::genLLVMISelManualCode(): Num instructions = %d\n", N);
     fflush(stdout);
@@ -333,6 +433,11 @@ string Kernel::genLLVMISelManualCode() {
 #define CONVERT_PARTLY_SSA_FORM
 
 #ifdef CONVERT_PARTLY_SSA_FORM
+    bool isDefined2[CONNEX_REG_COUNT];
+    for (i = 0; i < CONNEX_REG_COUNT; i++) {
+        isDefined2[i] = isDefined[i];
+    }
+
     /*
     void ConvertInPartlySSAForm() {
     }
@@ -341,8 +446,8 @@ string Kernel::genLLVMISelManualCode() {
 
     // We do ConvertInPartlySSAForm
     // First we initialize the isUsedOverall for the given kernel
-    for (iInstr = OFFSET_INSTRUCTIONS_TO_START_CODEGEN;
-            iInstr < OFFSET_INSTRUCTIONS_TO_START_CODEGEN + NUM_INSTRUCTIONS_TO_CODEGEN;
+    for (iInstr = offsetKernelToStartCodegenFrom;
+            iInstr < offsetKernelToStartCodegenFrom + numInstructionsToCodegen;
             iInstr++) {
         Instruction instr(instructions[iInstr]);
         if (instr.getDest() != -1) {
@@ -355,28 +460,28 @@ string Kernel::genLLVMISelManualCode() {
     /* Constructing vector partlySSAInstrs - we need to mutate it and it's the
          only way since instructions is a vector<unsigned> from whose
          elements we build each time normally an Instruction. */
-    for (iInstr = OFFSET_INSTRUCTIONS_TO_START_CODEGEN;
-            iInstr < OFFSET_INSTRUCTIONS_TO_START_CODEGEN + NUM_INSTRUCTIONS_TO_CODEGEN;
+    for (iInstr = offsetKernelToStartCodegenFrom;
+            iInstr < offsetKernelToStartCodegenFrom + numInstructionsToCodegen;
             iInstr++) {
         Instruction instrCrt(instructions[iInstr]);
         partlySSAInstrs.push_back(instrCrt);
     }
-    assert(partlySSAInstrs.size() == NUM_INSTRUCTIONS_TO_CODEGEN);
+    assert(partlySSAInstrs.size() == numInstructionsToCodegen);
     // Doing the actual transformation
-    for (iInstr = OFFSET_INSTRUCTIONS_TO_START_CODEGEN;
-            iInstr < OFFSET_INSTRUCTIONS_TO_START_CODEGEN + NUM_INSTRUCTIONS_TO_CODEGEN;
+    for (iInstr = offsetKernelToStartCodegenFrom;
+            iInstr < offsetKernelToStartCodegenFrom + numInstructionsToCodegen;
             iInstr++) {
         /*
         The algorithm we use is:
             if NOT instr is in WHERE block
                if isInstrWithDest()
-                    if isDefined(instr.getDest())
+                    if isDefined2(instr.getDest())
                         take new register name
                         replace subsequent uses with this new reg name
         */
         //Instruction instrCrt(instructions[iInstr]);
 
-        int indexInstr = iInstr - OFFSET_INSTRUCTIONS_TO_START_CODEGEN;
+        int indexInstr = iInstr - offsetKernelToStartCodegenFrom;
 
         #define instrCrt partlySSAInstrs[indexInstr]
 
@@ -397,7 +502,7 @@ string Kernel::genLLVMISelManualCode() {
 
         if (instrCrt.getDest() != -1) {
             int instrCrtDest = instrCrt.getDest();
-            if (isDefined[instrCrtDest]) {
+            if (isDefined2[instrCrtDest]) {
                 if (isInWhereBlock) {
                     printf("For 'partly SSA form': we do NOT change dest reg since it (probably) must update the register\n");
                 }
@@ -406,7 +511,7 @@ string Kernel::genLLVMISelManualCode() {
                     for (i = 0; i < CONNEX_REG_COUNT; i++) {
                         if (isUsedOverall[i] == false) {
                             isUsedOverall[i] = true;
-                            isDefined[i] = true;
+                            isDefined2[i] = true;
                             break;
                         }
                     }
@@ -419,7 +524,7 @@ string Kernel::genLLVMISelManualCode() {
                     bool isInstrAfterInWhereBlock = false;
                     // Updating the register changed for all following instructions
                     for (int indexInstrAfter = indexInstr + 1;
-                            indexInstrAfter < NUM_INSTRUCTIONS_TO_CODEGEN;
+                            indexInstrAfter < numInstructionsToCodegen;
                             indexInstrAfter++) {
                         //Instruction instrAfter(instructions[iInstrAfter]);
                         #define instrAfter partlySSAInstrs[indexInstrAfter]
@@ -459,7 +564,7 @@ int instrAfterOpcode = instrAfter.getOpcode();
                 }
             }
             else {
-                isDefined[instrCrtDest] = true;
+                isDefined2[instrCrtDest] = true;
             }
         }
 
@@ -467,23 +572,36 @@ int instrAfterOpcode = instrAfter.getOpcode();
         //partlySSAInstrs.push_back(instrCrt);
     }
 
-    assert(partlySSAInstrs.size() == NUM_INSTRUCTIONS_TO_CODEGEN);
+    assert(partlySSAInstrs.size() == numInstructionsToCodegen);
     printf("The automatically generated 'partly SSA form' is:\n");
-    for (iInstr = 0; iInstr < NUM_INSTRUCTIONS_TO_CODEGEN; iInstr++) {
+    for (iInstr = 0; iInstr < numInstructionsToCodegen; iInstr++) {
         cout << "iInstr = " << iInstr
              << ": instr.dump() = " << partlySSAInstrs[iInstr].dump();
     }
+
     // Cleaning up after autogen 'partly SSA form'
+    /*
+    // No need to cleanup isDefined since we use above isDefined2
     printf("Cleaning up after autogen 'partly SSA form'\n");
     for (i = 0; i < CONNEX_REG_COUNT; i++) {
-        isDefined[i] = false;
+        if (sdNodeVarNameRegDef[i].empty() == true) {
+            isDefined[i] = false;
+        }
+        else {
+            printf("Alex: sdNodeVarNameRegDef[%d] = %s --> initializing isDefined\n",
+                    i, sdNodeVarNameRegDef[i].c_str());
+
+            // We initialize as isDefined the input registers to this kernel
+            isDefined[i] = true;
+        }
     }
+    */
 #endif
 
 
     unsigned *predInstr = NULL;
-    string predVarName = "[NONE_TO_REPLACE]";
-    string varName = "[NONE_TO_REPLACE]";
+    string predVarName = "[NONE_SO_REPLACE]";
+    string varName = "[NONE_SO_REPLACE]";
 
     // The variable names of the MachineSDNodes
     vector<string> varNameInstr;
@@ -494,18 +612,47 @@ int instrAfterOpcode = instrAfter.getOpcode();
     vector<int> numOutputsInstr;
     vector<bool> requireGlueOrChainPred;
 
+
+    // Adding CopyToReg, if required, for the inputs of the Opincaa kernel
+    string strCopyToReg;
+    iInstr = offsetKernelToStartCodegenFrom;
+    //int reg = 0;
+    //for (auto reg: inputRegistersKernelAndSDNodeVarName.keys()) {
+    for (auto iterMap: inputRegistersKernelAndSDNodeVarName) {
+        int reg = (iterMap).first;
+        //varName = "nodeOpSrcCast1";
+        varName = (iterMap).second; //inputRegistersKernelAndSDNodeVarName[reg];
+
+        /* We create a bogus instruction with destination reg
+        R28 = LS[R0] (the dest reg will be changed) */
+        Instruction instrCrt(0x9200001C);
+        instrCrt.setDest(reg);
+        assert(instrCrt.getDest() == reg);
+
+        strCopyToReg = GenerateIfRequiredCopyToReg(iInstr,
+                                              instrCrt,
+                                              numInstructionsToCodegen,
+                                              offsetKernelToStartCodegenFrom,
+                                              //instructionsSimple.data(),
+                                              //&(instructionsSimple[0]),
+                                              partlySSAInstrs,
+                                              varName, // Should contain [NONE_TO_REPLACE]
+                                              countInstr,
+                                              virtRegVarNameIdRegDef);
+        ss << strCopyToReg << "\n";
+    }
+    ss << "\n";
+
+
     /* TODO TODO TODO: DONE: if the consumer of dest register set by current
        instruction is the next instruction, don't glue (or chain) to feed it
        to the next node - anyhow the order is enforced by the data dependence.
        */
     //for (iInstr = 0; iInstr < N; iInstr++)
-    for (iInstr = OFFSET_INSTRUCTIONS_TO_START_CODEGEN;
-            iInstr < OFFSET_INSTRUCTIONS_TO_START_CODEGEN + NUM_INSTRUCTIONS_TO_CODEGEN;
+    for (iInstr = offsetKernelToStartCodegenFrom;
+            iInstr < offsetKernelToStartCodegenFrom + numInstructionsToCodegen;
             iInstr++) {
-        //#define instructionsSimple (instructions.begin() + OFFSET_INSTRUCTIONS_TO_START_CODEGEN)
-        //#define instructionsSimple instructions
-        #define instructionsSimple (partlySSAInstrs.begin() - OFFSET_INSTRUCTIONS_TO_START_CODEGEN)
-        int indexInstrCrt = iInstr - OFFSET_INSTRUCTIONS_TO_START_CODEGEN;
+        int indexInstrCrt = iInstr - offsetKernelToStartCodegenFrom;
 
         Instruction instrCrt(instructionsSimple[iInstr]);
 
@@ -528,15 +675,20 @@ int instrAfterOpcode = instrAfter.getOpcode();
                                       glueOrChainStr = "SDValue(" + \
                                                predVarName + ", " + to_string(numOutputsInstr[indexInstrCrt - 1]) + ")"; \
                                else if (indexInstrCrt == 0) \
-                                    glueOrChainStr = "SDValue(nodeOpSrcCast2, 1)"; \
+                                    glueOrChainStr = "SDValue(" + lastInputRegisterKernelSDNodeVarName + ", 1)"; \
                                else glueOrChainStr = "";
 
-        #define UPDATE_INPUTSSTR_2 inputsStr = "SDValue(" + sdNodeVarNameRegDef[instrCrt.getLeft()] + ", 0),\n" + \
+        #define UPDATE_INPUTSSTR_1_INPUT_OPERAND inputsStr = "SDValue(" + sdNodeVarNameRegDef[instrCrt.getLeft()] + ", 0)";
+
+        #define UPDATE_INPUTSSTR_2_INPUT_OPERANDS inputsStr = "SDValue(" + sdNodeVarNameRegDef[instrCrt.getLeft()] + ", 0),\n" + \
                       "                                    SDValue(" + sdNodeVarNameRegDef[instrCrt.getRight()] + ", 0)";
-        /* Wrong semantics (exchanging operands does not work for
-         * non-commutative operators like SUB, etc): The ASM code that results from llc reads nicer like this:
+        /*
+           I use this macrodef because the ASM code that results from llc reads
+              nicer like this.
+           But beware of using it wrong - wrong semantics (exchanging operands
+           does not work for non-commutative operators like SUB, etc)
         */
-        #define UPDATE_INPUTSSTR_2_MIRRORED_OPNDS inputsStr = "SDValue(" + sdNodeVarNameRegDef[instrCrt.getRight()] + ", 0),\n" + \
+        #define UPDATE_INPUTSSTR_2_INPUT_OPERANDS_MIRRORED inputsStr = "SDValue(" + sdNodeVarNameRegDef[instrCrt.getRight()] + ", 0),\n" + \
                         "                                    SDValue(" + sdNodeVarNameRegDef[instrCrt.getLeft()] + ", 0)";
 
 /* TODO DONE TODO DONE TODO DONE: We have issues in MUL_i32 with the wrong usage of
@@ -655,18 +807,53 @@ int instrAfterOpcode = instrAfter.getOpcode();
 
                 varName = varNamePrefix + to_string(idInstrCrt);
 
+                bool specialTreatmentTakingResultOfPredecessorInstr = false;
+
                 if (instrCrtOpcode == _XOR ||
                         instrCrtOpcode == _AND ||
                         instrCrtOpcode == _OR ||
-                        instrCrtOpcode == _ADD ||
-                        instrCrtOpcode == _ADDC) {
-                    UPDATE_INPUTSSTR_2_MIRRORED_OPNDS;
+                        instrCrtOpcode == _ADD
+                        //|| instrCrtOpcode == _ADDC
+                   ) {
+                    UPDATE_INPUTSSTR_2_INPUT_OPERANDS_MIRRORED;
+                }
+                else
+                if (instrCrtOpcode == _ADDC ||
+                    instrCrtOpcode == _SUBC) {
+                    // NOTE: this covers also the SUBCV_SPECIAL_H and ADDCV_SPECIAL_H cases
+                    assert(indexInstrCrt > 0);
+
+                    specialTreatmentTakingResultOfPredecessorInstr = true;
+
+                    UPDATE_INPUTSSTR_2_INPUT_OPERANDS;
+                    //inputsStr = "SDValue(" + sdNodeVarNameRegDef[instrCrt.getLeft()] + ", 0),\n" + \
+                    //  "                                    SDValue(" + sdNodeVarNameRegDef[instrCrt.getRight()] + ", 0)";
+
+                    /* Keep in mind ADDCV/SUBCV[_SPECIAL]_H take a bogus input
+                     from the previous instruction to avoid the scheduler
+                     changing their relative order.
+                     Also, to avoid other instructions be scheduled before
+                       ADDCV/SUBCV (which could mess up the Carry flags) we
+                       SHOULD put a glue edge betwen this instruction and its
+                       predecesor. */
+                    int iInstrPred = iInstr - 1;
+                    Instruction instrPred(instructionsSimple[iInstrPred]);
+                    //
+                    int instrPredDestReg = instrPred.getDest();
+                    assert(instrPredDestReg != -1);
+                    inputsStr = inputsStr + ",\n" +
+                        "                                    SDValue(" + sdNodeVarNameRegDef[instrPredDestReg] + ", 0)";
                 }
                 else {
-                    UPDATE_INPUTSSTR_2;
+                    UPDATE_INPUTSSTR_2_INPUT_OPERANDS;
                 }
 
-                UPDATE_GLUESTR;
+                if (specialTreatmentTakingResultOfPredecessorInstr == false) {
+                    /* //instrCrtOpcode != _ADDC && instrCrtOpcode != _SUBC)
+                     ADDC and SUBC take as input the result of the previous
+                     instruction */
+                    UPDATE_GLUESTR;
+                }
 
                 numInputsInstr.push_back(2);
                 numOutputsInstr.push_back(1);
@@ -756,12 +943,25 @@ int instrAfterOpcode = instrAfter.getOpcode();
 
                 break;
             }
+            case _REDUCE: {
+                isdName = "RED_H";
+
+                varName = "sumRed" + to_string(idInstrCrt);
+
+                UPDATE_INPUTSSTR_1_INPUT_OPERAND;
+                UPDATE_GLUESTR;
+
+                numInputsInstr.push_back(1);
+                numOutputsInstr.push_back(0);
+
+                break;
+            }
             case _MULT: {
                 isdName = "MULT_H";
 
                 varName = "mult" + to_string(idInstrCrt);
 
-                UPDATE_INPUTSSTR_2;
+                UPDATE_INPUTSSTR_2_INPUT_OPERANDS;
                 UPDATE_GLUESTR;
 
                 numInputsInstr.push_back(2);
@@ -784,7 +984,7 @@ int instrAfterOpcode = instrAfter.getOpcode();
 
                 varName = varNamePrefix + to_string(idInstrCrt);
 
-                UPDATE_INPUTSSTR_2;
+                UPDATE_INPUTSSTR_2_INPUT_OPERANDS;
                 UPDATE_GLUESTR;
 
                 numInputsInstr.push_back(2);
@@ -834,7 +1034,7 @@ int instrAfterOpcode = instrAfter.getOpcode();
 
                 varName = varNamePrefix + to_string(idInstrCrt);
 
-                UPDATE_INPUTSSTR_2;
+                UPDATE_INPUTSSTR_2_INPUT_OPERANDS;
                 UPDATE_GLUESTR;
 
                 numInputsInstr.push_back(2);
@@ -927,7 +1127,6 @@ int instrAfterOpcode = instrAfter.getOpcode();
             case _IWRITE:
             //
             case _PRINT_REG:
-            case _REDUCE:
             case _POPCNT: {
                 assert(0 && "NOT IMPLEMENTED");
                 break;
@@ -939,7 +1138,7 @@ int instrAfterOpcode = instrAfter.getOpcode();
 
                 UPDATE_GLUESTR;
 
-                //UPDATE_INPUTSSTR_2;
+                //UPDATE_INPUTSSTR_2_INPUT_OPERANDS;
                 inputsStr = ""; //"SDValue(" + *varNameInstrProducer + ", " + portInput;
 
                 numInputsInstr.push_back(1);
@@ -958,7 +1157,13 @@ int instrAfterOpcode = instrAfter.getOpcode();
         requireGlueOrChainPred.push_back(requireGlueOrChain);
 
 
-        // Handling non-SSA cases with _SPECIAL_H instructions
+        //printf("Alex: instrCrt.getDest() = %d\n", instrCrt.getDest());
+        if (instrCrt.getDest() != -1)
+            printf("  isDefined[instrCrt.getDest()] = %d\n",
+                    isDefined[instrCrt.getDest()]);
+
+        /* Handling "non-SSA" cases (where we assign a register more than once)
+         with _SPECIAL_H instructions */
         if (instrCrt.getDest() != -1 &&
                 isDefined[instrCrt.getDest()]) {
             printf("    Since this physical dest reg is assigned more than once " \
@@ -992,75 +1197,45 @@ int instrAfterOpcode = instrAfter.getOpcode();
         varNameInstr.push_back(varName);
 
 
-        stringstream ss2;
+        string strCopyToReg;
         if (instrCrt.getDest() != -1) {
             sdNodeVarNameRegDef[instrCrt.getDest()] = varName;
 
             isDefined[instrCrt.getDest()] = true;
 
-            /* We codegen a getCopyToReg() if we have after instrCrt a def to the
-               same register as the dest register of instrCrt. */
-            for (int iInstrAfter = iInstr + 1;
-                  iInstrAfter < OFFSET_INSTRUCTIONS_TO_START_CODEGEN + NUM_INSTRUCTIONS_TO_CODEGEN;
-                  iInstrAfter++) {
-
-                Instruction instrAfter(instructionsSimple[iInstrAfter]);
-
-                if (instrAfter.getDest() != -1 &&
-                        instrCrt.getDest() == instrAfter.getDest()) {
-
-                    printf("  WAW (output) dependency: Since instrAfter's dest reg is assigned also before " \
-                             "(more than once): we create CopyToReg for use for _SPECIAL_H SDNode " \
-                             "(which has tied-to operands constraint)!\n");
-                    printf("    iInstrAfter = %d\n", iInstrAfter);
-                    printf("    instrAfter = %s", instrAfter.dump().c_str());
-                    printf("    (doing it only once for instrCrt)\n");
-                    //printf("  instrCrt.getDest() = %d\n", instrCrt.getDest());
-
-                    // NOTE: we copy to register for use for _SPECIAL_H SDNode
-                    int idInstrVR = countInstr[ID_VIRTREG];
-                    countInstr[ID_VIRTREG]++;
-                    string varNameVR = "virtReg" + to_string(idInstrVR);
-
-                    virtRegVarNameIdRegDef[instrCrt.getDest()] = idInstrVR;
-
-                    int idInstrCTR = countInstr[ID_GET_COPYTOREG];
-                    countInstr[ID_GET_COPYTOREG]++;
-                    string varNameCTR = "copyToReg" + to_string(idInstrCTR);
-
-                    // MAYBE check also if the instruction has input the dest reg
-                    //      "                   SDValue(" << varName << ", " << numInputsInstr[indexInstr] << "),\n"
-                    ss2 << "unsigned " << varNameVR << " = RegInfo->createVirtualRegister(&Connex::MSA128HRegClass);\n";
-                    ss2 << "SDValue " << varNameCTR << " = CurDAG->getCopyToReg(\n" \
-                          "                   // glue (or chain) input edge\n" \
-                          "                   SDValue(" << varName << ", 1),\n" \
-                          "                   DL,\n" \
-                          "                   " << varNameVR << ",\n" \
-                          "                   // Value copied to register\n" \
-                          "                   SDValue(" << varName << ", 0)\n" \
-                          "                   // Glue\n" \
-                          "                  );\n\n";
-
-                    /* IMPORTANT NOTE: CopyToReg SDNode does NOT have chain or
-                         glue output edges.
-                    predVarName = varNameCTR; */
-                    break;
-                }
-            }
+            /*
+            printf("Alex: countInstr = %p\n", countInstr);
+            printf("Alex: virtRegVarNameIdRegDef = %p\n", virtRegVarNameIdRegDef);
+            */
+            strCopyToReg = GenerateIfRequiredCopyToReg(iInstr,
+                                              instrCrt,
+                                              numInstructionsToCodegen,
+                                              offsetKernelToStartCodegenFrom,
+                                              //
+                                              //instructionsSimple.data(),
+                                              //&(instructionsSimple[0]),
+                                              partlySSAInstrs,
+                                              //
+                                              varName,
+                                              countInstr,
+                                              virtRegVarNameIdRegDef);
         }
 
+        ss << "// " << instrCrt.dump(); // NOT required: << "\n";
         ss <<
           "SDNode *" << varName << " = CurDAG->getMachineNode(\n" \
                       "                                    Connex::" << isdName << ",\n" \
                       "                                    DL,\n";
         if (numOutputsInstr[indexInstrCrt] != 0)
             ss <<     "                                    TYPE_VECTOR_I16,\n";
-        if (requireGlueOrChain || ss2.str().size() != 0)
-          #ifdef USE_GLUE
+        if (requireGlueOrChain ||
+            strCopyToReg.size() != 0 /* We put this because ...*/ ) //.str().size() != 0)
+          if (useGlue == 1) {
             ss <<     "                                    MVT::Glue,\n";
-          #else
+          }
+          else {
             ss <<     "                                    MVT::Other,\n";
-          #endif
+          }
         if (inputsStr.size() != 0)
             ss <<     "                                    " << inputsStr;
         if (glueOrChainStr.size() != 0) {
@@ -1076,7 +1251,7 @@ int instrAfterOpcode = instrAfter.getOpcode();
         }
 
         ss <<         "                                    );\n";
-        ss << ss2.str();
+        ss << strCopyToReg; //.str();
         ss <<         "\n";
 
 
@@ -1085,6 +1260,7 @@ int instrAfterOpcode = instrAfter.getOpcode();
                 instrCrtOpcode != _WHERE_EQ &&
                 instrCrtOpcode != _WHERE_LT &&
                 instrCrtOpcode != _END_WHERE &&
+                //instrCrtOpcode != _IJMPNZDEC &&
                 instrCrt.getDest() == -1)
             assert(numOutputsInstr[indexInstrCrt] == 0);
     }

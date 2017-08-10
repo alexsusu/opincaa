@@ -195,8 +195,9 @@ class Kernel
         //static
         string sdNodeVarNameRegDef[CONNEX_REG_COUNT];
         //static
-        int NUM_INSTRUCTIONS_TO_CODEGEN;
-        int OFFSET_INSTRUCTIONS_TO_START_CODEGEN;
+        int numInstructionsToCodegen = -1;
+        int offsetKernelToStartCodegenFrom = -1;
+        int useGlue = 1;
 
         /*
          * Resets the loop size counter so each appended instruction
