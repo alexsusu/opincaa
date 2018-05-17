@@ -34,7 +34,7 @@ enum{
     INSTRUCTION_TYPE_WITH_VALUE
 };
 
-/* The index of the bit in the instruction that specifies the format (1 or 2)*/
+/* The index of the bit in the instruction that specifies the format (1 or 2) */
 #define TYPE_BIT_INDEX 30
 
 /* "Left" operand position and size */
@@ -77,14 +77,18 @@ enum{
  */
 
 /* 9-bit opcodes (instruction will NOT have immediate value) */
+// Alex: for debug support - opcode of _PRINT_REG instruction
+#define _PRINT_REG  0x101       /* 0b100000001 */
+
 #define _ADD        0x144       /* 0b101000100 */
 #define _ADDC       0x164       /* 0b101100100 */
 #define _SUB        0x154       /* 0b101010100 */
 #define _SUBC       0x174       /* 0b101110100 */
 
-#define _POPCNT     0x170	/* 8b101110000 */
+#define _POPCNT     0x170       /* 8b101110000 */
 
 #define _NOT        0x14C       /* 0b101001100 */
+#define _BIT_REVERSE 0x14D      /* 0b101001101 */
 #define _OR         0x15C       /* 0b101011100 */
 #define _AND        0x16C       /* 0b101101100 */
 #define _XOR        0x17C       /* 0b101111100 */
@@ -115,14 +119,18 @@ enum{
 #define _WHERE_LT   0x11E       /* 0b100011110 */
 #define _END_WHERE  0x11F       /* 0b100011111 */
 #define _REDUCE     0x100       /* 0b100000000 */
+#define _SETLC_REDUCE 0x102       /* 0b100000010 */
+
 #define _NOP        0x00        /* 0b000000000 */
 
 /* 6-bit opcodes (instruction will have immediate value) */
 #define _VLOAD      0x35        /* 0b110101 */
 #define _IREAD      0x34        /* 0b110100 */
 #define _IWRITE     0x32        /* 0b110010 */
-#define _SETLC		0x15		/* 0b010101 */
-#define _IJMPNZ		0x13		/* 0b010011 */
+#define _SETLC      0x15        /* 0b010101 */
+#define _IJMPNZ     0x13        /* 0b010011 */
+#define _PRINT_CHARS  0x14      /* 0b010100 */
+#define _QUIT       0x16        /* 0b010101 */
 
 /* INSTRUCTION_TYPE_UNKNOWN if opcode is not valid,
  * INSTRUCTION_TYPE_NO_VALUE if it's type 1,
@@ -130,8 +138,9 @@ enum{
  */
 
 static const int type_for_opcode[1 << OPCODE_9BITS_SIZE] = {
+    // Alex: added PRINT_REG with type_for_opcode 1 (with table value 2 == INSTRUCTION_TYPE_WITH_VALUE)
     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  //   0 -  15
-    0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  //  16 -  31
+    0, 0, 0, 2, 2, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,  //  16 -  31
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  //  32 -  47
     0, 0, 2, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  //  48 -  63
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  //  64 -  79
@@ -146,11 +155,11 @@ static const int type_for_opcode[1 << OPCODE_9BITS_SIZE] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  // 208 - 223
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  // 224 - 239
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,  // 240 - 255
-    1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,  // 256 - 271
+    1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,  // 256 - 271
     0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1,  // 272 - 287
     1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,  // 288 - 303
     1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,  // 304 - 319
-    1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0,  // 320 - 335
+    1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0,  // 320 - 335
     1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0,  // 336 - 351
     1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0,  // 352 - 367
     1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0,  // 368 - 383
@@ -202,11 +211,58 @@ class Instruction
 
 
         /*
+         * Alex: we put the definition of assemble() in the header because of
+         *       the inline qualifier.
+         *
          * Returns the 32bit word representing the assembled instruction
          *
          * @return the 32bit word representing the assembled instruction
          */
-        unsigned assemble();
+        inline unsigned assemble() {
+            unsigned instruction;
+
+            switch(type) {
+                case INSTRUCTION_TYPE_NO_VALUE:
+                    instruction = opcode << OPCODE_9BITS_POS;
+                    instruction |= right << RIGHT_POS;
+                    break;
+                case INSTRUCTION_TYPE_WITH_VALUE:
+                    instruction = opcode << OPCODE_6BITS_POS;
+
+                    /* 2017_08_26: Alex: Taking into consideration the fact
+                       value is a sign extended int */
+                    instruction |= ((value & 0xFFFF) << IMMEDIATE_VALUE_POS);
+
+                    break;
+                default:
+                    throw string("Illegal instruction-type in Instruction::assemble");
+            }
+
+            instruction |= left << LEFT_POS;
+            instruction |= dest << DEST_POS;
+
+          #ifdef PRINT_DEBUG_INFO_ASSEMBLY_INSTRUCTION
+            // Alex: new code
+            printf("Instruction::assemble(): instruction = 0x%X\n", instruction);
+            //printf("  (mnemonic = %s)\n", (this->mnemonic(opcode)).c_str());
+            printf("  which means: %s", (this->disassemble()).c_str());
+            switch(type) {
+                case INSTRUCTION_TYPE_NO_VALUE:
+                    printf("  opcode = 0x%X\n", opcode);
+                    printf("  right = %d\n", right);
+                    break;
+                case INSTRUCTION_TYPE_WITH_VALUE:
+                    printf("  opcode = %d\n", opcode);
+                    printf("  value = %d\n", value);
+                    break;
+            }
+            printf("  left = %d\n", left);
+            printf("  dest = %d\n", dest);
+            // Alex: END new code
+          #endif
+
+            return instruction;
+        }
 
         /*
          * Returns the string representing the dump instruction in
@@ -216,12 +272,12 @@ class Instruction
          */
         string disassemble();
 
-	/*
-	 * Returns the string representing the disassemble instruction
-	 * in the following format:
-	 * 	MNEMONIC	DESTINATION	LEFT	 RIGHT
-	 */
-	string dump();
+        /*
+         * Returns the string representing the disassemble instruction
+         * in the following format:
+         *    MNEMONIC    DESTINATION    LEFT    RIGHT
+         */
+        string dump();
 
         /*
          * Returns a string representation of this instruction
@@ -309,8 +365,8 @@ class Instruction
         /*
          * The value operand
          */
-        int value;
-
+       int value;
 };
 
 #endif // INSTRUCTION_H
+

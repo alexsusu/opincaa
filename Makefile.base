@@ -10,7 +10,8 @@ INC_DIR = $(DEPTH)include
 BUILD_DIR = $(DEPTH)build
 LIB_DIR = $(DEPTH)libs
 
-CFLAGS = -fPIC -std=c++0x
+# Alex: added $(CXXFLAGS) that can allow to compile with debugging support
+CFLAGS = -O3 -fPIC -std=c++0x $(CXXFLAGS) # -g
 LDFLAGS_DEBUG =  $(LDFLAGS)
 
 SRC = $(wildcard $(DEPTH)core/*.cpp)
@@ -26,6 +27,7 @@ make_paths:
 
 build_arch:
 	$(CXX) $(CFLAGS) -I$(DEPTH)arch/$(ARCH)/include -c $(DEPTH)arch/$(ARCH)/src/Instruction.cpp -o $(BUILD_DIR)/$(ARCH)/Instruction.o
+	$(CXX) $(CFLAGS) -I$(DEPTH)arch/$(ARCH)/include -c $(DEPTH)arch/$(ARCH)/src/Params.cpp -o $(BUILD_DIR)/$(ARCH)/Params.o
 
 build_core: $(OBJ)
 
@@ -34,7 +36,7 @@ build_lib:
 
 $(OBJ): %.o : %.cpp
 	$(eval obj = $(shell basename $@))
-	$(CXX) $(CFLAGS) -DTARGET_ARCH=\"$(ARCH)\" -I$(INC_DIR) -I$(DEPTH)arch/$(ARCH)/include -I$(DEPTH)utils/include -c $< -o $(BUILD_DIR)/$(ARCH)/$(obj)
+	$(CXX) $(CFLAGS) -DTARGET_ARCH=\"$(ARCH)\" -I$(INC_DIR) -I$(DEPTH)arch/$(ARCH)/include -c $< -o $(BUILD_DIR)/$(ARCH)/$(obj)
 
 
 install: lib

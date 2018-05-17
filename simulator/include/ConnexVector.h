@@ -8,127 +8,107 @@
 #ifndef CONNEX_VECTOR_H
 #define CONNEX_VECTOR_H
 
+#include <limits.h>
 #include "Architecture.h"
 
-class ConnexVector
-{
-	public:
+
+
+class ConnexVector {
+    public:
 
         /*
-         * The active cell flags
+         * Constructor for creating a new ConnexVector
          */
-		static ConnexVector active;
+        ConnexVector();
+
+        /* 2018_03_27:
+           Adding this constructor, after we added:
+              void operator=(ConnexVector &&anotherVector);
+            This is required to allow references from temporary objects,
+              which are r-values, i.e. the references are to r-values. */
+        /*constexpr*/ ConnexVector(const ConnexVector &anotherVector);
 
         /*
-         * The carry cell flags
+         * Destructor for the ConnexVector class
          */
-		static ConnexVector carryFlag;
+        ~ConnexVector();
 
         /*
-         * The equal cell flags
+         * Computes the reduction of this Vector
+         *
+         * @return the value of the reduction operation
          */
-		static ConnexVector eqFlag;
-
-        /*
-         * The less than cell flags
-         */
-		static ConnexVector ltFlag;
-
-        /*
-         * Least significat half of the 32 bits multiplication result
-         */
-		static ConnexVector multLow;
-
-        /*
-         * Most significat half of the 32 bits multiplication result
-         */
-		static ConnexVector multHigh;
-
-        /*
-         * The cell shift register
-         */
-		static ConnexVector shiftReg;
-
-        /*
-         * The remaining shifts required for each cells
-         */
-		static ConnexVector shiftCountReg;
-
-		/*
-		 * Constructor for creating a new ConnexVector
-		 */
-		ConnexVector();
-
-		/*
-		 * Destructor for the ConnexVector class
-		 */
-		~ConnexVector();
-
-		/*
-		 * Computes the reduction of this Vector
-		 *
-		 * @return the value of the reduction operation
-		 */
-		int reduce();
+        int reduce();
 
         /*
          * Loads each cell with its index in the array
          */
-		void loadIndex();
+        void loadIndex();
 
         /*
          * Loads the specified values in the vector's cells
          *
-         * @param data the array of shorts to load
+         * @param data the array of TYPE_ELEMENT to load
          */
-		void write(unsigned short *data);
+        void write(TYPE_ELEMENT *data);
 
         /*
-         * Return the data contains in all cells as a short addat
+         * Return the data contained in all cells as a TYPE_ELEMENT data
          *
-         * @return the array of shorts taken from each cell
+         * @return the array of TYPE_ELEMENT taken from each cell
          */
-		short* read();
+        TYPE_ELEMENT *read();
 
         /*
          * Copy vector not taking selection into account.
          */
-         void copyFrom(ConnexVector anotherVector);
+         void copyFrom(ConnexVector &anotherVector);
 
         /*
          * List of operators
          */
-		ConnexVector operator+(ConnexVector anotherVector);
-		ConnexVector operator-(ConnexVector anotherVector);
-		ConnexVector operator<<(ConnexVector anotherVector);
-		ConnexVector operator>>(ConnexVector anotherVector);
-		ConnexVector operator<<(unsigned short value);
-		ConnexVector operator>>(unsigned short value);
-		void operator=(ConnexVector anotherVector);
-		void operator=(unsigned short value);
-		void operator=(bool value);
-		void operator*(ConnexVector anotherVector);
-		ConnexVector operator==(ConnexVector anotherVector);
-		ConnexVector operator<(ConnexVector anotherVector);
-		ConnexVector operator|(ConnexVector anotherVector);
-		ConnexVector operator&(ConnexVector anotherVector);
-		ConnexVector operator^(ConnexVector anotherVector);
-		ConnexVector operator~();
+        ConnexVector operator+(ConnexVector &anotherVector);
+        ConnexVector operator-(ConnexVector &anotherVector);
+        ConnexVector operator<<(ConnexVector &anotherVector);
+        ConnexVector operator>>(ConnexVector &anotherVector);
+        ConnexVector operator<<(unsigned short value);
+        ConnexVector operator>>(unsigned short value);
+
+        // 2018_03_27
+        void operator=(ConnexVector &anotherVector);
+        /* Required to allow references from temporary objects,
+           which are r-values - so the references are to r-values. */
+        void operator=(ConnexVector && anotherVector); 
+        // NOT GOOD: void operator=(ConnexVector &anotherVector) const;
+
+        void operator=(TYPE_ELEMENT value);
+        void operator=(bool value);
+        void operator*(ConnexVector &anotherVector);
+        // Alex: Added umult() but I am NOT using yet well...
+        void umult(ConnexVector &anotherVector);
+
+        ConnexVector operator==(ConnexVector &anotherVector);
+        ConnexVector operator<(ConnexVector &anotherVector);
+        ConnexVector operator|(ConnexVector &anotherVector);
+        ConnexVector operator&(ConnexVector &anotherVector);
+        ConnexVector operator^(ConnexVector &anotherVector);
+        ConnexVector operator~();
+        ConnexVector bitreverse();
 
         /*
          * Unsigned less than
          */
-		ConnexVector ult(ConnexVector anotherVector);
+        ConnexVector ult(ConnexVector &anotherVector);
 
         /*
          * Shift right, arithmetic
          */
-		ConnexVector shr(ConnexVector anotherVector);
+        ConnexVector shr(ConnexVector &anotherVector);
 
         /*
          * Shift right, arithmetic, with immediate value
          */
-		ConnexVector ishra(unsigned short value);
+        ConnexVector ishra(unsigned short value);
 
         /*
          * Computes the population count of each element of this Vector
@@ -151,7 +131,7 @@ class ConnexVector
          * @param localStore the local store to read from
          * @param addresses the addresses to load from
          */
-        void loadFrom(ConnexVector *localStore, ConnexVector addresses);
+        void loadFrom(ConnexVector *localStore, ConnexVector &addresses);
 
         /*
          * Writes this vector to the localStore, using addresses vector for addresses
@@ -159,18 +139,68 @@ class ConnexVector
          * @param localStore the local store to write to
          * @param addresses the addresses to write to
          */
-        void storeTo(ConnexVector *localStore, ConnexVector addresses);
+        void storeTo(ConnexVector *localStore, ConnexVector &addresses);
 
-        static void Unconditioned_Setactive(ConnexVector anotherVector);
+        static void Unconditioned_Setactive(ConnexVector &anotherVector);
         static void Unconditioned_Setactive(bool value);
 
-	private:
+        TYPE_ELEMENT getCellValue(int index) {
+            return cells[index];
+        }
 
+    private:
         /*
          * The cell data for this vector
          */
-		short cells[CONNEX_VECTOR_LENGTH];
+        // 2018_02_10
+        TYPE_ELEMENT *cells;
 };
+
+class ConnexState {
+    public:
+      // Actual state vectors:
+        /*
+         * The active cell flags
+         */
+        ConnexVector active;
+
+        /*
+         * The carry cell flags
+         */
+        ConnexVector carryFlag;
+
+        /*
+         * The equal cell flags
+         */
+        ConnexVector eqFlag;
+
+        /*
+         * The less than cell flags
+         */
+        ConnexVector ltFlag;
+
+      // Miscellaneous Connex vectors:
+        /*
+         * Least significat half of the 32 bits multiplication result
+         */
+        ConnexVector multLow;
+
+        /*
+         * Most significat half of the 32 bits multiplication result
+         */
+        ConnexVector multHigh;
+
+        /*
+         * The cell shift register
+         */
+        ConnexVector shiftReg;
+
+        /*
+         * The remaining shifts required for each cells
+         */
+        ConnexVector shiftCountReg;
+};
+
 
 #endif // CONNEX_VECTOR_H
 

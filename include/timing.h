@@ -1,0 +1,14 @@
+/*
+ *
+ * File: timing.h
+ *
+ * Functions for time measurements.
+ *
+ */
+
+int GetMilliCount();
+int GetMilliSpan(int nTimeStart);
+void CountMilliTime();
+
+// Alex: added more accurate timer
+long GetNanos();

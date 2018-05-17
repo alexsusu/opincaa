@@ -6,13 +6,15 @@
 WORKDIR = `pwd`
 
 CXX = g++
+#CXXFLAGS = -g
 
 INC_DIR = include
 BUILD_DIR = build
 SRC_DIR = src
 LIB_DIR = libs
 
-CFLAGS = -fPIC -std=c++0x
+# Alex: added $(CXXFLAGS) that can allow to compile with debugging support
+CFLAGS = -fPIC -std=c++0x $(CXXFLAGS)
 LDFLAGS_DEBUG =  $(LDFLAGS)
 
 OBJ = $(BUILD_DIR)/test.o $(BUILD_DIR)/simple_tests.o $(BUILD_DIR)/simple_io_tests.o $(BUILD_DIR)/controller_tests.o

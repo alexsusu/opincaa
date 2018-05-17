@@ -23,12 +23,12 @@
  */
 Operand::Operand(int type, unsigned short index, bool localStoreIndexImmediate, Kernel *kernel)
 {
-    if(kernel == NULL)
+    if (kernel == NULL)
     {
         throw string("Invalid kernel reference in Operand constructor");
     }
 
-    switch(type)
+    switch (type)
     {
         case TYPE_REGISTER:
             if(index >= CONNEX_REG_COUNT)
@@ -59,7 +59,7 @@ Operand::Operand(int type, unsigned short index, bool localStoreIndexImmediate, 
 /*
  * Constructor for creating a new Operand with default localStoreIndexImmediate == false
  *
- * @param type the type of this operand (reg or local store)
+ * @param type the type of this operand (reg, etc)
  * @param index the index of the register or local store array that is
  *   represented by this object
  * @param kernel the kernel for which this operand is used
@@ -94,6 +94,14 @@ Operand::Operand(int type, unsigned short index, Kernel *kernel)
     this->localStoreIndexImmediate = false;
 }
 
+/*
+// IMPORTANT: Do NOT create a destructor for Operand because it will give
+//                      Segfault, e.g. when using operator=().
+Operand::~Operand() {
+    kernel = NULL; // To avoid dangling pointers
+}
+*/
+
 /***********************************************************
 * Start of overloaded operators
 ***********************************************************/
@@ -111,7 +119,8 @@ Instruction Operand::operator+(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator+(unsigned short value)
 {
-    throw string("Unsuported operation +value ");
+    // Alex: TODO: try to print more info as from where it gives error: We can do this at disassembly time either in simulator or client for Opincaa-lib
+    throw string("Unsupported operation +value ");
 }
 //-----------------------------------------------------------
 void Operand::operator+=(Operand op)
@@ -136,7 +145,7 @@ Instruction Operand::operator-(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator-(unsigned short value)
 {
-    throw string("Unsuported operation -value ");
+    throw string("Unsupported operation -value ");
 }
 //-----------------------------------------------------------
 void Operand::operator-=(Operand op)
@@ -163,7 +172,7 @@ Instruction Operand::operator*(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator*(unsigned short value)
 {
-    throw string("Unsuported operation *value ");
+    throw string("Unsupported operation *value ");
 }
 
 /* Assignment */
@@ -221,8 +230,11 @@ void Operand::operator=(Operand op)
     }
 }
 //-----------------------------------------------------------
-void Operand::operator=(unsigned short value)
-{
+/* Alex: 2017_08_26:
+   we have signed short (i16) immediate operands, NOT unsigned:
+  void Operand::operator=(unsigned short value) {
+*/
+void Operand::operator=(TYPE_ELEMENT value) {
     kernel->append(Instruction(_VLOAD, value, 0, index));
 }
 //-----------------------------------------------------------
@@ -262,7 +274,7 @@ Instruction Operand::operator|(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator|(unsigned short value)
 {
-    throw string("Unsuported operation |value ");
+    throw string("Unsupported operation |value ");
 }
 //-----------------------------------------------------------
 void Operand::operator|=(Operand op)
@@ -285,7 +297,7 @@ Instruction Operand::operator&(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator&(unsigned short value)
 {
-    throw string("Unsuported operation &value ");
+    throw string("Unsupported operation &value ");
 }
 //-----------------------------------------------------------
 void Operand::operator&=(Operand op)
@@ -308,7 +320,7 @@ Instruction Operand::operator==(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator==(unsigned short value)
 {
-    throw string("Unsuported operation ==value ");
+    throw string("Unsupported operation ==value ");
 }
 //-----------------------------------------------------------
 Instruction Operand::operator<(Operand op)
@@ -322,7 +334,7 @@ Instruction Operand::operator<(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator<(unsigned short value)
 {
-    throw string("Unsuported operation <value ");
+    throw string("Unsupported operation <value ");
 }
 //-----------------------------------------------------------
 Instruction Operand::operator^(Operand op)
@@ -336,7 +348,7 @@ Instruction Operand::operator^(Operand op)
 //-----------------------------------------------------------
 Instruction Operand::operator^(unsigned short value)
 {
-    throw string("Unsuported operation ^value ");
+    throw string("Unsupported operation ^value ");
 }
 //-----------------------------------------------------------
 void Operand::operator^=(Operand op)
@@ -348,24 +360,22 @@ void Operand::operator^=(Operand op)
     kernel->append(Instruction(_XOR, op.index, index, index));
 }
 //-----------------------------------------------------------
-Operand Operand::operator[](Operand op)
-{
-    if(type != TYPE_LS_DESCRIPTOR)
-    {
-        throw string("You can only apply the [] operator to the special LS descriptor");
+Operand Operand::operator[](Operand op) {
+    if(type != TYPE_LS_DESCRIPTOR) {
+        throw string("You can only apply the [] operator to the "
+                     "special LS descriptor");
     }
     return Operand(TYPE_LOCAL_STORE, op.index, false /*immediate*/, kernel);
 }
 //-----------------------------------------------------------
-Operand Operand::operator[](unsigned short value)
-{
-    if(type != TYPE_LS_DESCRIPTOR)
-    {
-        throw string("You can only apply the [] operator to the special LS descriptor");
+Operand Operand::operator[](unsigned short value) {
+    if(type != TYPE_LS_DESCRIPTOR) {
+        throw string("You can only apply the [] operator to "
+                     "the special LS descriptor");
     }
-    if(value < 0 || value >= CONNEX_MEM_SIZE)
-    {
-        throw string("Address value outside memory range in [value] operator");
+    if(value < 0 || value >= CONNEX_MEM_SIZE) {
+        throw string("Address value outside memory range "
+                     "in [value] operator");
     }
     return Operand(TYPE_LOCAL_STORE, value, true /*immediate*/, kernel);
 }
@@ -388,6 +398,17 @@ Instruction Operand::operator<<(unsigned short value)
     return Instruction(_ISHL, value, index, 0);
 }
 //-----------------------------------------------------------
+void Operand::operator<<=(unsigned short value) {
+    kernel->append(Instruction(_ISHL, value, index, index));
+}
+//-----------------------------------------------------------
+void Operand::operator<<=(Operand op) {
+    if(op.type != TYPE_REGISTER || type != TYPE_REGISTER) {
+        throw string("Invalid operand type for >> operator");
+    }
+    kernel->append(Instruction(_SHL, op.index, index, index));
+}
+//-----------------------------------------------------------
 Instruction Operand::operator>>(Operand op)
 {
     if(op.type != TYPE_REGISTER || type != TYPE_REGISTER)
@@ -406,6 +427,17 @@ Instruction Operand::operator>>(unsigned short value)
     return Instruction(_ISHR, value, index, 0);
 }
 //-----------------------------------------------------------
+void Operand::operator>>=(unsigned short value) {
+    kernel->append(Instruction(_ISHR, value, index, index));
+}
+//-----------------------------------------------------------
+void Operand::operator>>=(Operand op) {
+    if(op.type != TYPE_REGISTER || type != TYPE_REGISTER) {
+        throw string("Invalid operand type for >> operator");
+    }
+    kernel->append(Instruction(_SHR, op.index, index, index));
+}
+//-----------------------------------------------------------
 Instruction Operand::addc(Operand op1, Operand op2)
 {
     if(op1.type != TYPE_REGISTER || op2.type != TYPE_REGISTER)
@@ -417,7 +449,7 @@ Instruction Operand::addc(Operand op1, Operand op2)
 //-----------------------------------------------------------
 Instruction Operand::addc(Operand op1, unsigned short value)
 {
-    throw string("Unsuported operation addc(operand, value) ");
+    throw string("Unsupported operation addc(operand, value) ");
 }
 //-----------------------------------------------------------
 Instruction Operand::subc(Operand op1, Operand op2)
@@ -431,7 +463,7 @@ Instruction Operand::subc(Operand op1, Operand op2)
 //-----------------------------------------------------------
 Instruction Operand::subc(Operand op1, unsigned short value)
 {
-    throw string("Unsuported operation subc(operand, value) ");
+    throw string("Unsupported operation subc(operand, value) ");
 }
 //-----------------------------------------------------------
 Instruction Operand::shra(Operand op1, Operand op2)
@@ -491,7 +523,7 @@ Instruction Operand::ult(Operand op1, Operand op2)
 //-----------------------------------------------------------
 Instruction Operand::ult(Operand op1, unsigned short value)
 {
-    throw string("Unsuported operation ult (operand, value)");
+    throw string("Unsupported operation ult (operand, value)");
 }
 //-----------------------------------------------------------
 Instruction Operand::popcnt(Operand op)
@@ -501,6 +533,13 @@ Instruction Operand::popcnt(Operand op)
         throw string("Invalid operand type for popcnt operator");
     }
     return Instruction(_POPCNT, 0, op.index, 0);
+}
+//-----------------------------------------------------------
+Instruction Operand::bitreverse(Operand op) {
+    if(op.type != TYPE_REGISTER) {
+        throw string("Invalid operand type for popcnt operator");
+    }
+    return Instruction(_BIT_REVERSE, 0, op.index, 0);
 }
 //-----------------------------------------------------------
 void Operand::reduce(Operand op)

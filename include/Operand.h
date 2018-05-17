@@ -15,8 +15,7 @@
 
 using namespace std;
 
-enum
-{
+enum {
     TYPE_REGISTER,
     TYPE_LOCAL_STORE,
     TYPE_INDEX_REG,
@@ -42,10 +41,12 @@ class Operand
         * @param kernel the kernel for which this operand is used
         * @throws string if the index is out of bounds
         */
-        Operand(int type, unsigned short index, bool localStoreIndexImmediate, Kernel *kernel);
+        Operand(int type, unsigned short index, bool localStoreIndexImmediate,
+                Kernel *kernel);
 
         /*
-         * Constructor for creating a new Operand with default localStoreIndexImmediate == false
+         * Constructor for creating a new Operand with default
+         *     localStoreIndexImmediate == false
          *
          * @param type the type of this operand (reg or local store)
          * @param index the index of the register or local store array that is
@@ -54,6 +55,15 @@ class Operand
          * @throws string if the index is out of bounds
          */
         Operand(int type, unsigned short index, Kernel *kernel);
+
+        /*
+         IMPORTANT: Do NOT create a destructor for Operand because it will give
+                      Segfault, e.g. when using operator=().
+                For this library to work, do NOT create destructor for Operand.
+          // Destructor for the Operand class
+          //~Operand();
+         */
+
 
         /***********************************************************
          * Start of overloaded operators
@@ -75,7 +85,11 @@ class Operand
 
         /* Assignment */
         void operator=(Operand op);
-        void operator=(unsigned short value);
+
+        /* Alex: 2017_08_26: we have signed short (i16) immediate operands,
+            NOT unsigned: void operator=(unsigned short value); */
+        void operator=(short value);
+
         void operator=(Instruction insn);
 
         /* Logical */
@@ -104,9 +118,15 @@ class Operand
 
         Instruction operator<<(Operand op);
         Instruction operator<<(unsigned short value);
+        // 2018_04_04
+        void operator<<=(unsigned short value);
+        void operator<<=(Operand op);
 
         Instruction operator>>(Operand op);
         Instruction operator>>(unsigned short value);
+        // 2018_04_04
+        void operator>>=(unsigned short value);
+        void operator>>=(Operand op);
 
         static Instruction addc(Operand op1, Operand op2);
         static Instruction addc(Operand op1, unsigned short value);
@@ -127,6 +147,8 @@ class Operand
         static Instruction ult(Operand op1, unsigned short value);
 
         static Instruction popcnt(Operand op);
+        static Instruction bitreverse(Operand op); // Alex: experimental
+
         static void reduce(Operand op);
     private:
 

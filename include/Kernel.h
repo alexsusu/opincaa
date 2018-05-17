@@ -9,12 +9,34 @@
 #ifndef KERNEL_H
 #define KERNEL_H
 
+#include "Architecture.h" // Alex: added this
 #include "Instruction.h"
 #include "ConnexMachine.h"
 #include <vector>
 #include <string>
 
 using namespace std;
+
+
+
+// Alex: adding these for debugging purposes in the Opincaa simulator
+// Alex: we use macros because it is easier to lay this code inside the Opincaa program
+#define PrintDebugMessage(aStr) \
+    { int aStrLen = strlen(aStr); \
+    int idxPrint; \
+    for (idxPrint = 0; idxPrint < aStrLen; idxPrint += 2) { \
+        PRINTCHARS((aStr[idxPrint] << 8) | (aStr[idxPrint + 1] == 0 ? '\n' : aStr[idxPrint + 1])); \
+    } \
+    if (idxPrint == aStrLen) \
+        PRINTCHARS((' ' << 8) | ('\n')); }
+
+// I use the stringizing operator - see info at https://msdn.microsoft.com/en-us/library/09dwwt6y.aspx
+#define PrintRegDebug(regIdx) \
+    PrintDebugMessage("Print reg " #regIdx ":\n"); \
+    PRINTREG(regIdx);
+
+
+
 
 /*******************************************************
  * This defines OPINCAA macros registers and local store
@@ -65,6 +87,12 @@ using namespace std;
  **************************************************/
 #define BEGIN_KERNEL(kernelName)    {Kernel *__kernel = new Kernel(kernelName);
 
+
+// Alex:
+#define QUIT                        __kernel->append(Instruction(_QUIT, 0, 0, 0));
+#define PRINTREG(regIndex)          __kernel->append(Instruction(_PRINT_REG, 0, regIndex, 0));
+#define PRINTCHARS(value)           __kernel->append(Instruction(_PRINT_CHARS, value, 0, 0));
+
 #define EXECUTE_IN_ALL(code)        __kernel->append(Instruction(_END_WHERE, 0, 0, 0));     \
                                     code
 
@@ -81,25 +109,34 @@ using namespace std;
 
 #define REDUCE(x)                   Operand::reduce(x);
 #define POPCNT(x)                   Operand::popcnt(x);
-#define ADDC(x,y)                   Operand::addc(x,y);
-#define SUBC(x,y)                   Operand::subc(x,y);
-#define ULT(x,y)                    Operand::ult(x,y);
-#define SHRA(x,y)                   Operand::shra(x,y);
-#define ISHRA(x,y)                  Operand::ishra(x,y);
-#define CELL_SHL(x,y)               Operand::cellshl(x,y);
-#define CELL_SHR(x,y)               Operand::cellshr(x,y);
+#define ADDC(x, y)                  Operand::addc(x, y);
+#define SUBC(x, y)                  Operand::subc(x, y);
+#define ULT(x, y)                   Operand::ult(x, y);
+#define SHRA(x, y)                  Operand::shra(x, y);
+#define ISHRA(x, y)                 Operand::ishra(x, y);
+#define ISHL(x, imm)                x.operator<<(imm); // Added by Alex
+#define ISHR(x, imm)                x.operator>>(imm); // Added by Alex
+#define CELL_SHL(x, y)              Operand::cellshl(x, y);
+#define CELL_SHR(x, y)              Operand::cellshr(x, y);
 
 #define MULT_LOW()                  Operand::multlo()
 #define MULT_HIGH()                 Operand::multhi()
 
-#define REPEAT(x)			__kernel->append(Instruction(_SETLC, x-1, 0, 0));	\
-                            /* Hw workaround */                             \
-							__kernel->append(Instruction(_SETLC, x-1, 0, 0)); \
-							__kernel->resetLoopDestination();
+// Experimental - it is similar with the macrodef for POPCNT(x) - see above
+#define BITREVERSE(x)               Operand::bitreverse(x);
 
-#define REPEAT_X_TIMES(x)   REPEAT(x)
-#define END_REPEAT			__kernel->appendLoopInstruction(); \
-							__kernel->append(Instruction(_NOP, 0, 0, 0));
+// Just an Experimental instruction I (Alex) added
+#define REPEAT_REDUCE(regIndex)     __kernel->append(Instruction(_SETLC_REDUCE, 0, regIndex, 0)); \
+                                    __kernel->resetLoopDestination();
+
+#define REPEAT(x)                   __kernel->append(Instruction(_SETLC, x-1, 0, 0)); \
+                                    /* Hw workaround */                             \
+                                    __kernel->append(Instruction(_SETLC, x-1, 0, 0)); \
+                                    __kernel->resetLoopDestination();
+
+#define REPEAT_X_TIMES(x)           REPEAT(x)
+#define END_REPEAT                  __kernel->appendLoopInstruction(); \
+                                    __kernel->append(Instruction(_NOP, 0, 0, 0));
 
 #define END_KERNEL(x)               ConnexMachine::addKernel(__kernel);}
 
@@ -128,6 +165,10 @@ class Kernel
          * @param instruction the instruction to add
          */
         void append(Instruction instruction);
+
+        /* Copy from the myBinaryData array (e.g. from a preassembled kernel)
+         *   to the instructions member of the Kernel class. */
+        void copyBinaryKernel(unsigned int *myBinaryData, int numInstructions);
 
         /*
          * Writes the kernel to a memory location
@@ -165,24 +206,50 @@ class Kernel
          */
         string dump();
 
-	/*
-	 * Return a string representing the disassembled kernel.
-	 * One instruction per line.
-	 */
-	string disassemble();
+        /*
+         * Return a string representing the disassembled kernel.
+         * One instruction per line.
+         */
+        string disassemble();
 
-		/*
-		 * Resets the loop size counter so each appended instruction
-		 * after this one increments it with 1. It is used to determine
-		 * where the jump needs to be made
-		 */
-		void resetLoopDestination();
+        /*
+         * We generate a string with C++ code for LLVM Instruction Selection 
+         * manual.
+         */
+        string genLLVMISelManualCode();
+        //static
+        //string sdNodeVarNameRegDef[CONNEX_REG_COUNT];
+        string *sdNodeVarNameRegDef;
 
-		/*
-		 * This will append the jump instruction to the kernel by
-		 * using the loop destination
-		 */
-		void appendLoopInstruction();
+        //static
+        int numInstructionsToCodegen = -1;
+        int offsetKernelToStartCodegenFrom = -1;
+        int useGlue = 1;
+
+        /*
+         * The method generates precomputed tables with the assembled kernels,
+         *  during a run before the actual run to avoid the reasonably big
+         *  overhead of assembling the kernel at runtime during the real
+         *  processing, given by the rather complex C++ framework of Opincaa.
+         */
+        string genPrecomputedKernel();
+
+        /*
+         * Resets the loop size counter so each appended instruction
+         * after this one increments it with 1. It is used to determine
+         * where the jump needs to be made
+         */
+        void resetLoopDestination();
+
+        /*
+         * This will append the jump instruction to the kernel by
+         * using the loop destination
+         */
+        void appendLoopInstruction();
+
+
+        // Alex: added this
+        vector<unsigned> &getInstructions();
 
     private:
 
@@ -196,11 +263,11 @@ class Kernel
          */
         vector<unsigned> instructions;
 
-		/*
-		 *	The counter used for the loop
-		 * NOTE: This will become a queue when we support nested loops
-		 */
-		 unsigned short loopDestination;
+        /*
+         *  The counter used for the loop
+         * NOTE: This will become a queue when we support nested loops
+         */
+        unsigned short loopDestination;
 };
 
 #endif // BATCH_H

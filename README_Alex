@@ -1,0 +1,173 @@
+A very interesting feature of Opincaa is being able to do unrolling (the host-side for loop).
+  Especially when you can use stranger constructs like:
+  EXECUTE_IN_ALL(
+    for (int i = 2; i <= CONNEX_VECTOR_LENGTH; i *= 2) {
+        PrintDebugMessage("A message: i = ...");
+        R(REG_STEPS) = CONNEX_VECTOR_LENGTH / i;
+        ...
+        R(REG_PRED2) = R(REG_PRED) == R(REG_CT1);
+        PrintRegDebug(REG_PRED);
+        NOP;
+      );
+      EXECUTE_WHERE_EQ(
+        R(REG_SRC) = R(REG_MAX2);
+        PrintRegDebug(REG_SRC);
+      );
+      EXECUTE_IN_ALL(
+    }
+    ...
+    );
+
+DONE:
+    - May 11th, 2018:
+      Made Opincaa library (runtime assembler and simulator) allow for lanes other types than i16 (short) or u16, such as i32 (int) - added in arch/connex16-hm-generic/include/Architecture.h the typedef of TYPE_ELEMENT, etc.
+      Look for comment: "// 2018_05_11"
+    - Apr 3rd, 2018:
+        Verified with Valgrind that the Opincaa program (not also the Opincaa simulator) does NOT have any memory leaks or invalid reads.
+        Nonetheless, the Opincaa program leaks memory (72,704 bytes still reachable)
+          - most likely this is a false alarm of Valgrind - probably due to dangling pointers created in Operand::Operand(..., Kernel *)
+    - Feb 11, 2018:
+       simulator/include/ConnexVector.h, etc - moved the static members part of ConnexVector in the RFState class, and declared a single object to access them.
+    - in Oct 2017 (end) and on Nov 5th, 2017:
+        - worked on improving the assembly time of Opincaa kernels (as discussed with Lucian P.):
+            - modified Makefile to have -O3 in it
+            - declare only Instructions::assembly() and NOT Kernel::append() also
+              - the performance decreases due to I-cache misses due to inlining of the Kernel::append(), which is called many times from the output.cpp file
+                - so the solution is to do partial inlining (declare only Instructions::assembly() and NOT Kernel::append() also).
+            - IMPORTANT NOTE: these changes were ONLY peformed on zedboard.arh.pub.ro:
+                /home/alarm/OpincaaLLVM/opincaalib/arch/connex16-hm-generic/include/Instruction.h
+                /home/alarm/OpincaaLLVM/opincaalib/Makefile.base
+      Nov 12th, 2017:
+        - modified (reason: exception not caught in the new threads created in the simulator)
+            /home/alexsusu/Connex/simulator/src/ConnexSimulator.cpp
+            /home/alexsusu/Connex/simulator/src/InstructionQueue.cpp
+          look for // 2017_11_05
+    - As written at http://gitlab.dcae.pub.ro/research/opincaa/merge_requests/7
+        My Opincaa lib with changes I performed in the last 1+ year:
+            - corrected operators that were NOT working properly in simulator
+            - a few different Architecture.h configs: 64 lanes, etc
+            - added ConnexMachine::writeDataToConnexPartial() and ConnexMachine::readDataFromConnexPartial()
+            - added support for OpincaaLLVM compiler automatic Instruction Selection code generation from Opincaa kernels - see method Kernel::genLLVMISelManualCode()
+            - added a few new instructions to simulator:
+                - for debugging: _PRINT_REG, _PRINT_CHARS and the macrodefs PRINTREG(), PRINTCHARS() and PrintDebugMessage(), PrintRegDebug()
+                - experimental: _SETLC_REDUCE, _BIT_REVERSE and the macrosdefs REPEAT_REDUCE and BITREVERSE
+    - Jul 16th, 2017
+        - corrected bug in Opincaa - shr and ishr require cast to unsigned short to
+          avoid sign extension (Calin did it just for shr)
+    - Jun 23rd, 2017
+        - Opincaa: corrected bug in SUBC carry treatment
+    - Jun 16th, 2017
+            - Opincaa: added readCorrectReductionResults() - for i16 to truncate, for i32 to sign-ext
+    - possibly NO longer applicable since now (from ~May 2017) Connex has ONLY REDUCE for unsigned elements (e.g., v128u16):
+       May 24th, 2017
+        - corrected bug in Opincaa in ::reduce() due to sign extend from i16 to i32
+    - May 21st, 2017
+        - Opincaa - corrected ADDC bug
+
+
+Note that we have 2 methods that basically do the same thing:
+    - connexGlobal->dumpKernel() - it outputs in C++ Opincaa format ASM instructions
+    - connexGlobal->disassembleKernel() - it outputs in Connex ASM format
+
+A few things should be parametrized:
+    - maybe Multiplication - can be signed OR UNsigned
+    - Reduction - can be signed OR UNsigned
+
+
+Although somehow it's less intuitive to have blocks
+    EXECUTE_*(...);
+  instead of WHERE* ... END_WHERE blocks
+  I think it's better like this because the paranthesis (...) gives us clear syntax highlight (possibly jump to associated begin/end) in editors like VIM or MCEDIT.
+
+NOTE: Opincaa generates an END_WHERE at the beginning of the kernel - it's mandatory to be there, this is how Connex starts, after reboot, etc start executing vector instructions in ALL lanes.
+
+If you get cryptic error message when compiling an Opincaa module like:
+    <<output.cpp:91:10: error: macro "EXECUTE_IN_ALL" passed 3 arguments, but takes just 1>>
+   or
+    <<error: lvalue required as left operand of assignment>>
+   etc
+   you should build that module with gcc -E and look in the output_main.cpp where is the error actually coming from.
+   For example, I got this error because I used:
+     CELL_SHL R0, R1;
+   and the correct syntax is:
+     CELL_SHL ( R0, R1 );
+  IMPORTANT NOTE: Currently the cryptic error messages (no clear line, no clear statement, but just the enclosing EXECUTE*() macro)
+    are given by the EXECUTE*() macros that hold instructions inside (they take a list of instructions as parameter) - this seems to be in the end a problem of GCC's preprocessor.
+   Note: An example where we get CLEAR compilation errors (with exact line and line content) can be found ~/Connex/OPINCAA_2015_10/opincaa-master-d49993900aaf33580858c74e090a77bd67217702/2Propose/How_to_get_nice_error_messages_in_Opincaa_modules_by_avoiding_EXECUTE_macrodefs .
+
+To add a new instruction to Opincaa simulator you need to edit the following files and add:
+    - in arch/connex16-hm-generic/include/Instruction.h
+        // Alex: for debug support - opcode of _PRINT_REG instruction
+        // PRINT_REG takes a register as operand --> has type INSTRUCTION_TYPE_NO_VALUE, and this means that we need to put an opcode "close" to REDUCE
+        #define _PRINT_REG  0x101
+
+        // PRINT_REG takes an immediate value as operand --> has type INSTRUCTION_TYPE_WITH_VALUE, and this means that we need to put an opcode "close" to SETLC
+        #define _PRINT_CHARS  0x14
+
+        // Experimental: #define _SETLC_REDUCE 0x102
+        // Experimental: #define _BIT_REVERSE 0x14D
+
+        a value of 1 in:
+            type_for_opcode, at 257 (0x101, the opcode)
+            type_for_opcode, at 258 (0x102, the opcode)
+        a value of 2 in:
+            type_for_opcode, at 20 (0x14, the opcode)
+        NOTE: for type_for_opcode we put 1 if we have instruction like REDUCE, ADD, etc (INSTRUCTION_TYPE_NO_VALUE) and 2 if we have like SETLC (INSTRUCTION_TYPE_WITH_VALUE).
+
+
+    - in arch/connex16-hm-generic/src/Instruction.cpp (we provide example ONLY for _PRINT_REG):
+        string Instruction::mnemonic(int opcode) {
+            case _PRINT_REG: return string("print_reg"); // Alex
+
+        string Instruction::disassemble() {
+            case _PRINT_REG: // Alex
+
+        string Instruction::dump()
+            case _PRINT_REG: stream << "print_reg" << registerName(left); break; // Alex
+
+
+    - in include/Kernel.h
+        #define PRINTREG(regIndex)          __kernel->append(Instruction(_PRINT_REG, 0, regIndex, 0));
+        #define PRINTCHARS(value)           __kernel->append(Instruction(_PRINT_CHARS, value, 0, 0));
+
+
+        // Experimental: #define BITREVERSE(regIndex)          __kernel->append(Instruction(_BIT_REVERSE, 0, regIndex, 0));
+
+
+        #define REPEAT_REDUCE(regIndex)     __kernel->append(Instruction(_SETLC_REDUCE, 0, regIndex, 0)); \
+                                            __kernel->resetLoopDestination(); // IMPORTANT NOTE: we require to add __kernel->resetLoopDestination() for the loop (i.e., IJMPNZDEC) to work well
+
+
+    - in simulator/src/ConnexSimulator.cpp:
+        void ConnexSimulator::executeInstruction(Instruction instruction)
+            case _PRINT_REG:
+
+
+    - in core/Operand.cpp we add for the _BIT_REVERSE Instruction (whis is the only instruction we added that returns a result, so far):
+        Instruction Operand::bitreverse(Operand op) {
+            if(op.type != TYPE_REGISTER) {
+                throw string("Invalid operand type for popcnt operator");
+            }
+            return Instruction(_BIT_REVESE, 0, op.index, 0);
+        }
+      and in include/Operand.h:
+        static Instruction bitreverse(Operand op);
+
+
+
+
+About method Kernel::genLLVMISelManualCode():
+   Before calling this method we should do a few initalizations like this
+     in the Opincaa module like this:
+        Kernel *kernel = connexGlobal->getKernel(TEST_PREFIX + to_string((long long int)BatchNumberGlobal));
+        // The input registers to this kernel
+        kernel->sdNodeVarNameRegDef[REG_SRC1] = "nodeOpSrcCast1";
+        kernel->sdNodeVarNameRegDef[REG_SRC2] = "nodeOpSrcCast2";
+        kernel->offsetKernelToStartCodegenFrom = 11 + 1;
+        kernel->numInstructionsToCodegen = 90;
+        // We use chain, since with glue we can get a lot or weird scheduling mistakes:
+        kernel->useGlue = 0;
+        // IMPORTANT: to convert in 'partly SSA form' we require ~64 registers
+        assert(CONNEX_REG_COUNT != 32);
+
+        string resGenLLVM = connexGlobal->genLLVMISelManualCode(TEST_PREFIX + to_string((long long int)BatchNumberGlobal));
