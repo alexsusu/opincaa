@@ -1,8 +1,8 @@
-
 #ifndef TEST_H
 #define TEST_H
 
 #include <cstdint>
+#include <string.h>
 
 #define PASS 0
 #define FAIL -1
@@ -15,5 +15,3 @@ void eatRand(int times);
 int RunAll(bool stress);
 
 #endif // TEST_H
-
-

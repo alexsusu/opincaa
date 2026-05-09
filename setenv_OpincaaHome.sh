@@ -1,0 +1,1 @@
+export OPINCAA_HOME=${HOME}/Connex/opincaalib

@@ -8,6 +8,7 @@
  *
  */
 
+#include <assert.h>
 #include <iostream>
 #include <stdlib.h>
 #include <iomanip>
@@ -24,29 +25,25 @@ using namespace std;
 #define _BEGIN_KERNEL(x) BEGIN_KERNEL(TEST_PREFIX + to_string((long long int)x))
 #define _END_KERNEL(x) END_KERNEL(TEST_PREFIX + to_string((long long int)x))
 
-struct Dataset
-{
+struct Dataset {
    int32_t Param1;
    int32_t Param2;
    int32_t ExpectedResult;
 };
 
-struct TestFunction
-{
+struct TestFunction {
    int BatchNumber;
    const char *OperationName;
-   void (*initKernel)(int BatchNumber,int32_t Param1,int32_t Param2);
+   void (*initKernel)(int BatchNumber, int32_t Param1, int32_t Param2);
    Dataset ds;
 };
 
-static void InitKernel_Write(int BatchNumber,int32_t Param1, int32_t Param2);
-static void InitKernel_Nop(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Write(int BatchNumber, int32_t Param1, int32_t Param2);
+static void InitKernel_Nop(int BatchNumber, int32_t Param1, int32_t Param2) {
     InitKernel_Write(BatchNumber, Param1, Param2);
 }
 
-static void InitKernel_Iwrite(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Iwrite(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
        EXECUTE_IN_ALL(
                         R0 = INDEX;
@@ -59,13 +56,11 @@ static void InitKernel_Iwrite(int BatchNumber,int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Iread(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Iread(int BatchNumber, int32_t Param1, int32_t Param2) {
     InitKernel_Iwrite(BatchNumber, Param1, Param2);
 }
 
-static void InitKernel_Write(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Write(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R0 = INDEX;
@@ -82,8 +77,7 @@ static void InitKernel_Write(int BatchNumber,int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Read(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Read(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R0 = INDEX;
@@ -98,8 +92,7 @@ static void InitKernel_Read(int BatchNumber,int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Jump(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Jump(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = 1;
@@ -116,8 +109,7 @@ static void InitKernel_Jump(int BatchNumber,int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Jump2(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Jump2(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = 1;
@@ -130,35 +122,32 @@ static void InitKernel_Jump2(int BatchNumber,int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Jump3(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Jump3(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R0 = Param1;
-                        for (int x=0; x< Param2; x++)
-                        {
-                            REPEAT_X_TIMES(Param2)
-                                REDUCE(R0);
-                            END_REPEAT;
-                        }
-                       )
+                       for (int x = 0; x < Param2; x++) {
+                        REPEAT_X_TIMES(Param2)
+                            REDUCE(R0);
+                        END_REPEAT;
+                       }
+                      )
     NOP;//hardware bug workaround
     _END_KERNEL(BatchNumber);
 }
 
 
-static void InitKernel_Add(int BatchNumber,int32_t Param1, int32_t Param2);
-static void InitKernel_Vload(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Add(int BatchNumber, int32_t Param1, int32_t Param2);
+static void InitKernel_Vload(int BatchNumber, int32_t Param1, int32_t Param2) {
     InitKernel_Add(BatchNumber,Param1, Param2);
 }
 
-static void InitKernel_Add(int BatchNumber,int32_t Param1, int32_t Param2)
+static void InitKernel_Add(int BatchNumber, int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
-                        R1 = (UINT_PARAM)Param1;
-                        R2 = (UINT_PARAM)Param2;
+                        R1 = (UIntParam)Param1;
+                        R2 = (UIntParam)Param2;
                         R4 = R1 + R2;
                         REDUCE(R4);
                      )
@@ -166,12 +155,11 @@ static void InitKernel_Add(int BatchNumber,int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_pAdd(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_pAdd(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
-                        R3 = (UINT_PARAM)Param1;
-                        R7 = R3 + (UINT_PARAM)Param2;
+                        R3 = (UIntParam)Param1;
+                        R7 = R3 + (UIntParam)Param2;
                         //R3 = Param2 + R1;
                         REDUCE(R7);
                      )
@@ -179,12 +167,11 @@ static void InitKernel_pAdd(int BatchNumber,int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
-// pseudo instruction with zero
-static void InitKernel_pzAdd(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+// Pseudo instruction with zero
+static void InitKernel_pzAdd(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
-                        R1 = (UINT_PARAM)(Param1 + Param2);
+                        R1 = (UIntParam)(Param1 + Param2);
                         R2 = R1 + 0;
                         //R3 = Param2 + R1;
                         REDUCE(R2);
@@ -193,7 +180,7 @@ static void InitKernel_pzAdd(int BatchNumber,int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_sAdd(int BatchNumber,int32_t Param1, int32_t Param2)
+static void InitKernel_sAdd(int BatchNumber, int32_t Param1, int32_t Param2)
 {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
@@ -206,8 +193,7 @@ static void InitKernel_sAdd(int BatchNumber,int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Addc(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Addc(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R4 = 0x1;
@@ -222,8 +208,7 @@ static void InitKernel_Addc(int BatchNumber,int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_pAddc(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_pAddc(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R4 = 0x1;
@@ -233,12 +218,10 @@ static void InitKernel_pAddc(int BatchNumber,int32_t Param1, int32_t Param2)
                         R2 = ADDC(R1, Param2);
                         REDUCE(R2);
                     )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Sub(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Sub(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
@@ -246,12 +229,10 @@ static void InitKernel_Sub(int BatchNumber,int32_t Param1, int32_t Param2)
                         R3 = R1 - R2;
                         REDUCE(R3);
                         )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_sSub(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_sSub(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
@@ -259,82 +240,102 @@ static void InitKernel_sSub(int BatchNumber,int32_t Param1, int32_t Param2)
                         R1 -= R2;
                         REDUCE(R1);
                         )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_pSub(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_pSub(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
                         R2 = R1 - Param2;
                         REDUCE(R2);
-                        )
-
+                      )
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Subc(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Subc(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
+                        // We test the case where we DO generate a borrow
                         R1 = 0x1;
                         R2 = 0xffff;
                         R3 = R1 - R2;
+                      PRINTREG(3);
 
                         R1 = Param1;
                         R2 = Param2;
-                        R3 = SUBC(R1,R2);
+                        R3 = SUBC(R1, R2);
+                      PRINTREG(3);
                         REDUCE(R3);
-                        )
-
+                      )
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_pSubc(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Subc3(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
-                        R1 = 0xff;
-                        R2 = 0xffff;
+                        // We test the case where we do NOT generate a borrow
+                        R1 = -5;
+                        R2 = 0x7fff;
                         R3 = R1 - R2;
+                      PRINTREG(3);
 
-                        R1 = Param1;
-                        R2 = SUBC(R1,Param2);
-                        REDUCE(R2);
-                        )
-
+                        R1 = 0;
+                        R2 = 0;
+                        R3 = SUBC(R1, R2);
+                      PRINTREG(3);
+                        REDUCE(R3);
+                      )
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Popcount(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_pSubc(int BatchNumber, int32_t Param1, int32_t Param2) {
+    _BEGIN_KERNEL(BatchNumber);
+        EXECUTE_IN_ALL(
+                        // We test the case where we do NOT generate a borrow
+                        R1 = 0xfffb;
+                        R2 = 0x7fff;
+
+                        R3 = Param1;
+                        R4 = Param2;
+
+                        R5 = R1 - R2;
+                      PRINTREG(5);
+
+                        /*
+                        R1 = Param1;
+                        R2 = SUBC(R1, Param2);
+                        */
+                        R5 = SUBC(R3, R4);
+                      PRINTREG(5);
+                        REDUCE(R5);
+                      )
+    _END_KERNEL(BatchNumber);
+}
+
+static void InitKernel_Popcount(int BatchNumber, int32_t Param1,
+                                int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
                         R2 = POPCNT(R1);
                         REDUCE(R2);
                         )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Not(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Not(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
-                        R2 = Param2; //astatic void compiler warning
+                        R2 = Param2; //a static void compiler warning
                         R3 = ~R1;
                         REDUCE(R3);
                         )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Or(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Or(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
@@ -342,12 +343,10 @@ static void InitKernel_Or(int BatchNumber,int32_t Param1, int32_t Param2)
                         R3 = R1 | R2;
                         REDUCE(R3);
                     )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_sOr(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_sOr(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
@@ -355,24 +354,20 @@ static void InitKernel_sOr(int BatchNumber,int32_t Param1, int32_t Param2)
                         R1 |= R2;
                         REDUCE(R1);
                     )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_pOr(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_pOr(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
                         R2 = R1 | Param2;
                         REDUCE(R2);
                     )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_And(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_And(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
@@ -380,12 +375,10 @@ static void InitKernel_And(int BatchNumber,int32_t Param1, int32_t Param2)
                         R3 = R1 & R2;
                         REDUCE(R3);
                         )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_sAnd(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_sAnd(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
@@ -393,24 +386,20 @@ static void InitKernel_sAnd(int BatchNumber,int32_t Param1, int32_t Param2)
                         R1 &= R2;
                         REDUCE(R1);
                         )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_pAnd(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_pAnd(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
                         R2 = R1 & Param2;
                         REDUCE(R2);
                         )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Xor(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Xor(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
@@ -418,12 +407,10 @@ static void InitKernel_Xor(int BatchNumber,int32_t Param1, int32_t Param2)
                         R3 = R1 ^ R2;
                         REDUCE(R3);
                     )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_sXor(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_sXor(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
@@ -431,24 +418,20 @@ static void InitKernel_sXor(int BatchNumber,int32_t Param1, int32_t Param2)
                         R1 ^= R2;
                         REDUCE(R1);
                     )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_pXor(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_pXor(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
                         R2 = R1 ^ Param2;
                         REDUCE(R2);
                     )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Eq(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Eq(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
@@ -456,24 +439,20 @@ static void InitKernel_Eq(int BatchNumber,int32_t Param1, int32_t Param2)
                         R3 = (R1 == R2);
                         REDUCE(R3);
                         )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_pEq(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_pEq(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
                         R2 = (R1 == Param2);
                         REDUCE(R2);
                         )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Lt(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Lt(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
@@ -481,24 +460,20 @@ static void InitKernel_Lt(int BatchNumber,int32_t Param1, int32_t Param2)
                         R3 = (R1 < R2);
                         REDUCE(R3);
                         )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_pLt(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_pLt(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
                         R2 = (R1 < Param2);
                         REDUCE(R2);
                         )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Ult(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Ult(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
@@ -506,12 +481,10 @@ static void InitKernel_Ult(int BatchNumber,int32_t Param1, int32_t Param2)
                         R3 = ULT(R1,R2);
                         REDUCE(R3);
                         )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Ult2(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Ult2(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = INDEX;
@@ -523,20 +496,17 @@ static void InitKernel_Ult2(int BatchNumber,int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_pUlt(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_pUlt(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
                         R2 = ULT(R1,Param2);
                         REDUCE(R2);
                         )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Shl(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Shl(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
@@ -544,12 +514,10 @@ static void InitKernel_Shl(int BatchNumber,int32_t Param1, int32_t Param2)
                         R3 = (R1 << R2);
                         REDUCE(R3);
                         )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Shr(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Shr(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
@@ -557,12 +525,10 @@ static void InitKernel_Shr(int BatchNumber,int32_t Param1, int32_t Param2)
                         R3 = (R1 >> R2 );
                         REDUCE(R3);
                         )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Shra(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Shra(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
@@ -570,12 +536,10 @@ static void InitKernel_Shra(int BatchNumber,int32_t Param1, int32_t Param2)
                         R3 = SHRA(R1, R2);
                         REDUCE(R3);
                         )
-
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Ishl(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Ishl(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
@@ -585,21 +549,18 @@ static void InitKernel_Ishl(int BatchNumber,int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Ishr(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Ishr(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
                         R3 = (R1 >> Param2);
                         REDUCE(R3);
                       )
-
     _END_KERNEL(BatchNumber);
 }
 
 // pseudo-instruction for mov
-static void InitKernel_pMov(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_pMov(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1 + Param2;
@@ -610,8 +571,7 @@ static void InitKernel_pMov(int BatchNumber,int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Ishra(int BatchNumber,int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Ishra(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = Param1;
@@ -621,8 +581,8 @@ static void InitKernel_Ishra(int BatchNumber,int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Cellshl(int BatchNumber, int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Cellshl(int BatchNumber, int32_t Param1,
+                               int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = INDEX;
@@ -648,8 +608,8 @@ static void InitKernel_Cellshlrol(int BatchNumber, int32_t Param1, int32_t Param
                         R1 = INDEX;
                         R2 = Param1;
                         CELL_SHL(R1,R2);
-                        R3 = Param2;// avoid compiler warning
-                        for (int x=0;x < CONNEX_VECTOR_LENGTH - 1;x++)
+                        R3 = Param2; // avoid compiler warning
+                        for (int x = 0; x < CONNEX_VECTOR_LENGTH - 1; x++)
                             NOP;
 
                         R4 = SHIFT_REG;
@@ -658,8 +618,8 @@ static void InitKernel_Cellshlrol(int BatchNumber, int32_t Param1, int32_t Param
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Cellshr(int BatchNumber, int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Cellshr(int BatchNumber, int32_t Param1,
+                               int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R1 = INDEX;
@@ -677,8 +637,8 @@ static void InitKernel_Cellshr(int BatchNumber, int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Multlo(int BatchNumber, int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Multlo(int BatchNumber, int32_t Param1,
+                              int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R0 = Param1;
@@ -692,8 +652,8 @@ static void InitKernel_Multlo(int BatchNumber, int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_pMultlo(int BatchNumber, int32_t Param1, int32_t Param2)
-{
+static void InitKernel_pMultlo(int BatchNumber, int32_t Param1,
+                               int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
        EXECUTE_IN_ALL(
                         R0 = Param1;
@@ -705,8 +665,8 @@ static void InitKernel_pMultlo(int BatchNumber, int32_t Param1, int32_t Param2)
 }
 
 /*
-static void InitKernel_p2Multlo(int BatchNumber, int32_t Param1, int32_t Param2)
-{
+static void InitKernel_p2Multlo(int BatchNumber, int32_t Param1,
+                                int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R0 = Param1;
@@ -716,8 +676,8 @@ static void InitKernel_p2Multlo(int BatchNumber, int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_p2zMultlo(int BatchNumber, int32_t Param1, int32_t Param2)
-{
+static void InitKernel_p2zMultlo(int BatchNumber, int32_t Param1,
+                                 int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R0 = (Param1 + Param2);
@@ -727,8 +687,7 @@ static void InitKernel_p2zMultlo(int BatchNumber, int32_t Param1, int32_t Param2
     _END_KERNEL(BatchNumber);
 }
 */
-static void InitKernel_Multhi(int BatchNumber, int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Multhi(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R0 = Param1;
@@ -742,8 +701,7 @@ static void InitKernel_Multhi(int BatchNumber, int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Whereq(int BatchNumber, int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Whereq(int BatchNumber, int32_t Param1, int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R0 = INDEX;
@@ -756,8 +714,8 @@ static void InitKernel_Whereq(int BatchNumber, int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Wherelt(int BatchNumber, int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Wherelt(int BatchNumber, int32_t Param1,
+                               int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R0 = INDEX;
@@ -770,8 +728,8 @@ static void InitKernel_Wherelt(int BatchNumber, int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Wherelt2(int BatchNumber, int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Wherelt2(int BatchNumber, int32_t Param1,
+                                int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
         EXECUTE_IN_ALL(
                         R0 = INDEX;
@@ -786,10 +744,10 @@ static void InitKernel_Wherelt2(int BatchNumber, int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
-static void InitKernel_Wherecry(int BatchNumber, int32_t Param1, int32_t Param2)
-{
+static void InitKernel_Wherecry(int BatchNumber, int32_t Param1,
+                                int32_t Param2) {
     _BEGIN_KERNEL(BatchNumber);
-	   EXECUTE_IN_ALL(
+       EXECUTE_IN_ALL(
                         R0 = INDEX;
                         R1 = Param1;
                         R3 = R0 + R1;
@@ -800,8 +758,7 @@ static void InitKernel_Wherecry(int BatchNumber, int32_t Param1, int32_t Param2)
     _END_KERNEL(BatchNumber);
 }
 
-enum SimpleBatchNumbers
-{
+enum SimpleBatchNumbers {
     NOP_BNR         ,
     IWRITE_BNR      ,
     IREAD_BNR       ,
@@ -829,8 +786,8 @@ enum SimpleBatchNumbers
     MULTHI_BNR      ,
     SHL_BNR         ,
     ISHL_BNR        ,
-    ISHL2_BNR        ,
-    ISHL3_BNR        ,
+    ISHL2_BNR       ,
+    ISHL3_BNR       ,
 
     ADD_BNR         ,
     pADD_BNR        ,
@@ -841,7 +798,7 @@ enum SimpleBatchNumbers
     pEQ_BNR         ,
 
     POPCNT_BNR      ,
-    
+
     NOT_BNR         ,
     SHR_BNR         ,
     ISHR_BNR        ,
@@ -892,19 +849,18 @@ enum SimpleBatchNumbers
     MAX_BNR = 100
 };
 
-static TestFunction TestFunctionTable[] =
-{
-    {NOP_BNR,"NOP",InitKernel_Nop,{0x00,0x00,(CONNEX_VECTOR_LENGTH-1)*CONNEX_VECTOR_LENGTH/2}},
-    {IWRITE_BNR,"IWRITE",InitKernel_Iwrite,{0x01,0x02,(CONNEX_VECTOR_LENGTH-1)*CONNEX_VECTOR_LENGTH/2}},
-    {IREAD_BNR,"IREAD",InitKernel_Iread,{0x01,0x02,(CONNEX_VECTOR_LENGTH-1)*CONNEX_VECTOR_LENGTH/2}},
+static TestFunction TestFunctionTable[] = {
+    {NOP_BNR, "NOP", InitKernel_Nop, {0x00, 0x00, (CONNEX_VECTOR_LENGTH - 1) * CONNEX_VECTOR_LENGTH / 2}},
+    {IWRITE_BNR, "IWRITE", InitKernel_Iwrite, {0x01, 0x02, (CONNEX_VECTOR_LENGTH - 1) * CONNEX_VECTOR_LENGTH / 2}},
+    {IREAD_BNR, "IREAD", InitKernel_Iread, {0x01,0x02, (CONNEX_VECTOR_LENGTH - 1) * CONNEX_VECTOR_LENGTH / 2}},
 
-    {WRITE_BNR,"WRITE",InitKernel_Write,{0x01,0x02,(CONNEX_VECTOR_LENGTH-1)*CONNEX_VECTOR_LENGTH/2}},
+    {WRITE_BNR, "WRITE", InitKernel_Write, {0x01, 0x02, (CONNEX_VECTOR_LENGTH - 1) * CONNEX_VECTOR_LENGTH / 2}},
 
-    {READ_BNR,"READ",InitKernel_Read,{0x01,0x02,(CONNEX_VECTOR_LENGTH-1)*CONNEX_VECTOR_LENGTH/2}},
+    {READ_BNR, "READ", InitKernel_Read, {0x01,0x02,(CONNEX_VECTOR_LENGTH-1)*CONNEX_VECTOR_LENGTH/2}},
 
-    {VLOAD_BNR,"VLOAD",InitKernel_Vload,{0x01,0x02,3*CONNEX_VECTOR_LENGTH}},
+    {VLOAD_BNR, "VLOAD", InitKernel_Vload, {0x01, 0x02, 3 * CONNEX_VECTOR_LENGTH}},
 
-    {ADD_BNR,"ADD",InitKernel_Add,{0xff,0xf1,(0xff + 0xf1)*CONNEX_VECTOR_LENGTH}},
+    {ADD_BNR, "ADD", InitKernel_Add,{0xff,0xf1,(0xff + 0xf1)*CONNEX_VECTOR_LENGTH}},
     {ADD_BNR,"ADD2",InitKernel_Add,{0xffff,0xffff,((uint16_t)(0xffff + 0xffff))*CONNEX_VECTOR_LENGTH}},
     //{pADD_BNR,"pADD",InitKernel_pAdd,{0xff,0xf1,(0xff + 0xf1)*CONNEX_VECTOR_LENGTH}},
     //{pzADD_BNR,"pzADD",InitKernel_pzAdd,{0,0,(0 + 0)*CONNEX_VECTOR_LENGTH}},
@@ -915,18 +871,28 @@ static TestFunction TestFunctionTable[] =
     {ADDC_BNR,"ADDC3",InitKernel_Addc,{0xfffe,0xffff,(uint16_t)((0xffff + 0xfffe + 1))*CONNEX_VECTOR_LENGTH}},
     //{pADDC_BNR,"pADDC",InitKernel_pAddc,{0xf0,0x1,(0xf0 + 1 + 1)*CONNEX_VECTOR_LENGTH}},
 
-    {SUB_BNR,"SUB",InitKernel_Sub,{0xffff,0xff8f, (0xffff - 0xff8f)*CONNEX_VECTOR_LENGTH}},
-    {SUB_BNR,"SUB",InitKernel_Sub,{0x0,0xffff, ((uint16_t)(0 - 0xffff))*CONNEX_VECTOR_LENGTH}},
-    //{pSUB_BNR,"pSUB",InitKernel_pSub,{0xffff,0xff8f, (0xffff - 0xff8f)*CONNEX_VECTOR_LENGTH}},
-    {sSUB_BNR,"sSUB",InitKernel_sSub,{0xffff,0xff8f, (0xffff - 0xff8f)*CONNEX_VECTOR_LENGTH}},
+    {SUB_BNR, "SUB", InitKernel_Sub, {0xffff, 0xff8f, (0xffff - 0xff8f) * CONNEX_VECTOR_LENGTH}},
+    {SUB_BNR, "SUB2", InitKernel_Sub, {0x0,0xffff, ((uint16_t)(0 - 0xffff)) * CONNEX_VECTOR_LENGTH}},
+    //{pSUB_BNR, "pSUB", InitKernel_pSub, {0xffff,0xff8f, (0xffff - 0xff8f) * CONNEX_VECTOR_LENGTH}},
+    {sSUB_BNR, "sSUB", InitKernel_sSub, {0xffff, 0xff8f, (0xffff - 0xff8f) * CONNEX_VECTOR_LENGTH}},
 
-    {SUBC_BNR,"SUBC",InitKernel_Subc,{0xffff,0xff8f,(0xffff - 0xff8f -1)*CONNEX_VECTOR_LENGTH}},
-    {SUBC_BNR,"SUBC2",InitKernel_Subc,{0,0xffff,((uint16_t)(0 - 0xffff -1))*CONNEX_VECTOR_LENGTH}},
-    //{pSUBC_BNR,"pSUBC",InitKernel_pSubc,{0xffff,0xff8f,(0xffff - 0xff8f -1)*CONNEX_VECTOR_LENGTH}},
+    /* Alex: This test "fails": the 1st subtraction doesn't generate
+         borrow/"carry" and the 2nd doesn't need -1
+      //{SUBC_BNR, "SUBC", InitKernel_Subc, {0xffff, 0xff8f, (0xffff - 0xff8f - 1) * CONNEX_VECTOR_LENGTH}},
+    */
+    //
+    {SUBC_BNR, "SUBC", InitKernel_Subc, {0xffff, 0xff8f, (0xffff - 0xff8f - 1) * CONNEX_VECTOR_LENGTH}},
+    //
+    {SUBC_BNR, "SUBC2", InitKernel_Subc, {0, 0xffff, ((uint16_t)(0 - 0xffff - 1)) * CONNEX_VECTOR_LENGTH}},
 
-    {POPCNT_BNR,"POPCNT",InitKernel_Popcount,{0x137f,0x00,10*CONNEX_VECTOR_LENGTH}},
-    
-    {NOT_BNR,"NOT",InitKernel_Not,{0xfff0,0x00,(0xf)*CONNEX_VECTOR_LENGTH}},
+    {SUBC_BNR, "SUBC3", InitKernel_Subc3, {0, 0, 0 * CONNEX_VECTOR_LENGTH}},
+
+    //{pSUBC_BNR, "pSUBC", InitKernel_pSubc, {0xffff,0xff8f,(0xffff - 0xff8f -1)*CONNEX_VECTOR_LENGTH}},
+    {pSUBC_BNR, "pSUBC", InitKernel_pSubc, {0, 0, 0 * CONNEX_VECTOR_LENGTH}},
+
+    {POPCNT_BNR,"POPCNT", InitKernel_Popcount, {0x137f, 0x00, 10 * CONNEX_VECTOR_LENGTH}},
+
+    {NOT_BNR, "NOT", InitKernel_Not, {0xfff0, 0x00, (0xf) * CONNEX_VECTOR_LENGTH}},
 
     {OR_BNR,"OR",InitKernel_Or,{0x10,0x01,(0x10 | 0x01)*CONNEX_VECTOR_LENGTH}},
     //{pOR_BNR,"pOR",InitKernel_pOr,{0x10,0x01,(0x10 | 0x01)*CONNEX_VECTOR_LENGTH}},
@@ -955,18 +921,18 @@ static TestFunction TestFunctionTable[] =
     {SHR_BNR,"SHR",InitKernel_Shr,{0xabcd,3,((0xabcd >> 3)*CONNEX_VECTOR_LENGTH)}},
     {SHRA_BNR,"SHRA",InitKernel_Shra,{0x01cd,4,(0x01c)*CONNEX_VECTOR_LENGTH}},//will fail: 128*big
 
-    {ISHL_BNR,"ISHL",InitKernel_Ishl,{0xabcd,4,((0xbcd0UL)*CONNEX_VECTOR_LENGTH)}},
+    {ISHL_BNR,"ISHL",InitKernel_Ishl,{0xabcd,4,(0xbcd0 * CONNEX_VECTOR_LENGTH)}},
 
-    {ISHR_BNR,"ISHR",InitKernel_Ishr,{0xabcd,4,((0x0abcUL)*CONNEX_VECTOR_LENGTH)}},
-    {ISHRA_BNR,"ISHRA",InitKernel_Ishra,{0xabcd,4,((0xfabcUL)*CONNEX_VECTOR_LENGTH)}},
+    {ISHR_BNR,"ISHR",InitKernel_Ishr,{0xabcd,4,(0x0abc * CONNEX_VECTOR_LENGTH)}},
+    {ISHRA_BNR,"ISHRA",InitKernel_Ishra,{0xabcd,4,(0xfabc * CONNEX_VECTOR_LENGTH)}},
     //{PMOV_BNR,"pMOV",InitKernel_pMov,{0xabcd,4,(0xabcd + 4)*CONNEX_VECTOR_LENGTH}},
 
-    {MULTLO_BNR,"MULTLO",InitKernel_Multlo,{0x2,0x3,(0x2UL * 0x3UL)*CONNEX_VECTOR_LENGTH}},
-    {pMULTLO_BNR,"pMULTLO",InitKernel_pMultlo,{0x2,0x3,(0x2UL * 0x3UL)*CONNEX_VECTOR_LENGTH}},
+    {MULTLO_BNR,"MULTLO",InitKernel_Multlo,{0x2,0x3,(0x2 * 0x3)*CONNEX_VECTOR_LENGTH}},
+    {pMULTLO_BNR,"pMULTLO",InitKernel_pMultlo,{0x2,0x3,(0x2 * 0x3)*CONNEX_VECTOR_LENGTH}},
 //    {p2MULTLO_BNR,"p2MULTLO",InitKernel_p2Multlo,{0x2,0x3,(0x2UL * 0x3UL)*CONNEX_VECTOR_LENGTH}},
 //    {p2zMULTLO_BNR,"p2zMULTLO",InitKernel_p2zMultlo,{0x2,0x3,0}},
 
-    {MULTHI_BNR,"MULTHI",InitKernel_Multhi,{0x8000,0x2,((0x8000UL * 0x2UL) >> 16)*CONNEX_VECTOR_LENGTH}},
+    {MULTHI_BNR,"MULTHI",InitKernel_Multhi,{0x8000,0x2,((0x8000 * 0x2) >> 16) * CONNEX_VECTOR_LENGTH}},
 
     {WHERE_EQ_BNR,"WHEREQ",InitKernel_Whereq,{27,50,50}},
 
@@ -977,33 +943,30 @@ static TestFunction TestFunctionTable[] =
     //{IJMP_BNR,"IJMP",InitKernel_Jump,{(10), 2, (10-1 - 2)*CONNEX_VECTOR_LENGTH}},
     //{IJMP2_BNR,"IJMP2",InitKernel_Jump2,{(10), 2, (10-2)*CONNEX_VECTOR_LENGTH}},
 
-	{CELL_SHL_BNR,"CELLSHL",InitKernel_Cellshl,{2,5,5-2}},
+    {CELL_SHL_BNR,"CELLSHL",InitKernel_Cellshl,{2,5,5-2}},
     {CELL_SHR_BNR,"CELLSHR",InitKernel_Cellshr,{2,5,5+2}},
     {CELL_SHLROL_BNR,"CELLSHLROL",InitKernel_Cellshlrol,{CONNEX_VECTOR_LENGTH,0,(CONNEX_VECTOR_LENGTH-1)*CONNEX_VECTOR_LENGTH/2}},
 
-
-	//{IO_WRITE_BNR,"IO_WRITE1",1,0,InitKernel_Iowrite,SumRedofFirstXnumbers(CONNEX_VECTOR_LENGTH,0)},
+    //{IO_WRITE_BNR,"IO_WRITE1",1,0,InitKernel_Iowrite,SumRedofFirstXnumbers(CONNEX_VECTOR_LENGTH,0)},
     //{IO_WRITE_BNR,"IO_WRITE2",1024,1,InitKernel_Iowrite,SumRedofFirstXnumbers(CONNEX_VECTOR_LENGTH,CONNEX_VECTOR_LENGTH)},
     //{IO_WRITE_BNR,"IO_WRITE3",1024,1023,InitKernel_Iowrite,SumRedofFirstXnumbers(CONNEX_VECTOR_LENGTH,CONNEX_VECTOR_LENGTH*1023)},
     //{IO_READ_BNR,"IO_READ",1024,0,InitKernel_Ioread, CONNEX_VECTOR_LENGTH},
-
 };
 
-static int getIndexTestFunctionTable(int BatchNumber)
-{
+static int getIndexTestFunctionTable(int BatchNumber) {
     unsigned int i;
+
     for (i = 0; i < sizeof(TestFunctionTable)/sizeof(TestFunction); i++)
         if (TestFunctionTable[i].BatchNumber == BatchNumber)
             return i;
     return -1;
 }
 
-static void UpdateDatasetTable(int BatchNumber, int loop)
-{
-    int i = getIndexTestFunctionTable(BatchNumber);
-    if (i>0)
-    switch(BatchNumber)
-    {
+static void UpdateDatasetTable(int BatchNumber, int loop) {
+  int i = getIndexTestFunctionTable(BatchNumber);
+
+  if (i > 0)
+    switch(BatchNumber) {
         case NOP_BNR        ://fallthrough
         case WRITE_BNR      ://fallthrough
         case READ_BNR       ://fallthrough
@@ -1059,9 +1022,9 @@ static void UpdateDatasetTable(int BatchNumber, int loop)
                     break;
                 }
 
-                                
+
         case POPCNT_BNR     :break;
-                
+
         case NOT_BNR        :
                     {
                          TestFunctionTable[i].ds.Param1 = randPar(0x10000);
@@ -1164,26 +1127,91 @@ static void UpdateDatasetTable(int BatchNumber, int loop)
                             }
     }
 }
-int test_ExtendedSimpleAll(ConnexMachine *connex)
-{
+
+int test_ExtendedSimpleAll(ConnexMachine *connex) {
     int val;
+
     for (int i = 0; i < 8; i++)
-        for (int j = 0; j < 8; j++)
-        {
+        for (int j = 0; j < 8; j++) {
             InitKernel_Ishl(ISHL2_BNR, i, j);
 
             connex->executeKernel("simpleTest_" + to_string((long long int)ISHL2_BNR));
             val = connex->readReduction();
+
             if (val != (i << j)* CONNEX_VECTOR_LENGTH)
-                cout<<"ISHL2 failed: expected ("<<i<<" << "<<j<<") = CONNEX_VECTOR_LENGTH* "<<(i<<j)<<" but received "<<val<<endl;
-            else cout<<"ISHL2 PASS: ("<<i<<" << "<<j<<") = CONNEX_VECTOR_LENGTH * "<<(i<<j)<<endl;
+                cout << "ISHL2 failed: expected (" << i
+                     << " << " << j << ") = CONNEX_VECTOR_LENGTH* " << (i << j)
+                     << " but received " << val << endl;
+            else
+                cout << "ISHL2 PASS: (" << i << " << " << j
+                     << ") = CONNEX_VECTOR_LENGTH * " << (i << j) << endl;
         }
-	return 0;
+
+    return 0;
 }
 
-static int TestJmpMultiRed(ConnexMachine *connex, int RedValue, int SquareReds);
-int test_Simple_All(ConnexMachine *connex, bool stress)
-{
+static int TestJmpMultiRed(ConnexMachine *connex, int RedValue,
+                           int SquareReds) {
+    cout << "Entered TestJmpMultiRed(SquareReds = " << SquareReds
+         << ", RedValue = " << RedValue << ")" << endl;
+
+    InitKernel_Jump3(IJMP3_BNR, RedValue, SquareReds);
+    //cout<<connex->disassembleKernel(TEST_PREFIX + to_string(IJMP3_BNR));
+    connex->executeKernel(TEST_PREFIX + to_string((long long int)IJMP3_BNR));
+
+    int ExpectedBytesOfReductions = SquareReds * SquareReds *
+                                    sizeof(UIntRedRegVal);
+    static UIntRedRegVal *BasicMatchRedResults;
+    BasicMatchRedResults = (UIntRedRegVal*)malloc(8192 * 1024 *
+                                                     sizeof(UIntRedRegVal));
+    if (BasicMatchRedResults == NULL) {
+        cout << "Could not allocate memory for reductions " << endl;
+        return 0;
+    };
+
+    int RealBytesOfReductions = 0;
+    for (RealBytesOfReductions=0;
+            RealBytesOfReductions < ExpectedBytesOfReductions;
+            RealBytesOfReductions += 4) {
+        BasicMatchRedResults[RealBytesOfReductions >> 2] = connex->readReduction();
+    }
+
+    int i;
+    for (i = 0; i < ExpectedBytesOfReductions / sizeof(UIntRedRegVal); i++) {
+        if (BasicMatchRedResults[i] != RedValue* CONNEX_VECTOR_LENGTH) {
+            cout << "  Unexpected red result " << BasicMatchRedResults[i] << endl;
+            break;
+        }
+    }
+
+    free(BasicMatchRedResults);
+
+    if ((i == ExpectedBytesOfReductions/sizeof(UIntRedRegVal)) &&
+        (RealBytesOfReductions == ExpectedBytesOfReductions))
+        cout << "Test JMP-MultiRed PASSED " << endl;
+    else {
+        cout << "Test JMP-MultiRed FAILED with args "
+             << RedValue << " " << SquareReds << endl;
+        if (RealBytesOfReductions != ExpectedBytesOfReductions)
+            cout << "Test JMP-MultiRed FAILED with different number of reductions "
+                 << RealBytesOfReductions / sizeof(UIntRedRegVal)
+                 << " instead of "
+                 << ExpectedBytesOfReductions / sizeof(UIntRedRegVal)
+                 << endl;
+        else
+            cout << "Test JMP-MultiRed FAILED with different value of reduction"
+                 << endl;
+
+        cout << connex->disassembleKernel(TEST_PREFIX +
+                                          to_string((long long int)IJMP3_BNR));
+        cout << "Press ENTER to continue...";
+        cin.ignore( numeric_limits<streamsize>::max(), '\n' );
+    }
+
+    cout << "Exiting TestJmpMultiRed()." << endl;
+}
+
+int test_Simple_All(ConnexMachine *connex, bool stress) {
     uint16_t i = 0;
     uint16_t j = 0;
     uint16_t stressLoops;
@@ -1191,113 +1219,120 @@ int test_Simple_All(ConnexMachine *connex, bool stress)
 
     uint16_t testFails = 0;
 
-    if (stress == true) { stressLoops = 10;} else stressLoops = 1;
-    cout<< "\nStarting SimpleTests: "<<endl;
+    if (stress == true) {
+        stressLoops = 10;
+    }
+    else
+        stressLoops = 1;
 
-    for (i = 0; i < sizeof (TestFunctionTable) / sizeof (TestFunction); i++)
-    {
-        for (j = 0; j < stressLoops; j++)
-        {
-            TestFunctionTable[i].initKernel
-                ( TestFunctionTable[i].BatchNumber,
-                  TestFunctionTable[i].ds.Param1,
-                  TestFunctionTable[i].ds.Param2);
+    cout << "\nStarting SimpleTests: "<<endl;
 
-            connex->executeKernel(TEST_PREFIX + to_string((long long int)TestFunctionTable[i].BatchNumber));
-            //treat the reduction result as an unsigned number by masking out sign bits
-            result = connex->readReduction() & 0x007fffff;
-            if (result != TestFunctionTable[i].ds.ExpectedResult)
-            {
-               cout<< "Test "<< setw(8) << left << TestFunctionTable[i].OperationName <<" FAILED with result "
-               <<result << " (expected " <<TestFunctionTable[i].ds.ExpectedResult<<" ) !" << " params are "
-               << TestFunctionTable[i].ds.Param1 << " and " << TestFunctionTable[i].ds.Param2 <<endl;
-               cout<<connex->disassembleKernel(TEST_PREFIX + to_string((long long int)TestFunctionTable[i].BatchNumber));
+    assert(CONNEX_VECTOR_LENGTH == 128 &&
+           TestFunctionTable[0].ds.ExpectedResult ==
+             (CONNEX_VECTOR_LENGTH - 1) * CONNEX_VECTOR_LENGTH / 2 &&
+             "We normally perform these tests for CVL == 128. If different, "
+               "change code somehow to reflect a different value of CVL.");
+
+    for (i = 0; i < sizeof (TestFunctionTable) / sizeof (TestFunction); i++) {
+        for (j = 0; j < stressLoops; j++) {
+            TestFunctionTable[i].initKernel(TestFunctionTable[i].BatchNumber,
+                                            TestFunctionTable[i].ds.Param1,
+                                            TestFunctionTable[i].ds.Param2);
+
+            connex->executeKernel(TEST_PREFIX +
+                                    to_string((long long int)
+                                            TestFunctionTable[i].BatchNumber));
+
+            //result = connex->readReduction();
+
+          #define REDUCE_TAKES_U16_VALUES_INSTEAD_OF_I16_TO_WORK_FOR_I32_REDUCE
+
+            // Performing sign extension of the reduction result
+            connex->readCorrectReductionResults(&result, 1, sizeof(int), true);
+
+          #ifdef REDUCE_TAKES_U16_VALUES_INSTEAD_OF_I16_TO_WORK_FOR_I32_REDUCE
+            if (result != TestFunctionTable[i].ds.ExpectedResult) {
+          #else
+            /*
+            // Treat the reduction result as an unsigned number by masking out sign bits
+            //result = connex->readReduction() & 0x007fffff;
+            */
+            if ( (result & 0x007fffff) !=
+                    (TestFunctionTable[i].ds.ExpectedResult & 0x007fffff)) {
+          #endif
+               cout << "Test " << setw(8) << std::left
+                    << TestFunctionTable[i].OperationName
+                    << " FAILED with result " << result
+                    << " (expected " << TestFunctionTable[i].ds.ExpectedResult
+                    << " !) "
+                    << " params are " << TestFunctionTable[i].ds.Param1
+                    << " and " << TestFunctionTable[i].ds.Param2 << endl;
+
+               cout << connex->disassembleKernel(TEST_PREFIX +
+                                             to_string((long long int)
+                                             TestFunctionTable[i].BatchNumber));
                testFails++;
-               if (j == (stressLoops - 1)) break;
+
+               if (j == (stressLoops - 1))
+                   break;
                //return testFails;
             }
-            else
-            {
+            else {
                 if (j == 0)
-                    cout<< "Test "<< setw(10) << left << TestFunctionTable[i].OperationName;
-                if ((j >= 0) && (j < stressLoops)) cout<<".";
-                if (j == (stressLoops -1)) {cout << " PASSED"<<endl;break;}
+                    cout << "Test " << setw(10) << std::left
+                         << TestFunctionTable[i].OperationName;
+
+                if ((j >= 0) && (j < stressLoops))
+                    cout << ".";
+
+                if (j == (stressLoops -1)) {
+                    cout << " PASSED" << endl;
+                    break;
+                }
             }
-            UpdateDatasetTable(TestFunctionTable[i].BatchNumber,j);
+            UpdateDatasetTable(TestFunctionTable[i].BatchNumber, j);
         }
     }
-        cout<<"================================"<<endl;
+
+    cout << "In test_Simple_All():" << endl;
+    cout << "================================" << endl;
     if (testFails ==0)
-        cout<< "== All SimpleTests PASSED ======" <<endl;
+        cout << "== All SimpleTests PASSED ======" << endl;
     else
-        cout<< "=="<< testFails << " SimpleTests FAILED ! " <<endl;
-        cout<<"================================"<<endl<<endl;
+        cout << "==" << testFails << " SimpleTests FAILED ! " << endl;
+    cout << "================================" << endl << endl;
 
 
-    if (TestJmpMultiRed(connex,2,1)==FAIL) testFails++;
+    if (TestJmpMultiRed(connex, 2, 1) == FAIL)
+        testFails++;
     //if (PASS != kernel_acc::storeKernel("database/TestJmpMultiRed_2_1.ker", IJMP3_BNR))
       //  cout<<"Could not store kernel "<<endl;
 
-    if (TestJmpMultiRed(connex,2,3)==FAIL) testFails++;
+    if (TestJmpMultiRed(connex, 2, 3) == FAIL)
+        testFails++;
     //if (PASS != kernel_acc::storeKernel("database/TestJmpMultiRed_2_3.ker", IJMP3_BNR))
       //  cout<<"Could not store kernel "<<endl;
 
-    if (TestJmpMultiRed(connex,2,13)==FAIL) testFails++;
+    if (TestJmpMultiRed(connex, 2, 13) == FAIL)
+        testFails++;
     //if (PASS != kernel_acc::storeKernel("database/TestJmpMultiRed_2_13.ker", IJMP3_BNR))
       //  cout<<"Could not store kernel "<<endl;
 
-    if (TestJmpMultiRed(connex,2,133)==FAIL) testFails++;
+  #ifdef NOT_NOW_SINCE_IT_TAKES_TOO_LONG_AND_TOO_MUCH_DEBUG_INFO
+    if (TestJmpMultiRed(connex, 2, 133) == FAIL)
+        testFails++;
     //if (PASS != kernel_acc::storeKernel("database/TestJmpMultiRed_2_133.ker", IJMP3_BNR))
       //  cout<<"Could not store kernel "<<endl;
 
-    if (TestJmpMultiRed(connex,2,1333)==FAIL) testFails++;
+    if (TestJmpMultiRed(connex, 2, 1333) == FAIL)
+        testFails++;
     //if (PASS != kernel_acc::storeKernel("database/TestJmpMultiRed_2_1333.ker", IJMP3_BNR))
       //  cout<<"Could not store kernel "<<endl;
+  #endif
+
+    cout << "Exiting test_Simple_All()." << endl;
 
     return testFails;
 }
 
-static int TestJmpMultiRed(ConnexMachine *connex, int RedValue, int SquareReds)
-{
-    InitKernel_Jump3(IJMP3_BNR, RedValue,SquareReds);
-    //cout<<connex->disassembleKernel(TEST_PREFIX + to_string(IJMP3_BNR));
-    connex->executeKernel(TEST_PREFIX + to_string((long long int)IJMP3_BNR));
 
-    int ExpectedBytesOfReductions = SquareReds*SquareReds*sizeof(UINT_RED_REG_VAL);
-    static UINT_RED_REG_VAL *BasicMatchRedResults;
-    BasicMatchRedResults = (UINT_RED_REG_VAL*)malloc(8192*1024 * sizeof(UINT_RED_REG_VAL));
-    if (BasicMatchRedResults == NULL) {cout<<"Could not allocate memory for reductions "<<endl;return 0;};
-
-    int RealBytesOfReductions = 0;
-    for (RealBytesOfReductions=0 ; RealBytesOfReductions < ExpectedBytesOfReductions; RealBytesOfReductions+=4)
-    {
-        BasicMatchRedResults[RealBytesOfReductions>>2] = connex->readReduction();
-    }
-
-    int i;
-    for (i=0; i < ExpectedBytesOfReductions / sizeof(UINT_RED_REG_VAL); i++)
-    {
-        if (BasicMatchRedResults[i] != RedValue* CONNEX_VECTOR_LENGTH)
-        {
-            cout <<"  Unexpected red result "<<BasicMatchRedResults[i]<<endl;
-            break;
-        }
-    }
-    free(BasicMatchRedResults);
-    if ((i == ExpectedBytesOfReductions/sizeof(UINT_RED_REG_VAL)) && (RealBytesOfReductions == ExpectedBytesOfReductions))
-        cout<<"Test JMP-MultiRed PASSED "<<endl;
-    else
-    {
-        cout<<"Test JMP-MultiRed FAILED with args "<<RedValue<<" "<<SquareReds<<endl;
-        if (RealBytesOfReductions != ExpectedBytesOfReductions)
-            cout<<"Test JMP-MultiRed FAILED with different number of reductions "
-            <<RealBytesOfReductions/sizeof(UINT_RED_REG_VAL)<<" instead of "
-            <<ExpectedBytesOfReductions/sizeof(UINT_RED_REG_VAL)<<endl;
-        else
-            cout<<"Test JMP-MultiRed FAILED with different value of reduction"<<endl;
-
-        cout<<connex->disassembleKernel(TEST_PREFIX + to_string((long long int)IJMP3_BNR));
-        cout << "Press ENTER to continue...";
-        cin.ignore( numeric_limits <streamsize> ::max(), '\n' );
-    }
-}

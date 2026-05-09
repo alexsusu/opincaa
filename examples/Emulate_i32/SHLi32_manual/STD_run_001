@@ -1,0 +1,779 @@
+++ LD_LIBRARY_PATH=/home/asusu/Connex/OPINCAA_2015_10/opincaa-master-d49993900aaf33580858c74e090a77bd67217702//libs/connex16-hm-generic
+++ export LD_LIBRARY_PATH
+++ killall -9 simulator
+++ killall -9 simulator
+simulator: no process found
+++ sleep 1
+++ /home/asusu/Connex/OPINCAA_2015_10/opincaa-master-d49993900aaf33580858c74e090a77bd67217702//simulator/build/simulator 128 1024 32 1024
+Opincaa simulator: Setting CONNEX_VECTOR_LENGTH to 128
+Opincaa simulator: Setting CONNEX_MEM_SIZE to 1024
+Opincaa simulator: Setting CONNEX_REG_COUNT to 32
+Opincaa simulator: Setting INTERNAL_INSTRUCTION_MEMORY_SIZE to 1024
+ConnexSimulator::ConnexSimulator(): CONNEX_MEM_SIZE + CONNEX_MEM_SIZE_EXTRA = 1224
+ConnexSimulator::ConnexSimulator(): CONNEX_REG_COUNT = 32
+ConnexSimulator::ConnexSimulator(): Allocating registerFile
+FIFO distributionFIFO succesfully opened!
+FIFO writeFIFO succesfully opened!
+FIFO reductionFIFO succesfully opened!
+FIFO readFIFO succesfully opened!
+Starting Core Thread...
+Starting IO Thread...
+Simu: Waiting for receive 
+++ ./a.out 128 1024 32 1024
+Opincaa program: Setting CONNEX_VECTOR_LENGTH to 128
+Opincaa program: Setting CONNEX_MEM_SIZE to 1024
+Opincaa program: Setting CONNEX_REG_COUNT to 32
+Opincaa program: Setting INTERNAL_INSTRUCTION_MEMORY_SIZE (also called size of Internal Instruction Memory) to 1024
+Opincaa program: checkForDataHazards is set to the default value false
+Opincaa program: useLaneGatingOnConnex is set to the default value false.
+CONNEX_VECTOR_LENGTH = 128 (LOG2_CONNEX_VECTOR_LENGTH = 7)
+CONNEX_MEM_SIZE = 1024
+INTERNAL_INSTRUCTION_MEMORY_SIZE = 1024
+sizeof(TypeElement) = 2
+TypeElement = s
+Entered Kernel::Kernel(): name = QuitKernel.
+Accelerator revision is 538976288538976288538976288538976288538976288538976288
+ConnexMachine created !
+Entered Test()
+  NUM_ELEMS = 64 (sizeof(TYPE) = 4)
+RAND_MAX = 2147483647
+A[0] = 0x51f11d29
+B[0] = 0x4b6d4b25
+A[1] = 0x539d9e23
+B[1] = 0x0889e8cb
+A[2] = 0x8655777a
+B[2] = 0x70178be1
+A[3] = 0x114273ad
+B[3] = 0x4d7f7f25
+A[4] = 0xc96a6ba0
+B[4] = 0x7e288f22
+A[5] = 0xc2efb26f
+B[5] = 0x42108f0f
+A[6] = 0x72331788
+B[6] = 0x6bf1a17c
+A[7] = 0x132af362
+B[7] = 0x0999ed01
+A[8] = 0xc845b826
+B[8] = 0x1070ebe8
+A[9] = 0xab24d4b4
+B[9] = 0x09cb0aed
+A[10] = 0xe61716ce
+B[10] = 0x1f6aeedb
+A[11] = 0xc53dee00
+B[11] = 0x1dff8e6a
+A[12] = 0xecd01d8d
+B[12] = 0x55f084ee
+A[13] = 0xe7fe13fd
+B[13] = 0x352d2684
+A[14] = 0x95c2c801
+B[14] = 0x52c3e9be
+A[15] = 0xddb1d6bf
+B[15] = 0x0c901c12
+A[16] = 0x877287fb
+B[16] = 0x398303b4
+A[17] = 0xee578ea1
+B[17] = 0x5c1bc822
+A[18] = 0x52b7b6fe
+B[18] = 0x01331790
+A[19] = 0xd27f25fb
+B[19] = 0x3d124d3a
+A[20] = 0xe1c45229
+B[20] = 0x624e5e1e
+A[21] = 0x331304a3
+B[21] = 0x2d37c7e7
+A[22] = 0x265231a5
+B[22] = 0x79e56387
+A[23] = 0xc432ff99
+B[23] = 0x72f2d3f5
+A[24] = 0x83ca57a9
+B[24] = 0x6febfc79
+A[25] = 0xf325c49c
+B[25] = 0x26160d21
+A[26] = 0xbdcd24b1
+B[26] = 0x51e1bba5
+A[27] = 0x255608e0
+B[27] = 0x2d1d1f37
+A[28] = 0x2d84fd56
+B[28] = 0x281021b9
+A[29] = 0xc0fce9a0
+B[29] = 0x77af52db
+A[30] = 0x4da2b662
+B[30] = 0x1a6fd6a4
+A[31] = 0x9afe2a99
+B[31] = 0x3f5bbaf5
+A[32] = 0x0121376e
+B[32] = 0x74f321d4
+A[33] = 0x7e052ef5
+B[33] = 0x5690f448
+A[34] = 0x29d32fed
+B[34] = 0x72dd983d
+A[35] = 0xdc66b774
+B[35] = 0x0aa4ac87
+A[36] = 0x9a654e40
+B[36] = 0x26585506
+A[37] = 0xdbf027e1
+B[37] = 0x35ce8560
+A[38] = 0xaf225c04
+B[38] = 0x0edd76d0
+A[39] = 0x034eb1c5
+B[39] = 0x232751d0
+A[40] = 0x349a73a4
+B[40] = 0x4115f16d
+A[41] = 0x914ce5b5
+B[41] = 0x3bae5ce3
+A[42] = 0x0ad1f520
+B[42] = 0x7e441493
+A[43] = 0x164a411a
+B[43] = 0x50dde247
+A[44] = 0xc7adb74d
+B[44] = 0x543a1822
+A[45] = 0xef971d83
+B[45] = 0x20da9a61
+A[46] = 0xbcc39132
+B[46] = 0x2c80d1b2
+A[47] = 0x617ba383
+B[47] = 0x4f618905
+A[48] = 0xcb93fa72
+B[48] = 0x7442916a
+A[49] = 0x70146e4d
+B[49] = 0x105c3001
+A[50] = 0xf1b6c494
+B[50] = 0x5fb8443b
+A[51] = 0x42d72682
+B[51] = 0x2af07160
+A[52] = 0x6ee78983
+B[52] = 0x16c0dc45
+A[53] = 0x938376a6
+B[53] = 0x61e47a70
+A[54] = 0x43ec4c23
+B[54] = 0x1b6220b2
+A[55] = 0x37d329b7
+B[55] = 0x60b6f6fb
+A[56] = 0x52150865
+B[56] = 0x60b6408e
+A[57] = 0xbb59708f
+B[57] = 0x0b917a1d
+A[58] = 0xda91be58
+B[58] = 0x106aea21
+A[59] = 0xb26ddb81
+B[59] = 0x6a624fdb
+A[60] = 0xb2822c20
+B[60] = 0x00b67fa8
+A[61] = 0x9163fa19
+B[61] = 0x27332c98
+A[62] = 0xe31e4d4a
+B[62] = 0x0556f56f
+A[63] = 0xbb816c6b
+B[63] = 0x14ddbcaf
+Calling SHLInt32 (with i32 result)...
+SHLInt32(): adjusted N = 128
+Entered ConnexMachine::writeDataToConnexPartial(): buffer = 0x7ffcb8a1bdf0, numElemCount = 128, startVectorIndex = 0 (vectorCount = 1).
+writeDataToConnexPartial(): calling standard writeDataToConnex()
+Entered ConnexMachine::writeDataToConnex(): before threadMutex.lock();
+ConnexMachine::writeDataToConnex(): before write()...
+ConnexMachine::writeDataToConnex(): before 2nd write()...
+ConnexMachine::writeDataToConnex(): before flushing write()...
+ConnexMachine::writeDataToConnex(): before readFromPipe()...
+ioDescriptor:
+            type = 1
+            lsAddress = 0
+            vectorCount = 0
+Entered ConnexSimulator::performIO(): ioDescriptor.type = 1, ioDescriptor.lsAddress = 0, ioDescriptor.vectorCount = 0
+  ConnexSimulator::performIO(): Before force_all_io()
+ConnexSimulator::force_all_io(): count = 256, total = 0
+ConnexMachine::readFromPipe(): totalBytesRead = 4
+Simu: Waiting for receive 
+ConnexMachine::writeDataToConnex(): before threadMutex.unlock()...
+Entered ConnexMachine::writeDataToConnexPartial(): buffer = 0x7ffcb8a1bb50, numElemCount = 128, startVectorIndex = 1 (vectorCount = 1).
+writeDataToConnexPartial(): calling standard writeDataToConnex()
+Entered ConnexMachine::writeDataToConnex(): before threadMutex.lock();
+ConnexMachine::writeDataToConnex(): before write()...
+ConnexMachine::writeDataToConnex(): before 2nd write()...
+ioDescriptor:
+            type = 1
+            lsAddress = 1
+            vectorCount = 0
+ConnexMachine::writeDataToConnex(): before flushing write()...
+Entered ConnexSimulator::performIO(): ioDescriptor.type = 1, ioDescriptor.lsAddress = 1, ioDescriptor.vectorCount = 0
+ConnexMachine::writeDataToConnex(): before readFromPipe()...
+  ConnexSimulator::performIO(): Before force_all_io()
+ConnexSimulator::force_all_io(): count = 256, total = 0
+Simu: Waiting for receive 
+ConnexMachine::readFromPipe(): totalBytesRead = 4
+ConnexMachine::writeDataToConnex(): before threadMutex.unlock()...
+Entered Kernel::Kernel(): name = simpleIoTest_allowOverwrite123456.
+ExecuteKernel(simpleIoTest_allowOverwrite123456): kernel->size() = 241
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=31
+ Finished running R31 = 0;
+
+ Running vload(0x0000000000000035), Value=1, Left=0, Dest=30
+ Finished running R30 = 1;
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=0
+ Finished running R00 = 0;
+
+ Running vload(0x0000000000000035), Value=1, Left=0, Dest=1
+ Finished running R01 = 1;
+
+ Running vload(0x0000000000000035), Value=2, Left=0, Dest=2
+ Finished running R02 = 2;
+
+ Running vload(0x0000000000000035), Value=1, Left=0, Dest=3
+ Finished running R03 = 1;
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=4
+ Finished running R04 = 0;
+
+ Running setlc(0x0000000000000015), Value=0, Left=0, Dest=0
+ Finished running REPEAT(0);
+
+ Running setlc(0x0000000000000015), Value=0, Left=0, Dest=0
+ Finished running REPEAT(0);
+
+ Running read(0x0000000000000124), Right=0, Left=0, Dest=28
+ Finished running R28 = LS[R00];
+
+ Running read(0x0000000000000124), Right=1, Left=0, Dest=27
+ Finished running R27 = LS[R01];
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=31
+ Finished running R31 = 0;
+
+ Running vload(0x0000000000000035), Value=1, Left=0, Dest=30
+ Finished running R30 = 1;
+
+ Running vload(0x0000000000000035), Value=16, Left=0, Dest=10
+ Finished running R10 = 16;
+
+ Running vload(0x0000000000000035), Value=31, Left=0, Dest=8
+ Finished running R08 = 31;
+
+ Running and(0x000000000000016c), Right=8, Left=27, Dest=27
+ Finished running R27 = R27 & R08;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17201, Left=0, Dest=0
+C1 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=28, Dest=0
+R[28] (starting from index 0) = 1d29 51f1 9e23 539d 777a 8655 73ad 1142 6ba0 c96a b26f c2ef 1788 7233 f362 132a b826 c845 d4b4 ab24 16ce e617 ee00 c53d 1d8d ecd0 13fd e7fe c801 95c2 d6bf ddb1 87fb 8772 8ea1 ee57 b6fe 52b7 25fb d27f 5229 e1c4 04a3 3313 31a5 2652 ff99 c432 57a9 83ca c49c f325 24b1 bdcd 08e0 2556 fd56 2d84 e9a0 c0fc b662 4da2 2a99 9afe 376e 0121 2ef5 7e05 2fed 29d3 b774 dc66 4e40 9a65 27e1 dbf0 5c04 af22 b1c5 034e 73a4 349a e5b5 914c f520 0ad1 411a 164a b74d c7ad 1d83 ef97 9132 bcc3 a383 617b fa72 cb93 6e4d 7014 c494 f1b6 2682 42d7 8983 6ee7 76a6 9383 4c23 43ec 29b7 37d3 0865 5215 708f bb59 be58 da91 db81 b26d 2c20 b282 fa19 9163 4d4a e31e 6c6b bb81 [END]
+ Finished running PRINTREG(R28);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17202, Left=0, Dest=0
+C2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=27, Dest=0
+R[27] (starting from index 0) = 0005 000d 000b 0009 0001 0017 0005 001f 0002 0008 000f 0010 001c 0011 0001 0019 0008 0010 000d 000b 001b 000a 000a 001f 000e 0010 0004 000d 001e 0003 0012 0010 0014 0003 0002 001b 0010 0013 001a 0012 001e 000e 0007 0017 0007 0005 0015 0012 0019 000b 0001 0016 0005 0001 0017 001d 0019 0010 001b 000f 0004 000f 0015 001b 0014 0013 0008 0010 001d 001d 0007 0004 0006 0018 0000 000e 0010 001d 0010 0007 000d 0015 0003 000e 0013 0004 0007 001d 0002 001a 0001 001a 0012 0000 0005 0001 000a 0002 0001 001c 001b 0018 0000 0010 0005 0000 0010 0004 0012 0002 001b 0016 000e 0016 001d 0011 0001 000a 001b 0002 0008 0016 0018 0013 000f 0016 000f 001d [END]
+ Finished running PRINTREG(R27);
+
+ Running ldix(0x0000000000000120), Right=0, Left=0, Dest=25
+ Finished running R25 = INDEX;
+
+ Running and(0x000000000000016c), Right=30, Left=25, Dest=25
+ Finished running R25 = R25 & R30;
+
+ Running cellshr(0x0000000000000111), Right=25, Left=27, Dest=0
+ Finished running CELL_SHR(R27, R25);
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running ldsh(0x0000000000000130), Right=0, Left=0, Dest=27
+ Finished running R27 = SHIFT_REG;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17202, Left=0, Dest=0
+C2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=27, Dest=0
+R[27] (starting from index 0) = 0005 0005 000b 000b 0001 0001 0005 0005 0002 0002 000f 000f 001c 001c 0001 0001 0008 0008 000d 000d 001b 001b 000a 000a 000e 000e 0004 0004 001e 001e 0012 0012 0014 0014 0002 0002 0010 0010 001a 001a 001e 001e 0007 0007 0007 0007 0015 0015 0019 0019 0001 0001 0005 0005 0017 0017 0019 0019 001b 001b 0004 0004 0015 0015 0014 0014 0008 0008 001d 001d 0007 0007 0006 0006 0000 0000 0010 0010 0010 0010 000d 000d 0003 0003 0013 0013 0007 0007 0002 0002 0001 0001 0012 0012 0005 0005 000a 000a 0001 0001 001b 001b 0000 0000 0005 0005 0010 0010 0012 0012 001b 001b 000e 000e 001d 001d 0001 0001 001b 001b 0008 0008 0018 0018 000f 000f 000f 000f [END]
+ Finished running PRINTREG(R27);
+
+ Running lt(0x0000000000000158), Right=27, Left=10, Dest=20
+ Finished running R20 = R10 < R27;
+
+ Running shl(0x0000000000000140), Right=27, Left=28, Dest=29
+SHL: cells[12] = 28
+SHL: cells[13] = 28
+SHL: cells[20] = 27
+SHL: cells[21] = 27
+SHL: cells[28] = 30
+SHL: cells[29] = 30
+SHL: cells[30] = 18
+SHL: cells[31] = 18
+SHL: cells[32] = 20
+SHL: cells[33] = 20
+SHL: cells[36] = 16
+SHL: cells[37] = 16
+SHL: cells[38] = 26
+SHL: cells[39] = 26
+SHL: cells[40] = 30
+SHL: cells[41] = 30
+SHL: cells[46] = 21
+SHL: cells[47] = 21
+SHL: cells[48] = 25
+SHL: cells[49] = 25
+SHL: cells[54] = 23
+SHL: cells[55] = 23
+SHL: cells[56] = 25
+SHL: cells[57] = 25
+SHL: cells[58] = 27
+SHL: cells[59] = 27
+SHL: cells[62] = 21
+SHL: cells[63] = 21
+SHL: cells[64] = 20
+SHL: cells[65] = 20
+SHL: cells[68] = 29
+SHL: cells[69] = 29
+SHL: cells[76] = 16
+SHL: cells[77] = 16
+SHL: cells[78] = 16
+SHL: cells[79] = 16
+SHL: cells[84] = 19
+SHL: cells[85] = 19
+SHL: cells[92] = 18
+SHL: cells[93] = 18
+SHL: cells[100] = 27
+SHL: cells[101] = 27
+SHL: cells[106] = 16
+SHL: cells[107] = 16
+SHL: cells[108] = 18
+SHL: cells[109] = 18
+SHL: cells[110] = 27
+SHL: cells[111] = 27
+SHL: cells[114] = 29
+SHL: cells[115] = 29
+SHL: cells[118] = 27
+SHL: cells[119] = 27
+SHL: cells[122] = 24
+SHL: cells[123] = 24
+ Finished running R29 = R28 << R27;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=17491, Left=0, Dest=0
+DS Running print_chars(0x0000000000000014), Value=21562, Left=0, Dest=0
+T: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=29, Dest=0
+R[29] (starting from index 0) = a520 3e20 1800 e800 eef4 0caa 75a0 2840 ae80 25a8 8000 8000 0000 0000 e6c4 2654 2600 4500 8000 8000 0000 0000 0000 f400 4000 0000 3fd0 7fe0 0000 0000 0000 0000 0000 0000 3a84 b95c 0000 0000 0000 0000 0000 0000 5180 8980 d280 2900 0000 0000 0000 0000 8938 e64a 9620 b9a0 0000 0000 0000 0000 0000 0000 6620 da20 0000 0000 0000 0000 f500 0500 0000 0000 ba00 3300 9000 9940 27e1 dbf0 0000 0000 0000 0000 8000 4000 2da8 8a60 0000 0000 8d00 2500 dd34 1eb4 3b06 df2e 0000 0000 7060 2f60 c800 4c00 dc9a e028 0000 0000 2682 42d7 3060 dce0 0000 0000 0000 0000 0000 0000 4000 4000 0000 0000 7cb0 b522 0000 0000 2000 8200 0000 0000 0000 0000 8000 8000 [END]
+ Finished running PRINTREG(R29);
+
+ Running cellshr(0x0000000000000111), Right=30, Left=28, Dest=0
+ Finished running CELL_SHR(R28, R30);
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running ldsh(0x0000000000000130), Right=0, Left=0, Dest=23
+ Finished running R23 = SHIFT_REG;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17201, Left=0, Dest=0
+C1 Running print_chars(0x0000000000000014), Value=24396, Left=0, Dest=0
+_L Running print_chars(0x0000000000000014), Value=21335, Left=0, Dest=0
+SW Running print_chars(0x0000000000000014), Value=20306, Left=0, Dest=0
+OR Running print_chars(0x0000000000000014), Value=17466, Left=0, Dest=0
+D: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=23, Dest=0
+R[23] (starting from index 0) = bb81 1d29 51f1 9e23 539d 777a 8655 73ad 1142 6ba0 c96a b26f c2ef 1788 7233 f362 132a b826 c845 d4b4 ab24 16ce e617 ee00 c53d 1d8d ecd0 13fd e7fe c801 95c2 d6bf ddb1 87fb 8772 8ea1 ee57 b6fe 52b7 25fb d27f 5229 e1c4 04a3 3313 31a5 2652 ff99 c432 57a9 83ca c49c f325 24b1 bdcd 08e0 2556 fd56 2d84 e9a0 c0fc b662 4da2 2a99 9afe 376e 0121 2ef5 7e05 2fed 29d3 b774 dc66 4e40 9a65 27e1 dbf0 5c04 af22 b1c5 034e 73a4 349a e5b5 914c f520 0ad1 411a 164a b74d c7ad 1d83 ef97 9132 bcc3 a383 617b fa72 cb93 6e4d 7014 c494 f1b6 2682 42d7 8983 6ee7 76a6 9383 4c23 43ec 29b7 37d3 0865 5215 708f bb59 be58 da91 db81 b26d 2c20 b282 fa19 9163 4d4a e31e 6c6b [END]
+ Finished running PRINTREG(R23);
+
+ Running eq(0x0000000000000148), Right=30, Left=25, Dest=25
+ Finished running R25 = R25 == R30;
+
+ Running and(0x000000000000016c), Right=25, Left=20, Dest=24
+ Finished running R24 = R20 & R25;
+
+ Running eq(0x0000000000000148), Right=30, Left=24, Dest=19
+ Finished running R19 = R24 == R30;
+
+ Running print_chars(0x0000000000000014), Value=17249, Left=0, Dest=0
+Ca Running print_chars(0x0000000000000014), Value=29541, Left=0, Dest=0
+se Running print_chars(0x0000000000000014), Value=8254, Left=0, Dest=0
+ > Running print_chars(0x0000000000000014), Value=8241, Left=0, Dest=0
+ 1 Running print_chars(0x0000000000000014), Value=13882, Left=0, Dest=0
+6: Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=18756, Left=0, Dest=0
+ID Running print_chars(0x0000000000000014), Value=22608, Left=0, Dest=0
+XP Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=17458, Left=0, Dest=0
+D2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=19, Dest=0
+R[19] (starting from index 0) = 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0001 0000 0000 0000 0000 0000 0000 0000 0001 0000 0000 0000 0000 0000 0000 0000 0001 0000 0001 0000 0001 0000 0000 0000 0000 0000 0001 0000 0001 0000 0000 0000 0000 0000 0001 0000 0001 0000 0000 0000 0000 0000 0001 0000 0001 0000 0001 0000 0000 0000 0001 0000 0001 0000 0000 0000 0001 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0001 0000 0000 0000 0000 0000 0000 0000 0001 0000 0000 0000 0000 0000 0000 0000 0001 0000 0000 0000 0000 0000 0000 0000 0001 0000 0001 0000 0000 0000 0001 0000 0000 0000 0001 0000 0000 0000 0001 0000 0000 0000 0000 [END]
+ Finished running PRINTREG(R19);
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running whereeq(0x000000000000011d), Right=0, Left=0, Dest=0
+ Finished running WHERE_EQ;
+
+ Running sub(0x0000000000000154), Right=10, Left=27, Dest=21
+ Finished running R21 = R27 - R10;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17202, Left=0, Dest=0
+C2 Running print_chars(0x0000000000000014), Value=24369, Left=0, Dest=0
+_1 Running print_chars(0x0000000000000014), Value=13882, Left=0, Dest=0
+6: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=21, Dest=0
+R[21] (starting from index 0) = 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c 0000 0000 0000 0000 0000 0000 0000 000b 0000 0000 0000 0000 0000 0000 0000 000e 0000 0002 0000 0004 0000 0000 0000 0000 0000 000a 0000 000e 0000 0000 0000 0000 0000 0005 0000 0009 0000 0000 0000 0000 0000 0007 0000 0009 0000 000b 0000 0000 0000 0005 0000 0004 0000 0000 0000 000d 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0003 0000 0000 0000 0000 0000 0000 0000 0002 0000 0000 0000 0000 0000 0000 0000 000b 0000 0000 0000 0000 0000 0000 0000 0002 0000 000b 0000 0000 0000 000d 0000 0000 0000 000b 0000 0000 0000 0008 0000 0000 0000 0000 [END]
+ Finished running PRINTREG(R21);
+
+ Running shl(0x0000000000000140), Right=21, Left=23, Dest=29
+ Finished running R29 = R23 << R21;
+
+ Running print_chars(0x0000000000000014), Value=17249, Left=0, Dest=0
+Ca Running print_chars(0x0000000000000014), Value=29541, Left=0, Dest=0
+se Running print_chars(0x0000000000000014), Value=8254, Left=0, Dest=0
+ > Running print_chars(0x0000000000000014), Value=8241, Left=0, Dest=0
+ 1 Running print_chars(0x0000000000000014), Value=13882, Left=0, Dest=0
+6: Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=17491, Left=0, Dest=0
+DS Running print_chars(0x0000000000000014), Value=21562, Left=0, Dest=0
+T: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=29, Dest=0
+R[29] (starting from index 0) = a520 3e20 1800 e800 eef4 0caa 75a0 2840 ae80 25a8 8000 8000 0000 8000 e6c4 2654 2600 4500 8000 8000 0000 7000 0000 f400 4000 0000 3fd0 7fe0 0000 4000 0000 5afc 0000 7fb0 3a84 b95c 0000 0000 0000 ec00 0000 4000 5180 8980 d280 2900 0000 f320 0000 5200 8938 e64a 9620 b9a0 0000 7000 0000 ac00 0000 0000 6620 da20 0000 5320 0000 76e0 f500 0500 0000 a000 ba00 3300 9000 9940 27e1 dbf0 0000 0000 0000 0000 8000 4000 2da8 8a60 0000 a900 8d00 2500 dd34 1eb4 3b06 df2e 0000 44c8 7060 2f60 c800 4c00 dc9a e028 0000 a000 2682 42d7 3060 dce0 0000 0000 0000 308c 0000 b800 4000 4000 0000 e000 7cb0 b522 0000 0800 2000 8200 0000 1900 0000 0000 8000 8000 [END]
+ Finished running PRINTREG(R29);
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running sub(0x0000000000000154), Right=20, Left=30, Dest=20
+ Finished running R20 = R30 - R20;
+
+ Running and(0x000000000000016c), Right=25, Left=20, Dest=24
+ Finished running R24 = R20 & R25;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=18756, Left=0, Dest=0
+ID Running print_chars(0x0000000000000014), Value=22608, Left=0, Dest=0
+XP Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=17466, Left=0, Dest=0
+D: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=24, Dest=0
+R[24] (starting from index 0) = 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0000 0000 0001 0000 0001 0000 0001 0000 0000 0000 0001 0000 0001 0000 0001 0000 0000 0000 0000 0000 0000 0000 0001 0000 0001 0000 0000 0000 0000 0000 0001 0000 0001 0000 0000 0000 0000 0000 0001 0000 0001 0000 0000 0000 0000 0000 0000 0000 0001 0000 0000 0000 0000 0000 0001 0000 0000 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0000 0000 0001 0000 0001 0000 0001 0000 0000 0000 0001 0000 0001 0000 0001 0000 0000 0000 0001 0000 0001 0000 0001 0000 0000 0000 0000 0000 0001 0000 0000 0000 0001 0000 0000 0000 0001 0000 0000 0000 0001 0000 0001 [END]
+ Finished running PRINTREG(R24);
+
+ Running eq(0x0000000000000148), Right=30, Left=24, Dest=19
+ Finished running R19 = R24 == R30;
+
+ Running print_chars(0x0000000000000014), Value=17249, Left=0, Dest=0
+Ca Running print_chars(0x0000000000000014), Value=29541, Left=0, Dest=0
+se Running print_chars(0x0000000000000014), Value=8252, Left=0, Dest=0
+ < Running print_chars(0x0000000000000014), Value=8241, Left=0, Dest=0
+ 1 Running print_chars(0x0000000000000014), Value=13882, Left=0, Dest=0
+6: Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running whereeq(0x000000000000011d), Right=0, Left=0, Dest=0
+ Finished running WHERE_EQ;
+
+ Running sub(0x0000000000000154), Right=27, Left=10, Dest=21
+ Finished running R21 = R10 - R27;
+
+ Running shr(0x0000000000000150), Right=21, Left=23, Dest=22
+SHR: cells[75] = 16
+SHR: cells[103] = 16
+ Finished running R22 = R23 >> R21;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=16725, Left=0, Dest=0
+AU Running print_chars(0x0000000000000014), Value=22586, Left=0, Dest=0
+X: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=22, Dest=0
+R[22] (starting from index 0) = 0000 0003 0000 04f1 0000 0000 0000 000e 0000 0001 0000 5937 0000 0000 0000 0001 0000 00b8 0000 1a96 0000 0000 0000 03b8 0000 0763 0000 0001 0000 0000 0000 0000 0000 0000 0000 0002 0000 b6fe 0000 0000 0000 0000 0000 0002 0000 0018 0000 0000 0000 0000 0000 0001 0000 0004 0000 0000 0000 0000 0000 0000 0000 000b 0000 0000 0000 0000 0000 002e 0000 0000 0000 005b 0000 0013 0000 0000 0000 5c04 0000 b1c5 0000 0e74 0000 0007 0000 0000 0000 0020 0000 0002 0000 0000 0000 0000 0000 0014 0000 03e9 0000 0000 0000 0000 0000 0000 0000 0011 0000 76a6 0000 0000 0000 0000 0000 0219 0000 0000 0000 0001 0000 0000 0000 002c 0000 0000 0000 26a5 0000 3635 [END]
+ Finished running PRINTREG(R22);
+
+ Running shl(0x0000000000000140), Right=27, Left=28, Dest=29
+SHL: cells[37] = 16
+SHL: cells[77] = 16
+SHL: cells[79] = 16
+SHL: cells[107] = 16
+ Finished running R29 = R28 << R27;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=17491, Left=0, Dest=0
+DS Running print_chars(0x0000000000000014), Value=21562, Left=0, Dest=0
+T: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=29, Dest=0
+R[29] (starting from index 0) = a520 3e20 1800 e800 eef4 0caa 75a0 2840 ae80 25a8 8000 8000 0000 8000 e6c4 2654 2600 4500 8000 8000 0000 7000 0000 f400 4000 0000 3fd0 7fe0 0000 4000 0000 5afc 0000 7fb0 3a84 b95c 0000 0000 0000 ec00 0000 4000 5180 8980 d280 2900 0000 f320 0000 5200 8938 e64a 9620 b9a0 0000 7000 0000 ac00 0000 0000 6620 da20 0000 5320 0000 76e0 f500 0500 0000 a000 ba00 3300 9000 9940 27e1 dbf0 0000 0000 0000 0000 8000 4000 2da8 8a60 0000 a900 8d00 2500 dd34 1eb4 3b06 df2e 0000 44c8 7060 2f60 c800 4c00 dc9a e028 0000 a000 2682 42d7 3060 dce0 0000 0000 0000 308c 0000 b800 4000 4000 0000 e000 7cb0 b522 0000 0800 2000 8200 0000 1900 0000 0000 8000 8000 [END]
+ Finished running PRINTREG(R29);
+
+ Running or(0x000000000000015c), Right=22, Left=29, Dest=29
+ Finished running R29 = R29 | R22;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17201, Left=0, Dest=0
+C1 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=28, Dest=0
+R[28] (starting from index 0) = 1d29 51f1 9e23 539d 777a 8655 73ad 1142 6ba0 c96a b26f c2ef 1788 7233 f362 132a b826 c845 d4b4 ab24 16ce e617 ee00 c53d 1d8d ecd0 13fd e7fe c801 95c2 d6bf ddb1 87fb 8772 8ea1 ee57 b6fe 52b7 25fb d27f 5229 e1c4 04a3 3313 31a5 2652 ff99 c432 57a9 83ca c49c f325 24b1 bdcd 08e0 2556 fd56 2d84 e9a0 c0fc b662 4da2 2a99 9afe 376e 0121 2ef5 7e05 2fed 29d3 b774 dc66 4e40 9a65 27e1 dbf0 5c04 af22 b1c5 034e 73a4 349a e5b5 914c f520 0ad1 411a 164a b74d c7ad 1d83 ef97 9132 bcc3 a383 617b fa72 cb93 6e4d 7014 c494 f1b6 2682 42d7 8983 6ee7 76a6 9383 4c23 43ec 29b7 37d3 0865 5215 708f bb59 be58 da91 db81 b26d 2c20 b282 fa19 9163 4d4a e31e 6c6b bb81 [END]
+ Finished running PRINTREG(R28);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17202, Left=0, Dest=0
+C2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=27, Dest=0
+R[27] (starting from index 0) = 0005 0005 000b 000b 0001 0001 0005 0005 0002 0002 000f 000f 001c 001c 0001 0001 0008 0008 000d 000d 001b 001b 000a 000a 000e 000e 0004 0004 001e 001e 0012 0012 0014 0014 0002 0002 0010 0010 001a 001a 001e 001e 0007 0007 0007 0007 0015 0015 0019 0019 0001 0001 0005 0005 0017 0017 0019 0019 001b 001b 0004 0004 0015 0015 0014 0014 0008 0008 001d 001d 0007 0007 0006 0006 0000 0000 0010 0010 0010 0010 000d 000d 0003 0003 0013 0013 0007 0007 0002 0002 0001 0001 0012 0012 0005 0005 000a 000a 0001 0001 001b 001b 0000 0000 0005 0005 0010 0010 0012 0012 001b 001b 000e 000e 001d 001d 0001 0001 001b 001b 0008 0008 0018 0018 000f 000f 000f 000f [END]
+ Finished running PRINTREG(R27);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=17491, Left=0, Dest=0
+DS Running print_chars(0x0000000000000014), Value=21562, Left=0, Dest=0
+T: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=29, Dest=0
+R[29] (starting from index 0) = a520 3e23 1800 ecf1 eef4 0caa 75a0 284e ae80 25a9 8000 d937 0000 8000 e6c4 2655 2600 45b8 8000 9a96 0000 7000 0000 f7b8 4000 0763 3fd0 7fe1 0000 4000 0000 5afc 0000 7fb0 3a84 b95e 0000 b6fe 0000 ec00 0000 4000 5180 8982 d280 2918 0000 f320 0000 5200 8938 e64b 9620 b9a4 0000 7000 0000 ac00 0000 0000 6620 da2b 0000 5320 0000 76e0 f500 052e 0000 a000 ba00 335b 9000 9953 27e1 dbf0 0000 5c04 0000 b1c5 8000 4e74 2da8 8a67 0000 a900 8d00 2520 dd34 1eb6 3b06 df2e 0000 44c8 7060 2f74 c800 4fe9 dc9a e028 0000 a000 2682 42d7 3060 dcf1 0000 76a6 0000 308c 0000 b800 4000 4219 0000 e000 7cb0 b523 0000 0800 2000 822c 0000 1900 0000 26a5 8000 b635 [END]
+ Finished running PRINTREG(R29);
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running write(0x0000000000000114), Right=2, Left=29, Dest=0
+ Finished running LS[R02] = R29;
+
+ Running add(0x0000000000000144), Right=1, Left=3, Dest=1
+ Finished running R01 = R03 + R01;
+
+ Running add(0x0000000000000144), Right=0, Left=3, Dest=0
+ Finished running R00 = R03 + R00;
+
+ Running add(0x0000000000000144), Right=2, Left=3, Dest=2
+ Finished running R02 = R03 + R02;
+
+ Running ijmpnz(0x0000000000000013), Value=228, Left=0, Dest=0
+Preparing to jump from loop iter #0
+ Finished running END_REPEAT;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running red(0x0000000000000100), Right=0, Left=0, Dest=0
+ Finished running REDUCE(R00);
+
+ConnexMachine::readFromPipe(): totalBytesRead = 4
+Before (final?) REDUCE: number of cycles simulated = 240 (add 1 more for the REDUCE), totalEnergyConsumed = 0.000003469371
+Entered readDataFromConnexPartial(): buffer = 0x7ffcb8a1b8b0, numElemCount = 128, startVectorIndex = 2 (vectorCount = 1).
+ioDescriptor:
+            type = 0
+            lsAddress = 2
+            vectorCount = 0
+Entered ConnexSimulator::performIO(): ioDescriptor.type = 0, ioDescriptor.lsAddress = 2, ioDescriptor.vectorCount = 0
+ConnexSimulator::force_all_io(): count = 256, total = 0
+Simu: Waiting for receive 
+readDataFromConnexPartial(): calling standard readDataFromConnex()
+ConnexMachine::readFromPipe(): totalBytesRead = 256
+Finished executing the Opincaa kernel.
+Testing the correctness of the computation of the Opincaa kernel.
+  testResult = 0 (PASS = 0)
+NUM_ELEMS = 64
+C[0] = 1042523424
+C[1] = -319744000
+C[2] = 212528884
+C[3] = 676230560
+C[4] = 631877248
+C[5] = -650674176
+C[6] = -2147483648
+C[7] = 643163844
+C[8] = 1169696256
+C[9] = -1701412864
+C[10] = 1879048192
+C[11] = -138936320
+C[12] = 123944960
+C[13] = 2145468368
+C[14] = 1073741824
+C[15] = 1526464512
+C[16] = 2142240768
+C[17] = -1185006972
+C[18] = -1224867840
+C[19] = -335544320
+C[20] = 1073741824
+C[21] = -1987948160
+C[22] = 689492608
+C[23] = -216006656
+C[24] = 1375731712
+C[25] = -431257288
+C[26] = -1180396000
+C[27] = 1879048192
+C[28] = -1409286144
+C[29] = 0
+C[30] = -634690016
+C[31] = 1394606080
+C[32] = 1994391552
+C[33] = 86963456
+C[34] = -1610612736
+C[35] = 861649408
+C[36] = -1722576896
+C[37] = -605018143
+C[38] = 1543766016
+C[39] = -1312489472
+C[40] = 1316257792
+C[41] = -1972949592
+C[42] = -1459617792
+C[43] = 622890240
+C[44] = 515300660
+C[45] = -550618362
+C[46] = 1153957888
+C[47] = 796160096
+C[48] = 1340721152
+C[49] = -534192998
+C[50] = -1610612736
+C[51] = 1121396354
+C[52] = -588173216
+C[53] = 1990590464
+C[54] = 814481408
+C[55] = -1207959552
+C[56] = 1108951040
+C[57] = -536870912
+C[58] = -1255965520
+C[59] = 134217728
+C[60] = -2111037440
+C[61] = 419430400
+C[62] = 648347648
+C[63] = -1238007808
+C[64] = 1000
+C[65] = 0
+C[66] = 0
+C[67] = 0
+C[68] = 1063
+Exiting Test()
+ConnexMachine::~ConnexMachine(): freeing kernel QuitKernel (with ptr value = 0x1bbac50)
+Entered Kernel::~Kernel(): name = QuitKernel
+  Kernel::~Kernel(): sdNodeVarNameRegDef = 0x1bbacb8
+ConnexMachine::~ConnexMachine(): freeing kernel simpleIoTest_allowOverwrite123456 (with ptr value = 0x1bbb280)
+Entered Kernel::~Kernel(): name = simpleIoTest_allowOverwrite123456
+  Kernel::~Kernel(): sdNodeVarNameRegDef = 0x1bbb2e8
+++ sleep 2

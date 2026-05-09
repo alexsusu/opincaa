@@ -1,13 +1,27 @@
+Please ask questions related to OPINCAA on the dedicated mailing list at https://groups.google.com/forum/#!forum/connex-tools.
 
 Steps to build and install OPINCAA:
 
 1) make                             Build the OPINCAA library
-2) [optional] sudo make install     Install the OPINCAA library in your system in /usr/local/lib   
-3) [optional] make test             Compile an executable against the installed OPINCAA library and run some tests
+2) [optional] make simulator        Build the Connex simulator which can be used instead of the real hardware Connex process with the OPINCAA library
+3) [optional] sudo make install     Install the OPINCAA library in your system in /usr/local/lib
+4) [optional] make test             Compile an executable against the installed OPINCAA library and run some tests
 
 NOTE: if you choose not to install the library, you will need to manually specify the location of the library when
 compiling or running executables linked against it. These are the necessary steps to run the executable "foo":
+We recommend to build the OPINCAA library in ~/Connex/opincaalib .
 
-LD_LIBRARY_PATH=*/path/to/opincaa/library*
-export LD_LIBRARY_PATH
-./foo
+    LD_LIBRARY_PATH=*/path/to/opincaa/library*
+    export LD_LIBRARY_PATH
+    ./foo
+
+  Otherwise, if using the tests from the examples folder, you can use the scripts:
+    . ./setenv_OpincaaHome.sh # adjust the OPINCAA_HOME variable to point to the opincaalib folder
+    opincaa_standalone_apps/Makefile - to build the OPINCAA application
+    opincaa_standalone_apps/run_Opincaa_standalone_app.sh - to run a built OPINCAA application, by loading the OPINCAA library.
+   Note: in both scripts you have to adjust to correct value the OPINCAA_HOME variable, preferably as an environment variable (preferably by giving . ./setenv_OpincaaHome.sh), in order to point to the right opincaalib folder.
+
+
+Note: We have experienced minor difficulties in building the OPINCAA library on Cygwin (with a version from 2015) on Windows.
+      Even more important, the Connex simulator from the library is not working properly on Cygwin.
+

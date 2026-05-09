@@ -1,0 +1,241 @@
+Interesting links:
+  Calculator for f16:
+      - supports f16 (binary16): http://weitz.de/ieee/
+      - NOT working: http://oletus.github.io/float16-simulator.js/ - it takes decimal values of the word containing f16 and converts them to floating point
+      - only f32: http://www.binaryconvert.com/convert_float.html, https://www.h-schmidt.net/FloatConverter/IEEE754.html
+  https://en.wikipedia.org/wiki/Half-precision_floating-point_format
+  http://pages.cs.wisc.edu/%7Esmoler/x86text/lect.notes/arith.flpt.html
+  https://gcc.gnu.org/onlinedocs/gcc/Half-Precision.html
+
+
+
+Regarding f16:
+    - indeed they have rather small range:
+        from 10^-7 to ~60,000 (also negative numbers)
+
+
+- https://www.doc.ic.ac.uk/~eedwards/compsys/float/nan.html
+     <<A NaN (Not-a-Number) is a symbolic entity encoded in floating-point format. There are two types of NaNs:
+        Signalling NaN
+            signals an invalid operation exception
+        Quiet NaN
+            propagates through almost every arithmetic operation without signalling an exception
+        NaNs are produced by these operations:
+            ∞ − ∞,   −∞ + ∞,   0 × ∞,   0 ÷ 0,   ∞ ÷ ∞
+        >>
+
+      <<For single-precision values:
+        Positive infinity is represented by the bit pattern 7F800000
+        Negative infinity is represented by the bit pattern FF800000
+        A signalling NaN (NANS) is represented by any bit pattern
+        between 7F800001 and 7FBFFFFF or between FF800001 and FFBFFFFF
+        A quiet NaN (NANQ) is represented by any bit pattern
+        between 7FC00000 and 7FFFFFFF or between FFC00000 and FFFFFFFF>>
+
+
+
+Book Ercegovac&Lang, 2003:
+
+page 32:
+    Two's complement algorithm. The value of the multiplier in the two's complement system can be expressed as in (1.27):
+      y = - Yn-1 +2^(n-1) + \sum_{i=0}^{n-2} Yi 2^i (1.73)
+
+    Therefore,
+      x y = x \sum_{i=0}^{n-2} Yi 2^i - x Yn-1 +2^(n-1) (1.74)
+
+
+
+page 422:
+    "sticky bit T, which corresponds to the OR of the discarded bits."
+  page 424:
+    "In summary, in all cases it is sufficient to perform the addition with three additional bits.
+     These are called guard (G), round (R), and sticky (T). [...]
+     First the normalization is performed and the bits after normalization are labeled as follows:"
+                  L GRT
+        1.XXXXXXXXX|XXX
+          f fractional bits
+       Note that during the shift right of normalization the sticky bit has to be recomputed as the OR of the previous value of T and the previous value of R.
+
+    Round to Nearest (Tie to Even)
+      As indicated by (8.36) in rounding to nearest mode we round up (add 1 to positionL) if G = 1 and R and T are not both 0, and round to even if G = 1 and R = T = 0. Consequently, calling rnd the value to be added to bit L, we get:
+       - If G = 1 and R and T are not both zero, rnd = G (R + T) .
+       - If G = 1 and R = T = 0 then rnd = G (R + T)' L.
+      Combining both cases,
+      rnd = G (R + T) + G (R + T)' L = G (L + R + T)  (8.48)
+      Note that in this implementation, we need to determine first the bits L, G, R, Tto compute rnd and perform the increment. In some implementations it might be preferable to do as follows:
+      1. Always add 1 in position G (which produces the rounding to nearest).
+      2. Correct the bit in position L if there is a tie. Namely, make L = 0 if
+      G(R + T)' = 1.
+
+
+
+Examples of denormal f16 values:
+    e = number of bits of exponent
+       for f16 e = 5
+    Obtained from Clang program - see /home/asusu/LLVM/llvm38Nov2016/llvm/build40/bin/Tests/NEW_v128i16/opincaa_standalone_apps/FP16/C/LLVM/_Float16/Gen_constant_values/Denormals/Float16.ll:
+     decimal value 0.0000001: half 0x0002
+     decimal value 0.000001:  half 0x0011
+     decimal value 0.00001:   half 0x00A8
+
+        So 10^(-7) is represented as:
+          %WRONG: 0.0000000001(base 2) * 2^(-14) = 2^(-24) = 5.96046448e-8 = 0.000000059604 which is ~59% from 0.0000001
+          0.00000000010(base 2) * 2^(-14) = 2 * 2^(-10) * 2^(-14) = 2^(-23) = 1.1920929e-7 = 0.000000119209 which is 119.2% from 0.0000001 (10^-7)
+
+        So 10^(-6) is represented as:
+          0.00000010001(base 2) * 2^(-14) = 17 * 2^(-10) * 2^(-14) = 17 * 2^(-24) = 0.00000101327 = which is ~101.327% from 0.000001 (10^-6)
+
+        So 10^(-5) is represented as:
+          0.00010101000(base 2) * 2^(-14) = 168 * 2^(-10) * 2^(-14) = 168 * 2^(-24) = 0.00001001358 = which is ~100.1358% from 0.00001 (10^-5)
+
+
+Page 401:
+    8.1.5. Normalized, Unnormalized, and Denormalized Representation
+      <<Moreover, to improve the potential "accuracy" of the computations it
+    is convenient to eliminate nonsignificant leading zeros. For this,
+    the normalized representation is defined so that the most-significant digit of the
+    significand is always different from zero (except for the zero value).
+    On the other hand, using a normalized representation reduces the range of
+    floating-point numbers [...]
+    To avoid this reduction in range, unnormalized representation is also included
+    for the values that cannot be represented in normalized form. That is, in this
+    case unnormalized significands are only allowed with the minimum exponent.
+    These unnormalized numbers are called denormalized numbers (denormals). With
+    the use of denormals, as numbers decrease in magnitude they gradually include
+    more most-significant zeros in their significand; this is called gradual underflow.>>
+
+
+Page 401:
+    8.1.9 Representation of Exponent
+    Biased representation:
+      B = 2^(e-1) - 1 (actually <=)
+      For f16 (half): B = 2^4 - 1 = 15
+
+    For denormals: hidden bit is not used
+      %(-1)^S * 0.F * 2^(-(B - 1))
+      (-1)^S * 0.F * 2^(-14)
+
+
+
+
+
+[Ercegovac_Digital_Arithmetic_2004, page 415]
+ 8.3.1 Representation and Formats
+  The two parts of the representation are as follows:
+    First, the significand is in sign-and-magnitude representation. Consequently,
+    it is represented by two components:
+     - Sign S. One bit. S = 1 if negative.
+     - Magnitude (also called the significand). Represented in radix 2 with one
+    integer bit. That is, the normalized significand is represented by
+                1.F (8.44)
+
+    where F of f bits (depending on the format) is called the fraction and the
+    most-significant 1 is the hidden bit. The range of the (normalized)
+    significand is
+                1 < 1.F < 2 - 2^(-f)   (8.45)
+
+    Second, the exponent is base 2 and in biased representation. The number of
+    bits of the exponent field is e, depending on the format. The representation is
+    biased with bias B = 2^(e - 1) - 1.
+
+    The three components are packed into one word, in which the order of the
+    fields is S, E, F. This order makes comparisons simpler.
+
+    The value zero, denormals, and the special values NAN and infinities are
+    represented as follows:
+       - The representation of floating-point zero is E = 0 and F = 0. The sign S
+    differentiates between positive and negative zero. Because of this
+    representation and the hidden bit, the value 1.0 * 2^(-B) is not represented.
+       - The representation E = 0 and F != 0 is used for denormals; in this case
+    the floating-point value represented is v = (-1)^S * 2^(-(B - 1)) * (0.F) .
+        Note that in this case the hidden bit is not used.
+       - The maximum exponent representation (E = 2^e - 1 = 2B + 1) is used to
+    represent not-a-number (NAN) for F != 0 and plus and minus infinity for
+    F = 0.
+
+[Ercegovac_Digital_Arithmetic_2004, page 416]
+We call v the value represented.
+
+1. Basic: single (32 bits) and double (64 bits)
+ - Single: S(1), E(8), F(23)
+    (a) If 1 <= E <= 254, then v = (-1)^S * 2^(E-127) * (1.F) (normalized fp number).
+    (b) If E = 255 and F != 0, then v = NAN (not a number).
+    (c) If E = 255 and F = 0, then v = (-1)^S inf (plus and minus infinity).
+    (d) If E = 0 and F != 0, then v = (-1)^S * 2^(-126) * (0.F) (denormal, also called gradual underflow).
+    (e) If E = 0 and F = 0, then v = (-1)^S * 0 (positive and negative zero).
+
+ - Double: S(1), E(11), F(52)
+    ...
+
+ - Half (or f16): S(1), E(5), F(10)
+    (a) If 1 <= E <= 30, then v = (-1)^S * 2^(E-15) * (1.F) (normalized fp number).
+    (b) If E = 31 and F != 0, then v = NAN (not a number).
+    (c) If E = 31 and F = 0, then v = (-1)^S inf (plus and minus infinity).
+    (d) If E = 0 and F != 0, then v = (-1)^S * 2^(-14) * (0.F) (denormal, also called gradual underflow).
+    (e) If E = 0 and F = 0, then v = (-1)^S * 0 (positive and negative zero).
+
+
+
+
+
+
+
+[Ercegovac_Digital_Arithmetic_2004]
+8.4.4. Exceptions and Special Values
+
+We now discuss the exceptions and special values that may occur in floating-point
+addition and subtraction.
+  - Overflow: This situation can occur when the exponent is incremented
+during normalization (because of overflow of addition requiring a right
+shift of significand) and because of overflow of significand during the
+rounding step. It is detected by an exponent E >= 255. The overflow flag is
+set, and the result is set to +- infinity.
+ - Underflow: This situation can occur when the exponent is decremented
+during normalization (left shift of significand). The underflow flag is set,
+and the result exponent is set to E = 0. The fraction is left unnormalized
+(denormal, gradual underflow).
+ - Zero: This situation occurs when the significand of the result of addition is
+0. The result is E = 0 and F = 0.
+ - Inexact: This situation is detected before the rounding; the result is inexact
+if G + R + T = 1. The inexact flag is set.
+ - NAN : If one operand (or both) is a NAN, then the result is set to NAN.
+
+
+[Ercegovac_Digital_Arithmetic_2004]
+8.4.5 Denormal and Zero Operands
+  When an operand is a denormal number (E = 0 and F != 0), then there is no
+hidden 1. Consequently, the operand of addition should be set to E = 1 and 0.F.
+The rest of the algorithm remains unchanged.
+  The zero operand (E = 0 and F = 0) is treated in the same way as a
+denormal number.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Useful for multiplication:
+
+    [Ercegovac_Digital_Arithmetic_2004]
+    8.5.2 - page 438
+     - Overflow: This situation can occur because the resulting exponent is too
+    large. This is detected after the exponent update. The overflow flag is set
+    and the result value is +infinity.
+     - Underflow: The resulting exponent can be too small to be represented. In
+    such a case, the underflow flag is set and the exponent is set to E = 0.
+    Moreover, the significand is shifted right to represent a denormal.
+     - Zero : The result of multiplication is zero when one of the operands has
+    value 0 and the other is not +infinity. The zero result is set.
+     - Inexact : The result is inexact if, after normalization, G + T = 1.
+     - NAN : The result is a NAN if one (or both) of the operands is a NAN or if
+    one of the operands is a 0 and the other +infinity.
+

@@ -11,6 +11,7 @@
 
 #include "Operand.h"
 #include "Kernel.h"
+#include <assert.h>
 #include <string>
 #include <map>
 #include <vector>
@@ -18,17 +19,41 @@
 
 #include <unistd.h>
 
+
 using namespace std;
 
 class Kernel;
 
-class ConnexMachine
-{
+
+#define writeDataToArray writeDataToConnex
+#define writeDataToArrayPartial writeDataToConnexPartial
+#define readDataFromArray readDataFromConnex
+#define readDataFromArrayPartial readDataFromConnexPartial
+
+
+// Used by InitFPTable() - addresses in LS memory of the FP tables
+#define LS_ADDRESS_softfloat_approxRecipSqrt_1k0s (CONNEX_MEM_NUM_ROWS + CONNEX_MEM_NUM_ROWS_EXTRA - 64)
+#define LS_ADDRESS_softfloat_approxRecipSqrt_1k1s (CONNEX_MEM_NUM_ROWS + CONNEX_MEM_NUM_ROWS_EXTRA - 48)
+#define LS_ADDRESS_softfloat_approxRecip_1k0s (CONNEX_MEM_NUM_ROWS + CONNEX_MEM_NUM_ROWS_EXTRA - 32)
+#define LS_ADDRESS_softfloat_approxRecip_1k1s (CONNEX_MEM_NUM_ROWS + CONNEX_MEM_NUM_ROWS_EXTRA - 16)
+
+class ConnexMachine {
     public:
         /**
          * Adds a kernel to the static kernel map.
          */
         static void addKernel(Kernel *kernel);
+
+        static void deleteKernel(char *kernelName) {
+            assert(0 && "We recommend to NOT use this method - we should always cache kernels.");
+
+            //assert(kernels.count(kernelName) > 0);
+
+            if (kernels.count(kernelName) > 0)
+                kernels.erase(kernelName);
+
+            //kernels[kernelName] = nullptr;
+        }
 
         /**
          * Disassembles the specified kernel
@@ -45,12 +70,16 @@ class ConnexMachine
          */
         static string dumpKernel(string kernelName);
 
+        static Kernel *getKernel(string kernelName);
+        static string genLLVMISelManualCode(string kernelName);
+
         /**
          * Reads byteCount bytes from descriptor and places the
          * result in destination. It blocks until all byteCount bytes
          * have been read.
          */
-        unsigned readFromPipe(int descriptor, void* destination, unsigned byteCount);
+        unsigned readFromPipe(int descriptor, void *destination,
+                              unsigned byteCount);
 
         /**
         * Constructor for creating a new ConnexMachine
@@ -63,11 +92,14 @@ class ConnexMachine
         *
         */
         ConnexMachine(string distributionDescriptorPath,
-                                string reductionDescriptorPath,
-                                string writeDescriptorPath,
-                                string readDescriptorPath,
-                                string registerInterfacePath);
+                      string reductionDescriptorPath,
+                      string writeDescriptorPath,
+                      string readDescriptorPath,
+                      string registerInterfacePath);
 
+        void InitFPTables();
+
+      #if 0
         /**
          * Constructor for creating a new ConnexMachine
          *
@@ -77,10 +109,11 @@ class ConnexMachine
          * @param  readDescriptorPath the file of the IO read FIFO (read only)
          *
          */
-        ConnexMachine(string distributionDescriptorPath ,
-                                string reductionDescriptorPath,
-                                string writeDescriptorPath,
-                                string readDescriptorPath);
+        ConnexMachine(string distributionDescriptorPath,
+                      string reductionDescriptorPath,
+                      string writeDescriptorPath,
+                      string readDescriptorPath);
+      #endif
 
         /**
          * Destructor for the ConnexMachine class
@@ -109,18 +142,47 @@ class ConnexMachine
          *
          * @return number of bytes written or -1 in case of error
          */
-        int writeDataToArray(const void *buffer, unsigned vectorCount, unsigned vectorIndex);
+        int writeDataToConnex(const void *buffer, unsigned vectorCount,
+                              unsigned vectorIndex);
+
+        int writeDataToConnexPartial(const void *buffer,
+                                     unsigned numElemCount, unsigned vectorIndex
+                                     /* TODO:
+                                        int neutralElement = 0,
+                                        bool performMultiDimensionalPadding = true, // if false we pad as if the array is 1D
+                                      */
+                                    );
 
         /**
          * Reads the specified amounf of bytes to the specified buffer
          * from the array IO read FIFO
          *
          * @param buffer the buffer to write the data to (if NULL, it will be created)
-         * @param bufferSize the amount of bytes to read
+         * @param vectorCount the amount of vectors to read --> bytes to read is vectorCount * CONNEX_VECTOR_LENGTH * sizeof(short)
+         * @param vectorIndex the vector with which to start the writing operation
          *
          * @return the buffer which the data was written to
          */
-        void* readDataFromArray(void *buffer, unsigned vectorCount, unsigned vectorIndex);
+        void *readDataFromConnex(void *buffer, unsigned vectorCount,
+                                 unsigned vectorIndex);
+
+        /**
+         * Reads the specified amounf of bytes, numElemCount, to the specified buffer
+         * from the array IO read FIFO
+         *
+         * We use this function only for vector loop + residual loop
+         * (i.e., when numElemCount is NOT multiple of CONNEX_VECTOR_LENGTH),
+         * that is for less than a vector.
+         *
+         * @param buffer the buffer to write the data to (if NULL, it will be created)
+         * @param numElemCount the amount of bytes to read
+         *
+         * @return the buffer which the data was written to
+         */
+        void *readDataFromConnexPartial(void *buffer,
+                                        unsigned numElemCount, unsigned vectorIndex,
+                                        unsigned startOffsetElem=0
+                                       );
 
         /**
          * Reads one int from the reduction FIFO
@@ -129,27 +191,98 @@ class ConnexMachine
          */
         int readReduction();
 
+        // For backward compatibility:
+        #define readMultiReduction(count, buffer) readReductionResults(buffer, count)
+
         /**
         * Reads multiple values from the reduction FIFO
         *
         * @param count the number of int to be read
         * @param buffer the memory area where the results will be put
         */
-        void readMultiReduction(int count, void* buffer);
+    #ifdef SIMULATOR_MODE
+        /* The simulator gets stucked reading from the pipe multiple words.
+             So we read 1 word at a time.
+         We declare this here - it seems it helps linking under simulator with
+              this version of the - I'm a bit surprised, but it works well :).
+        */
+        //int readMultiReduction(void *buffer, int count)
+        int readReductionResults(void *buffer, int count) {
+            int result;
+
+            /* In simulator mode it blocks if reading multiple ints, so we read
+               each one separated.
+               Note: GCC seems NOT to complain about defining here this method and
+                having also another definition in core/ConnexMachine.cpp,
+                int ConnexMachine::readMultiReduction(int count, void *buffer).
+
+               TODO: We can make more efficient the read for the simulator, but it
+                should not matter that much, because the I/O performance is not supposed
+                to reflect the performance of a real system, such as Zynq ZedBoard.
+            */
+          //#ifdef DEBUG_OPINCAA
+            printf("readReductionResults(): executing simulator mode readMultiReduction!\n");
+            printf("readReductionResults(): count = %d\n", count);
+            fflush(stdout);
+          //#endif
+
+            int countActual = 1;
+
+            threadMutexIR.lock();
+
+            for (int i = 0; i < count; i++) {
+                /*
+                printf("  i = %d\n", i);
+                fflush(stdout);
+                */
+                //threadMutexIR.lock();
+
+                if (readFromPipe(reductionFifo, ((int *)buffer) + i,
+                                 countActual * sizeof(int)) < 0) {
+                    threadMutexIR.unlock();
+                    throw string("Error reading from reduction FIFO");
+                    // TODO
+                    return -1;
+                }
+
+                //threadMutexIR.unlock();
+            }
+
+            threadMutexIR.unlock();
+
+            return 0;
+        }
+    #else
+        int readReductionResults(void *buffer, int count);
+    #endif
+
+        /*
+         * Write the numResults reduction results from the FIFO in the
+            possibly smaller or bigger array bufferRes.
+            Eventually sign extend the result.
+         * @param count the number of int to be read
+         * @param bufferRes the memory area where the correct results will be put
+         * @param signExtend if true, perform sign extension (Connex does not do it)
+         */
+        int readCorrectReductionResults(void *bufferRes, int count,
+                                        int sizeOfPtr, bool signExtend = false);
+
+
+        int readReductionResultsAndComputeF16(void *resultsF16, int numElems);
 
         /**
          * Writes the specified command to the instruction FIFO (use with caution).
          *
          * @param command the command to write.
          */
-        void writeCommand(unsigned command);
-		
-		/**
-		 * Writes the specified commands to the instruction FIFO (use with caution).
-		 *
-		 * @param commands the commands to write.
-		 */
-		void writeCommands(std::vector<unsigned> commands);
+        void writeCommand(InstructionType command);
+
+        /**
+         * Writes the specified commands to the instruction FIFO (use with caution).
+         *
+         * @param commands the commands to write.
+         */
+        void writeCommands(std::vector<InstructionType> commands);
 
     private:
 
@@ -190,16 +323,16 @@ class ConnexMachine
          */
         static map<string, Kernel*> kernels;
 
-		/**
+        /**
          * The mutex used to sync the IO operations.
          */
-		mutex threadMutex;
-		mutex threadMutexIR;
+         mutex threadMutex;
+         mutex threadMutexIR;
 
-		/**
+        /**
          * The mutex used to sync the kernel map operations
          */
-		static mutex mapMutex;
+        static mutex mapMutex;
 
         /**
          * The name of the architecture for which OPINCAA was compiled

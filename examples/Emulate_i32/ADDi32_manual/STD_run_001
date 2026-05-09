@@ -1,0 +1,416 @@
+++ LD_LIBRARY_PATH=/home/asusu/Connex/OPINCAA_2015_10/opincaa-master-d49993900aaf33580858c74e090a77bd67217702//libs/connex16-hm-generic
+++ export LD_LIBRARY_PATH
+++ killall -9 simulator
+++ killall -9 simulator
+simulator: no process found
+++ sleep 1
+++ /home/asusu/Connex/OPINCAA_2015_10/opincaa-master-d49993900aaf33580858c74e090a77bd67217702//simulator/build/simulator 128 1024 32 1024
+Opincaa simulator: Setting CONNEX_VECTOR_LENGTH to 128
+Opincaa simulator: Setting CONNEX_MEM_SIZE to 1024
+Opincaa simulator: Setting CONNEX_REG_COUNT to 32
+Opincaa simulator: Setting INTERNAL_INSTRUCTION_MEMORY_SIZE to 1024
+ConnexSimulator::ConnexSimulator(): CONNEX_MEM_SIZE + CONNEX_MEM_SIZE_EXTRA = 1224
+ConnexSimulator::ConnexSimulator(): CONNEX_REG_COUNT = 32
+ConnexSimulator::ConnexSimulator(): Allocating registerFile
+FIFO distributionFIFO succesfully opened!
+FIFO writeFIFO succesfully opened!
+FIFO reductionFIFO succesfully opened!
+FIFO readFIFO succesfully opened!
+Starting IO Thread...
+Simu: Waiting for receive 
+Starting Core Thread...
+++ ./a.out 128 1024 32 1024
+Opincaa program: Setting CONNEX_VECTOR_LENGTH to 128
+Opincaa program: Setting CONNEX_MEM_SIZE to 1024
+Opincaa program: Setting CONNEX_REG_COUNT to 32
+Opincaa program: Setting INTERNAL_INSTRUCTION_MEMORY_SIZE (also called size of Internal Instruction Memory) to 1024
+Opincaa program: checkForDataHazards is set to the default value false
+Opincaa program: useLaneGatingOnConnex is set to the default value false.
+CONNEX_VECTOR_LENGTH = 128 (LOG2_CONNEX_VECTOR_LENGTH = 7)
+CONNEX_MEM_SIZE = 1024
+INTERNAL_INSTRUCTION_MEMORY_SIZE = 1024
+sizeof(TypeElement) = 2
+TypeElement = s
+Entered Kernel::Kernel(): name = QuitKernel.
+Accelerator revision is 538976288538976288538976288538976288538976288538976288
+ConnexMachine created !
+Entered Test()
+  NUM_ELEMS = 64 (sizeof(TYPE) = 4)
+RAND_MAX = 2147483647
+A[0] = 0x1b82d3fd
+B[0] = 0xdef7a658
+A[1] = 0x7201dac4
+B[1] = 0x5f8cf2bf
+A[2] = 0xcd18dac9
+B[2] = 0x58dd6dad
+A[3] = 0x4e519c4f
+B[3] = 0x6ad033ab
+A[4] = 0x4d3dd169
+B[4] = 0x0b0a756c
+A[5] = 0xaa86ac71
+B[5] = 0xf7986a60
+A[6] = 0xdb1cce63
+B[6] = 0x10d70d7c
+A[7] = 0xd7f2a7ad
+B[7] = 0x15a15967
+A[8] = 0xa3d1f60b
+B[8] = 0x62da4bab
+A[9] = 0x7ae16626
+B[9] = 0x8dfb7c3b
+A[10] = 0xab2a5148
+B[10] = 0xf257c078
+A[11] = 0xccb176b2
+B[11] = 0xd46d1860
+A[12] = 0xd588c846
+B[12] = 0x44097388
+A[13] = 0x29603b2c
+B[13] = 0xdcde80e0
+A[14] = 0xea3376a2
+B[14] = 0x603c1298
+A[15] = 0x10fb68ec
+B[15] = 0x17f2cd9b
+A[16] = 0x541ae6fe
+B[16] = 0xf7740fd8
+A[17] = 0xe18bbaea
+B[17] = 0x5f7a42fc
+A[18] = 0x8a1c95bc
+B[18] = 0xafc44f79
+A[19] = 0xbb41a3e0
+B[19] = 0x79d2e458
+A[20] = 0x7680864f
+B[20] = 0x9bd33634
+A[21] = 0x6161de69
+B[21] = 0xe2494d51
+A[22] = 0x2f609069
+B[22] = 0xa09bcf5d
+A[23] = 0x8b9ae396
+B[23] = 0x942fc31f
+A[24] = 0xdd34b9a2
+B[24] = 0xe18b2d47
+A[25] = 0x2f2e1a49
+B[25] = 0xf14751ef
+A[26] = 0xda2d94b2
+B[26] = 0x7693d944
+A[27] = 0x9ae5b805
+B[27] = 0xdcacf93c
+A[28] = 0x7ff19071
+B[28] = 0xee14b8d0
+A[29] = 0x83f4733a
+B[29] = 0x6bc43650
+A[30] = 0x05c014ac
+B[30] = 0x62e3f73a
+A[31] = 0x1b212b96
+B[31] = 0x829398bd
+A[32] = 0x90af4e88
+B[32] = 0x26fe87e1
+A[33] = 0x24fd07c4
+B[33] = 0x94c763ed
+A[34] = 0xa6206bd5
+B[34] = 0x144ac35d
+A[35] = 0x59194edd
+B[35] = 0x6b0b94a4
+A[36] = 0x25f64ae7
+B[36] = 0xab39500e
+A[37] = 0xdd1ef16c
+B[37] = 0xeb06bf6a
+A[38] = 0x358c8964
+B[38] = 0x084bb2f2
+A[39] = 0x77737f33
+B[39] = 0xa03727c8
+A[40] = 0x2423d9fa
+B[40] = 0x7266b012
+A[41] = 0xbc46fbfe
+B[41] = 0x5bf1d270
+A[42] = 0xc7fb0cad
+B[42] = 0x1b48e2ba
+A[43] = 0xb286cdd4
+B[43] = 0x8da6de6b
+A[44] = 0x5abd4d51
+B[44] = 0x1dbe0dc0
+A[45] = 0x026e5607
+B[45] = 0xce8d3ad4
+A[46] = 0x64fe3361
+B[46] = 0xe0e2eb44
+A[47] = 0xc4ce7b3a
+B[47] = 0x617031cb
+A[48] = 0xddc716d8
+B[48] = 0xded0b225
+A[49] = 0xf953679f
+B[49] = 0x136f231c
+A[50] = 0x016f27f8
+B[50] = 0x1c6cc512
+A[51] = 0x0f730f0e
+B[51] = 0x8078d0d3
+A[52] = 0x9ab6da70
+B[52] = 0x7b4b1d50
+A[53] = 0x0d3cd8df
+B[53] = 0x46189680
+A[54] = 0xae2a0926
+B[54] = 0xbce43004
+A[55] = 0x927eb2e2
+B[55] = 0x931cebbc
+A[56] = 0x71248aa2
+B[56] = 0xe8dd8b94
+A[57] = 0xd6394101
+B[57] = 0xc131b797
+A[58] = 0xc50fd210
+B[58] = 0x945a5e41
+A[59] = 0xbcb7ba95
+B[59] = 0x18e4b45e
+A[60] = 0x069fd95b
+B[60] = 0xc856ff94
+A[61] = 0xec9761dd
+B[61] = 0x585f3399
+A[62] = 0x6c90e00b
+B[62] = 0xadfa626e
+A[63] = 0x7e0bec8d
+B[63] = 0xba8d1542
+Calling AddInt32 (with i32 result)...
+AddInt32(): adjusted N = 128
+Entered ConnexMachine::writeDataToConnexPartial(): buffer = 0x7fffe7ef5390, numElemCount = 128, startVectorIndex = 0 (vectorCount = 1).
+writeDataToConnexPartial(): calling standard writeDataToConnex()
+Entered ConnexMachine::writeDataToConnex(): before threadMutex.lock();
+ConnexMachine::writeDataToConnex(): before write()...
+ConnexMachine::writeDataToConnex(): before 2nd write()...
+ConnexMachine::writeDataToConnex(): before flushing write()...
+ConnexMachine::writeDataToConnex(): before readFromPipe()...
+ioDescriptor:
+            type = 1
+            lsAddress = 0
+            vectorCount = 0
+Entered ConnexSimulator::performIO(): ioDescriptor.type = 1, ioDescriptor.lsAddress = 0, ioDescriptor.vectorCount = 0
+  ConnexSimulator::performIO(): Before force_all_io()
+ConnexSimulator::force_all_io(): count = 256, total = 0
+Simu: Waiting for receive 
+ConnexMachine::readFromPipe(): totalBytesRead = 4
+ConnexMachine::writeDataToConnex(): before threadMutex.unlock()...
+Entered ConnexMachine::writeDataToConnexPartial(): buffer = 0x7fffe7ef50f0, numElemCount = 128, startVectorIndex = 1 (vectorCount = 1).
+writeDataToConnexPartial(): calling standard writeDataToConnex()
+Entered ConnexMachine::writeDataToConnex(): before threadMutex.lock();
+ConnexMachine::writeDataToConnex(): before write()...
+ioDescriptor:
+            type = 1
+            lsAddress = 1
+            vectorCount = 0
+Entered ConnexSimulator::performIO(): ioDescriptor.type = 1, ioDescriptor.lsAddress = 1, ioDescriptor.vectorCount = 0
+  ConnexSimulator::performIO(): Before force_all_io()
+ConnexSimulator::force_all_io(): count = 256, total = 0
+ConnexMachine::writeDataToConnex(): before 2nd write()...
+Simu: Waiting for receive 
+ConnexMachine::writeDataToConnex(): before flushing write()...
+ConnexMachine::writeDataToConnex(): before readFromPipe()...
+ConnexMachine::readFromPipe(): totalBytesRead = 4
+ConnexMachine::writeDataToConnex(): before threadMutex.unlock()...
+Entered Kernel::Kernel(): name = simpleIoTest_allowOverwrite123456.
+ExecuteKernel(simpleIoTest_allowOverwrite123456): kernel->size() = 38
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=31
+ Finished running R31 = 0;
+
+ Running vload(0x0000000000000035), Value=1, Left=0, Dest=30
+ Finished running R30 = 1;
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=0
+ Finished running R00 = 0;
+
+ Running vload(0x0000000000000035), Value=1, Left=0, Dest=1
+ Finished running R01 = 1;
+
+ Running vload(0x0000000000000035), Value=2, Left=0, Dest=2
+ Finished running R02 = 2;
+
+ Running vload(0x0000000000000035), Value=1, Left=0, Dest=3
+ Finished running R03 = 1;
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=4
+ Finished running R04 = 0;
+
+ Running setlc(0x0000000000000015), Value=0, Left=0, Dest=0
+ Finished running REPEAT(0);
+
+ Running setlc(0x0000000000000015), Value=0, Left=0, Dest=0
+ Finished running REPEAT(0);
+
+ Running read(0x0000000000000124), Right=0, Left=0, Dest=27
+ Finished running R27 = LS[R00];
+
+ Running read(0x0000000000000124), Right=1, Left=0, Dest=28
+ Finished running R28 = LS[R01];
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=31
+ Finished running R31 = 0;
+
+ Running vload(0x0000000000000035), Value=1, Left=0, Dest=30
+ Finished running R30 = 1;
+
+ Running add(0x0000000000000144), Right=28, Left=27, Dest=29
+ Finished running R29 = R27 + R28;
+
+ Running addc(0x0000000000000164), Right=31, Left=31, Dest=23
+ Finished running R23 = ADDC(R31, R31);
+
+ Running print_reg(0x0000000000000103), Right=0, Left=23, Dest=0
+R[23] (starting from index 0) = 0001 0000 0001 0000 0001 0001 0000 0000 0001 0000 0001 0001 0000 0000 0001 0000 0001 0001 0000 0001 0001 0001 0000 0001 0001 0001 0000 0001 0000 0001 0001 0000 0000 0001 0000 0001 0000 0001 0001 0001 0000 0001 0001 0001 0001 0000 0001 0001 0000 0001 0000 0001 0001 0001 0001 0001 0001 0001 0000 0000 0001 0000 0000 0000 0000 0000 0000 0000 0001 0000 0000 0000 0000 0000 0001 0001 0001 0000 0000 0001 0001 0000 0001 0001 0000 0000 0001 0001 0000 0000 0000 0000 0001 0001 0000 0001 0000 0001 0000 0001 0000 0000 0000 0000 0000 0001 0001 0000 0000 0001 0001 0001 0001 0001 0000 0001 0001 0001 0001 0000 0001 0000 0000 0001 0001 0001 0001 0001 [END]
+ Finished running PRINTREG(R23);
+
+ Running ldix(0x0000000000000120), Right=0, Left=0, Dest=26
+ Finished running R26 = INDEX;
+
+ Running and(0x000000000000016c), Right=30, Left=26, Dest=25
+ Finished running R25 = R26 & R30;
+
+ Running eq(0x0000000000000148), Right=30, Left=25, Dest=24
+ Finished running R24 = R25 == R30;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running whereeq(0x000000000000011d), Right=0, Left=0, Dest=0
+ Finished running WHERE_EQ;
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=23
+ Finished running R23 = 0;
+
+ Running print_reg(0x0000000000000103), Right=0, Left=23, Dest=0
+R[23] (starting from index 0) = 0001 0000 0001 0000 0001 0000 0000 0000 0001 0000 0001 0000 0000 0000 0001 0000 0001 0000 0000 0000 0001 0000 0000 0000 0001 0000 0000 0000 0000 0000 0001 0000 0000 0000 0000 0000 0000 0000 0001 0000 0000 0000 0001 0000 0001 0000 0001 0000 0000 0000 0000 0000 0001 0000 0001 0000 0001 0000 0000 0000 0001 0000 0000 0000 0000 0000 0000 0000 0001 0000 0000 0000 0000 0000 0001 0000 0001 0000 0000 0000 0001 0000 0001 0000 0000 0000 0001 0000 0000 0000 0000 0000 0001 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0001 0000 0000 0000 0001 0000 0001 0000 0000 0000 0001 0000 0001 0000 0001 0000 0000 0000 0001 0000 0001 0000 [END]
+ Finished running PRINTREG(R23);
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running cellshr(0x0000000000000111), Right=30, Left=23, Dest=0
+ Finished running CELL_SHR(R23, R30);
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running ldsh(0x0000000000000130), Right=0, Left=0, Dest=21
+ Finished running R21 = SHIFT_REG;
+
+ Running print_reg(0x0000000000000103), Right=0, Left=21, Dest=0
+R[21] (starting from index 0) = 0000 0001 0000 0001 0000 0001 0000 0000 0000 0001 0000 0001 0000 0000 0000 0001 0000 0001 0000 0000 0000 0001 0000 0000 0000 0001 0000 0000 0000 0000 0000 0001 0000 0000 0000 0000 0000 0000 0000 0001 0000 0000 0000 0001 0000 0001 0000 0001 0000 0000 0000 0000 0000 0001 0000 0001 0000 0001 0000 0000 0000 0001 0000 0000 0000 0000 0000 0000 0000 0001 0000 0000 0000 0000 0000 0001 0000 0001 0000 0000 0000 0001 0000 0001 0000 0000 0000 0001 0000 0000 0000 0000 0000 0001 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0001 0000 0000 0000 0001 0000 0001 0000 0000 0000 0001 0000 0001 0000 0001 0000 0000 0000 0001 0000 0001 [END]
+ Finished running PRINTREG(R21);
+
+ Running add(0x0000000000000144), Right=29, Left=21, Dest=22
+ Finished running R22 = R21 + R29;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running write(0x0000000000000114), Right=2, Left=22, Dest=0
+ Finished running LS[R02] = R22;
+
+ Running add(0x0000000000000144), Right=1, Left=3, Dest=1
+ Finished running R01 = R03 + R01;
+
+ Running add(0x0000000000000144), Right=0, Left=3, Dest=0
+ Finished running R00 = R03 + R00;
+
+ Running add(0x0000000000000144), Right=2, Left=3, Dest=2
+ Finished running R02 = R03 + R02;
+
+ Running ijmpnz(0x0000000000000013), Value=25, Left=0, Dest=0
+Preparing to jump from loop iter #0
+ Finished running END_REPEAT;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running red(0x0000000000000100), Right=0, Left=0, Dest=0
+ Finished running REDUCE(R00);
+
+Before (final?) REDUCE: number of cycles simulated = 37 (add 1 more for the REDUCE), totalEnergyConsumed = 0.000000560160
+ConnexMachine::readFromPipe(): totalBytesRead = 4
+Entered readDataFromConnexPartial(): buffer = 0x7fffe7ef4e50, numElemCount = 128, startVectorIndex = 2 (vectorCount = 1).
+ioDescriptor:
+            type = 0
+            lsAddress = 2
+            vectorCount = 0
+Entered ConnexSimulator::performIO(): ioDescriptor.type = 0, ioDescriptor.lsAddress = 2, ioDescriptor.vectorCount = 0
+ConnexSimulator::force_all_io(): count = 256, total = 0
+Simu: Waiting for receive 
+readDataFromConnexPartial(): calling standard readDataFromConnex()
+ConnexMachine::readFromPipe(): totalBytesRead = 256
+Finished executing the Opincaa kernel.
+Testing the correctness of the computation of the Opincaa kernel.
+  testResult = 0 (PASS = 0)
+NUM_ELEMS = 64
+C[0] = -92636587
+C[1] = -779170429
+C[2] = 636897398
+C[3] = -1188966406
+C[4] = 1481131733
+C[5] = -1575020847
+C[6] = -336340001
+C[7] = -309067500
+C[8] = 111952310
+C[9] = 148693601
+C[10] = -1652420160
+C[11] = -1591832814
+C[12] = 429013966
+C[13] = 104774668
+C[14] = 1248823610
+C[15] = 686700167
+C[16] = 1267660502
+C[17] = 1090911718
+C[18] = 971040053
+C[19] = 890538040
+C[20] = 307477635
+C[21] = 1135291322
+C[22] = -805543994
+C[23] = 533374645
+C[24] = -1094719767
+C[25] = 544566328
+C[26] = 1354853878
+C[27] = 2006102337
+C[28] = 1845905729
+C[29] = -273110646
+C[30] = 1755581414
+C[31] = -1649097645
+C[32] = -1213344151
+C[33] = -1178309711
+C[34] = -1167380686
+C[35] = -1004215423
+C[36] = -785409291
+C[37] = -937053994
+C[38] = 1037581398
+C[39] = 397059835
+C[40] = -1769305588
+C[41] = 406376046
+C[42] = -482087065
+C[43] = 1076735039
+C[44] = 2021350161
+C[45] = -788819749
+C[46] = 1172381349
+C[47] = 641641733
+C[48] = -1130903299
+C[49] = 214076091
+C[50] = 500952330
+C[51] = -1880367135
+C[52] = 369227712
+C[53] = 1398107999
+C[54] = 1796094250
+C[55] = 630955678
+C[56] = 1510086198
+C[57] = -1754597224
+C[58] = 1500131409
+C[59] = -711168269
+C[60] = -822683409
+C[61] = 1157010806
+C[62] = 445334137
+C[63] = 949551567
+C[64] = 1063
+C[65] = 0
+C[66] = 4096
+C[67] = 0
+C[68] = 8
+Exiting Test()
+ConnexMachine::~ConnexMachine(): freeing kernel QuitKernel (with ptr value = 0x6c6c50)
+Entered Kernel::~Kernel(): name = QuitKernel
+  Kernel::~Kernel(): sdNodeVarNameRegDef = 0x6c6cb8
+ConnexMachine::~ConnexMachine(): freeing kernel simpleIoTest_allowOverwrite123456 (with ptr value = 0x6c7280)
+Entered Kernel::~Kernel(): name = simpleIoTest_allowOverwrite123456
+  Kernel::~Kernel(): sdNodeVarNameRegDef = 0x6c72e8
+++ sleep 2

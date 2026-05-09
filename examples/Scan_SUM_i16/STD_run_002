@@ -1,0 +1,2355 @@
+++ LD_LIBRARY_PATH=/home/asusu/Connex/OPINCAA_2015_10/opincaa-master-d49993900aaf33580858c74e090a77bd67217702//libs/connex16-hm-generic
+++ export LD_LIBRARY_PATH
+++ killall -9 simulator
+++ killall -9 simulator
+simulator: no process found
+++ sleep 1
+++ /home/asusu/Connex/OPINCAA_2015_10/opincaa-master-d49993900aaf33580858c74e090a77bd67217702//simulator/build/simulator 128 1024 32 1024
+Opincaa simulator: Setting CONNEX_VECTOR_LENGTH to 128
+Opincaa simulator: Setting CONNEX_MEM_SIZE to 1024
+Opincaa simulator: Setting CONNEX_REG_COUNT to 32
+Opincaa simulator: Setting INTERNAL_INSTRUCTION_MEMORY_SIZE to 1024
+ConnexSimulator::ConnexSimulator(): CONNEX_MEM_SIZE + CONNEX_MEM_SIZE_EXTRA = 1224
+ConnexSimulator::ConnexSimulator(): CONNEX_REG_COUNT = 32
+ConnexSimulator::ConnexSimulator(): Allocating registerFile
+FIFO distributionFIFO succesfully opened!
+FIFO writeFIFO succesfully opened!
+FIFO reductionFIFO succesfully opened!
+FIFO readFIFO succesfully opened!
+Starting IO Thread...
+Simu: Waiting for receive 
+Starting Core Thread...
+++ ./a.out 128 1024 32 1024
+Opincaa program: Setting CONNEX_VECTOR_LENGTH to 128
+Opincaa program: Setting CONNEX_MEM_SIZE to 1024
+Opincaa program: Setting CONNEX_REG_COUNT to 32
+Opincaa program: Setting INTERNAL_INSTRUCTION_MEMORY_SIZE (also called size of Internal Instruction Memory) to 1024
+Opincaa program: checkForDataHazards is set to the default value false
+Opincaa program: useLaneGatingOnConnex is set to the default value false.
+CONNEX_VECTOR_LENGTH = 128 (LOG2_CONNEX_VECTOR_LENGTH = 7)
+CONNEX_MEM_SIZE = 1024
+INTERNAL_INSTRUCTION_MEMORY_SIZE = 1024
+sizeof(TypeElement) = 2
+TypeElement = s
+Entered Kernel::Kernel(): name = QuitKernel.
+Accelerator revision is 538976288538976288538976288538976288538976288538976288
+ConnexMachine created !
+We compute sum-scan over a vector [1, 2, 3, ..., CVL]
+Entered Kernel::Kernel(): name = SumScan.i16.
+i = 1 --> (1UL << i) - 1 = 1
+i = 2 --> (1UL << i) - 1 = 3
+i = 3 --> (1UL << i) - 1 = 7
+i = 4 --> (1UL << i) - 1 = 15
+i = 5 --> (1UL << i) - 1 = 31
+i = 6 --> (1UL << i) - 1 = 63
+ExecuteKernel(SumScan.i16): kernel->size() = 1275
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running vload(0x0000000000000035), Value=1, Left=0, Dest=31
+ Finished running R31 = 1;
+
+ Running ldix(0x0000000000000120), Right=0, Left=0, Dest=20
+ Finished running R20 = INDEX;
+
+ Running add(0x0000000000000144), Right=20, Left=31, Dest=20
+ Finished running R20 = R31 + R20;
+
+ Running vload(0x0000000000000035), Value=1, Left=0, Dest=31
+ Finished running R31 = 1;
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=30
+ Finished running R30 = 0;
+
+ Running vload(0x0000000000000035), Value=2, Left=0, Dest=15
+ Finished running R15 = 2;
+
+ Running ldix(0x0000000000000120), Right=0, Left=0, Dest=29
+ Finished running R29 = INDEX;
+
+ Running and(0x000000000000016c), Right=31, Left=29, Dest=29
+ Finished running R29 = R29 & R31;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=17236, Left=0, Dest=0
+CT Running print_chars(0x0000000000000014), Value=12337, Left=0, Dest=0
+01 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=29, Dest=0
+R[29] (starting from index 0) = 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 0000 0001 [END]
+ Finished running PRINTREG(R29);
+
+ Running not(0x000000000000014c), Right=0, Left=29, Dest=28
+ Finished running R28 = ~R29;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=17236, Left=0, Dest=0
+CT Running print_chars(0x0000000000000014), Value=12592, Left=0, Dest=0
+10 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=28, Dest=0
+R[28] (starting from index 0) = ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe ffff fffe [END]
+ Finished running PRINTREG(R28);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17210, Left=0, Dest=0
+C: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=20, Dest=0
+R[20] (starting from index 0) = 0001 0002 0003 0004 0005 0006 0007 0008 0009 000a 000b 000c 000d 000e 000f 0010 0011 0012 0013 0014 0015 0016 0017 0018 0019 001a 001b 001c 001d 001e 001f 0020 0021 0022 0023 0024 0025 0026 0027 0028 0029 002a 002b 002c 002d 002e 002f 0030 0031 0032 0033 0034 0035 0036 0037 0038 0039 003a 003b 003c 003d 003e 003f 0040 0041 0042 0043 0044 0045 0046 0047 0048 0049 004a 004b 004c 004d 004e 004f 0050 0051 0052 0053 0054 0055 0056 0057 0058 0059 005a 005b 005c 005d 005e 005f 0060 0061 0062 0063 0064 0065 0066 0067 0068 0069 006a 006b 006c 006d 006e 006f 0070 0071 0072 0073 0074 0075 0076 0077 0078 0079 007a 007b 007c 007d 007e 007f 0080 [END]
+ Finished running PRINTREG(R20);
+
+ Running cellshr(0x0000000000000111), Right=29, Left=20, Dest=0
+ Finished running CELL_SHR(R20, R29);
+
+ Running ldsh(0x0000000000000130), Right=0, Left=0, Dest=17
+ Finished running R17 = SHIFT_REG;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17200, Left=0, Dest=0
+C0 Running print_chars(0x0000000000000014), Value=12639, Left=0, Dest=0
+1_ Running print_chars(0x0000000000000014), Value=21320, Left=0, Dest=0
+SH Running print_chars(0x0000000000000014), Value=21050, Left=0, Dest=0
+R: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=17, Dest=0
+R[17] (starting from index 0) = 0001 0001 0003 0003 0005 0005 0007 0007 0009 0009 000b 000b 000d 000d 000f 000f 0011 0011 0013 0013 0015 0015 0017 0017 0019 0019 001b 001b 001d 001d 001f 001f 0021 0021 0023 0023 0025 0025 0027 0027 0029 0029 002b 002b 002d 002d 002f 002f 0031 0031 0033 0033 0035 0035 0037 0037 0039 0039 003b 003b 003d 003d 003f 003f 0041 0041 0043 0043 0045 0045 0047 0047 0049 0049 004b 004b 004d 004d 004f 004f 0051 0051 0053 0053 0055 0055 0057 0057 0059 0059 005b 005b 005d 005d 005f 005f 0061 0061 0063 0063 0065 0065 0067 0067 0069 0069 006b 006b 006d 006d 006f 006f 0071 0071 0073 0073 0075 0075 0077 0077 0079 0079 007b 007b 007d 007d 007f 007f [END]
+ Finished running PRINTREG(R17);
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=18
+ Finished running R18 = 0;
+
+ Running eq(0x0000000000000148), Right=31, Left=29, Dest=10
+ Finished running R10 = R29 == R31;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running whereeq(0x000000000000011d), Right=0, Left=0, Dest=0
+ Finished running WHERE_EQ;
+
+ Running ishl(0x0000000000000141), Right=0, Left=17, Dest=18
+ Finished running R18 = R17 << 0;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17200, Left=0, Dest=0
+C0 Running print_chars(0x0000000000000014), Value=12602, Left=0, Dest=0
+1: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=18, Dest=0
+R[18] (starting from index 0) = 0000 0001 0000 0003 0000 0005 0000 0007 0000 0009 0000 000b 0000 000d 0000 000f 0000 0011 0000 0013 0000 0015 0000 0017 0000 0019 0000 001b 0000 001d 0000 001f 0000 0021 0000 0023 0000 0025 0000 0027 0000 0029 0000 002b 0000 002d 0000 002f 0000 0031 0000 0033 0000 0035 0000 0037 0000 0039 0000 003b 0000 003d 0000 003f 0000 0041 0000 0043 0000 0045 0000 0047 0000 0049 0000 004b 0000 004d 0000 004f 0000 0051 0000 0053 0000 0055 0000 0057 0000 0059 0000 005b 0000 005d 0000 005f 0000 0061 0000 0063 0000 0065 0000 0067 0000 0069 0000 006b 0000 006d 0000 006f 0000 0071 0000 0073 0000 0075 0000 0077 0000 0079 0000 007b 0000 007d 0000 007f [END]
+ Finished running PRINTREG(R18);
+
+ Running add(0x0000000000000144), Right=20, Left=18, Dest=20
+ Finished running R20 = R18 + R20;
+
+ Running print_chars(0x0000000000000014), Value=16742, Left=0, Dest=0
+Af Running print_chars(0x0000000000000014), Value=29797, Left=0, Dest=0
+te Running print_chars(0x0000000000000014), Value=29216, Left=0, Dest=0
+r  Running print_chars(0x0000000000000014), Value=12659, Left=0, Dest=0
+1s Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=10089, Left=0, Dest=0
+'i Running print_chars(0x0000000000000014), Value=29797, Left=0, Dest=0
+te Running print_chars(0x0000000000000014), Value=29281, Left=0, Dest=0
+ra Running print_chars(0x0000000000000014), Value=29801, Left=0, Dest=0
+ti Running print_chars(0x0000000000000014), Value=28526, Left=0, Dest=0
+on Running print_chars(0x0000000000000014), Value=10042, Left=0, Dest=0
+': Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17210, Left=0, Dest=0
+C: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=20, Dest=0
+R[20] (starting from index 0) = 0001 0003 0003 0007 0005 000b 0007 000f 0009 0013 000b 0017 000d 001b 000f 001f 0011 0023 0013 0027 0015 002b 0017 002f 0019 0033 001b 0037 001d 003b 001f 003f 0021 0043 0023 0047 0025 004b 0027 004f 0029 0053 002b 0057 002d 005b 002f 005f 0031 0063 0033 0067 0035 006b 0037 006f 0039 0073 003b 0077 003d 007b 003f 007f 0041 0083 0043 0087 0045 008b 0047 008f 0049 0093 004b 0097 004d 009b 004f 009f 0051 00a3 0053 00a7 0055 00ab 0057 00af 0059 00b3 005b 00b7 005d 00bb 005f 00bf 0061 00c3 0063 00c7 0065 00cb 0067 00cf 0069 00d3 006b 00d7 006d 00db 006f 00df 0071 00e3 0073 00e7 0075 00eb 0077 00ef 0079 00f3 007b 00f7 007d 00fb 007f 00ff [END]
+ Finished running PRINTREG(R20);
+
+ Running vload(0x0000000000000035), Value=1, Left=0, Dest=12
+ Finished running R12 = 1;
+
+ Running ishl(0x0000000000000141), Right=0, Left=15, Dest=10
+ Finished running R10 = R15 << 0;
+
+ Running ishl(0x0000000000000141), Right=1, Left=15, Dest=15
+ Finished running R15 = R15 << 1;
+
+ Running sub(0x0000000000000154), Right=31, Left=15, Dest=14
+ Finished running R14 = R15 - R31;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=20559, Left=0, Dest=0
+PO Running print_chars(0x0000000000000014), Value=22322, Left=0, Dest=0
+W2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=15, Dest=0
+R[15] (starting from index 0) = 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 [END]
+ Finished running PRINTREG(R15);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=20559, Left=0, Dest=0
+PO Running print_chars(0x0000000000000014), Value=22322, Left=0, Dest=0
+W2 Running print_chars(0x0000000000000014), Value=24397, Left=0, Dest=0
+_M Running print_chars(0x0000000000000014), Value=18766, Left=0, Dest=0
+IN Running print_chars(0x0000000000000014), Value=21843, Left=0, Dest=0
+US Running print_chars(0x0000000000000014), Value=24369, Left=0, Dest=0
+_1 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=14, Dest=0
+R[14] (starting from index 0) = 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 [END]
+ Finished running PRINTREG(R14);
+
+ Running ldix(0x0000000000000120), Right=0, Left=0, Dest=16
+ Finished running R16 = INDEX;
+
+ Running and(0x000000000000016c), Right=14, Left=16, Dest=9
+ Finished running R09 = R16 & R14;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=16725, Left=0, Dest=0
+AU Running print_chars(0x0000000000000014), Value=22578, Left=0, Dest=0
+X2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=9, Dest=0
+R[ 9] (starting from index 0) = 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 0000 0001 0002 0003 [END]
+ Finished running PRINTREG(R09);
+
+ Running lt(0x0000000000000158), Right=10, Left=9, Dest=9
+ Finished running R09 = R09 < R10;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running wherelt(0x000000000000011e), Right=0, Left=0, Dest=0
+ Finished running WHERE_LT;
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=16
+ Finished running R16 = 0;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running print_chars(0x0000000000000014), Value=8224, Left=0, Dest=0
+   Running print_chars(0x0000000000000014), Value=16997, Left=0, Dest=0
+Be Running print_chars(0x0000000000000014), Value=26223, Left=0, Dest=0
+fo Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=8294, Left=0, Dest=0
+ f Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=24940, Left=0, Dest=0
+al Running print_chars(0x0000000000000014), Value=8289, Left=0, Dest=0
+ a Running print_chars(0x0000000000000014), Value=25706, Left=0, Dest=0
+dj Running print_chars(0x0000000000000014), Value=30067, Left=0, Dest=0
+us Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=10352, Left=0, Dest=0
+(p Running print_chars(0x0000000000000014), Value=24946, Left=0, Dest=0
+ar Running print_chars(0x0000000000000014), Value=29801, Left=0, Dest=0
+ti Running print_chars(0x0000000000000014), Value=24940, Left=0, Dest=0
+al Running print_chars(0x0000000000000014), Value=10554, Left=0, Dest=0
+): Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=17236, Left=0, Dest=0
+CT Running print_chars(0x0000000000000014), Value=24388, Left=0, Dest=0
+_D Running print_chars(0x0000000000000014), Value=18771, Left=0, Dest=0
+IS Running print_chars(0x0000000000000014), Value=20556, Left=0, Dest=0
+PL Running print_chars(0x0000000000000014), Value=16707, Left=0, Dest=0
+AC Running print_chars(0x0000000000000014), Value=17741, Left=0, Dest=0
+EM Running print_chars(0x0000000000000014), Value=17742, Left=0, Dest=0
+EN Running print_chars(0x0000000000000014), Value=21562, Left=0, Dest=0
+T: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=16, Dest=0
+R[16] (starting from index 0) = 0000 0000 0002 0003 0000 0000 0006 0007 0000 0000 000a 000b 0000 0000 000e 000f 0000 0000 0012 0013 0000 0000 0016 0017 0000 0000 001a 001b 0000 0000 001e 001f 0000 0000 0022 0023 0000 0000 0026 0027 0000 0000 002a 002b 0000 0000 002e 002f 0000 0000 0032 0033 0000 0000 0036 0037 0000 0000 003a 003b 0000 0000 003e 003f 0000 0000 0042 0043 0000 0000 0046 0047 0000 0000 004a 004b 0000 0000 004e 004f 0000 0000 0052 0053 0000 0000 0056 0057 0000 0000 005a 005b 0000 0000 005e 005f 0000 0000 0062 0063 0000 0000 0066 0067 0000 0000 006a 006b 0000 0000 006e 006f 0000 0000 0072 0073 0000 0000 0076 0077 0000 0000 007a 007b 0000 0000 007e 007f [END]
+ Finished running PRINTREG(R16);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=16725, Left=0, Dest=0
+AU Running print_chars(0x0000000000000014), Value=22578, Left=0, Dest=0
+X2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=9, Dest=0
+R[ 9] (starting from index 0) = 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 0001 0001 0000 0000 [END]
+ Finished running PRINTREG(R09);
+
+ Running eq(0x0000000000000148), Right=30, Left=9, Dest=9
+ Finished running R09 = R09 == R30;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running whereeq(0x000000000000011d), Right=0, Left=0, Dest=0
+ Finished running WHERE_EQ;
+
+ Running sub(0x0000000000000154), Right=31, Left=16, Dest=16
+ Finished running R16 = R16 - R31;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running print_chars(0x0000000000000014), Value=8224, Left=0, Dest=0
+   Running print_chars(0x0000000000000014), Value=16997, Left=0, Dest=0
+Be Running print_chars(0x0000000000000014), Value=26223, Left=0, Dest=0
+fo Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=8294, Left=0, Dest=0
+ f Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=24940, Left=0, Dest=0
+al Running print_chars(0x0000000000000014), Value=8289, Left=0, Dest=0
+ a Running print_chars(0x0000000000000014), Value=25706, Left=0, Dest=0
+dj Running print_chars(0x0000000000000014), Value=30067, Left=0, Dest=0
+us Running print_chars(0x0000000000000014), Value=29754, Left=0, Dest=0
+t: Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=17236, Left=0, Dest=0
+CT Running print_chars(0x0000000000000014), Value=24388, Left=0, Dest=0
+_D Running print_chars(0x0000000000000014), Value=18771, Left=0, Dest=0
+IS Running print_chars(0x0000000000000014), Value=20556, Left=0, Dest=0
+PL Running print_chars(0x0000000000000014), Value=16707, Left=0, Dest=0
+AC Running print_chars(0x0000000000000014), Value=17741, Left=0, Dest=0
+EM Running print_chars(0x0000000000000014), Value=17742, Left=0, Dest=0
+EN Running print_chars(0x0000000000000014), Value=21562, Left=0, Dest=0
+T: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=16, Dest=0
+R[16] (starting from index 0) = 0000 0000 0001 0002 0000 0000 0005 0006 0000 0000 0009 000a 0000 0000 000d 000e 0000 0000 0011 0012 0000 0000 0015 0016 0000 0000 0019 001a 0000 0000 001d 001e 0000 0000 0021 0022 0000 0000 0025 0026 0000 0000 0029 002a 0000 0000 002d 002e 0000 0000 0031 0032 0000 0000 0035 0036 0000 0000 0039 003a 0000 0000 003d 003e 0000 0000 0041 0042 0000 0000 0045 0046 0000 0000 0049 004a 0000 0000 004d 004e 0000 0000 0051 0052 0000 0000 0055 0056 0000 0000 0059 005a 0000 0000 005d 005e 0000 0000 0061 0062 0000 0000 0065 0066 0000 0000 0069 006a 0000 0000 006d 006e 0000 0000 0071 0072 0000 0000 0075 0076 0000 0000 0079 007a 0000 0000 007d 007e [END]
+ Finished running PRINTREG(R16);
+
+ Running cellshr(0x0000000000000111), Right=16, Left=20, Dest=0
+ Finished running CELL_SHR(R20, R16);
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running ldsh(0x0000000000000130), Right=0, Left=0, Dest=17
+ Finished running R17 = SHIFT_REG;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17200, Left=0, Dest=0
+C0 Running print_chars(0x0000000000000014), Value=12602, Left=0, Dest=0
+1: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=18, Dest=0
+R[18] (starting from index 0) = 0000 0001 0000 0003 0000 0005 0000 0007 0000 0009 0000 000b 0000 000d 0000 000f 0000 0011 0000 0013 0000 0015 0000 0017 0000 0019 0000 001b 0000 001d 0000 001f 0000 0021 0000 0023 0000 0025 0000 0027 0000 0029 0000 002b 0000 002d 0000 002f 0000 0031 0000 0033 0000 0035 0000 0037 0000 0039 0000 003b 0000 003d 0000 003f 0000 0041 0000 0043 0000 0045 0000 0047 0000 0049 0000 004b 0000 004d 0000 004f 0000 0051 0000 0053 0000 0055 0000 0057 0000 0059 0000 005b 0000 005d 0000 005f 0000 0061 0000 0063 0000 0065 0000 0067 0000 0069 0000 006b 0000 006d 0000 006f 0000 0071 0000 0073 0000 0075 0000 0077 0000 0079 0000 007b 0000 007d 0000 007f [END]
+ Finished running PRINTREG(R18);
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=18
+ Finished running R18 = 0;
+
+ Running lt(0x0000000000000158), Right=16, Left=30, Dest=10
+ Finished running R10 = R30 < R16;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running wherelt(0x000000000000011e), Right=0, Left=0, Dest=0
+ Finished running WHERE_LT;
+
+ Running ishl(0x0000000000000141), Right=0, Left=17, Dest=18
+ Finished running R18 = R17 << 0;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running add(0x0000000000000144), Right=20, Left=18, Dest=20
+ Finished running R20 = R18 + R20;
+
+ Running print_chars(0x0000000000000014), Value=16742, Left=0, Dest=0
+Af Running print_chars(0x0000000000000014), Value=29797, Left=0, Dest=0
+te Running print_chars(0x0000000000000014), Value=29216, Left=0, Dest=0
+r  Running print_chars(0x0000000000000014), Value=10089, Left=0, Dest=0
+'i Running print_chars(0x0000000000000014), Value=29797, Left=0, Dest=0
+te Running print_chars(0x0000000000000014), Value=29281, Left=0, Dest=0
+ra Running print_chars(0x0000000000000014), Value=29801, Left=0, Dest=0
+ti Running print_chars(0x0000000000000014), Value=28526, Left=0, Dest=0
+on Running print_chars(0x0000000000000014), Value=10016, Left=0, Dest=0
+'  Running print_chars(0x0000000000000014), Value=12858, Left=0, Dest=0
+2: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17210, Left=0, Dest=0
+C: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=20, Dest=0
+R[20] (starting from index 0) = 0001 0003 0006 000a 0005 000b 0012 001a 0009 0013 001e 002a 000d 001b 002a 003a 0011 0023 0036 004a 0015 002b 0042 005a 0019 0033 004e 006a 001d 003b 005a 007a 0021 0043 0066 008a 0025 004b 0072 009a 0029 0053 007e 00aa 002d 005b 008a 00ba 0031 0063 0096 00ca 0035 006b 00a2 00da 0039 0073 00ae 00ea 003d 007b 00ba 00fa 0041 0083 00c6 010a 0045 008b 00d2 011a 0049 0093 00de 012a 004d 009b 00ea 013a 0051 00a3 00f6 014a 0055 00ab 0102 015a 0059 00b3 010e 016a 005d 00bb 011a 017a 0061 00c3 0126 018a 0065 00cb 0132 019a 0069 00d3 013e 01aa 006d 00db 014a 01ba 0071 00e3 0156 01ca 0075 00eb 0162 01da 0079 00f3 016e 01ea 007d 00fb 017a 01fa [END]
+ Finished running PRINTREG(R20);
+
+ Running vload(0x0000000000000035), Value=3, Left=0, Dest=12
+ Finished running R12 = 3;
+
+ Running ishl(0x0000000000000141), Right=0, Left=15, Dest=10
+ Finished running R10 = R15 << 0;
+
+ Running ishl(0x0000000000000141), Right=1, Left=15, Dest=15
+ Finished running R15 = R15 << 1;
+
+ Running sub(0x0000000000000154), Right=31, Left=15, Dest=14
+ Finished running R14 = R15 - R31;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=20559, Left=0, Dest=0
+PO Running print_chars(0x0000000000000014), Value=22322, Left=0, Dest=0
+W2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=15, Dest=0
+R[15] (starting from index 0) = 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 [END]
+ Finished running PRINTREG(R15);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=20559, Left=0, Dest=0
+PO Running print_chars(0x0000000000000014), Value=22322, Left=0, Dest=0
+W2 Running print_chars(0x0000000000000014), Value=24397, Left=0, Dest=0
+_M Running print_chars(0x0000000000000014), Value=18766, Left=0, Dest=0
+IN Running print_chars(0x0000000000000014), Value=21843, Left=0, Dest=0
+US Running print_chars(0x0000000000000014), Value=24369, Left=0, Dest=0
+_1 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=14, Dest=0
+R[14] (starting from index 0) = 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 [END]
+ Finished running PRINTREG(R14);
+
+ Running ldix(0x0000000000000120), Right=0, Left=0, Dest=16
+ Finished running R16 = INDEX;
+
+ Running and(0x000000000000016c), Right=14, Left=16, Dest=9
+ Finished running R09 = R16 & R14;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=16725, Left=0, Dest=0
+AU Running print_chars(0x0000000000000014), Value=22578, Left=0, Dest=0
+X2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=9, Dest=0
+R[ 9] (starting from index 0) = 0000 0001 0002 0003 0004 0005 0006 0007 0000 0001 0002 0003 0004 0005 0006 0007 0000 0001 0002 0003 0004 0005 0006 0007 0000 0001 0002 0003 0004 0005 0006 0007 0000 0001 0002 0003 0004 0005 0006 0007 0000 0001 0002 0003 0004 0005 0006 0007 0000 0001 0002 0003 0004 0005 0006 0007 0000 0001 0002 0003 0004 0005 0006 0007 0000 0001 0002 0003 0004 0005 0006 0007 0000 0001 0002 0003 0004 0005 0006 0007 0000 0001 0002 0003 0004 0005 0006 0007 0000 0001 0002 0003 0004 0005 0006 0007 0000 0001 0002 0003 0004 0005 0006 0007 0000 0001 0002 0003 0004 0005 0006 0007 0000 0001 0002 0003 0004 0005 0006 0007 0000 0001 0002 0003 0004 0005 0006 0007 [END]
+ Finished running PRINTREG(R09);
+
+ Running lt(0x0000000000000158), Right=10, Left=9, Dest=9
+ Finished running R09 = R09 < R10;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running wherelt(0x000000000000011e), Right=0, Left=0, Dest=0
+ Finished running WHERE_LT;
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=16
+ Finished running R16 = 0;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running print_chars(0x0000000000000014), Value=8224, Left=0, Dest=0
+   Running print_chars(0x0000000000000014), Value=16997, Left=0, Dest=0
+Be Running print_chars(0x0000000000000014), Value=26223, Left=0, Dest=0
+fo Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=8294, Left=0, Dest=0
+ f Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=24940, Left=0, Dest=0
+al Running print_chars(0x0000000000000014), Value=8289, Left=0, Dest=0
+ a Running print_chars(0x0000000000000014), Value=25706, Left=0, Dest=0
+dj Running print_chars(0x0000000000000014), Value=30067, Left=0, Dest=0
+us Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=10352, Left=0, Dest=0
+(p Running print_chars(0x0000000000000014), Value=24946, Left=0, Dest=0
+ar Running print_chars(0x0000000000000014), Value=29801, Left=0, Dest=0
+ti Running print_chars(0x0000000000000014), Value=24940, Left=0, Dest=0
+al Running print_chars(0x0000000000000014), Value=10554, Left=0, Dest=0
+): Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=17236, Left=0, Dest=0
+CT Running print_chars(0x0000000000000014), Value=24388, Left=0, Dest=0
+_D Running print_chars(0x0000000000000014), Value=18771, Left=0, Dest=0
+IS Running print_chars(0x0000000000000014), Value=20556, Left=0, Dest=0
+PL Running print_chars(0x0000000000000014), Value=16707, Left=0, Dest=0
+AC Running print_chars(0x0000000000000014), Value=17741, Left=0, Dest=0
+EM Running print_chars(0x0000000000000014), Value=17742, Left=0, Dest=0
+EN Running print_chars(0x0000000000000014), Value=21562, Left=0, Dest=0
+T: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=16, Dest=0
+R[16] (starting from index 0) = 0000 0000 0000 0000 0004 0005 0006 0007 0000 0000 0000 0000 000c 000d 000e 000f 0000 0000 0000 0000 0014 0015 0016 0017 0000 0000 0000 0000 001c 001d 001e 001f 0000 0000 0000 0000 0024 0025 0026 0027 0000 0000 0000 0000 002c 002d 002e 002f 0000 0000 0000 0000 0034 0035 0036 0037 0000 0000 0000 0000 003c 003d 003e 003f 0000 0000 0000 0000 0044 0045 0046 0047 0000 0000 0000 0000 004c 004d 004e 004f 0000 0000 0000 0000 0054 0055 0056 0057 0000 0000 0000 0000 005c 005d 005e 005f 0000 0000 0000 0000 0064 0065 0066 0067 0000 0000 0000 0000 006c 006d 006e 006f 0000 0000 0000 0000 0074 0075 0076 0077 0000 0000 0000 0000 007c 007d 007e 007f [END]
+ Finished running PRINTREG(R16);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=16725, Left=0, Dest=0
+AU Running print_chars(0x0000000000000014), Value=22578, Left=0, Dest=0
+X2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=9, Dest=0
+R[ 9] (starting from index 0) = 0001 0001 0001 0001 0000 0000 0000 0000 0001 0001 0001 0001 0000 0000 0000 0000 0001 0001 0001 0001 0000 0000 0000 0000 0001 0001 0001 0001 0000 0000 0000 0000 0001 0001 0001 0001 0000 0000 0000 0000 0001 0001 0001 0001 0000 0000 0000 0000 0001 0001 0001 0001 0000 0000 0000 0000 0001 0001 0001 0001 0000 0000 0000 0000 0001 0001 0001 0001 0000 0000 0000 0000 0001 0001 0001 0001 0000 0000 0000 0000 0001 0001 0001 0001 0000 0000 0000 0000 0001 0001 0001 0001 0000 0000 0000 0000 0001 0001 0001 0001 0000 0000 0000 0000 0001 0001 0001 0001 0000 0000 0000 0000 0001 0001 0001 0001 0000 0000 0000 0000 0001 0001 0001 0001 0000 0000 0000 0000 [END]
+ Finished running PRINTREG(R09);
+
+ Running eq(0x0000000000000148), Right=30, Left=9, Dest=9
+ Finished running R09 = R09 == R30;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running whereeq(0x000000000000011d), Right=0, Left=0, Dest=0
+ Finished running WHERE_EQ;
+
+ Running sub(0x0000000000000154), Right=12, Left=16, Dest=16
+ Finished running R16 = R16 - R12;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running print_chars(0x0000000000000014), Value=8224, Left=0, Dest=0
+   Running print_chars(0x0000000000000014), Value=16997, Left=0, Dest=0
+Be Running print_chars(0x0000000000000014), Value=26223, Left=0, Dest=0
+fo Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=8294, Left=0, Dest=0
+ f Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=24940, Left=0, Dest=0
+al Running print_chars(0x0000000000000014), Value=8289, Left=0, Dest=0
+ a Running print_chars(0x0000000000000014), Value=25706, Left=0, Dest=0
+dj Running print_chars(0x0000000000000014), Value=30067, Left=0, Dest=0
+us Running print_chars(0x0000000000000014), Value=29754, Left=0, Dest=0
+t: Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=17236, Left=0, Dest=0
+CT Running print_chars(0x0000000000000014), Value=24388, Left=0, Dest=0
+_D Running print_chars(0x0000000000000014), Value=18771, Left=0, Dest=0
+IS Running print_chars(0x0000000000000014), Value=20556, Left=0, Dest=0
+PL Running print_chars(0x0000000000000014), Value=16707, Left=0, Dest=0
+AC Running print_chars(0x0000000000000014), Value=17741, Left=0, Dest=0
+EM Running print_chars(0x0000000000000014), Value=17742, Left=0, Dest=0
+EN Running print_chars(0x0000000000000014), Value=21562, Left=0, Dest=0
+T: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=16, Dest=0
+R[16] (starting from index 0) = 0000 0000 0000 0000 0001 0002 0003 0004 0000 0000 0000 0000 0009 000a 000b 000c 0000 0000 0000 0000 0011 0012 0013 0014 0000 0000 0000 0000 0019 001a 001b 001c 0000 0000 0000 0000 0021 0022 0023 0024 0000 0000 0000 0000 0029 002a 002b 002c 0000 0000 0000 0000 0031 0032 0033 0034 0000 0000 0000 0000 0039 003a 003b 003c 0000 0000 0000 0000 0041 0042 0043 0044 0000 0000 0000 0000 0049 004a 004b 004c 0000 0000 0000 0000 0051 0052 0053 0054 0000 0000 0000 0000 0059 005a 005b 005c 0000 0000 0000 0000 0061 0062 0063 0064 0000 0000 0000 0000 0069 006a 006b 006c 0000 0000 0000 0000 0071 0072 0073 0074 0000 0000 0000 0000 0079 007a 007b 007c [END]
+ Finished running PRINTREG(R16);
+
+ Running cellshr(0x0000000000000111), Right=16, Left=20, Dest=0
+ Finished running CELL_SHR(R20, R16);
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running ldsh(0x0000000000000130), Right=0, Left=0, Dest=17
+ Finished running R17 = SHIFT_REG;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17200, Left=0, Dest=0
+C0 Running print_chars(0x0000000000000014), Value=12602, Left=0, Dest=0
+1: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=18, Dest=0
+R[18] (starting from index 0) = 0000 0000 0003 0003 0000 0000 000b 000b 0000 0000 0013 0013 0000 0000 001b 001b 0000 0000 0023 0023 0000 0000 002b 002b 0000 0000 0033 0033 0000 0000 003b 003b 0000 0000 0043 0043 0000 0000 004b 004b 0000 0000 0053 0053 0000 0000 005b 005b 0000 0000 0063 0063 0000 0000 006b 006b 0000 0000 0073 0073 0000 0000 007b 007b 0000 0000 0083 0083 0000 0000 008b 008b 0000 0000 0093 0093 0000 0000 009b 009b 0000 0000 00a3 00a3 0000 0000 00ab 00ab 0000 0000 00b3 00b3 0000 0000 00bb 00bb 0000 0000 00c3 00c3 0000 0000 00cb 00cb 0000 0000 00d3 00d3 0000 0000 00db 00db 0000 0000 00e3 00e3 0000 0000 00eb 00eb 0000 0000 00f3 00f3 0000 0000 00fb 00fb [END]
+ Finished running PRINTREG(R18);
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=18
+ Finished running R18 = 0;
+
+ Running lt(0x0000000000000158), Right=16, Left=30, Dest=10
+ Finished running R10 = R30 < R16;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running wherelt(0x000000000000011e), Right=0, Left=0, Dest=0
+ Finished running WHERE_LT;
+
+ Running ishl(0x0000000000000141), Right=0, Left=17, Dest=18
+ Finished running R18 = R17 << 0;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running add(0x0000000000000144), Right=20, Left=18, Dest=20
+ Finished running R20 = R18 + R20;
+
+ Running print_chars(0x0000000000000014), Value=16742, Left=0, Dest=0
+Af Running print_chars(0x0000000000000014), Value=29797, Left=0, Dest=0
+te Running print_chars(0x0000000000000014), Value=29216, Left=0, Dest=0
+r  Running print_chars(0x0000000000000014), Value=10089, Left=0, Dest=0
+'i Running print_chars(0x0000000000000014), Value=29797, Left=0, Dest=0
+te Running print_chars(0x0000000000000014), Value=29281, Left=0, Dest=0
+ra Running print_chars(0x0000000000000014), Value=29801, Left=0, Dest=0
+ti Running print_chars(0x0000000000000014), Value=28526, Left=0, Dest=0
+on Running print_chars(0x0000000000000014), Value=10016, Left=0, Dest=0
+'  Running print_chars(0x0000000000000014), Value=13114, Left=0, Dest=0
+3: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17210, Left=0, Dest=0
+C: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=20, Dest=0
+R[20] (starting from index 0) = 0001 0003 0006 000a 000f 0015 001c 0024 0009 0013 001e 002a 0037 0045 0054 0064 0011 0023 0036 004a 005f 0075 008c 00a4 0019 0033 004e 006a 0087 00a5 00c4 00e4 0021 0043 0066 008a 00af 00d5 00fc 0124 0029 0053 007e 00aa 00d7 0105 0134 0164 0031 0063 0096 00ca 00ff 0135 016c 01a4 0039 0073 00ae 00ea 0127 0165 01a4 01e4 0041 0083 00c6 010a 014f 0195 01dc 0224 0049 0093 00de 012a 0177 01c5 0214 0264 0051 00a3 00f6 014a 019f 01f5 024c 02a4 0059 00b3 010e 016a 01c7 0225 0284 02e4 0061 00c3 0126 018a 01ef 0255 02bc 0324 0069 00d3 013e 01aa 0217 0285 02f4 0364 0071 00e3 0156 01ca 023f 02b5 032c 03a4 0079 00f3 016e 01ea 0267 02e5 0364 03e4 [END]
+ Finished running PRINTREG(R20);
+
+ Running vload(0x0000000000000035), Value=7, Left=0, Dest=12
+ Finished running R12 = 7;
+
+ Running ishl(0x0000000000000141), Right=0, Left=15, Dest=10
+ Finished running R10 = R15 << 0;
+
+ Running ishl(0x0000000000000141), Right=1, Left=15, Dest=15
+ Finished running R15 = R15 << 1;
+
+ Running sub(0x0000000000000154), Right=31, Left=15, Dest=14
+ Finished running R14 = R15 - R31;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=20559, Left=0, Dest=0
+PO Running print_chars(0x0000000000000014), Value=22322, Left=0, Dest=0
+W2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=15, Dest=0
+R[15] (starting from index 0) = 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 0010 [END]
+ Finished running PRINTREG(R15);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=20559, Left=0, Dest=0
+PO Running print_chars(0x0000000000000014), Value=22322, Left=0, Dest=0
+W2 Running print_chars(0x0000000000000014), Value=24397, Left=0, Dest=0
+_M Running print_chars(0x0000000000000014), Value=18766, Left=0, Dest=0
+IN Running print_chars(0x0000000000000014), Value=21843, Left=0, Dest=0
+US Running print_chars(0x0000000000000014), Value=24369, Left=0, Dest=0
+_1 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=14, Dest=0
+R[14] (starting from index 0) = 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f 000f [END]
+ Finished running PRINTREG(R14);
+
+ Running ldix(0x0000000000000120), Right=0, Left=0, Dest=16
+ Finished running R16 = INDEX;
+
+ Running and(0x000000000000016c), Right=14, Left=16, Dest=9
+ Finished running R09 = R16 & R14;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=16725, Left=0, Dest=0
+AU Running print_chars(0x0000000000000014), Value=22578, Left=0, Dest=0
+X2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=9, Dest=0
+R[ 9] (starting from index 0) = 0000 0001 0002 0003 0004 0005 0006 0007 0008 0009 000a 000b 000c 000d 000e 000f 0000 0001 0002 0003 0004 0005 0006 0007 0008 0009 000a 000b 000c 000d 000e 000f 0000 0001 0002 0003 0004 0005 0006 0007 0008 0009 000a 000b 000c 000d 000e 000f 0000 0001 0002 0003 0004 0005 0006 0007 0008 0009 000a 000b 000c 000d 000e 000f 0000 0001 0002 0003 0004 0005 0006 0007 0008 0009 000a 000b 000c 000d 000e 000f 0000 0001 0002 0003 0004 0005 0006 0007 0008 0009 000a 000b 000c 000d 000e 000f 0000 0001 0002 0003 0004 0005 0006 0007 0008 0009 000a 000b 000c 000d 000e 000f 0000 0001 0002 0003 0004 0005 0006 0007 0008 0009 000a 000b 000c 000d 000e 000f [END]
+ Finished running PRINTREG(R09);
+
+ Running lt(0x0000000000000158), Right=10, Left=9, Dest=9
+ Finished running R09 = R09 < R10;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running wherelt(0x000000000000011e), Right=0, Left=0, Dest=0
+ Finished running WHERE_LT;
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=16
+ Finished running R16 = 0;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running print_chars(0x0000000000000014), Value=8224, Left=0, Dest=0
+   Running print_chars(0x0000000000000014), Value=16997, Left=0, Dest=0
+Be Running print_chars(0x0000000000000014), Value=26223, Left=0, Dest=0
+fo Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=8294, Left=0, Dest=0
+ f Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=24940, Left=0, Dest=0
+al Running print_chars(0x0000000000000014), Value=8289, Left=0, Dest=0
+ a Running print_chars(0x0000000000000014), Value=25706, Left=0, Dest=0
+dj Running print_chars(0x0000000000000014), Value=30067, Left=0, Dest=0
+us Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=10352, Left=0, Dest=0
+(p Running print_chars(0x0000000000000014), Value=24946, Left=0, Dest=0
+ar Running print_chars(0x0000000000000014), Value=29801, Left=0, Dest=0
+ti Running print_chars(0x0000000000000014), Value=24940, Left=0, Dest=0
+al Running print_chars(0x0000000000000014), Value=10554, Left=0, Dest=0
+): Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=17236, Left=0, Dest=0
+CT Running print_chars(0x0000000000000014), Value=24388, Left=0, Dest=0
+_D Running print_chars(0x0000000000000014), Value=18771, Left=0, Dest=0
+IS Running print_chars(0x0000000000000014), Value=20556, Left=0, Dest=0
+PL Running print_chars(0x0000000000000014), Value=16707, Left=0, Dest=0
+AC Running print_chars(0x0000000000000014), Value=17741, Left=0, Dest=0
+EM Running print_chars(0x0000000000000014), Value=17742, Left=0, Dest=0
+EN Running print_chars(0x0000000000000014), Value=21562, Left=0, Dest=0
+T: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=16, Dest=0
+R[16] (starting from index 0) = 0000 0000 0000 0000 0000 0000 0000 0000 0008 0009 000a 000b 000c 000d 000e 000f 0000 0000 0000 0000 0000 0000 0000 0000 0018 0019 001a 001b 001c 001d 001e 001f 0000 0000 0000 0000 0000 0000 0000 0000 0028 0029 002a 002b 002c 002d 002e 002f 0000 0000 0000 0000 0000 0000 0000 0000 0038 0039 003a 003b 003c 003d 003e 003f 0000 0000 0000 0000 0000 0000 0000 0000 0048 0049 004a 004b 004c 004d 004e 004f 0000 0000 0000 0000 0000 0000 0000 0000 0058 0059 005a 005b 005c 005d 005e 005f 0000 0000 0000 0000 0000 0000 0000 0000 0068 0069 006a 006b 006c 006d 006e 006f 0000 0000 0000 0000 0000 0000 0000 0000 0078 0079 007a 007b 007c 007d 007e 007f [END]
+ Finished running PRINTREG(R16);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=16725, Left=0, Dest=0
+AU Running print_chars(0x0000000000000014), Value=22578, Left=0, Dest=0
+X2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=9, Dest=0
+R[ 9] (starting from index 0) = 0001 0001 0001 0001 0001 0001 0001 0001 0000 0000 0000 0000 0000 0000 0000 0000 0001 0001 0001 0001 0001 0001 0001 0001 0000 0000 0000 0000 0000 0000 0000 0000 0001 0001 0001 0001 0001 0001 0001 0001 0000 0000 0000 0000 0000 0000 0000 0000 0001 0001 0001 0001 0001 0001 0001 0001 0000 0000 0000 0000 0000 0000 0000 0000 0001 0001 0001 0001 0001 0001 0001 0001 0000 0000 0000 0000 0000 0000 0000 0000 0001 0001 0001 0001 0001 0001 0001 0001 0000 0000 0000 0000 0000 0000 0000 0000 0001 0001 0001 0001 0001 0001 0001 0001 0000 0000 0000 0000 0000 0000 0000 0000 0001 0001 0001 0001 0001 0001 0001 0001 0000 0000 0000 0000 0000 0000 0000 0000 [END]
+ Finished running PRINTREG(R09);
+
+ Running eq(0x0000000000000148), Right=30, Left=9, Dest=9
+ Finished running R09 = R09 == R30;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running whereeq(0x000000000000011d), Right=0, Left=0, Dest=0
+ Finished running WHERE_EQ;
+
+ Running sub(0x0000000000000154), Right=12, Left=16, Dest=16
+ Finished running R16 = R16 - R12;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running print_chars(0x0000000000000014), Value=8224, Left=0, Dest=0
+   Running print_chars(0x0000000000000014), Value=16997, Left=0, Dest=0
+Be Running print_chars(0x0000000000000014), Value=26223, Left=0, Dest=0
+fo Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=8294, Left=0, Dest=0
+ f Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=24940, Left=0, Dest=0
+al Running print_chars(0x0000000000000014), Value=8289, Left=0, Dest=0
+ a Running print_chars(0x0000000000000014), Value=25706, Left=0, Dest=0
+dj Running print_chars(0x0000000000000014), Value=30067, Left=0, Dest=0
+us Running print_chars(0x0000000000000014), Value=29754, Left=0, Dest=0
+t: Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=17236, Left=0, Dest=0
+CT Running print_chars(0x0000000000000014), Value=24388, Left=0, Dest=0
+_D Running print_chars(0x0000000000000014), Value=18771, Left=0, Dest=0
+IS Running print_chars(0x0000000000000014), Value=20556, Left=0, Dest=0
+PL Running print_chars(0x0000000000000014), Value=16707, Left=0, Dest=0
+AC Running print_chars(0x0000000000000014), Value=17741, Left=0, Dest=0
+EM Running print_chars(0x0000000000000014), Value=17742, Left=0, Dest=0
+EN Running print_chars(0x0000000000000014), Value=21562, Left=0, Dest=0
+T: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=16, Dest=0
+R[16] (starting from index 0) = 0000 0000 0000 0000 0000 0000 0000 0000 0001 0002 0003 0004 0005 0006 0007 0008 0000 0000 0000 0000 0000 0000 0000 0000 0011 0012 0013 0014 0015 0016 0017 0018 0000 0000 0000 0000 0000 0000 0000 0000 0021 0022 0023 0024 0025 0026 0027 0028 0000 0000 0000 0000 0000 0000 0000 0000 0031 0032 0033 0034 0035 0036 0037 0038 0000 0000 0000 0000 0000 0000 0000 0000 0041 0042 0043 0044 0045 0046 0047 0048 0000 0000 0000 0000 0000 0000 0000 0000 0051 0052 0053 0054 0055 0056 0057 0058 0000 0000 0000 0000 0000 0000 0000 0000 0061 0062 0063 0064 0065 0066 0067 0068 0000 0000 0000 0000 0000 0000 0000 0000 0071 0072 0073 0074 0075 0076 0077 0078 [END]
+ Finished running PRINTREG(R16);
+
+ Running cellshr(0x0000000000000111), Right=16, Left=20, Dest=0
+ Finished running CELL_SHR(R20, R16);
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running ldsh(0x0000000000000130), Right=0, Left=0, Dest=17
+ Finished running R17 = SHIFT_REG;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17200, Left=0, Dest=0
+C0 Running print_chars(0x0000000000000014), Value=12602, Left=0, Dest=0
+1: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=18, Dest=0
+R[18] (starting from index 0) = 0000 0000 0000 0000 000a 000a 000a 000a 0000 0000 0000 0000 002a 002a 002a 002a 0000 0000 0000 0000 004a 004a 004a 004a 0000 0000 0000 0000 006a 006a 006a 006a 0000 0000 0000 0000 008a 008a 008a 008a 0000 0000 0000 0000 00aa 00aa 00aa 00aa 0000 0000 0000 0000 00ca 00ca 00ca 00ca 0000 0000 0000 0000 00ea 00ea 00ea 00ea 0000 0000 0000 0000 010a 010a 010a 010a 0000 0000 0000 0000 012a 012a 012a 012a 0000 0000 0000 0000 014a 014a 014a 014a 0000 0000 0000 0000 016a 016a 016a 016a 0000 0000 0000 0000 018a 018a 018a 018a 0000 0000 0000 0000 01aa 01aa 01aa 01aa 0000 0000 0000 0000 01ca 01ca 01ca 01ca 0000 0000 0000 0000 01ea 01ea 01ea 01ea [END]
+ Finished running PRINTREG(R18);
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=18
+ Finished running R18 = 0;
+
+ Running lt(0x0000000000000158), Right=16, Left=30, Dest=10
+ Finished running R10 = R30 < R16;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running wherelt(0x000000000000011e), Right=0, Left=0, Dest=0
+ Finished running WHERE_LT;
+
+ Running ishl(0x0000000000000141), Right=0, Left=17, Dest=18
+ Finished running R18 = R17 << 0;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running add(0x0000000000000144), Right=20, Left=18, Dest=20
+ Finished running R20 = R18 + R20;
+
+ Running print_chars(0x0000000000000014), Value=16742, Left=0, Dest=0
+Af Running print_chars(0x0000000000000014), Value=29797, Left=0, Dest=0
+te Running print_chars(0x0000000000000014), Value=29216, Left=0, Dest=0
+r  Running print_chars(0x0000000000000014), Value=10089, Left=0, Dest=0
+'i Running print_chars(0x0000000000000014), Value=29797, Left=0, Dest=0
+te Running print_chars(0x0000000000000014), Value=29281, Left=0, Dest=0
+ra Running print_chars(0x0000000000000014), Value=29801, Left=0, Dest=0
+ti Running print_chars(0x0000000000000014), Value=28526, Left=0, Dest=0
+on Running print_chars(0x0000000000000014), Value=10016, Left=0, Dest=0
+'  Running print_chars(0x0000000000000014), Value=13370, Left=0, Dest=0
+4: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17210, Left=0, Dest=0
+C: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=20, Dest=0
+R[20] (starting from index 0) = 0001 0003 0006 000a 000f 0015 001c 0024 002d 0037 0042 004e 005b 0069 0078 0088 0011 0023 0036 004a 005f 0075 008c 00a4 00bd 00d7 00f2 010e 012b 0149 0168 0188 0021 0043 0066 008a 00af 00d5 00fc 0124 014d 0177 01a2 01ce 01fb 0229 0258 0288 0031 0063 0096 00ca 00ff 0135 016c 01a4 01dd 0217 0252 028e 02cb 0309 0348 0388 0041 0083 00c6 010a 014f 0195 01dc 0224 026d 02b7 0302 034e 039b 03e9 0438 0488 0051 00a3 00f6 014a 019f 01f5 024c 02a4 02fd 0357 03b2 040e 046b 04c9 0528 0588 0061 00c3 0126 018a 01ef 0255 02bc 0324 038d 03f7 0462 04ce 053b 05a9 0618 0688 0071 00e3 0156 01ca 023f 02b5 032c 03a4 041d 0497 0512 058e 060b 0689 0708 0788 [END]
+ Finished running PRINTREG(R20);
+
+ Running vload(0x0000000000000035), Value=15, Left=0, Dest=12
+ Finished running R12 = 15;
+
+ Running ishl(0x0000000000000141), Right=0, Left=15, Dest=10
+ Finished running R10 = R15 << 0;
+
+ Running ishl(0x0000000000000141), Right=1, Left=15, Dest=15
+ Finished running R15 = R15 << 1;
+
+ Running sub(0x0000000000000154), Right=31, Left=15, Dest=14
+ Finished running R14 = R15 - R31;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=20559, Left=0, Dest=0
+PO Running print_chars(0x0000000000000014), Value=22322, Left=0, Dest=0
+W2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=15, Dest=0
+R[15] (starting from index 0) = 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 0020 [END]
+ Finished running PRINTREG(R15);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=20559, Left=0, Dest=0
+PO Running print_chars(0x0000000000000014), Value=22322, Left=0, Dest=0
+W2 Running print_chars(0x0000000000000014), Value=24397, Left=0, Dest=0
+_M Running print_chars(0x0000000000000014), Value=18766, Left=0, Dest=0
+IN Running print_chars(0x0000000000000014), Value=21843, Left=0, Dest=0
+US Running print_chars(0x0000000000000014), Value=24369, Left=0, Dest=0
+_1 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=14, Dest=0
+R[14] (starting from index 0) = 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f 001f [END]
+ Finished running PRINTREG(R14);
+
+ Running ldix(0x0000000000000120), Right=0, Left=0, Dest=16
+ Finished running R16 = INDEX;
+
+ Running and(0x000000000000016c), Right=14, Left=16, Dest=9
+ Finished running R09 = R16 & R14;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=16725, Left=0, Dest=0
+AU Running print_chars(0x0000000000000014), Value=22578, Left=0, Dest=0
+X2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=9, Dest=0
+R[ 9] (starting from index 0) = 0000 0001 0002 0003 0004 0005 0006 0007 0008 0009 000a 000b 000c 000d 000e 000f 0010 0011 0012 0013 0014 0015 0016 0017 0018 0019 001a 001b 001c 001d 001e 001f 0000 0001 0002 0003 0004 0005 0006 0007 0008 0009 000a 000b 000c 000d 000e 000f 0010 0011 0012 0013 0014 0015 0016 0017 0018 0019 001a 001b 001c 001d 001e 001f 0000 0001 0002 0003 0004 0005 0006 0007 0008 0009 000a 000b 000c 000d 000e 000f 0010 0011 0012 0013 0014 0015 0016 0017 0018 0019 001a 001b 001c 001d 001e 001f 0000 0001 0002 0003 0004 0005 0006 0007 0008 0009 000a 000b 000c 000d 000e 000f 0010 0011 0012 0013 0014 0015 0016 0017 0018 0019 001a 001b 001c 001d 001e 001f [END]
+ Finished running PRINTREG(R09);
+
+ Running lt(0x0000000000000158), Right=10, Left=9, Dest=9
+ Finished running R09 = R09 < R10;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running wherelt(0x000000000000011e), Right=0, Left=0, Dest=0
+ Finished running WHERE_LT;
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=16
+ Finished running R16 = 0;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running print_chars(0x0000000000000014), Value=8224, Left=0, Dest=0
+   Running print_chars(0x0000000000000014), Value=16997, Left=0, Dest=0
+Be Running print_chars(0x0000000000000014), Value=26223, Left=0, Dest=0
+fo Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=8294, Left=0, Dest=0
+ f Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=24940, Left=0, Dest=0
+al Running print_chars(0x0000000000000014), Value=8289, Left=0, Dest=0
+ a Running print_chars(0x0000000000000014), Value=25706, Left=0, Dest=0
+dj Running print_chars(0x0000000000000014), Value=30067, Left=0, Dest=0
+us Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=10352, Left=0, Dest=0
+(p Running print_chars(0x0000000000000014), Value=24946, Left=0, Dest=0
+ar Running print_chars(0x0000000000000014), Value=29801, Left=0, Dest=0
+ti Running print_chars(0x0000000000000014), Value=24940, Left=0, Dest=0
+al Running print_chars(0x0000000000000014), Value=10554, Left=0, Dest=0
+): Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=17236, Left=0, Dest=0
+CT Running print_chars(0x0000000000000014), Value=24388, Left=0, Dest=0
+_D Running print_chars(0x0000000000000014), Value=18771, Left=0, Dest=0
+IS Running print_chars(0x0000000000000014), Value=20556, Left=0, Dest=0
+PL Running print_chars(0x0000000000000014), Value=16707, Left=0, Dest=0
+AC Running print_chars(0x0000000000000014), Value=17741, Left=0, Dest=0
+EM Running print_chars(0x0000000000000014), Value=17742, Left=0, Dest=0
+EN Running print_chars(0x0000000000000014), Value=21562, Left=0, Dest=0
+T: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=16, Dest=0
+R[16] (starting from index 0) = 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0010 0011 0012 0013 0014 0015 0016 0017 0018 0019 001a 001b 001c 001d 001e 001f 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0030 0031 0032 0033 0034 0035 0036 0037 0038 0039 003a 003b 003c 003d 003e 003f 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0050 0051 0052 0053 0054 0055 0056 0057 0058 0059 005a 005b 005c 005d 005e 005f 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0070 0071 0072 0073 0074 0075 0076 0077 0078 0079 007a 007b 007c 007d 007e 007f [END]
+ Finished running PRINTREG(R16);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=16725, Left=0, Dest=0
+AU Running print_chars(0x0000000000000014), Value=22578, Left=0, Dest=0
+X2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=9, Dest=0
+R[ 9] (starting from index 0) = 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 [END]
+ Finished running PRINTREG(R09);
+
+ Running eq(0x0000000000000148), Right=30, Left=9, Dest=9
+ Finished running R09 = R09 == R30;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running whereeq(0x000000000000011d), Right=0, Left=0, Dest=0
+ Finished running WHERE_EQ;
+
+ Running sub(0x0000000000000154), Right=12, Left=16, Dest=16
+ Finished running R16 = R16 - R12;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running print_chars(0x0000000000000014), Value=8224, Left=0, Dest=0
+   Running print_chars(0x0000000000000014), Value=16997, Left=0, Dest=0
+Be Running print_chars(0x0000000000000014), Value=26223, Left=0, Dest=0
+fo Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=8294, Left=0, Dest=0
+ f Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=24940, Left=0, Dest=0
+al Running print_chars(0x0000000000000014), Value=8289, Left=0, Dest=0
+ a Running print_chars(0x0000000000000014), Value=25706, Left=0, Dest=0
+dj Running print_chars(0x0000000000000014), Value=30067, Left=0, Dest=0
+us Running print_chars(0x0000000000000014), Value=29754, Left=0, Dest=0
+t: Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=17236, Left=0, Dest=0
+CT Running print_chars(0x0000000000000014), Value=24388, Left=0, Dest=0
+_D Running print_chars(0x0000000000000014), Value=18771, Left=0, Dest=0
+IS Running print_chars(0x0000000000000014), Value=20556, Left=0, Dest=0
+PL Running print_chars(0x0000000000000014), Value=16707, Left=0, Dest=0
+AC Running print_chars(0x0000000000000014), Value=17741, Left=0, Dest=0
+EM Running print_chars(0x0000000000000014), Value=17742, Left=0, Dest=0
+EN Running print_chars(0x0000000000000014), Value=21562, Left=0, Dest=0
+T: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=16, Dest=0
+R[16] (starting from index 0) = 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0001 0002 0003 0004 0005 0006 0007 0008 0009 000a 000b 000c 000d 000e 000f 0010 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0021 0022 0023 0024 0025 0026 0027 0028 0029 002a 002b 002c 002d 002e 002f 0030 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0041 0042 0043 0044 0045 0046 0047 0048 0049 004a 004b 004c 004d 004e 004f 0050 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0061 0062 0063 0064 0065 0066 0067 0068 0069 006a 006b 006c 006d 006e 006f 0070 [END]
+ Finished running PRINTREG(R16);
+
+ Running cellshr(0x0000000000000111), Right=16, Left=20, Dest=0
+ Finished running CELL_SHR(R20, R16);
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running ldsh(0x0000000000000130), Right=0, Left=0, Dest=17
+ Finished running R17 = SHIFT_REG;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17200, Left=0, Dest=0
+C0 Running print_chars(0x0000000000000014), Value=12602, Left=0, Dest=0
+1: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=18, Dest=0
+R[18] (starting from index 0) = 0000 0000 0000 0000 0000 0000 0000 0000 0024 0024 0024 0024 0024 0024 0024 0024 0000 0000 0000 0000 0000 0000 0000 0000 00a4 00a4 00a4 00a4 00a4 00a4 00a4 00a4 0000 0000 0000 0000 0000 0000 0000 0000 0124 0124 0124 0124 0124 0124 0124 0124 0000 0000 0000 0000 0000 0000 0000 0000 01a4 01a4 01a4 01a4 01a4 01a4 01a4 01a4 0000 0000 0000 0000 0000 0000 0000 0000 0224 0224 0224 0224 0224 0224 0224 0224 0000 0000 0000 0000 0000 0000 0000 0000 02a4 02a4 02a4 02a4 02a4 02a4 02a4 02a4 0000 0000 0000 0000 0000 0000 0000 0000 0324 0324 0324 0324 0324 0324 0324 0324 0000 0000 0000 0000 0000 0000 0000 0000 03a4 03a4 03a4 03a4 03a4 03a4 03a4 03a4 [END]
+ Finished running PRINTREG(R18);
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=18
+ Finished running R18 = 0;
+
+ Running lt(0x0000000000000158), Right=16, Left=30, Dest=10
+ Finished running R10 = R30 < R16;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running wherelt(0x000000000000011e), Right=0, Left=0, Dest=0
+ Finished running WHERE_LT;
+
+ Running ishl(0x0000000000000141), Right=0, Left=17, Dest=18
+ Finished running R18 = R17 << 0;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running add(0x0000000000000144), Right=20, Left=18, Dest=20
+ Finished running R20 = R18 + R20;
+
+ Running print_chars(0x0000000000000014), Value=16742, Left=0, Dest=0
+Af Running print_chars(0x0000000000000014), Value=29797, Left=0, Dest=0
+te Running print_chars(0x0000000000000014), Value=29216, Left=0, Dest=0
+r  Running print_chars(0x0000000000000014), Value=10089, Left=0, Dest=0
+'i Running print_chars(0x0000000000000014), Value=29797, Left=0, Dest=0
+te Running print_chars(0x0000000000000014), Value=29281, Left=0, Dest=0
+ra Running print_chars(0x0000000000000014), Value=29801, Left=0, Dest=0
+ti Running print_chars(0x0000000000000014), Value=28526, Left=0, Dest=0
+on Running print_chars(0x0000000000000014), Value=10016, Left=0, Dest=0
+'  Running print_chars(0x0000000000000014), Value=13626, Left=0, Dest=0
+5: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17210, Left=0, Dest=0
+C: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=20, Dest=0
+R[20] (starting from index 0) = 0001 0003 0006 000a 000f 0015 001c 0024 002d 0037 0042 004e 005b 0069 0078 0088 0099 00ab 00be 00d2 00e7 00fd 0114 012c 0145 015f 017a 0196 01b3 01d1 01f0 0210 0021 0043 0066 008a 00af 00d5 00fc 0124 014d 0177 01a2 01ce 01fb 0229 0258 0288 02b9 02eb 031e 0352 0387 03bd 03f4 042c 0465 049f 04da 0516 0553 0591 05d0 0610 0041 0083 00c6 010a 014f 0195 01dc 0224 026d 02b7 0302 034e 039b 03e9 0438 0488 04d9 052b 057e 05d2 0627 067d 06d4 072c 0785 07df 083a 0896 08f3 0951 09b0 0a10 0061 00c3 0126 018a 01ef 0255 02bc 0324 038d 03f7 0462 04ce 053b 05a9 0618 0688 06f9 076b 07de 0852 08c7 093d 09b4 0a2c 0aa5 0b1f 0b9a 0c16 0c93 0d11 0d90 0e10 [END]
+ Finished running PRINTREG(R20);
+
+ Running vload(0x0000000000000035), Value=31, Left=0, Dest=12
+ Finished running R12 = 31;
+
+ Running ishl(0x0000000000000141), Right=0, Left=15, Dest=10
+ Finished running R10 = R15 << 0;
+
+ Running ishl(0x0000000000000141), Right=1, Left=15, Dest=15
+ Finished running R15 = R15 << 1;
+
+ Running sub(0x0000000000000154), Right=31, Left=15, Dest=14
+ Finished running R14 = R15 - R31;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=20559, Left=0, Dest=0
+PO Running print_chars(0x0000000000000014), Value=22322, Left=0, Dest=0
+W2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=15, Dest=0
+R[15] (starting from index 0) = 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 0040 [END]
+ Finished running PRINTREG(R15);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=20559, Left=0, Dest=0
+PO Running print_chars(0x0000000000000014), Value=22322, Left=0, Dest=0
+W2 Running print_chars(0x0000000000000014), Value=24397, Left=0, Dest=0
+_M Running print_chars(0x0000000000000014), Value=18766, Left=0, Dest=0
+IN Running print_chars(0x0000000000000014), Value=21843, Left=0, Dest=0
+US Running print_chars(0x0000000000000014), Value=24369, Left=0, Dest=0
+_1 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=14, Dest=0
+R[14] (starting from index 0) = 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f 003f [END]
+ Finished running PRINTREG(R14);
+
+ Running ldix(0x0000000000000120), Right=0, Left=0, Dest=16
+ Finished running R16 = INDEX;
+
+ Running and(0x000000000000016c), Right=14, Left=16, Dest=9
+ Finished running R09 = R16 & R14;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=16725, Left=0, Dest=0
+AU Running print_chars(0x0000000000000014), Value=22578, Left=0, Dest=0
+X2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=9, Dest=0
+R[ 9] (starting from index 0) = 0000 0001 0002 0003 0004 0005 0006 0007 0008 0009 000a 000b 000c 000d 000e 000f 0010 0011 0012 0013 0014 0015 0016 0017 0018 0019 001a 001b 001c 001d 001e 001f 0020 0021 0022 0023 0024 0025 0026 0027 0028 0029 002a 002b 002c 002d 002e 002f 0030 0031 0032 0033 0034 0035 0036 0037 0038 0039 003a 003b 003c 003d 003e 003f 0000 0001 0002 0003 0004 0005 0006 0007 0008 0009 000a 000b 000c 000d 000e 000f 0010 0011 0012 0013 0014 0015 0016 0017 0018 0019 001a 001b 001c 001d 001e 001f 0020 0021 0022 0023 0024 0025 0026 0027 0028 0029 002a 002b 002c 002d 002e 002f 0030 0031 0032 0033 0034 0035 0036 0037 0038 0039 003a 003b 003c 003d 003e 003f [END]
+ Finished running PRINTREG(R09);
+
+ Running lt(0x0000000000000158), Right=10, Left=9, Dest=9
+ Finished running R09 = R09 < R10;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running wherelt(0x000000000000011e), Right=0, Left=0, Dest=0
+ Finished running WHERE_LT;
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=16
+ Finished running R16 = 0;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running print_chars(0x0000000000000014), Value=8224, Left=0, Dest=0
+   Running print_chars(0x0000000000000014), Value=16997, Left=0, Dest=0
+Be Running print_chars(0x0000000000000014), Value=26223, Left=0, Dest=0
+fo Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=8294, Left=0, Dest=0
+ f Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=24940, Left=0, Dest=0
+al Running print_chars(0x0000000000000014), Value=8289, Left=0, Dest=0
+ a Running print_chars(0x0000000000000014), Value=25706, Left=0, Dest=0
+dj Running print_chars(0x0000000000000014), Value=30067, Left=0, Dest=0
+us Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=10352, Left=0, Dest=0
+(p Running print_chars(0x0000000000000014), Value=24946, Left=0, Dest=0
+ar Running print_chars(0x0000000000000014), Value=29801, Left=0, Dest=0
+ti Running print_chars(0x0000000000000014), Value=24940, Left=0, Dest=0
+al Running print_chars(0x0000000000000014), Value=10554, Left=0, Dest=0
+): Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=17236, Left=0, Dest=0
+CT Running print_chars(0x0000000000000014), Value=24388, Left=0, Dest=0
+_D Running print_chars(0x0000000000000014), Value=18771, Left=0, Dest=0
+IS Running print_chars(0x0000000000000014), Value=20556, Left=0, Dest=0
+PL Running print_chars(0x0000000000000014), Value=16707, Left=0, Dest=0
+AC Running print_chars(0x0000000000000014), Value=17741, Left=0, Dest=0
+EM Running print_chars(0x0000000000000014), Value=17742, Left=0, Dest=0
+EN Running print_chars(0x0000000000000014), Value=21562, Left=0, Dest=0
+T: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=16, Dest=0
+R[16] (starting from index 0) = 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0020 0021 0022 0023 0024 0025 0026 0027 0028 0029 002a 002b 002c 002d 002e 002f 0030 0031 0032 0033 0034 0035 0036 0037 0038 0039 003a 003b 003c 003d 003e 003f 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0060 0061 0062 0063 0064 0065 0066 0067 0068 0069 006a 006b 006c 006d 006e 006f 0070 0071 0072 0073 0074 0075 0076 0077 0078 0079 007a 007b 007c 007d 007e 007f [END]
+ Finished running PRINTREG(R16);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=16725, Left=0, Dest=0
+AU Running print_chars(0x0000000000000014), Value=22578, Left=0, Dest=0
+X2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=9, Dest=0
+R[ 9] (starting from index 0) = 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 [END]
+ Finished running PRINTREG(R09);
+
+ Running eq(0x0000000000000148), Right=30, Left=9, Dest=9
+ Finished running R09 = R09 == R30;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running whereeq(0x000000000000011d), Right=0, Left=0, Dest=0
+ Finished running WHERE_EQ;
+
+ Running sub(0x0000000000000154), Right=12, Left=16, Dest=16
+ Finished running R16 = R16 - R12;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running print_chars(0x0000000000000014), Value=8224, Left=0, Dest=0
+   Running print_chars(0x0000000000000014), Value=16997, Left=0, Dest=0
+Be Running print_chars(0x0000000000000014), Value=26223, Left=0, Dest=0
+fo Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=8294, Left=0, Dest=0
+ f Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=24940, Left=0, Dest=0
+al Running print_chars(0x0000000000000014), Value=8289, Left=0, Dest=0
+ a Running print_chars(0x0000000000000014), Value=25706, Left=0, Dest=0
+dj Running print_chars(0x0000000000000014), Value=30067, Left=0, Dest=0
+us Running print_chars(0x0000000000000014), Value=29754, Left=0, Dest=0
+t: Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=17236, Left=0, Dest=0
+CT Running print_chars(0x0000000000000014), Value=24388, Left=0, Dest=0
+_D Running print_chars(0x0000000000000014), Value=18771, Left=0, Dest=0
+IS Running print_chars(0x0000000000000014), Value=20556, Left=0, Dest=0
+PL Running print_chars(0x0000000000000014), Value=16707, Left=0, Dest=0
+AC Running print_chars(0x0000000000000014), Value=17741, Left=0, Dest=0
+EM Running print_chars(0x0000000000000014), Value=17742, Left=0, Dest=0
+EN Running print_chars(0x0000000000000014), Value=21562, Left=0, Dest=0
+T: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=16, Dest=0
+R[16] (starting from index 0) = 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0001 0002 0003 0004 0005 0006 0007 0008 0009 000a 000b 000c 000d 000e 000f 0010 0011 0012 0013 0014 0015 0016 0017 0018 0019 001a 001b 001c 001d 001e 001f 0020 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0041 0042 0043 0044 0045 0046 0047 0048 0049 004a 004b 004c 004d 004e 004f 0050 0051 0052 0053 0054 0055 0056 0057 0058 0059 005a 005b 005c 005d 005e 005f 0060 [END]
+ Finished running PRINTREG(R16);
+
+ Running cellshr(0x0000000000000111), Right=16, Left=20, Dest=0
+ Finished running CELL_SHR(R20, R16);
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running ldsh(0x0000000000000130), Right=0, Left=0, Dest=17
+ Finished running R17 = SHIFT_REG;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17200, Left=0, Dest=0
+C0 Running print_chars(0x0000000000000014), Value=12602, Left=0, Dest=0
+1: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=18, Dest=0
+R[18] (starting from index 0) = 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0088 0088 0088 0088 0088 0088 0088 0088 0088 0088 0088 0088 0088 0088 0088 0088 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0288 0288 0288 0288 0288 0288 0288 0288 0288 0288 0288 0288 0288 0288 0288 0288 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0488 0488 0488 0488 0488 0488 0488 0488 0488 0488 0488 0488 0488 0488 0488 0488 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0688 0688 0688 0688 0688 0688 0688 0688 0688 0688 0688 0688 0688 0688 0688 0688 [END]
+ Finished running PRINTREG(R18);
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=18
+ Finished running R18 = 0;
+
+ Running lt(0x0000000000000158), Right=16, Left=30, Dest=10
+ Finished running R10 = R30 < R16;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running wherelt(0x000000000000011e), Right=0, Left=0, Dest=0
+ Finished running WHERE_LT;
+
+ Running ishl(0x0000000000000141), Right=0, Left=17, Dest=18
+ Finished running R18 = R17 << 0;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running add(0x0000000000000144), Right=20, Left=18, Dest=20
+ Finished running R20 = R18 + R20;
+
+ Running print_chars(0x0000000000000014), Value=16742, Left=0, Dest=0
+Af Running print_chars(0x0000000000000014), Value=29797, Left=0, Dest=0
+te Running print_chars(0x0000000000000014), Value=29216, Left=0, Dest=0
+r  Running print_chars(0x0000000000000014), Value=10089, Left=0, Dest=0
+'i Running print_chars(0x0000000000000014), Value=29797, Left=0, Dest=0
+te Running print_chars(0x0000000000000014), Value=29281, Left=0, Dest=0
+ra Running print_chars(0x0000000000000014), Value=29801, Left=0, Dest=0
+ti Running print_chars(0x0000000000000014), Value=28526, Left=0, Dest=0
+on Running print_chars(0x0000000000000014), Value=10016, Left=0, Dest=0
+'  Running print_chars(0x0000000000000014), Value=13882, Left=0, Dest=0
+6: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17210, Left=0, Dest=0
+C: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=20, Dest=0
+R[20] (starting from index 0) = 0001 0003 0006 000a 000f 0015 001c 0024 002d 0037 0042 004e 005b 0069 0078 0088 0099 00ab 00be 00d2 00e7 00fd 0114 012c 0145 015f 017a 0196 01b3 01d1 01f0 0210 0231 0253 0276 029a 02bf 02e5 030c 0334 035d 0387 03b2 03de 040b 0439 0468 0498 04c9 04fb 052e 0562 0597 05cd 0604 063c 0675 06af 06ea 0726 0763 07a1 07e0 0820 0041 0083 00c6 010a 014f 0195 01dc 0224 026d 02b7 0302 034e 039b 03e9 0438 0488 04d9 052b 057e 05d2 0627 067d 06d4 072c 0785 07df 083a 0896 08f3 0951 09b0 0a10 0a71 0ad3 0b36 0b9a 0bff 0c65 0ccc 0d34 0d9d 0e07 0e72 0ede 0f4b 0fb9 1028 1098 1109 117b 11ee 1262 12d7 134d 13c4 143c 14b5 152f 15aa 1626 16a3 1721 17a0 1820 [END]
+ Finished running PRINTREG(R20);
+
+ Running vload(0x0000000000000035), Value=63, Left=0, Dest=12
+ Finished running R12 = 63;
+
+ Running ishl(0x0000000000000141), Right=0, Left=15, Dest=10
+ Finished running R10 = R15 << 0;
+
+ Running ishl(0x0000000000000141), Right=1, Left=15, Dest=15
+ Finished running R15 = R15 << 1;
+
+ Running sub(0x0000000000000154), Right=31, Left=15, Dest=14
+ Finished running R14 = R15 - R31;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=20559, Left=0, Dest=0
+PO Running print_chars(0x0000000000000014), Value=22322, Left=0, Dest=0
+W2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=15, Dest=0
+R[15] (starting from index 0) = 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 0080 [END]
+ Finished running PRINTREG(R15);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=20559, Left=0, Dest=0
+PO Running print_chars(0x0000000000000014), Value=22322, Left=0, Dest=0
+W2 Running print_chars(0x0000000000000014), Value=24397, Left=0, Dest=0
+_M Running print_chars(0x0000000000000014), Value=18766, Left=0, Dest=0
+IN Running print_chars(0x0000000000000014), Value=21843, Left=0, Dest=0
+US Running print_chars(0x0000000000000014), Value=24369, Left=0, Dest=0
+_1 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=14, Dest=0
+R[14] (starting from index 0) = 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f 007f [END]
+ Finished running PRINTREG(R14);
+
+ Running ldix(0x0000000000000120), Right=0, Left=0, Dest=16
+ Finished running R16 = INDEX;
+
+ Running and(0x000000000000016c), Right=14, Left=16, Dest=9
+ Finished running R09 = R16 & R14;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=16725, Left=0, Dest=0
+AU Running print_chars(0x0000000000000014), Value=22578, Left=0, Dest=0
+X2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=9, Dest=0
+R[ 9] (starting from index 0) = 0000 0001 0002 0003 0004 0005 0006 0007 0008 0009 000a 000b 000c 000d 000e 000f 0010 0011 0012 0013 0014 0015 0016 0017 0018 0019 001a 001b 001c 001d 001e 001f 0020 0021 0022 0023 0024 0025 0026 0027 0028 0029 002a 002b 002c 002d 002e 002f 0030 0031 0032 0033 0034 0035 0036 0037 0038 0039 003a 003b 003c 003d 003e 003f 0040 0041 0042 0043 0044 0045 0046 0047 0048 0049 004a 004b 004c 004d 004e 004f 0050 0051 0052 0053 0054 0055 0056 0057 0058 0059 005a 005b 005c 005d 005e 005f 0060 0061 0062 0063 0064 0065 0066 0067 0068 0069 006a 006b 006c 006d 006e 006f 0070 0071 0072 0073 0074 0075 0076 0077 0078 0079 007a 007b 007c 007d 007e 007f [END]
+ Finished running PRINTREG(R09);
+
+ Running lt(0x0000000000000158), Right=10, Left=9, Dest=9
+ Finished running R09 = R09 < R10;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running wherelt(0x000000000000011e), Right=0, Left=0, Dest=0
+ Finished running WHERE_LT;
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=16
+ Finished running R16 = 0;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running print_chars(0x0000000000000014), Value=8224, Left=0, Dest=0
+   Running print_chars(0x0000000000000014), Value=16997, Left=0, Dest=0
+Be Running print_chars(0x0000000000000014), Value=26223, Left=0, Dest=0
+fo Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=8294, Left=0, Dest=0
+ f Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=24940, Left=0, Dest=0
+al Running print_chars(0x0000000000000014), Value=8289, Left=0, Dest=0
+ a Running print_chars(0x0000000000000014), Value=25706, Left=0, Dest=0
+dj Running print_chars(0x0000000000000014), Value=30067, Left=0, Dest=0
+us Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=10352, Left=0, Dest=0
+(p Running print_chars(0x0000000000000014), Value=24946, Left=0, Dest=0
+ar Running print_chars(0x0000000000000014), Value=29801, Left=0, Dest=0
+ti Running print_chars(0x0000000000000014), Value=24940, Left=0, Dest=0
+al Running print_chars(0x0000000000000014), Value=10554, Left=0, Dest=0
+): Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=17236, Left=0, Dest=0
+CT Running print_chars(0x0000000000000014), Value=24388, Left=0, Dest=0
+_D Running print_chars(0x0000000000000014), Value=18771, Left=0, Dest=0
+IS Running print_chars(0x0000000000000014), Value=20556, Left=0, Dest=0
+PL Running print_chars(0x0000000000000014), Value=16707, Left=0, Dest=0
+AC Running print_chars(0x0000000000000014), Value=17741, Left=0, Dest=0
+EM Running print_chars(0x0000000000000014), Value=17742, Left=0, Dest=0
+EN Running print_chars(0x0000000000000014), Value=21562, Left=0, Dest=0
+T: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=16, Dest=0
+R[16] (starting from index 0) = 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0040 0041 0042 0043 0044 0045 0046 0047 0048 0049 004a 004b 004c 004d 004e 004f 0050 0051 0052 0053 0054 0055 0056 0057 0058 0059 005a 005b 005c 005d 005e 005f 0060 0061 0062 0063 0064 0065 0066 0067 0068 0069 006a 006b 006c 006d 006e 006f 0070 0071 0072 0073 0074 0075 0076 0077 0078 0079 007a 007b 007c 007d 007e 007f [END]
+ Finished running PRINTREG(R16);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=16725, Left=0, Dest=0
+AU Running print_chars(0x0000000000000014), Value=22578, Left=0, Dest=0
+X2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=9, Dest=0
+R[ 9] (starting from index 0) = 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 [END]
+ Finished running PRINTREG(R09);
+
+ Running eq(0x0000000000000148), Right=30, Left=9, Dest=9
+ Finished running R09 = R09 == R30;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running whereeq(0x000000000000011d), Right=0, Left=0, Dest=0
+ Finished running WHERE_EQ;
+
+ Running sub(0x0000000000000154), Right=12, Left=16, Dest=16
+ Finished running R16 = R16 - R12;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running print_chars(0x0000000000000014), Value=8224, Left=0, Dest=0
+   Running print_chars(0x0000000000000014), Value=16997, Left=0, Dest=0
+Be Running print_chars(0x0000000000000014), Value=26223, Left=0, Dest=0
+fo Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=8294, Left=0, Dest=0
+ f Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=24940, Left=0, Dest=0
+al Running print_chars(0x0000000000000014), Value=8289, Left=0, Dest=0
+ a Running print_chars(0x0000000000000014), Value=25706, Left=0, Dest=0
+dj Running print_chars(0x0000000000000014), Value=30067, Left=0, Dest=0
+us Running print_chars(0x0000000000000014), Value=29754, Left=0, Dest=0
+t: Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=17236, Left=0, Dest=0
+CT Running print_chars(0x0000000000000014), Value=24388, Left=0, Dest=0
+_D Running print_chars(0x0000000000000014), Value=18771, Left=0, Dest=0
+IS Running print_chars(0x0000000000000014), Value=20556, Left=0, Dest=0
+PL Running print_chars(0x0000000000000014), Value=16707, Left=0, Dest=0
+AC Running print_chars(0x0000000000000014), Value=17741, Left=0, Dest=0
+EM Running print_chars(0x0000000000000014), Value=17742, Left=0, Dest=0
+EN Running print_chars(0x0000000000000014), Value=21562, Left=0, Dest=0
+T: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=16, Dest=0
+R[16] (starting from index 0) = 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0001 0002 0003 0004 0005 0006 0007 0008 0009 000a 000b 000c 000d 000e 000f 0010 0011 0012 0013 0014 0015 0016 0017 0018 0019 001a 001b 001c 001d 001e 001f 0020 0021 0022 0023 0024 0025 0026 0027 0028 0029 002a 002b 002c 002d 002e 002f 0030 0031 0032 0033 0034 0035 0036 0037 0038 0039 003a 003b 003c 003d 003e 003f 0040 [END]
+ Finished running PRINTREG(R16);
+
+ Running cellshr(0x0000000000000111), Right=16, Left=20, Dest=0
+ Finished running CELL_SHR(R20, R16);
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running ldsh(0x0000000000000130), Right=0, Left=0, Dest=17
+ Finished running R17 = SHIFT_REG;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17200, Left=0, Dest=0
+C0 Running print_chars(0x0000000000000014), Value=12602, Left=0, Dest=0
+1: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=18, Dest=0
+R[18] (starting from index 0) = 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0210 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 0a10 [END]
+ Finished running PRINTREG(R18);
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=18
+ Finished running R18 = 0;
+
+ Running lt(0x0000000000000158), Right=16, Left=30, Dest=10
+ Finished running R10 = R30 < R16;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running wherelt(0x000000000000011e), Right=0, Left=0, Dest=0
+ Finished running WHERE_LT;
+
+ Running ishl(0x0000000000000141), Right=0, Left=17, Dest=18
+ Finished running R18 = R17 << 0;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running add(0x0000000000000144), Right=20, Left=18, Dest=20
+ Finished running R20 = R18 + R20;
+
+ Running print_chars(0x0000000000000014), Value=16742, Left=0, Dest=0
+Af Running print_chars(0x0000000000000014), Value=29797, Left=0, Dest=0
+te Running print_chars(0x0000000000000014), Value=29216, Left=0, Dest=0
+r  Running print_chars(0x0000000000000014), Value=10089, Left=0, Dest=0
+'i Running print_chars(0x0000000000000014), Value=29797, Left=0, Dest=0
+te Running print_chars(0x0000000000000014), Value=29281, Left=0, Dest=0
+ra Running print_chars(0x0000000000000014), Value=29801, Left=0, Dest=0
+ti Running print_chars(0x0000000000000014), Value=28526, Left=0, Dest=0
+on Running print_chars(0x0000000000000014), Value=10016, Left=0, Dest=0
+'  Running print_chars(0x0000000000000014), Value=14138, Left=0, Dest=0
+7: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=18271, Left=0, Dest=0
+G_ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17210, Left=0, Dest=0
+C: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=20, Dest=0
+R[20] (starting from index 0) = 0001 0003 0006 000a 000f 0015 001c 0024 002d 0037 0042 004e 005b 0069 0078 0088 0099 00ab 00be 00d2 00e7 00fd 0114 012c 0145 015f 017a 0196 01b3 01d1 01f0 0210 0231 0253 0276 029a 02bf 02e5 030c 0334 035d 0387 03b2 03de 040b 0439 0468 0498 04c9 04fb 052e 0562 0597 05cd 0604 063c 0675 06af 06ea 0726 0763 07a1 07e0 0820 0861 08a3 08e6 092a 096f 09b5 09fc 0a44 0a8d 0ad7 0b22 0b6e 0bbb 0c09 0c58 0ca8 0cf9 0d4b 0d9e 0df2 0e47 0e9d 0ef4 0f4c 0fa5 0fff 105a 10b6 1113 1171 11d0 1230 1291 12f3 1356 13ba 141f 1485 14ec 1554 15bd 1627 1692 16fe 176b 17d9 1848 18b8 1929 199b 1a0e 1a82 1af7 1b6d 1be4 1c5c 1cd5 1d4f 1dca 1e46 1ec3 1f41 1fc0 2040 [END]
+ Finished running PRINTREG(R20);
+
+ Running iwrite(0x0000000000000032), Value=2, Left=20, Dest=0
+ Finished running LS[2] = R20;
+
+ Running red(0x0000000000000100), Right=0, Left=0, Dest=0
+ Finished running REDUCE(R00);
+
+ConnexMachine::readFromPipe(): totalBytesRead = 4
+Before (final?) REDUCE: number of cycles simulated = 1274 (add 1 more for the REDUCE), totalEnergyConsumed = 0.000019437588
+ioDescriptor:
+            type = 0
+            lsAddress = 2
+            vectorCount = 0
+Entered ConnexSimulator::performIO(): ioDescriptor.type = 0, ioDescriptor.lsAddress = 2, ioDescriptor.vectorCount = 0
+ConnexSimulator::force_all_io(): count = 256, total = 0
+Simu: Waiting for receive 
+ConnexMachine::readFromPipe(): totalBytesRead = 256
+result[0] = 1
+result[1] = 3
+result[2] = 6
+result[3] = 10
+result[4] = 15
+result[5] = 21
+result[6] = 28
+result[7] = 36
+result[8] = 45
+result[9] = 55
+result[10] = 66
+result[11] = 78
+result[12] = 91
+result[13] = 105
+result[14] = 120
+result[15] = 136
+result[16] = 153
+result[17] = 171
+result[18] = 190
+result[19] = 210
+result[20] = 231
+result[21] = 253
+result[22] = 276
+result[23] = 300
+result[24] = 325
+result[25] = 351
+result[26] = 378
+result[27] = 406
+result[28] = 435
+result[29] = 465
+result[30] = 496
+result[31] = 528
+result[32] = 561
+result[33] = 595
+result[34] = 630
+result[35] = 666
+result[36] = 703
+result[37] = 741
+result[38] = 780
+result[39] = 820
+result[40] = 861
+result[41] = 903
+result[42] = 946
+result[43] = 990
+result[44] = 1035
+result[45] = 1081
+result[46] = 1128
+result[47] = 1176
+result[48] = 1225
+result[49] = 1275
+result[50] = 1326
+result[51] = 1378
+result[52] = 1431
+result[53] = 1485
+result[54] = 1540
+result[55] = 1596
+result[56] = 1653
+result[57] = 1711
+result[58] = 1770
+result[59] = 1830
+result[60] = 1891
+result[61] = 1953
+result[62] = 2016
+result[63] = 2080
+result[64] = 2145
+result[65] = 2211
+result[66] = 2278
+result[67] = 2346
+result[68] = 2415
+result[69] = 2485
+result[70] = 2556
+result[71] = 2628
+result[72] = 2701
+result[73] = 2775
+result[74] = 2850
+result[75] = 2926
+result[76] = 3003
+result[77] = 3081
+result[78] = 3160
+result[79] = 3240
+result[80] = 3321
+result[81] = 3403
+result[82] = 3486
+result[83] = 3570
+result[84] = 3655
+result[85] = 3741
+result[86] = 3828
+result[87] = 3916
+result[88] = 4005
+result[89] = 4095
+result[90] = 4186
+result[91] = 4278
+result[92] = 4371
+result[93] = 4465
+result[94] = 4560
+result[95] = 4656
+result[96] = 4753
+result[97] = 4851
+result[98] = 4950
+result[99] = 5050
+result[100] = 5151
+result[101] = 5253
+result[102] = 5356
+result[103] = 5460
+result[104] = 5565
+result[105] = 5671
+result[106] = 5778
+result[107] = 5886
+result[108] = 5995
+result[109] = 6105
+result[110] = 6216
+result[111] = 6328
+result[112] = 6441
+result[113] = 6555
+result[114] = 6670
+result[115] = 6786
+result[116] = 6903
+result[117] = 7021
+result[118] = 7140
+result[119] = 7260
+result[120] = 7381
+result[121] = 7503
+result[122] = 7626
+result[123] = 7750
+result[124] = 7875
+result[125] = 8001
+result[126] = 8128
+result[127] = 8256
+ConnexMachine::~ConnexMachine(): freeing kernel QuitKernel (with ptr value = 0x207fc50)
+Entered Kernel::~Kernel(): name = QuitKernel
+  Kernel::~Kernel(): sdNodeVarNameRegDef = 0x207fcb8
+ConnexMachine::~ConnexMachine(): freeing kernel SumScan.i16 (with ptr value = 0x2080280)
+Entered Kernel::~Kernel(): name = SumScan.i16
+  Kernel::~Kernel(): sdNodeVarNameRegDef = 0x20802e8
+++ sleep 2

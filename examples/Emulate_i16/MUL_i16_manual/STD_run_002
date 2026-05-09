@@ -1,0 +1,2323 @@
+++ LD_LIBRARY_PATH=/home/asusu/Connex/OPINCAA_2015_10/opincaa-master-d49993900aaf33580858c74e090a77bd67217702//libs/connex16-hm-generic
+++ export LD_LIBRARY_PATH
+++ killall -9 simulator
+++ killall -9 simulator
+simulator: no process found
+++ sleep 1
+++ /home/asusu/Connex/OPINCAA_2015_10/opincaa-master-d49993900aaf33580858c74e090a77bd67217702//simulator/build/simulator 128 1024 32 1024
+Opincaa simulator: Setting CONNEX_VECTOR_LENGTH to 128
+Opincaa simulator: Setting CONNEX_MEM_SIZE to 1024
+Opincaa simulator: Setting CONNEX_REG_COUNT to 32
+Opincaa simulator: Setting INTERNAL_INSTRUCTION_MEMORY_SIZE to 1024
+ConnexSimulator::ConnexSimulator(): CONNEX_MEM_SIZE + CONNEX_MEM_SIZE_EXTRA = 1224
+ConnexSimulator::ConnexSimulator(): CONNEX_REG_COUNT = 32
+ConnexSimulator::ConnexSimulator(): Allocating registerFile
+FIFO distributionFIFO succesfully opened!
+FIFO writeFIFO succesfully opened!
+FIFO reductionFIFO succesfully opened!
+FIFO readFIFO succesfully opened!
+Starting IO Thread...
+Simu: Waiting for receive 
+Starting Core Thread...
+++ ./a.out 128 1024 32 1024
+Opincaa program: Setting CONNEX_VECTOR_LENGTH to 128
+Opincaa program: Setting CONNEX_MEM_SIZE to 1024
+Opincaa program: Setting CONNEX_REG_COUNT to 32
+Opincaa program: Setting INTERNAL_INSTRUCTION_MEMORY_SIZE (also called size of Internal Instruction Memory) to 1024
+Opincaa program: checkForDataHazards is set to the default value false
+Opincaa program: useLaneGatingOnConnex is set to the default value false.
+CONNEX_VECTOR_LENGTH = 128 (LOG2_CONNEX_VECTOR_LENGTH = 7)
+CONNEX_MEM_SIZE = 1024
+INTERNAL_INSTRUCTION_MEMORY_SIZE = 1024
+sizeof(TypeElement) = 2
+TypeElement = s
+Entered Kernel::Kernel(): name = QuitKernel.
+Accelerator revision is 538976288538976288538976288538976288538976288538976288
+ConnexMachine created !
+Entered Test()
+  NUM_ELEMS = 128 (sizeof(TYPE) = 2)
+RAND_MAX = 2147483647
+A[0] = 0x9c80
+B[0] = 0xa3c6
+A[1] = 0xe0e4
+B[1] = 0xc873
+A[2] = 0x45b4
+B[2] = 0xdcff
+A[3] = 0x6a1b
+B[3] = 0xd8ec
+A[4] = 0xe646
+B[4] = 0xfccd
+A[5] = 0x52f1
+B[5] = 0x57ab
+A[6] = 0x1f55
+B[6] = 0x9efb
+A[7] = 0x1daa
+B[7] = 0x6146
+A[8] = 0x233b
+B[8] = 0xe2c2
+A[9] = 0xac95
+B[9] = 0xa7f8
+A[10] = 0xa748
+B[10] = 0x69e8
+A[11] = 0x7108
+B[11] = 0xc38d
+A[12] = 0xb793
+B[12] = 0xa55a
+A[13] = 0x9a69
+B[13] = 0xf263
+A[14] = 0x41ee
+B[14] = 0x579f
+A[15] = 0xc81a
+B[15] = 0x879a
+A[16] = 0x183d
+B[16] = 0xdd32
+A[17] = 0x7344
+B[17] = 0x57b7
+A[18] = 0xb88e
+B[18] = 0x6458
+A[19] = 0xfb86
+B[19] = 0x595a
+A[20] = 0x67fe
+B[20] = 0x095d
+A[21] = 0x977c
+B[21] = 0x2317
+A[22] = 0x70df
+B[22] = 0xdae9
+A[23] = 0xd327
+B[23] = 0x28d4
+A[24] = 0x4f86
+B[24] = 0x0cb2
+A[25] = 0xd776
+B[25] = 0x60c6
+A[26] = 0x27d0
+B[26] = 0x1eb4
+A[27] = 0x883d
+B[27] = 0x0611
+A[28] = 0x547b
+B[28] = 0x9d82
+A[29] = 0xeda1
+B[29] = 0x0641
+A[30] = 0xb222
+B[30] = 0x3d3d
+A[31] = 0xf4d5
+B[31] = 0x7087
+A[32] = 0xdeb5
+B[32] = 0x5de9
+A[33] = 0xa84d
+B[33] = 0x54a1
+A[34] = 0xc578
+B[34] = 0x78e1
+A[35] = 0xb615
+B[35] = 0xa367
+A[36] = 0x7247
+B[36] = 0xdf01
+A[37] = 0x34c9
+B[37] = 0xaa97
+A[38] = 0x82b3
+B[38] = 0xcadc
+A[39] = 0xf742
+B[39] = 0xf796
+A[40] = 0x07a8
+B[40] = 0x2438
+A[41] = 0x4907
+B[41] = 0xce2a
+A[42] = 0x9735
+B[42] = 0xfcb0
+A[43] = 0x8eda
+B[43] = 0x86fb
+A[44] = 0x73e3
+B[44] = 0x4caf
+A[45] = 0x0219
+B[45] = 0x0f54
+A[46] = 0xb233
+B[46] = 0x9b18
+A[47] = 0x7062
+B[47] = 0x245c
+A[48] = 0xdf03
+B[48] = 0xc81a
+A[49] = 0xa829
+B[49] = 0x3b43
+A[50] = 0x3c80
+B[50] = 0xa6fa
+A[51] = 0x51ef
+B[51] = 0x433a
+A[52] = 0x2bc8
+B[52] = 0x2529
+A[53] = 0x11f0
+B[53] = 0xbfe6
+A[54] = 0x0ea4
+B[54] = 0x413c
+A[55] = 0x00b5
+B[55] = 0x4794
+A[56] = 0x57e6
+B[56] = 0x8fd8
+A[57] = 0xc5c1
+B[57] = 0x2861
+A[58] = 0x9afe
+B[58] = 0x69f9
+A[59] = 0x5ac7
+B[59] = 0xa6bb
+A[60] = 0x5111
+B[60] = 0xbc99
+A[61] = 0xb4e6
+B[61] = 0xc095
+A[62] = 0xd3cc
+B[62] = 0xb5eb
+A[63] = 0x142a
+B[63] = 0xd0b3
+A[64] = 0xbdf8
+B[64] = 0xddef
+A[65] = 0xd746
+B[65] = 0x3f00
+A[66] = 0x9a8c
+B[66] = 0x6aa1
+A[67] = 0x293d
+B[67] = 0x8ae5
+A[68] = 0x2fe9
+B[68] = 0xf00b
+A[69] = 0xf4ce
+B[69] = 0xffd0
+A[70] = 0xc45d
+B[70] = 0x8247
+A[71] = 0xd4d7
+B[71] = 0x16bd
+A[72] = 0xbf3c
+B[72] = 0xdd23
+A[73] = 0x8b5d
+B[73] = 0x1ea8
+A[74] = 0x6f31
+B[74] = 0x6e7b
+A[75] = 0xe919
+B[75] = 0x7dc5
+A[76] = 0xc303
+B[76] = 0xfb73
+A[77] = 0x4387
+B[77] = 0x02c5
+A[78] = 0x4343
+B[78] = 0xa34b
+A[79] = 0xc99a
+B[79] = 0xaf63
+A[80] = 0x9402
+B[80] = 0x5f70
+A[81] = 0x7baf
+B[81] = 0x8624
+A[82] = 0x4a12
+B[82] = 0xf09e
+A[83] = 0x74de
+B[83] = 0xd9dc
+A[84] = 0x601b
+B[84] = 0xdbd4
+A[85] = 0x3889
+B[85] = 0x91f2
+A[86] = 0xdf2c
+B[86] = 0xa110
+A[87] = 0xc0ba
+B[87] = 0xf03b
+A[88] = 0x27f6
+B[88] = 0x67cd
+A[89] = 0x78a0
+B[89] = 0x4550
+A[90] = 0xb237
+B[90] = 0x5447
+A[91] = 0xd76c
+B[91] = 0x815c
+A[92] = 0x7fb4
+B[92] = 0x816f
+A[93] = 0x8c07
+B[93] = 0x8119
+A[94] = 0xf2a1
+B[94] = 0xd79b
+A[95] = 0x4432
+B[95] = 0x25f5
+A[96] = 0x767c
+B[96] = 0x9ee1
+A[97] = 0x352b
+B[97] = 0x811c
+A[98] = 0xe4d0
+B[98] = 0x3d23
+A[99] = 0xba89
+B[99] = 0xf029
+A[100] = 0x93b7
+B[100] = 0xb4a4
+A[101] = 0xe960
+B[101] = 0xf713
+A[102] = 0x8070
+B[102] = 0xaaca
+A[103] = 0x9149
+B[103] = 0x53e8
+A[104] = 0x762b
+B[104] = 0x7632
+A[105] = 0xbf8d
+B[105] = 0x68e0
+A[106] = 0xeba0
+B[106] = 0xdc4d
+A[107] = 0x1d9a
+B[107] = 0x9a34
+A[108] = 0x31e7
+B[108] = 0xee5f
+A[109] = 0xae4b
+B[109] = 0x0277
+A[110] = 0x7f3b
+B[110] = 0xcbcb
+A[111] = 0x2b29
+B[111] = 0x7d05
+A[112] = 0x325d
+B[112] = 0x5486
+A[113] = 0x3644
+B[113] = 0x7a2b
+A[114] = 0x8a5f
+B[114] = 0xd91a
+A[115] = 0xdc16
+B[115] = 0x2aa2
+A[116] = 0x63d9
+B[116] = 0x6c70
+A[117] = 0x10f2
+B[117] = 0x6373
+A[118] = 0xef8a
+B[118] = 0x8904
+A[119] = 0x0cad
+B[119] = 0xa9d3
+A[120] = 0x2c23
+B[120] = 0xd094
+A[121] = 0x0e14
+B[121] = 0x49af
+A[122] = 0xe32f
+B[122] = 0x7cf0
+A[123] = 0x0315
+B[123] = 0x8a9e
+A[124] = 0x554a
+B[124] = 0x7f32
+A[125] = 0xb99e
+B[125] = 0xb149
+A[126] = 0x23da
+B[126] = 0x3582
+A[127] = 0x4a3d
+B[127] = 0x35a9
+Calling MulInt16 (with quotient and reminder results)...
+Entered ConnexMachine::writeDataToConnexPartial(): buffer = 0x7ffece856140, numElemCount = 128, startVectorIndex = 0 (vectorCount = 1).
+writeDataToConnexPartial(): calling standard writeDataToConnex()
+Entered ConnexMachine::writeDataToConnex(): before threadMutex.lock();
+ConnexMachine::writeDataToConnex(): before write()...
+ConnexMachine::writeDataToConnex(): before 2nd write()...
+ConnexMachine::writeDataToConnex(): before flushing write()...
+ConnexMachine::writeDataToConnex(): before readFromPipe()...
+ioDescriptor:
+            type = 1
+            lsAddress = 0
+            vectorCount = 0
+Entered ConnexSimulator::performIO(): ioDescriptor.type = 1, ioDescriptor.lsAddress = 0, ioDescriptor.vectorCount = 0
+  ConnexSimulator::performIO(): Before force_all_io()
+ConnexSimulator::force_all_io(): count = 256, total = 0
+Simu: Waiting for receive 
+ConnexMachine::readFromPipe(): totalBytesRead = 4
+ConnexMachine::writeDataToConnex(): before threadMutex.unlock()...
+Entered ConnexMachine::writeDataToConnexPartial(): buffer = 0x7ffece855f70, numElemCount = 128, startVectorIndex = 1 (vectorCount = 1).
+writeDataToConnexPartial(): calling standard writeDataToConnex()
+Entered ConnexMachine::writeDataToConnex(): before threadMutex.lock();
+ConnexMachine::writeDataToConnex(): before write()...
+ConnexMachine::writeDataToConnex(): before 2nd write()...
+ConnexMachine::writeDataToConnex(): before flushing write()...
+ConnexMachine::writeDataToConnex(): before readFromPipe()...
+ioDescriptor:
+            type = 1
+            lsAddress = 1
+            vectorCount = 0
+Entered ConnexSimulator::performIO(): ioDescriptor.type = 1, ioDescriptor.lsAddress = 1, ioDescriptor.vectorCount = 0
+  ConnexSimulator::performIO(): Before force_all_io()
+ConnexSimulator::force_all_io(): count = 256, total = 0
+Simu: Waiting for receive 
+ConnexMachine::readFromPipe(): totalBytesRead = 4
+ConnexMachine::writeDataToConnex(): before threadMutex.unlock()...
+Entered Kernel::Kernel(): name = MulInt16.
+ExecuteKernel(MulInt16): kernel->size() = 294
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=1
+ Finished running R01 = 0;
+
+ Running vload(0x0000000000000035), Value=1, Left=0, Dest=2
+ Finished running R02 = 1;
+
+ Running vload(0x0000000000000035), Value=2, Left=0, Dest=3
+ Finished running R03 = 2;
+
+ Running read(0x0000000000000124), Right=1, Left=0, Dest=24
+ Finished running R24 = LS[R01];
+
+ Running read(0x0000000000000124), Right=2, Left=0, Dest=25
+ Finished running R25 = LS[R02];
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=31
+ Finished running R31 = 0;
+
+ Running vload(0x0000000000000035), Value=1, Left=0, Dest=30
+ Finished running R30 = 1;
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=23
+ Finished running R23 = 0;
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=22
+ Finished running R22 = 0;
+
+ Running vload(0x0000000000000035), Value=16, Left=0, Dest=28
+ Finished running R28 = 16;
+
+ Running ishl(0x0000000000000141), Right=0, Left=24, Dest=27
+ Finished running R27 = R24 << 0;
+
+ Running vload(0x0000000000000035), Value=0, Left=0, Dest=26
+ Finished running R26 = 0;
+
+ Running lt(0x0000000000000158), Right=31, Left=24, Dest=21
+ Finished running R21 = R24 < R31;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running wherelt(0x000000000000011e), Right=0, Left=0, Dest=0
+ Finished running WHERE_LT;
+
+ Running vload(0x0000000000000035), Value=-1, Left=0, Dest=26
+ Finished running R26 = -1;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running and(0x000000000000016c), Right=30, Left=25, Dest=21
+ Finished running R21 = R25 & R30;
+
+ Running eq(0x0000000000000148), Right=30, Left=21, Dest=21
+ Finished running R21 = R21 == R30;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running whereeq(0x000000000000011d), Right=0, Left=0, Dest=0
+ Finished running WHERE_EQ;
+
+ Running add(0x0000000000000144), Right=23, Left=27, Dest=23
+ Finished running R23 = R27 + R23;
+
+ Running addc(0x0000000000000164), Right=22, Left=31, Dest=22
+ Finished running R22 = ADDC(R31, R22);
+
+ Running add(0x0000000000000144), Right=22, Left=26, Dest=22
+ Finished running R22 = R26 + R22;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running ishr(0x0000000000000151), Right=1, Left=25, Dest=25
+ Finished running R25 = R25 >> 1;
+
+ Running vload(0x0000000000000035), Value=1, Left=0, Dest=5
+ Finished running R05 = 1;
+
+ Running setlc(0x0000000000000015), Value=13, Left=0, Dest=0
+ Finished running REPEAT(13);
+
+ Running setlc(0x0000000000000015), Value=13, Left=0, Dest=0
+ Finished running REPEAT(13);
+
+ Running shl(0x0000000000000140), Right=5, Left=24, Dest=27
+ Finished running R27 = R24 << R05;
+
+ Running sub(0x0000000000000154), Right=5, Left=28, Dest=4
+ Finished running R04 = R28 - R05;
+
+ Running shra(0x0000000000000160), Right=4, Left=24, Dest=26
+ Finished running R26 = SHRA(R24, R04);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17201, Left=0, Dest=0
+C1 Running print_chars(0x0000000000000014), Value=24385, Left=0, Dest=0
+_A Running print_chars(0x0000000000000014), Value=19529, Left=0, Dest=0
+LI Running print_chars(0x0000000000000014), Value=18254, Left=0, Dest=0
+GN Running print_chars(0x0000000000000014), Value=17732, Left=0, Dest=0
+ED Running print_chars(0x0000000000000014), Value=19535, Left=0, Dest=0
+LO Running print_chars(0x0000000000000014), Value=22330, Left=0, Dest=0
+W: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=27, Dest=0
+R[27] (starting from index 0) = 0000 0002 0000 d436 cc8c a5e2 3eaa 3b54 4676 592a 4e90 e210 6f26 34d2 83dc 9034 307a e688 711c f70c cffc 2ef8 e1be a64e 9f0c aeec 4fa0 107a a8f6 db42 6444 e9aa bd6a 509a 8af0 6c2a e48e 6992 0566 ee84 0f50 920e 2e6a 1db4 e7c6 0432 6466 e0c4 be06 5052 7900 a3de 5790 23e0 1d48 016a afcc 8b82 35fc b58e a222 69cc a798 2854 7bf0 ae8c 3518 527a 5fd2 e99c 88ba a9ae 7e78 16ba de62 d232 8606 870e 8686 9334 2804 f75e 9424 e9bc c036 7112 be58 8174 4fec f140 646e aed8 ff68 180e e542 8864 ecf8 6a56 c9a0 7512 276e d2c0 00e0 2292 ec56 7f1a d740 3b34 63ce 5c96 fe76 5652 64ba 6c88 14be b82c c7b2 21e4 df14 195a 5846 1c28 c65e 062a aa94 733c 47b4 947a [END]
+ Finished running PRINTREG(R27);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17201, Left=0, Dest=0
+C1 Running print_chars(0x0000000000000014), Value=24385, Left=0, Dest=0
+_A Running print_chars(0x0000000000000014), Value=19529, Left=0, Dest=0
+LI Running print_chars(0x0000000000000014), Value=18254, Left=0, Dest=0
+GN Running print_chars(0x0000000000000014), Value=17732, Left=0, Dest=0
+ED Running print_chars(0x0000000000000014), Value=18505, Left=0, Dest=0
+HI Running print_chars(0x0000000000000014), Value=18248, Left=0, Dest=0
+GH Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=26, Dest=0
+R[26] (starting from index 0) = ffff 0000 ffff 0000 ffff 0000 0000 0000 0000 ffff ffff 0000 ffff ffff 0000 ffff 0000 0000 ffff ffff 0000 ffff 0000 ffff 0000 ffff 0000 ffff 0000 ffff ffff ffff ffff ffff ffff ffff 0000 0000 ffff ffff 0000 0000 ffff ffff 0000 0000 ffff 0000 ffff ffff 0000 0000 0000 0000 0000 0000 0000 ffff ffff 0000 0000 ffff ffff 0000 ffff ffff ffff 0000 0000 ffff ffff ffff ffff ffff 0000 ffff ffff 0000 0000 ffff ffff 0000 0000 0000 0000 0000 ffff ffff 0000 0000 ffff ffff 0000 ffff ffff 0000 0000 0000 ffff ffff ffff ffff ffff ffff 0000 ffff ffff 0000 0000 ffff 0000 0000 0000 0000 ffff ffff 0000 0000 ffff 0000 0000 0000 ffff 0000 0000 ffff 0000 0000 [END]
+ Finished running PRINTREG(R26);
+
+ Running and(0x000000000000016c), Right=30, Left=25, Dest=20
+ Finished running R20 = R25 & R30;
+
+ Running eq(0x0000000000000148), Right=30, Left=20, Dest=19
+ Finished running R19 = R20 == R30;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running whereeq(0x000000000000011d), Right=0, Left=0, Dest=0
+ Finished running WHERE_EQ;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=21343, Left=0, Dest=0
+S_ Running print_chars(0x0000000000000014), Value=19535, Left=0, Dest=0
+LO Running print_chars(0x0000000000000014), Value=22330, Left=0, Dest=0
+W: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=23, Dest=0
+R[23] (starting from index 0) = 0000 0000 0000 0000 e646 52f1 1f55 0000 0000 0000 0000 7108 0000 9a69 41ee 0000 0000 7344 0000 0000 67fe 977c 70df 0000 0000 0000 0000 883d 0000 eda1 b222 f4d5 deb5 a84d c578 b615 7247 34c9 0000 0000 0000 0000 0000 8eda 73e3 0000 0000 0000 0000 a829 0000 0000 2bc8 0000 0000 0000 0000 c5c1 9afe 5ac7 5111 b4e6 d3cc 142a bdf8 0000 9a8c 293d 2fe9 0000 c45d d4d7 bf3c 0000 6f31 e919 c303 4387 4343 c99a 0000 0000 0000 0000 0000 0000 0000 c0ba 27f6 0000 b237 0000 7fb4 8c07 f2a1 4432 767c 0000 e4d0 ba89 0000 e960 0000 0000 0000 0000 eba0 0000 31e7 ae4b 7f3b 2b29 0000 3644 0000 0000 0000 10f2 0000 0cad 0000 0e14 0000 0000 0000 b99e 0000 4a3d [END]
+ Finished running PRINTREG(R23);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17201, Left=0, Dest=0
+C1 Running print_chars(0x0000000000000014), Value=24385, Left=0, Dest=0
+_A Running print_chars(0x0000000000000014), Value=19529, Left=0, Dest=0
+LI Running print_chars(0x0000000000000014), Value=18254, Left=0, Dest=0
+GN Running print_chars(0x0000000000000014), Value=17732, Left=0, Dest=0
+ED Running print_chars(0x0000000000000014), Value=19535, Left=0, Dest=0
+LO Running print_chars(0x0000000000000014), Value=22330, Left=0, Dest=0
+W: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=27, Dest=0
+R[27] (starting from index 0) = 0000 0002 0000 d436 cc8c a5e2 3eaa 3b54 4676 592a 4e90 e210 6f26 34d2 83dc 9034 307a e688 711c f70c cffc 2ef8 e1be a64e 9f0c aeec 4fa0 107a a8f6 db42 6444 e9aa bd6a 509a 8af0 6c2a e48e 6992 0566 ee84 0f50 920e 2e6a 1db4 e7c6 0432 6466 e0c4 be06 5052 7900 a3de 5790 23e0 1d48 016a afcc 8b82 35fc b58e a222 69cc a798 2854 7bf0 ae8c 3518 527a 5fd2 e99c 88ba a9ae 7e78 16ba de62 d232 8606 870e 8686 9334 2804 f75e 9424 e9bc c036 7112 be58 8174 4fec f140 646e aed8 ff68 180e e542 8864 ecf8 6a56 c9a0 7512 276e d2c0 00e0 2292 ec56 7f1a d740 3b34 63ce 5c96 fe76 5652 64ba 6c88 14be b82c c7b2 21e4 df14 195a 5846 1c28 c65e 062a aa94 733c 47b4 947a [END]
+ Finished running PRINTREG(R27);
+
+ Running add(0x0000000000000144), Right=23, Left=27, Dest=23
+ Finished running R23 = R27 + R23;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=21343, Left=0, Dest=0
+S_ Running print_chars(0x0000000000000014), Value=19535, Left=0, Dest=0
+LO Running print_chars(0x0000000000000014), Value=22330, Left=0, Dest=0
+W: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=23, Dest=0
+R[23] (starting from index 0) = 0000 0000 0000 0000 e646 f8d3 5dff 3b54 4676 0000 0000 7108 6f26 cf3b c5ca 9034 307a 59cc 0000 f70c 67fe c674 70df 0000 9f0c aeec 0000 883d a8f6 eda1 b222 de7f deb5 a84d c578 223f 7247 9e5b 0000 ee84 0000 920e 0000 ac8e 5ba9 0000 0000 0000 be06 f87b 7900 a3de 2bc8 23e0 0000 0000 0000 c5c1 9afe 1055 5111 b4e6 7b64 3c7e 39e8 0000 9a8c 293d 8fbb 0000 4d17 d4d7 3db4 0000 4d93 e919 4909 4387 c9c9 5cce 0000 0000 9424 0000 0000 7112 0000 422e 27f6 0000 16a5 0000 7f1c 8c07 d7e3 4432 767c 0000 ae70 ba89 0000 bc20 00e0 0000 ec56 0000 eba0 0000 95b5 0ae1 7db1 2b29 64ba a2cc 14be b82c 0000 32d6 0000 2607 0000 2a3c 0000 062a aa94 b99e 47b4 4a3d [END]
+ Finished running PRINTREG(R23);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=21343, Left=0, Dest=0
+S_ Running print_chars(0x0000000000000014), Value=18505, Left=0, Dest=0
+HI Running print_chars(0x0000000000000014), Value=18248, Left=0, Dest=0
+GH Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=22, Dest=0
+R[22] (starting from index 0) = 0000 0000 0000 0000 ffff 0000 0000 0000 0000 0000 0000 0000 0000 ffff 0000 0000 0000 0000 0000 0000 0000 ffff 0000 0000 0000 0000 0000 ffff 0000 ffff ffff ffff ffff ffff ffff ffff 0000 0000 0000 0000 0000 0000 0000 ffff 0000 0000 0000 0000 0000 ffff 0000 0000 0000 0000 0000 0000 0000 ffff ffff 0000 0000 ffff ffff 0000 ffff 0000 ffff 0000 0000 0000 ffff ffff ffff 0000 0000 ffff ffff 0000 0000 ffff 0000 0000 0000 0000 0000 0000 0000 ffff 0000 0000 ffff 0000 0000 ffff ffff 0000 0000 0000 ffff ffff 0000 ffff 0000 0000 0000 0000 ffff 0000 0000 ffff 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 ffff 0000 0000 [END]
+ Finished running PRINTREG(R22);
+
+ Running addc(0x0000000000000164), Right=22, Left=31, Dest=22
+ Finished running R22 = ADDC(R31, R22);
+
+ Running print_chars(0x0000000000000014), Value=16742, Left=0, Dest=0
+Af Running print_chars(0x0000000000000014), Value=29797, Left=0, Dest=0
+te Running print_chars(0x0000000000000014), Value=29216, Left=0, Dest=0
+r  Running print_chars(0x0000000000000014), Value=16708, Left=0, Dest=0
+AD Running print_chars(0x0000000000000014), Value=17475, Left=0, Dest=0
+DC Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=21343, Left=0, Dest=0
+S_ Running print_chars(0x0000000000000014), Value=18505, Left=0, Dest=0
+HI Running print_chars(0x0000000000000014), Value=18248, Left=0, Dest=0
+GH Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=22, Dest=0
+R[22] (starting from index 0) = 0000 0000 0000 0000 ffff 0000 0000 0000 0000 0000 0000 0000 0000 ffff 0000 0000 0000 0001 0000 0000 0000 ffff 0000 0000 0000 0000 0000 ffff 0000 ffff ffff 0000 ffff ffff ffff 0000 0000 0000 0000 0000 0000 0000 0000 ffff 0001 0000 0000 0000 0000 ffff 0000 0000 0000 0000 0000 0000 0000 ffff ffff 0001 0000 ffff 0000 0000 0000 0000 ffff 0000 0000 0000 0000 ffff 0000 0000 0001 ffff 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0001 ffff 0000 0000 0000 0000 0000 ffff 0000 0000 0000 0000 0000 0000 ffff 0000 0000 0000 0001 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 ffff 0000 0000 [END]
+ Finished running PRINTREG(R22);
+
+ Running add(0x0000000000000144), Right=22, Left=26, Dest=22
+ Finished running R22 = R26 + R22;
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running ishr(0x0000000000000151), Right=1, Left=25, Dest=25
+ Finished running R25 = R25 >> 1;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=18756, Left=0, Dest=0
+ID Running print_chars(0x0000000000000014), Value=22586, Left=0, Dest=0
+X: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=5, Dest=0
+R[ 5] (starting from index 0) = 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 [END]
+ Finished running PRINTREG(R05);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=21343, Left=0, Dest=0
+S_ Running print_chars(0x0000000000000014), Value=19535, Left=0, Dest=0
+LO Running print_chars(0x0000000000000014), Value=22330, Left=0, Dest=0
+W: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=23, Dest=0
+R[23] (starting from index 0) = 0000 0000 0000 0000 e646 f8d3 5dff 3b54 4676 0000 0000 7108 6f26 cf3b c5ca 9034 307a 59cc 0000 f70c 67fe c674 70df 0000 9f0c aeec 0000 883d a8f6 eda1 b222 de7f deb5 a84d c578 223f 7247 9e5b 0000 ee84 0000 920e 0000 ac8e 5ba9 0000 0000 0000 be06 f87b 7900 a3de 2bc8 23e0 0000 0000 0000 c5c1 9afe 1055 5111 b4e6 7b64 3c7e 39e8 0000 9a8c 293d 8fbb 0000 4d17 d4d7 3db4 0000 4d93 e919 4909 4387 c9c9 5cce 0000 0000 9424 0000 0000 7112 0000 422e 27f6 0000 16a5 0000 7f1c 8c07 d7e3 4432 767c 0000 ae70 ba89 0000 bc20 00e0 0000 ec56 0000 eba0 0000 95b5 0ae1 7db1 2b29 64ba a2cc 14be b82c 0000 32d6 0000 2607 0000 2a3c 0000 062a aa94 b99e 47b4 4a3d [END]
+ Finished running PRINTREG(R23);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=21343, Left=0, Dest=0
+S_ Running print_chars(0x0000000000000014), Value=18505, Left=0, Dest=0
+HI Running print_chars(0x0000000000000014), Value=18248, Left=0, Dest=0
+GH Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=22, Dest=0
+R[22] (starting from index 0) = 0000 0000 0000 0000 ffff 0000 0000 0000 0000 0000 0000 0000 ffff fffe 0000 ffff 0000 0001 0000 ffff 0000 fffe 0000 0000 0000 ffff 0000 ffff 0000 ffff ffff ffff ffff ffff ffff ffff 0000 0000 0000 ffff 0000 0000 0000 fffe 0001 0000 0000 0000 ffff fffe 0000 0000 0000 0000 0000 0000 0000 ffff ffff 0001 0000 ffff ffff 0000 ffff 0000 ffff 0000 0000 0000 ffff ffff ffff 0000 0001 ffff ffff 0000 0000 ffff 0000 0000 0000 0000 0000 0000 0000 ffff 0000 0000 ffff 0000 0001 ffff ffff 0000 0000 0000 ffff ffff 0000 ffff ffff 0000 0000 0000 ffff 0000 0000 ffff 0001 0000 0000 0000 ffff ffff 0000 0000 0000 0000 0000 0000 0000 0000 0000 ffff 0000 0000 [END]
+ Finished running PRINTREG(R22);
+
+ Running add(0x0000000000000144), Right=5, Left=30, Dest=5
+ Finished running R05 = R30 + R05;
+
+ Running ijmpnz(0x0000000000000013), Value=143, Left=0, Dest=0
+Preparing to jump from loop iter #13
+ Finished running END_REPEAT;
+
+  instr = R27 = R24 << R05;
+
+  instr = R04 = R28 - R05;
+
+  instr = R26 = SHRA(R24, R04);
+
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 0004 0000 a86c 9918 4bc4 7d54 76a8 8cec b254 9d20 c420 de4c 69a4 07b8 2068 60f4 cd10 e238 ee18 9ff8 5df0 c37c 4c9c 3e18 5dd8 9f40 20f4 51ec b684 c888 d354 7ad4 a134 15e0 d854 c91c d324 0acc dd08 1ea0 241c 5cd4 3b68 cf8c 0864 c8cc c188 7c0c a0a4 f200 47bc af20 47c0 3a90 02d4 5f98 1704 6bf8 6b1c 4444 d398 4f30 50a8 f7e0 5d18 6a30 a4f4 bfa4 d338 1174 535c fcf0 2d74 bcc4 a464 0c0c 0e1c 0d0c 2668 5008 eebc 2848 d378 806c e224 7cb0 02e8 9fd8 e280 c8dc 5db0 fed0 301c ca84 10c8 d9f0 d4ac 9340 ea24 4edc a580 01c0 4524 d8ac fe34 ae80 7668 c79c b92c fcec aca4 c974 d910 297c 7058 8f64 43c8 be28 32b4 b08c 3850 8cbc 0c54 5528 e678 8f68 28f4 [END]
+Print reg SRC1_ALIGNEDHIGH:
+ 
+  instr = PRINTREG(R26);
+
+R[26] (starting from index 0) = fffe 0000 fffe 0001 ffff 0001 0000 0000 0000 fffe fffe 0001 fffe fffe 0001 ffff 0000 0001 fffe ffff 0001 fffe 0001 ffff 0001 ffff 0000 fffe 0001 ffff fffe ffff ffff fffe ffff fffe 0001 0000 fffe ffff 0000 0001 fffe fffe 0001 0000 fffe 0001 ffff fffe 0000 0001 0000 0000 0000 0000 0001 ffff fffe 0001 0001 fffe ffff 0000 fffe ffff fffe 0000 0000 ffff ffff ffff fffe fffe 0001 ffff ffff 0001 0001 ffff fffe 0001 0001 0001 0001 0000 ffff ffff 0000 0001 fffe ffff 0001 fffe ffff 0001 0001 0000 ffff fffe fffe ffff fffe fffe 0001 fffe ffff 0000 0000 fffe 0001 0000 0000 0000 fffe ffff 0001 0000 ffff 0000 0000 0000 ffff 0000 0001 fffe 0000 0001 [END]
+  instr = R20 = R25 & R30;
+
+  instr = R19 = R20 == R30;
+
+  instr = NOP;
+
+  instr = WHERE_EQ;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 0000 0000 0000 e646 f8d3 5dff 3b54 4676 0000 0000 7108 6f26 cf3b c5ca 9034 307a 59cc 0000 f70c 67fe c674 70df 0000 9f0c aeec 0000 883d a8f6 eda1 b222 de7f deb5 a84d c578 223f 7247 9e5b 0000 ee84 0000 920e 0000 ac8e 5ba9 0000 0000 0000 be06 f87b 7900 a3de 2bc8 23e0 0000 0000 0000 c5c1 9afe 1055 5111 b4e6 7b64 3c7e 39e8 0000 9a8c 293d 8fbb 0000 4d17 d4d7 3db4 0000 4d93 e919 4909 4387 c9c9 5cce 0000 0000 9424 0000 0000 7112 0000 422e 27f6 0000 16a5 0000 7f1c 8c07 d7e3 4432 767c 0000 ae70 ba89 0000 bc20 00e0 0000 ec56 0000 eba0 0000 95b5 0ae1 7db1 2b29 64ba a2cc 14be b82c 0000 32d6 0000 2607 0000 2a3c 0000 062a aa94 b99e 47b4 4a3d [END]
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 0004 0000 a86c 9918 4bc4 7d54 76a8 8cec b254 9d20 c420 de4c 69a4 07b8 2068 60f4 cd10 e238 ee18 9ff8 5df0 c37c 4c9c 3e18 5dd8 9f40 20f4 51ec b684 c888 d354 7ad4 a134 15e0 d854 c91c d324 0acc dd08 1ea0 241c 5cd4 3b68 cf8c 0864 c8cc c188 7c0c a0a4 f200 47bc af20 47c0 3a90 02d4 5f98 1704 6bf8 6b1c 4444 d398 4f30 50a8 f7e0 5d18 6a30 a4f4 bfa4 d338 1174 535c fcf0 2d74 bcc4 a464 0c0c 0e1c 0d0c 2668 5008 eebc 2848 d378 806c e224 7cb0 02e8 9fd8 e280 c8dc 5db0 fed0 301c ca84 10c8 d9f0 d4ac 9340 ea24 4edc a580 01c0 4524 d8ac fe34 ae80 7668 c79c b92c fcec aca4 c974 d910 297c 7058 8f64 43c8 be28 32b4 b08c 3850 8cbc 0c54 5528 e678 8f68 28f4 [END]
+  instr = R23 = R27 + R23;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 0004 0000 a86c 7f5e f8d3 5dff b1fc 4676 0000 0000 3528 6f26 cf3b cd82 9034 307a 26dc 0000 f70c 07f6 2464 70df 4c9c 9f0c 0cc4 9f40 883d a8f6 eda1 7aaa b1d3 deb5 a84d c578 fa93 7247 717f 0acc cb8c 0000 920e 0000 ac8e 2b35 0864 0000 c188 be06 f87b 7900 a3de 2bc8 6ba0 3a90 02d4 0000 c5c1 9afe 1055 5111 887e 7b64 3c7e 31c8 0000 9a8c ce31 8fbb 0000 5e8b 2833 3db4 0000 4d93 8d7d 4909 51a3 c9c9 5cce 0000 eebc bc6c d378 806c 7112 0000 422e c7ce 0000 df81 5db0 7dec 8c07 d7e3 54fa 767c d4ac ae70 ba89 4edc bc20 00e0 0000 ec56 0000 9a20 7668 5d51 c40d 7db1 d7cd 2e2e a2cc 14be b82c 0000 32d6 be28 2607 b08c 628c 0000 127e aa94 b99e 47b4 4a3d [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 0000 0000 ffff 0000 0000 0000 0000 0000 0000 0000 ffff fffe 0000 ffff 0000 0001 0000 ffff 0000 fffe 0000 0000 0000 ffff 0000 ffff 0000 ffff ffff ffff ffff ffff ffff ffff 0000 0000 0000 ffff 0000 0000 0000 fffe 0001 0000 0000 0000 ffff fffe 0000 0000 0000 0000 0000 0000 0000 ffff ffff 0001 0000 ffff ffff 0000 ffff 0000 ffff 0000 0000 0000 ffff ffff ffff 0000 0001 ffff ffff 0000 0000 ffff 0000 0000 0000 0000 0000 0000 0000 ffff 0000 0000 ffff 0000 0001 ffff ffff 0000 0000 0000 ffff ffff 0000 ffff ffff 0000 0000 0000 ffff 0000 0000 ffff 0001 0000 0000 0000 ffff ffff 0000 0000 0000 0000 0000 0000 0000 0000 0000 ffff 0000 0000 [END]
+  instr = R22 = ADDC(R31, R22);
+
+After ADDC:
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0001 ffff fffe 0000 ffff 0000 0002 0000 ffff 0001 ffff 0000 0000 0000 0000 0000 ffff 0000 ffff 0000 0000 ffff ffff ffff ffff 0000 0001 0000 0000 0000 0000 0000 fffe 0002 0000 0000 0000 ffff fffe 0000 0000 0000 0000 0000 0000 0000 ffff ffff 0001 0000 0000 ffff 0000 0000 0000 ffff 0000 0000 0000 ffff 0000 ffff 0000 0001 0000 ffff 0000 0000 ffff 0000 0000 0000 0000 0000 0000 0000 ffff 0000 0000 ffff 0000 0002 ffff ffff 0000 0000 0000 ffff ffff 0000 ffff ffff 0000 0000 0000 0000 0000 0001 ffff 0001 0000 0001 0000 ffff ffff 0000 0000 0000 0000 0000 0000 0000 0000 0000 ffff 0000 0000 [END]
+  instr = R22 = R26 + R22;
+
+  instr = END_WHERE;
+
+  instr = R25 = R25 >> 1;
+
+Print reg IDX:
+
+  instr = PRINTREG(R05);
+
+R[ 5] (starting from index 0) = 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 [END]
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 0004 0000 a86c 7f5e f8d3 5dff b1fc 4676 0000 0000 3528 6f26 cf3b cd82 9034 307a 26dc 0000 f70c 07f6 2464 70df 4c9c 9f0c 0cc4 9f40 883d a8f6 eda1 7aaa b1d3 deb5 a84d c578 fa93 7247 717f 0acc cb8c 0000 920e 0000 ac8e 2b35 0864 0000 c188 be06 f87b 7900 a3de 2bc8 6ba0 3a90 02d4 0000 c5c1 9afe 1055 5111 887e 7b64 3c7e 31c8 0000 9a8c ce31 8fbb 0000 5e8b 2833 3db4 0000 4d93 8d7d 4909 51a3 c9c9 5cce 0000 eebc bc6c d378 806c 7112 0000 422e c7ce 0000 df81 5db0 7dec 8c07 d7e3 54fa 767c d4ac ae70 ba89 4edc bc20 00e0 0000 ec56 0000 9a20 7668 5d51 c40d 7db1 d7cd 2e2e a2cc 14be b82c 0000 32d6 be28 2607 b08c 628c 0000 127e aa94 b99e 47b4 4a3d [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 fffe 0001 ffff 0000 0000 0000 0000 0000 0000 0002 ffff fffe 0001 ffff 0000 0003 0000 ffff 0002 fffd 0000 ffff 0000 ffff 0000 ffff 0000 ffff fffe ffff ffff ffff ffff fffd 0000 0001 fffe ffff 0000 0000 0000 fffe 0003 0000 0000 0001 ffff fffe 0000 0000 0000 0000 0000 0000 0000 ffff ffff 0001 0000 fffe ffff 0000 fffe 0000 ffff 0000 0000 0000 fffe ffff ffff 0000 0001 ffff ffff 0001 0000 ffff 0000 0001 0001 0001 0001 0000 0000 ffff 0000 0000 fffd ffff 0003 ffff ffff 0001 0000 0000 ffff ffff fffe ffff ffff 0000 0000 0000 ffff 0000 0001 fffd 0001 0000 0001 0000 ffff ffff 0000 0000 ffff 0000 0000 0000 0000 0000 0000 ffff 0000 0000 [END]
+  instr = R05 = R30 + R05;
+
+Preparing to jump from loop iter #12
+  instr = END_REPEAT;
+
+  instr = R27 = R24 << R05;
+
+  instr = R04 = R28 - R05;
+
+  instr = R26 = SHRA(R24, R04);
+
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 0008 0000 50d8 3230 9788 faa8 ed50 19d8 64a8 3a40 8840 bc98 d348 0f70 40d0 c1e8 9a20 c470 dc30 3ff0 bbe0 86f8 9938 7c30 bbb0 3e80 41e8 a3d8 6d08 9110 a6a8 f5a8 4268 2bc0 b0a8 9238 a648 1598 ba10 3d40 4838 b9a8 76d0 9f18 10c8 9198 8310 f818 4148 e400 8f78 5e40 8f80 7520 05a8 bf30 2e08 d7f0 d638 8888 a730 9e60 a150 efc0 ba30 d460 49e8 7f48 a670 22e8 a6b8 f9e0 5ae8 7988 48c8 1818 1c38 1a18 4cd0 a010 dd78 5090 a6f0 00d8 c448 f960 05d0 3fb0 c500 91b8 bb60 fda0 6038 9508 2190 b3e0 a958 2680 d448 9db8 4b00 0380 8a48 b158 fc68 5d00 ecd0 8f38 7258 f9d8 5948 92e8 b220 52f8 e0b0 1ec8 8790 7c50 6568 6118 70a0 1978 18a8 aa50 ccf0 1ed0 51e8 [END]
+Print reg SRC1_ALIGNEDHIGH:
+ 
+  instr = PRINTREG(R26);
+
+R[26] (starting from index 0) = fffc 0000 fffc 0003 ffff 0002 0000 0000 0001 fffd fffd 0003 fffd fffc 0002 fffe 0000 0003 fffd ffff 0003 fffc 0003 fffe 0002 fffe 0001 fffc 0002 ffff fffd ffff fffe fffd fffe fffd 0003 0001 fffc ffff 0000 0002 fffc fffc 0003 0000 fffd 0003 fffe fffd 0001 0002 0001 0000 0000 0000 0002 fffe fffc 0002 0002 fffd fffe 0000 fffd fffe fffc 0001 0001 ffff fffe fffe fffd fffc 0003 ffff fffe 0002 0002 fffe fffc 0003 0002 0003 0003 0001 fffe fffe 0001 0003 fffd fffe 0003 fffc ffff 0002 0003 0001 ffff fffd fffc ffff fffc fffc 0003 fffd ffff 0000 0001 fffd 0003 0001 0001 0001 fffc fffe 0003 0000 ffff 0000 0001 0000 ffff 0000 0002 fffd 0001 0002 [END]
+  instr = R20 = R25 & R30;
+
+  instr = R19 = R20 == R30;
+
+  instr = NOP;
+
+  instr = WHERE_EQ;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 0004 0000 a86c 7f5e f8d3 5dff b1fc 4676 0000 0000 3528 6f26 cf3b cd82 9034 307a 26dc 0000 f70c 07f6 2464 70df 4c9c 9f0c 0cc4 9f40 883d a8f6 eda1 7aaa b1d3 deb5 a84d c578 fa93 7247 717f 0acc cb8c 0000 920e 0000 ac8e 2b35 0864 0000 c188 be06 f87b 7900 a3de 2bc8 6ba0 3a90 02d4 0000 c5c1 9afe 1055 5111 887e 7b64 3c7e 31c8 0000 9a8c ce31 8fbb 0000 5e8b 2833 3db4 0000 4d93 8d7d 4909 51a3 c9c9 5cce 0000 eebc bc6c d378 806c 7112 0000 422e c7ce 0000 df81 5db0 7dec 8c07 d7e3 54fa 767c d4ac ae70 ba89 4edc bc20 00e0 0000 ec56 0000 9a20 7668 5d51 c40d 7db1 d7cd 2e2e a2cc 14be b82c 0000 32d6 be28 2607 b08c 628c 0000 127e aa94 b99e 47b4 4a3d [END]
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 0008 0000 50d8 3230 9788 faa8 ed50 19d8 64a8 3a40 8840 bc98 d348 0f70 40d0 c1e8 9a20 c470 dc30 3ff0 bbe0 86f8 9938 7c30 bbb0 3e80 41e8 a3d8 6d08 9110 a6a8 f5a8 4268 2bc0 b0a8 9238 a648 1598 ba10 3d40 4838 b9a8 76d0 9f18 10c8 9198 8310 f818 4148 e400 8f78 5e40 8f80 7520 05a8 bf30 2e08 d7f0 d638 8888 a730 9e60 a150 efc0 ba30 d460 49e8 7f48 a670 22e8 a6b8 f9e0 5ae8 7988 48c8 1818 1c38 1a18 4cd0 a010 dd78 5090 a6f0 00d8 c448 f960 05d0 3fb0 c500 91b8 bb60 fda0 6038 9508 2190 b3e0 a958 2680 d448 9db8 4b00 0380 8a48 b158 fc68 5d00 ecd0 8f38 7258 f9d8 5948 92e8 b220 52f8 e0b0 1ec8 8790 7c50 6568 6118 70a0 1978 18a8 aa50 ccf0 1ed0 51e8 [END]
+  instr = R23 = R27 + R23;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 000c 0000 f944 b18e 905b 58a7 b1fc 4676 64a8 3a40 bd68 2bbe cf3b dcf2 d104 307a 26dc c470 d33c 47e6 2464 f7d7 4c9c 9f0c 0cc4 9f40 883d a8f6 eda1 0bba b1d3 d45d a84d c578 fa93 7247 717f 2064 cb8c 3d40 da46 0000 235e ca4d 0864 9198 4498 b61e f87b 5d00 3356 8a08 6ba0 afb0 02d4 bf30 c5c1 72ee e68d d999 887e 19c4 3c7e 2188 0000 9a8c ce31 0f03 0000 5e8b ceeb 3db4 5ae8 c71b 8d7d 4909 51a3 e3e1 5cce 0000 eebc 0cfc 7a68 806c 7112 0000 47fe 077e 0000 df81 1910 7b8c ec3f 6ceb 54fa 767c 7e04 ae70 8ed1 4edc bc20 0460 8a48 ec56 0000 f720 7668 ec89 c40d 7789 d7cd 2e2e 54ec 67b6 b82c 0000 32d6 be28 2607 b08c d32c 0000 2b26 aa94 868e 47b4 9c25 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 fffe 0001 ffff 0000 0000 0000 0000 0000 0000 0002 ffff fffe 0001 ffff 0000 0003 0000 ffff 0002 fffd 0000 ffff 0000 ffff 0000 ffff 0000 ffff fffe ffff ffff ffff ffff fffd 0000 0001 fffe ffff 0000 0000 0000 fffe 0003 0000 0000 0001 ffff fffe 0000 0000 0000 0000 0000 0000 0000 ffff ffff 0001 0000 fffe ffff 0000 fffe 0000 ffff 0000 0000 0000 fffe ffff ffff 0000 0001 ffff ffff 0001 0000 ffff 0000 0001 0001 0001 0001 0000 0000 ffff 0000 0000 fffd ffff 0003 ffff ffff 0001 0000 0000 ffff ffff fffe ffff ffff 0000 0000 0000 ffff 0000 0001 fffd 0001 0000 0001 0000 ffff ffff 0000 0000 ffff 0000 0000 0000 0000 0000 0000 ffff 0000 0000 [END]
+  instr = R22 = ADDC(R31, R22);
+
+After ADDC:
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 fffe 0001 ffff 0001 0001 0000 0000 0000 0000 0002 0000 fffe 0001 ffff 0000 0003 0000 0000 0002 fffd 0000 ffff 0000 ffff 0000 ffff 0000 ffff ffff ffff 0000 ffff ffff fffd 0000 0001 fffe ffff 0000 0000 0000 ffff 0003 0000 0000 0002 0000 fffe 0001 0001 0000 0000 0000 0000 0000 ffff 0000 0001 0000 fffe 0000 0000 ffff 0000 ffff 0000 0001 0000 fffe ffff ffff 0000 0001 ffff ffff 0001 0000 ffff 0000 0001 0002 0002 0001 0000 0000 ffff 0001 0000 fffd 0000 0004 ffff 0000 0001 0000 0001 ffff 0000 fffe ffff ffff 0000 0000 0000 ffff 0000 0001 fffd 0002 0000 0001 0001 ffff ffff 0000 0000 ffff 0000 0000 0000 0000 0000 0000 0000 0000 0000 [END]
+  instr = R22 = R26 + R22;
+
+  instr = END_WHERE;
+
+  instr = R25 = R25 >> 1;
+
+Print reg IDX:
+
+  instr = PRINTREG(R05);
+
+R[ 5] (starting from index 0) = 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 [END]
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 000c 0000 f944 b18e 905b 58a7 b1fc 4676 64a8 3a40 bd68 2bbe cf3b dcf2 d104 307a 26dc c470 d33c 47e6 2464 f7d7 4c9c 9f0c 0cc4 9f40 883d a8f6 eda1 0bba b1d3 d45d a84d c578 fa93 7247 717f 2064 cb8c 3d40 da46 0000 235e ca4d 0864 9198 4498 b61e f87b 5d00 3356 8a08 6ba0 afb0 02d4 bf30 c5c1 72ee e68d d999 887e 19c4 3c7e 2188 0000 9a8c ce31 0f03 0000 5e8b ceeb 3db4 5ae8 c71b 8d7d 4909 51a3 e3e1 5cce 0000 eebc 0cfc 7a68 806c 7112 0000 47fe 077e 0000 df81 1910 7b8c ec3f 6ceb 54fa 767c 7e04 ae70 8ed1 4edc bc20 0460 8a48 ec56 0000 f720 7668 ec89 c40d 7789 d7cd 2e2e 54ec 67b6 b82c 0000 32d6 be28 2607 b08c d32c 0000 2b26 aa94 868e 47b4 9c25 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 fffe 0004 fffe 0003 0001 0000 0000 fffd fffd 0005 fffd fffe 0003 fffd 0000 0003 fffd ffff 0005 fffd 0003 ffff 0000 ffff 0000 ffff 0000 ffff fffc ffff fffe ffff ffff fffd 0000 0001 fffa ffff 0000 0002 0000 fffb 0006 0000 fffd 0005 fffe fffe 0002 0003 0001 0000 0000 0000 0002 ffff fffc 0003 0002 fffe fffe 0000 fffc 0000 ffff 0000 0002 0000 fffe fffd ffff fffc 0004 ffff ffff 0001 0002 ffff 0000 0001 0004 0005 0001 0000 0000 fffd 0002 0000 fffd fffe 0007 fffb ffff 0001 0000 0002 ffff fffd fffe ffff fffb fffc 0000 0000 fffe 0000 0002 fffd 0005 0000 0001 0002 fffb ffff 0000 0000 ffff 0000 0000 0000 0000 0000 0000 fffd 0000 0002 [END]
+  instr = R05 = R30 + R05;
+
+Preparing to jump from loop iter #11
+  instr = END_REPEAT;
+
+  instr = R27 = R24 << R05;
+
+  instr = R04 = R28 - R05;
+
+  instr = R26 = SHRA(R24, R04);
+
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 0010 0000 a1b0 6460 2f10 f550 daa0 33b0 c950 7480 1080 7930 a690 1ee0 81a0 83d0 3440 88e0 b860 7fe0 77c0 0df0 3270 f860 7760 7d00 83d0 47b0 da10 2220 4d50 eb50 84d0 5780 6150 2470 4c90 2b30 7420 7a80 9070 7350 eda0 3e30 2190 2330 0620 f030 8290 c800 1ef0 bc80 1f00 ea40 0b50 7e60 5c10 afe0 ac70 1110 4e60 3cc0 42a0 df80 7460 a8c0 93d0 fe90 4ce0 45d0 4d70 f3c0 b5d0 f310 9190 3030 3870 3430 99a0 4020 baf0 a120 4de0 01b0 8890 f2c0 0ba0 7f60 8a00 2370 76c0 fb40 c070 2a10 4320 67c0 52b0 4d00 a890 3b70 9600 0700 1490 62b0 f8d0 ba00 d9a0 1e70 e4b0 f3b0 b290 25d0 6440 a5f0 c160 3d90 0f20 f8a0 cad0 c230 e140 32f0 3150 54a0 99e0 3da0 a3d0 [END]
+Print reg SRC1_ALIGNEDHIGH:
+ 
+  instr = PRINTREG(R26);
+
+R[26] (starting from index 0) = fff8 0000 fff8 0006 fffe 0005 0001 0001 0002 fffa fffa 0007 fffb fff9 0004 fffc 0001 0007 fffb ffff 0006 fff9 0007 fffd 0004 fffd 0002 fff8 0005 fffe fffb ffff fffd fffa fffc fffb 0007 0003 fff8 ffff 0000 0004 fff9 fff8 0007 0000 fffb 0007 fffd fffa 0003 0005 0002 0001 0000 0000 0005 fffc fff9 0005 0005 fffb fffd 0001 fffb fffd fff9 0002 0002 ffff fffc fffd fffb fff8 0006 fffe fffc 0004 0004 fffc fff9 0007 0004 0007 0006 0003 fffd fffc 0002 0007 fffb fffd 0007 fff8 ffff 0004 0007 0003 fffe fffb fff9 fffe fff8 fff9 0007 fffb fffe 0001 0003 fffa 0007 0002 0003 0003 fff8 fffd 0006 0001 fffe 0000 0002 0000 fffe 0000 0005 fffb 0002 0004 [END]
+  instr = R20 = R25 & R30;
+
+  instr = R19 = R20 == R30;
+
+  instr = NOP;
+
+  instr = WHERE_EQ;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 000c 0000 f944 b18e 905b 58a7 b1fc 4676 64a8 3a40 bd68 2bbe cf3b dcf2 d104 307a 26dc c470 d33c 47e6 2464 f7d7 4c9c 9f0c 0cc4 9f40 883d a8f6 eda1 0bba b1d3 d45d a84d c578 fa93 7247 717f 2064 cb8c 3d40 da46 0000 235e ca4d 0864 9198 4498 b61e f87b 5d00 3356 8a08 6ba0 afb0 02d4 bf30 c5c1 72ee e68d d999 887e 19c4 3c7e 2188 0000 9a8c ce31 0f03 0000 5e8b ceeb 3db4 5ae8 c71b 8d7d 4909 51a3 e3e1 5cce 0000 eebc 0cfc 7a68 806c 7112 0000 47fe 077e 0000 df81 1910 7b8c ec3f 6ceb 54fa 767c 7e04 ae70 8ed1 4edc bc20 0460 8a48 ec56 0000 f720 7668 ec89 c40d 7789 d7cd 2e2e 54ec 67b6 b82c 0000 32d6 be28 2607 b08c d32c 0000 2b26 aa94 868e 47b4 9c25 [END]
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 0010 0000 a1b0 6460 2f10 f550 daa0 33b0 c950 7480 1080 7930 a690 1ee0 81a0 83d0 3440 88e0 b860 7fe0 77c0 0df0 3270 f860 7760 7d00 83d0 47b0 da10 2220 4d50 eb50 84d0 5780 6150 2470 4c90 2b30 7420 7a80 9070 7350 eda0 3e30 2190 2330 0620 f030 8290 c800 1ef0 bc80 1f00 ea40 0b50 7e60 5c10 afe0 ac70 1110 4e60 3cc0 42a0 df80 7460 a8c0 93d0 fe90 4ce0 45d0 4d70 f3c0 b5d0 f310 9190 3030 3870 3430 99a0 4020 baf0 a120 4de0 01b0 8890 f2c0 0ba0 7f60 8a00 2370 76c0 fb40 c070 2a10 4320 67c0 52b0 4d00 a890 3b70 9600 0700 1490 62b0 f8d0 ba00 d9a0 1e70 e4b0 f3b0 b290 25d0 6440 a5f0 c160 3d90 0f20 f8a0 cad0 c230 e140 32f0 3150 54a0 99e0 3da0 a3d0 [END]
+  instr = R23 = R27 + R23;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 001c 0000 f944 b18e 905b 4df7 b1fc 4676 2df8 3a40 bd68 a4ee cf3b fbd2 52a4 b44a 5b1c 4d50 8b9c c7c6 9c24 f7d7 7f0c 976c 0cc4 1c40 0c0d a8f6 eda1 2dda b1d3 d45d a84d c578 fa93 7247 be0f 4b94 3fac b7c0 da46 7350 10fe ca4d 29f4 b4c8 4ab8 a64e f87b 2500 5246 8a08 6ba0 99f0 0e24 3d90 c5c1 22ce 92fd eaa9 d6de 19c4 7f1e 2188 0000 9a8c ce31 0f03 4ce0 5e8b 1c5b 3db4 5ae8 ba2b 8d7d 7939 51a3 e3e1 5cce 4020 eebc ae1c c848 821c f9a2 f2c0 539e 077e 8a00 df81 8fd0 7b8c acaf 96fb 981a 767c d0b4 ae70 8ed1 4edc 5220 0460 8a48 4f06 0000 f720 5008 0af9 a8bd 7789 d7cd 2e2e 54ec 0da6 b82c 3d90 41f6 be28 f0d7 72bc d32c 32f0 5c76 ff34 868e 47b4 9c25 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 fffe 0004 fffe 0003 0001 0000 0000 fffd fffd 0005 fffd fffe 0003 fffd 0000 0003 fffd ffff 0005 fffd 0003 ffff 0000 ffff 0000 ffff 0000 ffff fffc ffff fffe ffff ffff fffd 0000 0001 fffa ffff 0000 0002 0000 fffb 0006 0000 fffd 0005 fffe fffe 0002 0003 0001 0000 0000 0000 0002 ffff fffc 0003 0002 fffe fffe 0000 fffc 0000 ffff 0000 0002 0000 fffe fffd ffff fffc 0004 ffff ffff 0001 0002 ffff 0000 0001 0004 0005 0001 0000 0000 fffd 0002 0000 fffd fffe 0007 fffb ffff 0001 0000 0002 ffff fffd fffe ffff fffb fffc 0000 0000 fffe 0000 0002 fffd 0005 0000 0001 0002 fffb ffff 0000 0000 ffff 0000 0000 0000 0000 0000 0000 fffd 0000 0002 [END]
+  instr = R22 = ADDC(R31, R22);
+
+After ADDC:
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 fffe 0004 fffe 0003 0002 0000 0000 fffe fffd 0005 fffd fffe 0003 fffe 0000 0003 fffe 0000 0005 fffd 0003 ffff 0001 ffff 0001 0000 0000 ffff fffc ffff fffe ffff ffff fffd 0000 0001 fffa 0000 0000 0002 0000 fffc 0006 0000 fffd 0005 ffff fffe 0003 0003 0001 0000 0001 0000 0003 ffff fffd 0004 0002 fffe fffe 0000 fffc 0000 ffff 0000 0002 0000 fffe fffe ffff fffc 0005 ffff ffff 0001 0002 ffff 0000 0001 0004 0005 0001 0000 0000 fffd 0002 0000 fffd fffe 0007 fffc ffff 0001 0000 0002 ffff fffd fffe 0000 fffb fffc 0001 0000 fffe 0001 0003 fffe 0005 0000 0001 0002 fffc ffff 0000 0000 ffff 0000 0001 0000 0000 0000 0000 fffd 0000 0002 [END]
+  instr = R22 = R26 + R22;
+
+  instr = END_WHERE;
+
+  instr = R25 = R25 >> 1;
+
+Print reg IDX:
+
+  instr = PRINTREG(R05);
+
+R[ 5] (starting from index 0) = 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 [END]
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 001c 0000 f944 b18e 905b 4df7 b1fc 4676 2df8 3a40 bd68 a4ee cf3b fbd2 52a4 b44a 5b1c 4d50 8b9c c7c6 9c24 f7d7 7f0c 976c 0cc4 1c40 0c0d a8f6 eda1 2dda b1d3 d45d a84d c578 fa93 7247 be0f 4b94 3fac b7c0 da46 7350 10fe ca4d 29f4 b4c8 4ab8 a64e f87b 2500 5246 8a08 6ba0 99f0 0e24 3d90 c5c1 22ce 92fd eaa9 d6de 19c4 7f1e 2188 0000 9a8c ce31 0f03 4ce0 5e8b 1c5b 3db4 5ae8 ba2b 8d7d 7939 51a3 e3e1 5cce 4020 eebc ae1c c848 821c f9a2 f2c0 539e 077e 8a00 df81 8fd0 7b8c acaf 96fb 981a 767c d0b4 ae70 8ed1 4edc 5220 0460 8a48 4f06 0000 f720 5008 0af9 a8bd 7789 d7cd 2e2e 54ec 0da6 b82c 3d90 41f6 be28 f0d7 72bc d32c 32f0 5c76 ff34 868e 47b4 9c25 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 fffe 0004 fffe 0003 0003 0000 0000 fff8 fffd 0005 fff8 fffe 0007 fffa 0001 000a fff9 ffff 000b fff6 0003 fffc 0005 ffff 0003 fff8 0000 ffff fff7 ffff fffe ffff ffff fffd 0000 0004 fff2 ffff 0000 0002 fff9 fff4 0006 0000 fff8 000c fffc fffe 0006 0008 0001 0000 0001 0000 0008 ffff fff6 0009 0007 fff9 fffe 0001 fffc 0000 ffff 0000 0002 ffff fffe fffb ffff fffc 000b ffff fffb 0001 0002 ffff fff9 0001 0008 000c 0007 0003 fffd fff9 0002 0007 fffd fffb 0007 fff4 fffe 0005 0000 0005 ffff fffd fffe fffe fffb fffc 0008 0000 fffe 0002 0006 fff8 0005 0000 0001 0002 fff4 ffff 0006 0001 ffff 0000 0003 0000 fffe 0000 0005 fffd 0000 0002 [END]
+  instr = R05 = R30 + R05;
+
+Preparing to jump from loop iter #10
+  instr = END_REPEAT;
+
+  instr = R27 = R24 << R05;
+
+  instr = R04 = R28 - R05;
+
+  instr = R26 = SHRA(R24, R04);
+
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 0020 0000 4360 c8c0 5e20 eaa0 b540 6760 92a0 e900 2100 f260 4d20 3dc0 0340 07a0 6880 11c0 70c0 ffc0 ef80 1be0 64e0 f0c0 eec0 fa00 07a0 8f60 b420 4440 9aa0 d6a0 09a0 af00 c2a0 48e0 9920 5660 e840 f500 20e0 e6a0 db40 7c60 4320 4660 0c40 e060 0520 9000 3de0 7900 3e00 d480 16a0 fcc0 b820 5fc0 58e0 2220 9cc0 7980 8540 bf00 e8c0 5180 27a0 fd20 99c0 8ba0 9ae0 e780 6ba0 e620 2320 6060 70e0 6860 3340 8040 75e0 4240 9bc0 0360 1120 e580 1740 fec0 1400 46e0 ed80 f680 80e0 5420 8640 cf80 a560 9a00 5120 76e0 2c00 0e00 2920 c560 f1a0 7400 b340 3ce0 c960 e760 6520 4ba0 c880 4be0 82c0 7b20 1e40 f140 95a0 8460 c280 65e0 62a0 a940 33c0 7b40 47a0 [END]
+Print reg SRC1_ALIGNEDHIGH:
+ 
+  instr = PRINTREG(R26);
+
+R[26] (starting from index 0) = fff0 0000 fff0 000d fffc 000a 0003 0003 0004 fff5 fff4 000e fff6 fff3 0008 fff9 0003 000e fff7 ffff 000c fff2 000e fffa 0009 fffa 0004 fff1 000a fffd fff6 fffe fffb fff5 fff8 fff6 000e 0006 fff0 fffe 0000 0009 fff2 fff1 000e 0000 fff6 000e fffb fff5 0007 000a 0005 0002 0001 0000 000a fff8 fff3 000b 000a fff6 fffa 0002 fff7 fffa fff3 0005 0005 fffe fff8 fffa fff7 fff1 000d fffd fff8 0008 0008 fff9 fff2 000f 0009 000e 000c 0007 fffb fff8 0004 000f fff6 fffa 000f fff1 fffe 0008 000e 0006 fffc fff7 fff2 fffd fff0 fff2 000e fff7 fffd 0003 0006 fff5 000f 0005 0006 0006 fff1 fffb 000c 0002 fffd 0001 0005 0001 fffc 0000 000a fff7 0004 0009 [END]
+  instr = R20 = R25 & R30;
+
+  instr = R19 = R20 == R30;
+
+  instr = NOP;
+
+  instr = WHERE_EQ;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 001c 0000 f944 b18e 905b 4df7 b1fc 4676 2df8 3a40 bd68 a4ee cf3b fbd2 52a4 b44a 5b1c 4d50 8b9c c7c6 9c24 f7d7 7f0c 976c 0cc4 1c40 0c0d a8f6 eda1 2dda b1d3 d45d a84d c578 fa93 7247 be0f 4b94 3fac b7c0 da46 7350 10fe ca4d 29f4 b4c8 4ab8 a64e f87b 2500 5246 8a08 6ba0 99f0 0e24 3d90 c5c1 22ce 92fd eaa9 d6de 19c4 7f1e 2188 0000 9a8c ce31 0f03 4ce0 5e8b 1c5b 3db4 5ae8 ba2b 8d7d 7939 51a3 e3e1 5cce 4020 eebc ae1c c848 821c f9a2 f2c0 539e 077e 8a00 df81 8fd0 7b8c acaf 96fb 981a 767c d0b4 ae70 8ed1 4edc 5220 0460 8a48 4f06 0000 f720 5008 0af9 a8bd 7789 d7cd 2e2e 54ec 0da6 b82c 3d90 41f6 be28 f0d7 72bc d32c 32f0 5c76 ff34 868e 47b4 9c25 [END]
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 0020 0000 4360 c8c0 5e20 eaa0 b540 6760 92a0 e900 2100 f260 4d20 3dc0 0340 07a0 6880 11c0 70c0 ffc0 ef80 1be0 64e0 f0c0 eec0 fa00 07a0 8f60 b420 4440 9aa0 d6a0 09a0 af00 c2a0 48e0 9920 5660 e840 f500 20e0 e6a0 db40 7c60 4320 4660 0c40 e060 0520 9000 3de0 7900 3e00 d480 16a0 fcc0 b820 5fc0 58e0 2220 9cc0 7980 8540 bf00 e8c0 5180 27a0 fd20 99c0 8ba0 9ae0 e780 6ba0 e620 2320 6060 70e0 6860 3340 8040 75e0 4240 9bc0 0360 1120 e580 1740 fec0 1400 46e0 ed80 f680 80e0 5420 8640 cf80 a560 9a00 5120 76e0 2c00 0e00 2920 c560 f1a0 7400 b340 3ce0 c960 e760 6520 4ba0 c880 4be0 82c0 7b20 1e40 f140 95a0 8460 c280 65e0 62a0 a940 33c0 7b40 47a0 [END]
+  instr = R23 = R27 + R23;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 003c 0000 3ca4 b18e ee7b 3897 b1fc 4676 c098 2340 bd68 a4ee 1c5b fbd2 52a4 bbea c39c 4d50 8b9c c7c6 9c24 13b7 7f0c 882c 0cc4 1640 0c0d a8f6 eda1 721a b1d3 aafd b1ed 7478 bd33 7247 be0f 4b94 3fac acc0 fb26 59f0 ec3e 46ad 29f4 b4c8 4ab8 a64e f87b b500 9026 0308 a9a0 6e70 0e24 3d90 7de1 828e ebdd eaa9 d6de 9344 045e e088 0000 ec0c f5d1 0f03 4ce0 5e8b b73b 2534 c688 a04b 8d7d d999 51a3 e3e1 900e c060 649c ae1c c848 821c 0ac2 f2c0 6ade 077e 8a00 df81 8fd0 720c acaf 96fb 1e5a 45fc d0b4 4870 dff1 c5bc 5220 0460 b368 1466 f1a0 f720 0348 0af9 721d 7789 d7cd 2e2e 1d6c 0da6 3aec b8b0 6036 be28 f0d7 72bc 95ac 98d0 5c76 a874 868e 47b4 e3c5 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 fffe 0004 fffe 0003 0003 0000 0000 fff8 fffd 0005 fff8 fffe 0007 fffa 0001 000a fff9 ffff 000b fff6 0003 fffc 0005 ffff 0003 fff8 0000 ffff fff7 ffff fffe ffff ffff fffd 0000 0004 fff2 ffff 0000 0002 fff9 fff4 0006 0000 fff8 000c fffc fffe 0006 0008 0001 0000 0001 0000 0008 ffff fff6 0009 0007 fff9 fffe 0001 fffc 0000 ffff 0000 0002 ffff fffe fffb ffff fffc 000b ffff fffb 0001 0002 ffff fff9 0001 0008 000c 0007 0003 fffd fff9 0002 0007 fffd fffb 0007 fff4 fffe 0005 0000 0005 ffff fffd fffe fffe fffb fffc 0008 0000 fffe 0002 0006 fff8 0005 0000 0001 0002 fff4 ffff 0006 0001 ffff 0000 0003 0000 fffe 0000 0005 fffd 0000 0002 [END]
+  instr = R22 = ADDC(R31, R22);
+
+After ADDC:
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 fffe 0005 fffe 0003 0004 0000 0000 fff8 fffe 0005 fff8 ffff 0007 fffa 0001 000a fff9 ffff 000b fff6 0004 fffc 0006 ffff 0004 fff8 0000 ffff fff7 ffff ffff ffff 0000 fffe 0000 0004 fff2 ffff 0001 0002 fffa fff4 0007 0000 fff8 000c fffc fffe 0006 0008 0002 0000 0002 0000 0008 0000 fff6 0009 0007 fff9 fffe 0002 fffc 0000 ffff 0000 0002 ffff fffe fffb 0000 fffc 000c ffff fffb 0001 0002 ffff fff9 0002 0008 000c 0007 0004 fffd fff9 0002 0007 fffd fffb 0008 fff4 fffe 0006 0001 0005 0000 fffd fffe fffe fffb fffc 0009 0000 fffe 0003 0006 fff9 0005 0000 0001 0003 fff4 0000 0006 0001 ffff 0000 0003 0001 fffe 0000 0006 fffd 0000 0002 [END]
+  instr = R22 = R26 + R22;
+
+  instr = END_WHERE;
+
+  instr = R25 = R25 >> 1;
+
+Print reg IDX:
+
+  instr = PRINTREG(R05);
+
+R[ 5] (starting from index 0) = 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 0005 [END]
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 003c 0000 3ca4 b18e ee7b 3897 b1fc 4676 c098 2340 bd68 a4ee 1c5b fbd2 52a4 bbea c39c 4d50 8b9c c7c6 9c24 13b7 7f0c 882c 0cc4 1640 0c0d a8f6 eda1 721a b1d3 aafd b1ed 7478 bd33 7247 be0f 4b94 3fac acc0 fb26 59f0 ec3e 46ad 29f4 b4c8 4ab8 a64e f87b b500 9026 0308 a9a0 6e70 0e24 3d90 7de1 828e ebdd eaa9 d6de 9344 045e e088 0000 ec0c f5d1 0f03 4ce0 5e8b b73b 2534 c688 a04b 8d7d d999 51a3 e3e1 900e c060 649c ae1c c848 821c 0ac2 f2c0 6ade 077e 8a00 df81 8fd0 720c acaf 96fb 1e5a 45fc d0b4 4870 dff1 c5bc 5220 0460 b368 1466 f1a0 f720 0348 0af9 721d 7789 d7cd 2e2e 1d6c 0da6 3aec b8b0 6036 be28 f0d7 72bc 95ac 98d0 5c76 a874 868e 47b4 e3c5 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 ffee 0012 fffe 000d 0007 0000 0000 ffed fff2 0005 fff8 fff2 0007 fffa 0004 0018 fff9 ffff 000b fff6 0012 fffc 000f ffff 0008 fff8 0000 ffff ffed ffff fffa fff4 fff8 fff4 0000 0004 fff2 ffff 0001 000b ffec ffe5 0015 0000 fff8 000c fffc fffe 000d 0012 0007 0002 0003 0000 0008 fff8 ffe9 0014 0007 fff9 fff8 0004 fff3 0000 fff2 0005 0002 ffff fffe fff5 fff7 ffed 0019 ffff fff3 0001 0002 fff8 ffeb 0011 0008 000c 0007 000b fffd fff1 0002 0007 fffd fffb 0017 fff4 fffe 000e 000f 0005 fffc fff4 fff0 fffe fffb ffee 0017 fff7 fffe 0006 0006 ffee 0005 0000 0001 0009 fff4 fffb 0012 0003 ffff 0000 0003 0002 fffa 0000 0010 fffd 0000 000b [END]
+  instr = R05 = R30 + R05;
+
+Preparing to jump from loop iter #9
+  instr = END_REPEAT;
+
+  instr = R27 = R24 << R05;
+
+  instr = R04 = R28 - R05;
+
+  instr = R26 = SHRA(R24, R04);
+
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 0040 0000 86c0 9180 bc40 d540 6a80 cec0 2540 d200 4200 e4c0 9a40 7b80 0680 0f40 d100 2380 e180 ff80 df00 37c0 c9c0 e180 dd80 f400 0f40 1ec0 6840 8880 3540 ad40 1340 5e00 8540 91c0 3240 acc0 d080 ea00 41c0 cd40 b680 f8c0 8640 8cc0 1880 c0c0 0a40 2000 7bc0 f200 7c00 a900 2d40 f980 7040 bf80 b1c0 4440 3980 f300 0a80 7e00 d180 a300 4f40 fa40 3380 1740 35c0 cf00 d740 cc40 4640 c0c0 e1c0 d0c0 6680 0080 ebc0 8480 3780 06c0 2240 cb00 2e80 fd80 2800 8dc0 db00 ed00 01c0 a840 0c80 9f00 4ac0 3400 a240 edc0 5800 1c00 5240 8ac0 e340 e800 6680 79c0 92c0 cec0 ca40 9740 9100 97c0 0580 f640 3c80 e280 2b40 08c0 8500 cbc0 c540 5280 6780 f680 8f40 [END]
+Print reg SRC1_ALIGNEDHIGH:
+ 
+  instr = PRINTREG(R26);
+
+R[26] (starting from index 0) = ffe0 0000 ffe0 001a fff9 0014 0007 0007 0008 ffeb ffe9 001c ffed ffe6 0010 fff2 0006 001c ffee fffe 0019 ffe5 001c fff4 0013 fff5 0009 ffe2 0015 fffb ffec fffd fff7 ffea fff1 ffed 001c 000d ffe0 fffd 0001 0012 ffe5 ffe3 001c 0000 ffec 001c fff7 ffea 000f 0014 000a 0004 0003 0000 0015 fff1 ffe6 0016 0014 ffed fff4 0005 ffef fff5 ffe6 000a 000b fffd fff1 fff5 ffef ffe2 001b fffa fff0 0010 0010 fff2 ffe5 001e 0012 001d 0018 000e fff7 fff0 0009 001e ffec fff5 001f ffe3 fffc 0011 001d 000d fff9 ffee ffe4 fffa ffe0 ffe4 001d ffef fffa 0007 000c ffeb 001f 000a 000c 000d ffe2 fff7 0018 0004 fffb 0003 000b 0003 fff8 0000 0015 ffee 0008 0012 [END]
+  instr = R20 = R25 & R30;
+
+  instr = R19 = R20 == R30;
+
+  instr = NOP;
+
+  instr = WHERE_EQ;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 003c 0000 3ca4 b18e ee7b 3897 b1fc 4676 c098 2340 bd68 a4ee 1c5b fbd2 52a4 bbea c39c 4d50 8b9c c7c6 9c24 13b7 7f0c 882c 0cc4 1640 0c0d a8f6 eda1 721a b1d3 aafd b1ed 7478 bd33 7247 be0f 4b94 3fac acc0 fb26 59f0 ec3e 46ad 29f4 b4c8 4ab8 a64e f87b b500 9026 0308 a9a0 6e70 0e24 3d90 7de1 828e ebdd eaa9 d6de 9344 045e e088 0000 ec0c f5d1 0f03 4ce0 5e8b b73b 2534 c688 a04b 8d7d d999 51a3 e3e1 900e c060 649c ae1c c848 821c 0ac2 f2c0 6ade 077e 8a00 df81 8fd0 720c acaf 96fb 1e5a 45fc d0b4 4870 dff1 c5bc 5220 0460 b368 1466 f1a0 f720 0348 0af9 721d 7789 d7cd 2e2e 1d6c 0da6 3aec b8b0 6036 be28 f0d7 72bc 95ac 98d0 5c76 a874 868e 47b4 e3c5 [END]
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 0040 0000 86c0 9180 bc40 d540 6a80 cec0 2540 d200 4200 e4c0 9a40 7b80 0680 0f40 d100 2380 e180 ff80 df00 37c0 c9c0 e180 dd80 f400 0f40 1ec0 6840 8880 3540 ad40 1340 5e00 8540 91c0 3240 acc0 d080 ea00 41c0 cd40 b680 f8c0 8640 8cc0 1880 c0c0 0a40 2000 7bc0 f200 7c00 a900 2d40 f980 7040 bf80 b1c0 4440 3980 f300 0a80 7e00 d180 a300 4f40 fa40 3380 1740 35c0 cf00 d740 cc40 4640 c0c0 e1c0 d0c0 6680 0080 ebc0 8480 3780 06c0 2240 cb00 2e80 fd80 2800 8dc0 db00 ed00 01c0 a840 0c80 9f00 4ac0 3400 a240 edc0 5800 1c00 5240 8ac0 e340 e800 6680 79c0 92c0 cec0 ca40 9740 9100 97c0 0580 f640 3c80 e280 2b40 08c0 8500 cbc0 c540 5280 6780 f680 8f40 [END]
+  instr = R23 = R27 + R23;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 007c 0000 c364 430e ee7b 0dd7 1c7c 1536 e5d8 f540 bd68 89ae b69b fbd2 52a4 bbea c39c 70d0 6d1c c746 9c24 4b77 48cc 882c ea44 1640 0c0d a8f6 55e1 721a b1d3 583d b1ed d278 4273 7247 be0f f854 3fac acc0 fb26 59f0 a2be 46ad b034 b4c8 6338 a64e 02bb d500 9026 0308 25a0 6e70 0e24 3710 ee21 420e ebdd eaa9 d6de 8644 045e 5e88 0000 ec0c 4511 0f03 8060 75cb b73b 2534 c688 6c8b d3bd 9a59 3363 b4a1 f68e c0e0 649c ae1c ffc8 88dc 2d02 f2c0 6ade 04fe b200 6d41 6ad0 5f0c acaf 96fb 2ada e4fc d0b4 4870 dff1 c5bc 5220 2060 05a8 1466 d4e0 df20 0348 84b9 04dd 4649 d7cd 2e2e 1d6c 0da6 3aec aef0 9cb6 be28 1c17 72bc 95ac 6490 5c76 a874 ee0e 47b4 e3c5 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 ffee 0012 fffe 000d 0007 0000 0000 ffed fff2 0005 fff8 fff2 0007 fffa 0004 0018 fff9 ffff 000b fff6 0012 fffc 000f ffff 0008 fff8 0000 ffff ffed ffff fffa fff4 fff8 fff4 0000 0004 fff2 ffff 0001 000b ffec ffe5 0015 0000 fff8 000c fffc fffe 000d 0012 0007 0002 0003 0000 0008 fff8 ffe9 0014 0007 fff9 fff8 0004 fff3 0000 fff2 0005 0002 ffff fffe fff5 fff7 ffed 0019 ffff fff3 0001 0002 fff8 ffeb 0011 0008 000c 0007 000b fffd fff1 0002 0007 fffd fffb 0017 fff4 fffe 000e 000f 0005 fffc fff4 fff0 fffe fffb ffee 0017 fff7 fffe 0006 0006 ffee 0005 0000 0001 0009 fff4 fffb 0012 0003 ffff 0000 0003 0002 fffa 0000 0010 fffd 0000 000b [END]
+  instr = R22 = ADDC(R31, R22);
+
+After ADDC:
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 ffee 0012 ffff 000d 0008 0001 0001 ffed fff2 0005 fff9 fff2 0007 fffa 0004 0018 fff9 0000 000c fff6 0012 fffd 000f ffff 0008 fff8 0000 0000 ffed ffff fffb fff4 fff8 fff5 0000 0004 fff2 ffff 0001 000b ffec ffe6 0015 0000 fff8 000c fffc ffff 000d 0012 0007 0003 0003 0000 0009 fff8 ffea 0014 0007 fff9 fff9 0004 fff4 0000 fff2 0006 0002 ffff fffe fff5 fff7 ffed 001a ffff fff4 0002 0003 fff8 ffeb 0011 0008 000c 0007 000b fffd fff1 0003 0007 fffe fffc 0018 fff4 fffe 000e 000f 0005 fffc fff4 fff0 fffe fffb ffef 0017 fff8 ffff 0006 0006 ffef 0006 0000 0001 0009 fff4 fffb 0013 0003 ffff 0001 0003 0002 fffb 0000 0010 fffd 0000 000b [END]
+  instr = R22 = R26 + R22;
+
+  instr = END_WHERE;
+
+  instr = R25 = R25 >> 1;
+
+Print reg IDX:
+
+  instr = PRINTREG(R05);
+
+R[ 5] (starting from index 0) = 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 0006 [END]
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 007c 0000 c364 430e ee7b 0dd7 1c7c 1536 e5d8 f540 bd68 89ae b69b fbd2 52a4 bbea c39c 70d0 6d1c c746 9c24 4b77 48cc 882c ea44 1640 0c0d a8f6 55e1 721a b1d3 583d b1ed d278 4273 7247 be0f f854 3fac acc0 fb26 59f0 a2be 46ad b034 b4c8 6338 a64e 02bb d500 9026 0308 25a0 6e70 0e24 3710 ee21 420e ebdd eaa9 d6de 8644 045e 5e88 0000 ec0c 4511 0f03 8060 75cb b73b 2534 c688 6c8b d3bd 9a59 3363 b4a1 f68e c0e0 649c ae1c ffc8 88dc 2d02 f2c0 6ade 04fe b200 6d41 6ad0 5f0c acaf 96fb 2ada e4fc d0b4 4870 dff1 c5bc 5220 2060 05a8 1466 d4e0 df20 0348 84b9 04dd 4649 d7cd 2e2e 1d6c 0da6 3aec aef0 9cb6 be28 1c17 72bc 95ac 6490 5c76 a874 ee0e 47b4 e3c5 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 ffce 002c fff8 000d 000f 0008 0009 ffd8 ffdb 0005 ffe6 ffd8 0007 fffa 0004 0018 ffe7 fffe 0025 fff6 002e fff1 000f fff4 0008 fff8 0000 fffb ffed ffff fff2 fff4 ffe9 ffe2 0000 0004 ffd2 ffff 0001 000b ffec ffc9 0015 0000 fff8 0028 fffc ffe9 001c 0012 0007 0007 0003 0000 001e ffe9 ffd0 0014 0007 fff9 ffed 0004 ffe3 0000 fff2 0010 0002 fffc ffef fff5 fff7 ffed 0035 fff9 ffe4 0012 0013 ffea ffd0 0011 0008 0029 001f 0019 fffd fff1 000c 0025 ffea fff1 0037 fff4 fffe 001f 002c 0005 fffc fff4 fff0 fffe ffdb ffd3 0017 ffe7 fff9 0006 0012 ffda 0025 0000 0001 0009 fff4 fffb 002b 0007 ffff 0004 0003 0002 fff3 0000 0010 ffeb 0000 000b [END]
+  instr = R05 = R30 + R05;
+
+Preparing to jump from loop iter #8
+  instr = END_REPEAT;
+
+  instr = R27 = R24 << R05;
+
+  instr = R04 = R28 - R05;
+
+  instr = R26 = SHRA(R24, R04);
+
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 0080 0000 0d80 2300 7880 aa80 d500 9d80 4a80 a400 8400 c980 3480 f700 0d00 1e80 a200 4700 c300 ff00 be00 6f80 9380 c300 bb00 e800 1e80 3d80 d080 1100 6a80 5a80 2680 bc00 0a80 2380 6480 5980 a100 d400 8380 9a80 6d00 f180 0c80 1980 3100 8180 1480 4000 f780 e400 f800 5200 5a80 f300 e080 7f00 6380 8880 7300 e600 1500 fc00 a300 4600 9e80 f480 6700 2e80 6b80 9e00 ae80 9880 8c80 8180 c380 a180 cd00 0100 d780 0900 6f00 0d80 4480 9600 5d00 fb00 5000 1b80 b600 da00 0380 5080 1900 3e00 9580 6800 4480 db80 b000 3800 a480 1580 c680 d000 cd00 f380 2580 9d80 9480 2e80 2200 2f80 0b00 ec80 7900 c500 5680 1180 0a00 9780 8a80 a500 cf00 ed00 1e80 [END]
+Print reg SRC1_ALIGNEDHIGH:
+ 
+  instr = PRINTREG(R26);
+
+R[26] (starting from index 0) = ffc0 0000 ffc0 0035 fff3 0029 000f 000e 0011 ffd6 ffd3 0038 ffdb ffcd 0020 ffe4 000c 0039 ffdc fffd 0033 ffcb 0038 ffe9 0027 ffeb 0013 ffc4 002a fff6 ffd9 fffa ffef ffd4 ffe2 ffdb 0039 001a ffc1 fffb 0003 0024 ffcb ffc7 0039 0001 ffd9 0038 ffef ffd4 001e 0028 0015 0008 0007 0000 002b ffe2 ffcd 002d 0028 ffda ffe9 000a ffde ffeb ffcd 0014 0017 fffa ffe2 ffea ffdf ffc5 0037 fff4 ffe1 0021 0021 ffe4 ffca 003d 0025 003a 0030 001c ffef ffe0 0013 003c ffd9 ffeb 003f ffc6 fff9 0022 003b 001a fff2 ffdd ffc9 fff4 ffc0 ffc8 003b ffdf fff5 000e 0018 ffd7 003f 0015 0019 001b ffc5 ffee 0031 0008 fff7 0006 0016 0007 fff1 0001 002a ffdc 0011 0025 [END]
+  instr = R20 = R25 & R30;
+
+  instr = R19 = R20 == R30;
+
+  instr = NOP;
+
+  instr = WHERE_EQ;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 007c 0000 c364 430e ee7b 0dd7 1c7c 1536 e5d8 f540 bd68 89ae b69b fbd2 52a4 bbea c39c 70d0 6d1c c746 9c24 4b77 48cc 882c ea44 1640 0c0d a8f6 55e1 721a b1d3 583d b1ed d278 4273 7247 be0f f854 3fac acc0 fb26 59f0 a2be 46ad b034 b4c8 6338 a64e 02bb d500 9026 0308 25a0 6e70 0e24 3710 ee21 420e ebdd eaa9 d6de 8644 045e 5e88 0000 ec0c 4511 0f03 8060 75cb b73b 2534 c688 6c8b d3bd 9a59 3363 b4a1 f68e c0e0 649c ae1c ffc8 88dc 2d02 f2c0 6ade 04fe b200 6d41 6ad0 5f0c acaf 96fb 2ada e4fc d0b4 4870 dff1 c5bc 5220 2060 05a8 1466 d4e0 df20 0348 84b9 04dd 4649 d7cd 2e2e 1d6c 0da6 3aec aef0 9cb6 be28 1c17 72bc 95ac 6490 5c76 a874 ee0e 47b4 e3c5 [END]
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 0080 0000 0d80 2300 7880 aa80 d500 9d80 4a80 a400 8400 c980 3480 f700 0d00 1e80 a200 4700 c300 ff00 be00 6f80 9380 c300 bb00 e800 1e80 3d80 d080 1100 6a80 5a80 2680 bc00 0a80 2380 6480 5980 a100 d400 8380 9a80 6d00 f180 0c80 1980 3100 8180 1480 4000 f780 e400 f800 5200 5a80 f300 e080 7f00 6380 8880 7300 e600 1500 fc00 a300 4600 9e80 f480 6700 2e80 6b80 9e00 ae80 9880 8c80 8180 c380 a180 cd00 0100 d780 0900 6f00 0d80 4480 9600 5d00 fb00 5000 1b80 b600 da00 0380 5080 1900 3e00 9580 6800 4480 db80 b000 3800 a480 1580 c680 d000 cd00 f380 2580 9d80 9480 2e80 2200 2f80 0b00 ec80 7900 c500 5680 1180 0a00 9780 8a80 a500 cf00 ed00 1e80 [END]
+  instr = R23 = R27 + R23;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 00fc 0000 d0e4 660e 66fb b857 1c7c b2b6 3058 9940 4168 89ae b69b f2d2 5fa4 bbea 659c 70d0 6d1c c746 9c24 baf7 dc4c 4b2c a544 fe40 0c0d e676 55e1 721a 1c53 b2bd d86d 8e78 4273 7247 228f 51d4 e0ac acc0 fb26 f470 0fbe 382d b034 b4c8 6338 a64e 02bb 1500 9026 0308 1da0 6e70 68a4 2a10 ee21 c10e 4f5d 7329 49de 6c44 195e 5a88 0000 320c e391 0f03 e760 75cb 22bb 2534 7508 6c8b 603d 9a59 f6e3 b4a1 f68e c0e0 649c b71c 6ec8 965c 7182 f2c0 6ade fffe b200 6d41 6ad0 5f0c acaf e77b 43da 22fc d0b4 4870 dff1 a13c 5220 5860 aa28 1466 9b60 df20 0348 84b9 04dd e3c9 d7cd 5cae 1d6c 0da6 45ec aef0 9cb6 be28 7297 843c 9fac fc10 e6f6 a874 ee0e 34b4 0245 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 ffce 002c fff8 000d 000f 0008 0009 ffd8 ffdb 0005 ffe6 ffd8 0007 fffa 0004 0018 ffe7 fffe 0025 fff6 002e fff1 000f fff4 0008 fff8 0000 fffb ffed ffff fff2 fff4 ffe9 ffe2 0000 0004 ffd2 ffff 0001 000b ffec ffc9 0015 0000 fff8 0028 fffc ffe9 001c 0012 0007 0007 0003 0000 001e ffe9 ffd0 0014 0007 fff9 ffed 0004 ffe3 0000 fff2 0010 0002 fffc ffef fff5 fff7 ffed 0035 fff9 ffe4 0012 0013 ffea ffd0 0011 0008 0029 001f 0019 fffd fff1 000c 0025 ffea fff1 0037 fff4 fffe 001f 002c 0005 fffc fff4 fff0 fffe ffdb ffd3 0017 ffe7 fff9 0006 0012 ffda 0025 0000 0001 0009 fff4 fffb 002b 0007 ffff 0004 0003 0002 fff3 0000 0010 ffeb 0000 000b [END]
+  instr = R22 = ADDC(R31, R22);
+
+After ADDC:
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 ffce 002c fff8 000e 000f 0008 0009 ffd9 ffdc 0006 ffe6 ffd8 0008 fffa 0004 0019 ffe7 fffe 0025 fff6 002e fff1 0010 fff5 0008 fff8 0000 fffb ffed 0000 fff2 fff4 ffea ffe2 0000 0005 ffd3 ffff 0001 000b ffec ffca 0016 0000 fff8 0028 fffc ffe9 001d 0012 0007 0008 0003 0000 001f ffe9 ffd0 0015 0008 fffa ffee 0004 ffe4 0000 fff3 0010 0002 fffc ffef fff6 fff7 ffee 0035 fffa ffe4 0012 0013 ffea ffd0 0011 0008 002a 001f 0019 fffd fff1 000c 0025 ffea fff1 0037 fff4 fffe 001f 002d 0005 fffc fff4 fff1 fffe ffdb ffd3 0017 ffe8 fff9 0006 0012 ffda 0025 0000 0001 0009 fff4 fffb 002b 0007 ffff 0004 0003 0002 fff3 0000 0010 ffeb 0001 000c [END]
+  instr = R22 = R26 + R22;
+
+  instr = END_WHERE;
+
+  instr = R25 = R25 >> 1;
+
+Print reg IDX:
+
+  instr = PRINTREG(R05);
+
+R[ 5] (starting from index 0) = 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 0007 [END]
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 00fc 0000 d0e4 660e 66fb b857 1c7c b2b6 3058 9940 4168 89ae b69b f2d2 5fa4 bbea 659c 70d0 6d1c c746 9c24 baf7 dc4c 4b2c a544 fe40 0c0d e676 55e1 721a 1c53 b2bd d86d 8e78 4273 7247 228f 51d4 e0ac acc0 fb26 f470 0fbe 382d b034 b4c8 6338 a64e 02bb 1500 9026 0308 1da0 6e70 68a4 2a10 ee21 c10e 4f5d 7329 49de 6c44 195e 5a88 0000 320c e391 0f03 e760 75cb 22bb 2534 7508 6c8b 603d 9a59 f6e3 b4a1 f68e c0e0 649c b71c 6ec8 965c 7182 f2c0 6ade fffe b200 6d41 6ad0 5f0c acaf e77b 43da 22fc d0b4 4870 dff1 a13c 5220 5860 aa28 1466 9b60 df20 0348 84b9 04dd e3c9 d7cd 5cae 1d6c 0da6 45ec aef0 9cb6 be28 7297 843c 9fac fc10 e6f6 a874 ee0e 34b4 0245 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 ff8e 0061 ffeb 0037 001e 0008 001a ffaf ffaf 003e ffe6 ffd8 0028 ffde 0004 0052 ffe7 fffe 0025 fff6 0066 ffda 0037 ffe0 001b fff8 002a fffb ffed fffa ffe1 ffc8 ffcc ffe2 0000 001f ff94 fffa 0001 000b ffb7 ff91 004f 0000 fff8 0028 fffc ffe9 003b 0012 0007 0010 0003 0000 004a ffe9 ff9d 0042 0030 ffd4 ffd7 000e ffc2 0000 ffc0 0024 0002 fff6 ffef ffe0 fff7 ffb3 0035 ffee ffe4 0033 0013 ffea ffd0 0011 002d 0064 004f 0035 fffd fff1 001f 0025 ffea fff1 0037 fff4 fff7 0041 0068 0005 fffc fff4 ffba fffe ff9b ff9b 0017 ffc7 fff9 0006 0012 ffda 0064 0000 001a 0009 fff4 ffe9 002b 0007 ffff 000a 0019 0009 ffe4 0001 0010 ffeb 0012 0031 [END]
+  instr = R05 = R30 + R05;
+
+Preparing to jump from loop iter #7
+  instr = END_REPEAT;
+
+  instr = R27 = R24 << R05;
+
+  instr = R04 = R28 - R05;
+
+  instr = R26 = SHRA(R24, R04);
+
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 0100 0000 1b00 4600 f100 5500 aa00 3b00 9500 4800 0800 9300 6900 ee00 1a00 3d00 4400 8e00 8600 fe00 7c00 df00 2700 8600 7600 d000 3d00 7b00 a100 2200 d500 b500 4d00 7800 1500 4700 c900 b300 4200 a800 0700 3500 da00 e300 1900 3300 6200 0300 2900 8000 ef00 c800 f000 a400 b500 e600 c100 fe00 c700 1100 e600 cc00 2a00 f800 4600 8c00 3d00 e900 ce00 5d00 d700 3c00 5d00 3100 1900 0300 8700 4300 9a00 0200 af00 1200 de00 1b00 8900 2c00 ba00 f600 a000 3700 6c00 b400 0700 a100 3200 7c00 2b00 d000 8900 b700 6000 7000 4900 2b00 8d00 a000 9a00 e700 4b00 3b00 2900 5d00 4400 5f00 1600 d900 f200 8a00 ad00 2300 1400 2f00 1500 4a00 9e00 da00 3d00 [END]
+Print reg SRC1_ALIGNEDHIGH:
+ 
+  instr = PRINTREG(R26);
+
+R[26] (starting from index 0) = ff80 0000 ff80 006a ffe6 0052 001f 001d 0023 ffac ffa7 0071 ffb7 ff9a 0041 ffc8 0018 0073 ffb8 fffb 0067 ff97 0070 ffd3 004f ffd7 0027 ff88 0054 ffed ffb2 fff4 ffde ffa8 ffc5 ffb6 0072 0034 ff82 fff7 0007 0049 ff97 ff8e 0073 0002 ffb2 0070 ffdf ffa8 003c 0051 002b 0011 000e 0000 0057 ffc5 ff9a 005a 0051 ffb4 ffd3 0014 ffbd ffd7 ff9a 0029 002f fff4 ffc4 ffd4 ffbf ff8b 006f ffe9 ffc3 0043 0043 ffc9 ff94 007b 004a 0074 0060 0038 ffdf ffc0 0027 0078 ffb2 ffd7 007f ff8c fff2 0044 0076 0035 ffe4 ffba ff93 ffe9 ff80 ff91 0076 ffbf ffeb 001d 0031 ffae 007f 002b 0032 0036 ff8a ffdc 0063 0010 ffef 000c 002c 000e ffe3 0003 0055 ffb9 0023 004a [END]
+  instr = R20 = R25 & R30;
+
+  instr = R19 = R20 == R30;
+
+  instr = NOP;
+
+  instr = WHERE_EQ;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 00fc 0000 d0e4 660e 66fb b857 1c7c b2b6 3058 9940 4168 89ae b69b f2d2 5fa4 bbea 659c 70d0 6d1c c746 9c24 baf7 dc4c 4b2c a544 fe40 0c0d e676 55e1 721a 1c53 b2bd d86d 8e78 4273 7247 228f 51d4 e0ac acc0 fb26 f470 0fbe 382d b034 b4c8 6338 a64e 02bb 1500 9026 0308 1da0 6e70 68a4 2a10 ee21 c10e 4f5d 7329 49de 6c44 195e 5a88 0000 320c e391 0f03 e760 75cb 22bb 2534 7508 6c8b 603d 9a59 f6e3 b4a1 f68e c0e0 649c b71c 6ec8 965c 7182 f2c0 6ade fffe b200 6d41 6ad0 5f0c acaf e77b 43da 22fc d0b4 4870 dff1 a13c 5220 5860 aa28 1466 9b60 df20 0348 84b9 04dd e3c9 d7cd 5cae 1d6c 0da6 45ec aef0 9cb6 be28 7297 843c 9fac fc10 e6f6 a874 ee0e 34b4 0245 [END]
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 0100 0000 1b00 4600 f100 5500 aa00 3b00 9500 4800 0800 9300 6900 ee00 1a00 3d00 4400 8e00 8600 fe00 7c00 df00 2700 8600 7600 d000 3d00 7b00 a100 2200 d500 b500 4d00 7800 1500 4700 c900 b300 4200 a800 0700 3500 da00 e300 1900 3300 6200 0300 2900 8000 ef00 c800 f000 a400 b500 e600 c100 fe00 c700 1100 e600 cc00 2a00 f800 4600 8c00 3d00 e900 ce00 5d00 d700 3c00 5d00 3100 1900 0300 8700 4300 9a00 0200 af00 1200 de00 1b00 8900 2c00 ba00 f600 a000 3700 6c00 b400 0700 a100 3200 7c00 2b00 d000 8900 b700 6000 7000 4900 2b00 8d00 a000 9a00 e700 4b00 3b00 2900 5d00 4400 5f00 1600 d900 f200 8a00 ad00 2300 1400 2f00 1500 4a00 9e00 da00 3d00 [END]
+  instr = R23 = R27 + R23;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 01fc 0000 d0e4 660e 57fb b857 c67c b2b6 c558 e140 4968 1cae b69b e0d2 79a4 f8ea a99c 70d0 f31c c546 1824 baf7 dc4c 4b2c a544 fe40 0c0d 6176 55e1 941a 1c53 67bd d86d 8e78 5773 b947 228f 51d4 22ac acc0 fb26 f470 0fbe 382d c934 e7c8 6338 a64e 2bbb 1500 7f26 cb08 0da0 1270 1da4 1010 ee21 bf0e 4f5d 7329 49de 3844 195e 5288 4600 320c e391 0f03 b560 75cb 22bb 6134 7508 6c8b 793d 9d59 f6e3 f7a1 908e c2e0 649c b71c 4cc8 b15c fa82 1ec0 6ade f5fe 5200 6d41 d6d0 130c b3af 887b 75da 22fc fbb4 1870 dff1 a13c b220 5860 f328 1466 9b60 df20 0348 84b9 04dd 1ec9 00cd 5cae 1d6c 6ca6 45ec aef0 8eb6 4828 1f97 843c b3ac fc10 e6f6 f274 8c0e 0eb4 3f45 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 ff8e 0061 ffeb 0037 001e 0008 001a ffaf ffaf 003e ffe6 ffd8 0028 ffde 0004 0052 ffe7 fffe 0025 fff6 0066 ffda 0037 ffe0 001b fff8 002a fffb ffed fffa ffe1 ffc8 ffcc ffe2 0000 001f ff94 fffa 0001 000b ffb7 ff91 004f 0000 fff8 0028 fffc ffe9 003b 0012 0007 0010 0003 0000 004a ffe9 ff9d 0042 0030 ffd4 ffd7 000e ffc2 0000 ffc0 0024 0002 fff6 ffef ffe0 fff7 ffb3 0035 ffee ffe4 0033 0013 ffea ffd0 0011 002d 0064 004f 0035 fffd fff1 001f 0025 ffea fff1 0037 fff4 fff7 0041 0068 0005 fffc fff4 ffba fffe ff9b ff9b 0017 ffc7 fff9 0006 0012 ffda 0064 0000 001a 0009 fff4 ffe9 002b 0007 ffff 000a 0019 0009 ffe4 0001 0010 ffeb 0012 0031 [END]
+  instr = R22 = ADDC(R31, R22);
+
+After ADDC:
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 ff8e 0061 ffeb 0038 001e 0008 001a ffaf ffaf 003e ffe7 ffd8 0029 ffde 0004 0052 ffe7 fffe 0026 fff7 0066 ffda 0037 ffe0 001b fff8 002b fffb ffed fffa ffe2 ffc8 ffcc ffe2 0000 001f ff94 fffb 0001 000b ffb7 ff91 004f 0000 fff8 0028 fffc ffe9 003b 0013 0007 0011 0004 0001 004b ffe9 ff9e 0042 0030 ffd4 ffd8 000e ffc3 0000 ffc0 0024 0002 fff7 ffef ffe0 fff7 ffb3 0035 ffee ffe4 0033 0013 ffeb ffd0 0011 002d 0065 004f 0035 fffe fff1 0020 0026 ffea fff1 0038 fff4 fff8 0041 0068 0005 fffd fff4 ffba fffe ff9b ff9b 0017 ffc7 fff9 0006 0012 ffda 0065 0001 001a 0009 fff4 ffe9 002b 0008 0000 000b 0019 0009 ffe4 0001 0010 ffec 0013 0031 [END]
+  instr = R22 = R26 + R22;
+
+  instr = END_WHERE;
+
+  instr = R25 = R25 >> 1;
+
+Print reg IDX:
+
+  instr = PRINTREG(R05);
+
+R[ 5] (starting from index 0) = 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 0008 [END]
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 01fc 0000 d0e4 660e 57fb b857 c67c b2b6 c558 e140 4968 1cae b69b e0d2 79a4 f8ea a99c 70d0 f31c c546 1824 baf7 dc4c 4b2c a544 fe40 0c0d 6176 55e1 941a 1c53 67bd d86d 8e78 5773 b947 228f 51d4 22ac acc0 fb26 f470 0fbe 382d c934 e7c8 6338 a64e 2bbb 1500 7f26 cb08 0da0 1270 1da4 1010 ee21 bf0e 4f5d 7329 49de 3844 195e 5288 4600 320c e391 0f03 b560 75cb 22bb 6134 7508 6c8b 793d 9d59 f6e3 f7a1 908e c2e0 649c b71c 4cc8 b15c fa82 1ec0 6ade f5fe 5200 6d41 d6d0 130c b3af 887b 75da 22fc fbb4 1870 dff1 a13c b220 5860 f328 1466 9b60 df20 0348 84b9 04dd 1ec9 00cd 5cae 1d6c 6ca6 45ec aef0 8eb6 4828 1f97 843c b3ac fc10 e6f6 f274 8c0e 0eb4 3f45 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 ff0e 0061 ffeb 008a 001e 0025 001a ff5b ff56 00af ff9e ffd8 006a ffa6 001c 00c5 ffe7 fff9 008d ff8e 0066 ffda 0037 ffe0 001b fff8 007f fffb ff9f fffa ffc0 ffc8 ffcc ff98 0072 001f ff94 fff2 0001 000b ffb7 ff91 004f 0002 ffaa 0028 fffc ff91 003b 0064 0032 0022 0012 0001 00a2 ffe9 ff38 0042 0030 ffd4 ffab 000e ff80 ffd7 ffc0 0024 0002 ffeb ffef ffe0 ffb6 ffb3 0035 ffd7 ffa7 0033 0056 ffb4 ff64 0011 002d 00d9 00af 006d ffdd fff1 0047 009e ffea ffc8 00b7 ff80 ffea 0085 0068 003a ffe1 fff4 ffba ffe7 ff9b ff2c 0017 ffc7 fff9 0006 0012 ffda 00e4 002c 001a 0009 ff7e ffe9 002b 0018 ffef 0017 0019 0017 ffe4 0001 0065 ffa5 0036 007b [END]
+  instr = R05 = R30 + R05;
+
+Preparing to jump from loop iter #6
+  instr = END_REPEAT;
+
+  instr = R27 = R24 << R05;
+
+  instr = R04 = R28 - R05;
+
+  instr = R26 = SHRA(R24, R04);
+
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 0200 0000 3600 8c00 e200 aa00 5400 7600 2a00 9000 1000 2600 d200 dc00 3400 7a00 8800 1c00 0c00 fc00 f800 be00 4e00 0c00 ec00 a000 7a00 f600 4200 4400 aa00 6a00 9a00 f000 2a00 8e00 9200 6600 8400 5000 0e00 6a00 b400 c600 3200 6600 c400 0600 5200 0000 de00 9000 e000 4800 6a00 cc00 8200 fc00 8e00 2200 cc00 9800 5400 f000 8c00 1800 7a00 d200 9c00 ba00 ae00 7800 ba00 6200 3200 0600 0e00 8600 3400 0400 5e00 2400 bc00 3600 1200 5800 7400 ec00 4000 6e00 d800 6800 0e00 4200 6400 f800 5600 a000 1200 6e00 c000 e000 9200 5600 1a00 4000 3400 ce00 9600 7600 5200 ba00 8800 be00 2c00 b200 e400 1400 5a00 4600 2800 5e00 2a00 9400 3c00 b400 7a00 [END]
+Print reg SRC1_ALIGNEDHIGH:
+ 
+  instr = PRINTREG(R26);
+
+R[26] (starting from index 0) = ff00 0000 ff00 00d4 ffcc 00a5 003e 003b 0046 ff59 ff4e 00e2 ff6f ff34 0083 ff90 0030 00e6 ff71 fff7 00cf ff2e 00e1 ffa6 009f ffae 004f ff10 00a8 ffdb ff64 ffe9 ffbd ff50 ff8a ff6c 00e4 0069 ff05 ffee 000f 0092 ff2e ff1d 00e7 0004 ff64 00e0 ffbe ff50 0079 00a3 0057 0023 001d 0001 00af ff8b ff35 00b5 00a2 ff69 ffa7 0028 ff7b ffae ff35 0052 005f ffe9 ff88 ffa9 ff7e ff16 00de ffd2 ff86 0087 0086 ff93 ff28 00f7 0094 00e9 00c0 0071 ffbe ff81 004f 00f1 ff64 ffae 00ff ff18 ffe5 0088 00ec 006a ffc9 ff75 ff27 ffd2 ff00 ff22 00ec ff7f ffd7 003b 0063 ff5c 00fe 0056 0064 006c ff14 ffb8 00c7 0021 ffdf 0019 0058 001c ffc6 0006 00aa ff73 0047 0094 [END]
+  instr = R20 = R25 & R30;
+
+  instr = R19 = R20 == R30;
+
+  instr = NOP;
+
+  instr = WHERE_EQ;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 01fc 0000 d0e4 660e 57fb b857 c67c b2b6 c558 e140 4968 1cae b69b e0d2 79a4 f8ea a99c 70d0 f31c c546 1824 baf7 dc4c 4b2c a544 fe40 0c0d 6176 55e1 941a 1c53 67bd d86d 8e78 5773 b947 228f 51d4 22ac acc0 fb26 f470 0fbe 382d c934 e7c8 6338 a64e 2bbb 1500 7f26 cb08 0da0 1270 1da4 1010 ee21 bf0e 4f5d 7329 49de 3844 195e 5288 4600 320c e391 0f03 b560 75cb 22bb 6134 7508 6c8b 793d 9d59 f6e3 f7a1 908e c2e0 649c b71c 4cc8 b15c fa82 1ec0 6ade f5fe 5200 6d41 d6d0 130c b3af 887b 75da 22fc fbb4 1870 dff1 a13c b220 5860 f328 1466 9b60 df20 0348 84b9 04dd 1ec9 00cd 5cae 1d6c 6ca6 45ec aef0 8eb6 4828 1f97 843c b3ac fc10 e6f6 f274 8c0e 0eb4 3f45 [END]
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 0200 0000 3600 8c00 e200 aa00 5400 7600 2a00 9000 1000 2600 d200 dc00 3400 7a00 8800 1c00 0c00 fc00 f800 be00 4e00 0c00 ec00 a000 7a00 f600 4200 4400 aa00 6a00 9a00 f000 2a00 8e00 9200 6600 8400 5000 0e00 6a00 b400 c600 3200 6600 c400 0600 5200 0000 de00 9000 e000 4800 6a00 cc00 8200 fc00 8e00 2200 cc00 9800 5400 f000 8c00 1800 7a00 d200 9c00 ba00 ae00 7800 ba00 6200 3200 0600 0e00 8600 3400 0400 5e00 2400 bc00 3600 1200 5800 7400 ec00 4000 6e00 d800 6800 0e00 4200 6400 f800 5600 a000 1200 6e00 c000 e000 9200 5600 1a00 4000 3400 ce00 9600 7600 5200 ba00 8800 be00 2c00 b200 e400 1400 5a00 4600 2800 5e00 2a00 9400 3c00 b400 7a00 [END]
+  instr = R23 = R27 + R23;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 01fc 0000 d0e4 660e 39fb 6257 c67c 28b6 ef58 e140 5968 1cae 889b bcd2 ada4 f8ea 319c 70d0 f31c c546 1024 78f7 dc4c 4b2c a544 9e40 860d 6176 97e1 941a 1c53 67bd d86d 8e78 8173 4747 b48f b7d4 a6ac acc0 0926 f470 c3be 382d fb34 4dc8 6338 a64e 7dbb 1500 5d26 cb08 eda0 1270 87a4 dc10 ee21 bf0e dd5d 7329 49de 3844 195e 5288 d200 4a0c 5d91 0f03 5160 2fcb d0bb 6134 2f08 ce8b 793d a359 04e3 7da1 c48e c6e0 c29c b71c 4cc8 e75c fa82 1ec0 6ade e1fe 5200 6d41 d6d0 130c b3af ca7b 75da 1afc fbb4 1870 dff1 a13c 7220 3860 8528 6a66 9b60 df20 3748 52b9 9add 94c9 00cd 5cae a56c 6ca6 71ec aef0 72b6 4828 1f97 843c b3ac fc10 10f6 8674 8c0e 0eb4 3f45 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 ff0e 0061 ffeb 008a 001e 0025 001a ff5b ff56 00af ff9e ffd8 006a ffa6 001c 00c5 ffe7 fff9 008d ff8e 0066 ffda 0037 ffe0 001b fff8 007f fffb ff9f fffa ffc0 ffc8 ffcc ff98 0072 001f ff94 fff2 0001 000b ffb7 ff91 004f 0002 ffaa 0028 fffc ff91 003b 0064 0032 0022 0012 0001 00a2 ffe9 ff38 0042 0030 ffd4 ffab 000e ff80 ffd7 ffc0 0024 0002 ffeb ffef ffe0 ffb6 ffb3 0035 ffd7 ffa7 0033 0056 ffb4 ff64 0011 002d 00d9 00af 006d ffdd fff1 0047 009e ffea ffc8 00b7 ff80 ffea 0085 0068 003a ffe1 fff4 ffba ffe7 ff9b ff2c 0017 ffc7 fff9 0006 0012 ffda 00e4 002c 001a 0009 ff7e ffe9 002b 0018 ffef 0017 0019 0017 ffe4 0001 0065 ffa5 0036 007b [END]
+  instr = R22 = ADDC(R31, R22);
+
+After ADDC:
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 ff0e 0061 ffeb 008b 001f 0025 001b ff5b ff56 00af ff9e ffd9 006b ffa6 001c 00c6 ffe7 fff9 008d ff8f 0067 ffda 0037 ffe0 001c fff8 007f fffb ff9f fffa ffc0 ffc8 ffcc ff98 0073 001f ff94 fff2 0001 000c ffb7 ff91 004f 0002 ffab 0028 fffc ff91 003b 0065 0032 0022 0012 0001 00a2 ffe9 ff38 0042 0030 ffd4 ffab 000e ff80 ffd7 ffc0 0025 0002 ffec fff0 ffe0 ffb6 ffb4 0035 ffd7 ffa7 0034 0057 ffb4 ff64 0011 002d 00d9 00af 006d ffdd fff1 0048 009e ffea ffc8 00b7 ff80 ffea 0085 0069 003a ffe1 fff4 ffba ffe8 ff9c ff2d 0017 ffc7 fff9 0006 0013 ffda 00e4 002c 001a 0009 ff7e ffe9 002b 0019 ffef 0017 0019 0017 ffe4 0002 0066 ffa5 0036 007b [END]
+  instr = R22 = R26 + R22;
+
+  instr = END_WHERE;
+
+  instr = R25 = R25 >> 1;
+
+Print reg IDX:
+
+  instr = PRINTREG(R05);
+
+R[ 5] (starting from index 0) = 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 0009 [END]
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 01fc 0000 d0e4 660e 39fb 6257 c67c 28b6 ef58 e140 5968 1cae 889b bcd2 ada4 f8ea 319c 70d0 f31c c546 1024 78f7 dc4c 4b2c a544 9e40 860d 6176 97e1 941a 1c53 67bd d86d 8e78 8173 4747 b48f b7d4 a6ac acc0 0926 f470 c3be 382d fb34 4dc8 6338 a64e 7dbb 1500 5d26 cb08 eda0 1270 87a4 dc10 ee21 bf0e dd5d 7329 49de 3844 195e 5288 d200 4a0c 5d91 0f03 5160 2fcb d0bb 6134 2f08 ce8b 793d a359 04e3 7da1 c48e c6e0 c29c b71c 4cc8 e75c fa82 1ec0 6ade e1fe 5200 6d41 d6d0 130c b3af ca7b 75da 1afc fbb4 1870 dff1 a13c 7220 3860 8528 6a66 9b60 df20 3748 52b9 9add 94c9 00cd 5cae a56c 6ca6 71ec aef0 72b6 4828 1f97 843c b3ac fc10 10f6 8674 8c0e 0eb4 3f45 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 fe0e 0061 ffeb 0130 005d 0025 0061 feb4 ff56 0191 ff9e ff0d 00ee ff36 001c 01ac ffe7 fff9 008d febd 0148 ffda 0037 ffe0 006b ff08 007f ffd6 ff9f fffa ffc0 ffc8 ffcc ff04 0157 0088 fe99 ffe0 0001 009e ffb7 feae 004f 0006 ff0f 0028 fffc fee1 00b4 0108 0032 0045 0012 0002 0151 ffe9 ff38 00f7 0030 ffd4 ffab 000e ff80 ff85 fef5 0077 0002 ffd5 ff78 ff89 ffb6 feca 0113 ffd7 ff2d 00bb 00dd ff47 fe8c 0108 002d 00d9 016f 006d ffdd fff1 0097 009e ffea ffc8 00b7 ff80 ffcf 0085 0155 003a ffe1 fff4 ffba ffba fe9c fe4f 0103 ffc7 fff9 0041 0076 ff36 01e2 002c 001a 0075 ff7e ffa1 002b 003a ffef 0017 0019 0017 ffe4 0008 0110 ffa5 0036 007b [END]
+  instr = R05 = R30 + R05;
+
+Preparing to jump from loop iter #5
+  instr = END_REPEAT;
+
+  instr = R27 = R24 << R05;
+
+  instr = R04 = R28 - R05;
+
+  instr = R26 = SHRA(R24, R04);
+
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 0400 0000 6c00 1800 c400 5400 a800 ec00 5400 2000 2000 4c00 a400 b800 6800 f400 1000 3800 1800 f800 f000 7c00 9c00 1800 d800 4000 f400 ec00 8400 8800 5400 d400 3400 e000 5400 1c00 2400 cc00 0800 a000 1c00 d400 6800 8c00 6400 cc00 8800 0c00 a400 0000 bc00 2000 c000 9000 d400 9800 0400 f800 1c00 4400 9800 3000 a800 e000 1800 3000 f400 a400 3800 7400 5c00 f000 7400 c400 6400 0c00 1c00 0c00 6800 0800 bc00 4800 7800 6c00 2400 b000 e800 d800 8000 dc00 b000 d000 1c00 8400 c800 f000 ac00 4000 2400 dc00 8000 c000 2400 ac00 3400 8000 6800 9c00 2c00 ec00 a400 7400 1000 7c00 5800 6400 c800 2800 b400 8c00 5000 bc00 5400 2800 7800 6800 f400 [END]
+Print reg SRC1_ALIGNEDHIGH:
+ 
+  instr = PRINTREG(R26);
+
+R[26] (starting from index 0) = fe00 0000 fe00 01a8 ff99 014b 007d 0076 008c feb2 fe9d 01c4 fede fe69 0107 ff20 0060 01cd fee2 ffee 019f fe5d 01c3 ff4c 013e ff5d 009f fe20 0151 ffb6 fec8 ffd3 ff7a fea1 ff15 fed8 01c9 00d3 fe0a ffdd 001e 0124 fe5c fe3b 01cf 0008 fec8 01c1 ff7c fea0 00f2 0147 00af 0047 003a 0002 015f ff17 fe6b 016b 0144 fed3 ff4f 0050 fef7 ff5d fe6a 00a4 00bf ffd3 ff11 ff53 fefc fe2d 01bc ffa4 ff0c 010e 010d ff26 fe50 01ee 0128 01d3 0180 00e2 ff7c ff02 009f 01e2 fec8 ff5d 01fe fe30 ffca 0110 01d9 00d4 ff93 feea fe4e ffa5 fe01 fe45 01d8 fefe ffae 0076 00c7 feb9 01fc 00ac 00c9 00d9 fe29 ff70 018f 0043 ffbe 0032 00b0 0038 ff8c 000c 0155 fee6 008f 0128 [END]
+  instr = R20 = R25 & R30;
+
+  instr = R19 = R20 == R30;
+
+  instr = NOP;
+
+  instr = WHERE_EQ;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 01fc 0000 d0e4 660e 39fb 6257 c67c 28b6 ef58 e140 5968 1cae 889b bcd2 ada4 f8ea 319c 70d0 f31c c546 1024 78f7 dc4c 4b2c a544 9e40 860d 6176 97e1 941a 1c53 67bd d86d 8e78 8173 4747 b48f b7d4 a6ac acc0 0926 f470 c3be 382d fb34 4dc8 6338 a64e 7dbb 1500 5d26 cb08 eda0 1270 87a4 dc10 ee21 bf0e dd5d 7329 49de 3844 195e 5288 d200 4a0c 5d91 0f03 5160 2fcb d0bb 6134 2f08 ce8b 793d a359 04e3 7da1 c48e c6e0 c29c b71c 4cc8 e75c fa82 1ec0 6ade e1fe 5200 6d41 d6d0 130c b3af ca7b 75da 1afc fbb4 1870 dff1 a13c 7220 3860 8528 6a66 9b60 df20 3748 52b9 9add 94c9 00cd 5cae a56c 6ca6 71ec aef0 72b6 4828 1f97 843c b3ac fc10 10f6 8674 8c0e 0eb4 3f45 [END]
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 0400 0000 6c00 1800 c400 5400 a800 ec00 5400 2000 2000 4c00 a400 b800 6800 f400 1000 3800 1800 f800 f000 7c00 9c00 1800 d800 4000 f400 ec00 8400 8800 5400 d400 3400 e000 5400 1c00 2400 cc00 0800 a000 1c00 d400 6800 8c00 6400 cc00 8800 0c00 a400 0000 bc00 2000 c000 9000 d400 9800 0400 f800 1c00 4400 9800 3000 a800 e000 1800 3000 f400 a400 3800 7400 5c00 f000 7400 c400 6400 0c00 1c00 0c00 6800 0800 bc00 4800 7800 6c00 2400 b000 e800 d800 8000 dc00 b000 d000 1c00 8400 c800 f000 ac00 4000 2400 dc00 8000 c000 2400 ac00 3400 8000 6800 9c00 2c00 ec00 a400 7400 1000 7c00 5800 6400 c800 2800 b400 8c00 5000 bc00 5400 2800 7800 6800 f400 [END]
+  instr = R23 = R27 + R23;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 01fc 0000 d0e4 7e0e fdfb b657 c67c 28b6 4358 e140 5968 68ae 889b 74d2 15a4 ecea 419c a8d0 f31c c546 1024 78f7 dc4c 632c a544 de40 7a0d 4d76 1be1 1c1a 1c53 3bbd 0c6d 8e78 8173 6347 b48f b7d4 aeac 4cc0 2526 c870 2bbe c42d 5f34 4dc8 eb38 a64e 7dbb 1500 5d26 eb08 ada0 1270 5ba4 7410 ee21 bf0e f95d b729 49de 6844 195e 3288 ea00 4a0c 5d91 0f03 8960 2fcb 2cbb 5134 a308 928b dd3d a359 04e3 7da1 2c8e cee0 7e9c b71c 4cc8 e75c fa82 1ec0 6ade b9fe d200 4941 d6d0 130c b3af 4e7b 3dda 0afc fbb4 5870 dff1 7d3c f220 3860 8528 1666 9b60 5f20 3748 eeb9 9add 94c9 a4cd d0ae a56c 6ca6 71ec 12f0 72b6 4828 1f97 843c b3ac b810 10f6 ae74 8c0e 76b4 3345 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 fe0e 0061 ffeb 0130 005d 0025 0061 feb4 ff56 0191 ff9e ff0d 00ee ff36 001c 01ac ffe7 fff9 008d febd 0148 ffda 0037 ffe0 006b ff08 007f ffd6 ff9f fffa ffc0 ffc8 ffcc ff04 0157 0088 fe99 ffe0 0001 009e ffb7 feae 004f 0006 ff0f 0028 fffc fee1 00b4 0108 0032 0045 0012 0002 0151 ffe9 ff38 00f7 0030 ffd4 ffab 000e ff80 ff85 fef5 0077 0002 ffd5 ff78 ff89 ffb6 feca 0113 ffd7 ff2d 00bb 00dd ff47 fe8c 0108 002d 00d9 016f 006d ffdd fff1 0097 009e ffea ffc8 00b7 ff80 ffcf 0085 0155 003a ffe1 fff4 ffba ffba fe9c fe4f 0103 ffc7 fff9 0041 0076 ff36 01e2 002c 001a 0075 ff7e ffa1 002b 003a ffef 0017 0019 0017 ffe4 0008 0110 ffa5 0036 007b [END]
+  instr = R22 = ADDC(R31, R22);
+
+After ADDC:
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 fe0e 0061 ffeb 0130 005d 0025 0061 feb5 ff56 0191 ff9e ff0d 00ef ff37 001d 01ac ffe7 fff9 008d febd 0148 ffda 0037 ffe0 006b ff09 0080 ffd7 ffa0 fffa ffc1 ffc9 ffcc ff04 0157 0088 fe99 ffe0 0002 009e ffb8 feaf 004f 0007 ff0f 0028 fffc fee1 00b4 0108 0032 0046 0012 0003 0152 ffe9 ff38 00f7 0030 ffd4 ffab 000e ff81 ff85 fef5 0077 0002 ffd5 ff78 ff8a ffb7 feca 0114 ffd7 ff2d 00bb 00dd ff48 fe8c 0109 002d 00d9 016f 006d ffdd fff1 0098 009e ffeb ffc8 00b7 ff80 ffd0 0086 0156 003a ffe1 fff4 ffbb ffba fe9c fe4f 0104 ffc7 fffa 0041 0076 ff36 01e2 002c 001a 0075 ff7e ffa1 002c 003a ffef 0017 0019 0017 ffe5 0008 0110 ffa5 0036 007c [END]
+  instr = R22 = R26 + R22;
+
+  instr = END_WHERE;
+
+  instr = R25 = R25 >> 1;
+
+Print reg IDX:
+
+  instr = PRINTREG(R05);
+
+R[ 5] (starting from index 0) = 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a 000a [END]
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 01fc 0000 d0e4 7e0e fdfb b657 c67c 28b6 4358 e140 5968 68ae 889b 74d2 15a4 ecea 419c a8d0 f31c c546 1024 78f7 dc4c 632c a544 de40 7a0d 4d76 1be1 1c1a 1c53 3bbd 0c6d 8e78 8173 6347 b48f b7d4 aeac 4cc0 2526 c870 2bbe c42d 5f34 4dc8 eb38 a64e 7dbb 1500 5d26 eb08 ada0 1270 5ba4 7410 ee21 bf0e f95d b729 49de 6844 195e 3288 ea00 4a0c 5d91 0f03 8960 2fcb 2cbb 5134 a308 928b dd3d a359 04e3 7da1 2c8e cee0 7e9c b71c 4cc8 e75c fa82 1ec0 6ade b9fe d200 4941 d6d0 130c b3af 4e7b 3dda 0afc fbb4 5870 dff1 7d3c f220 3860 8528 1666 9b60 5f20 3748 eeb9 9add 94c9 a4cd d0ae a56c 6ca6 71ec 12f0 72b6 4828 1f97 843c b3ac b810 10f6 ae74 8c0e 76b4 3345 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 fc0e 0061 ff84 027b 00da 0025 0061 fd67 ff56 0191 fe7c ff0d 01f6 fe57 007d 0379 fec9 fff9 008d febd 0148 ffda 0175 ffe0 010a fd29 01d1 ff8d fe68 fffa ff3b fe6a ffcc ff04 0320 0088 fe99 ffbd 0020 01c2 fe14 fcea 021e 000f ff0f 01e9 fffc fee1 01a6 0108 00e1 008d 0012 0005 02b1 ffe9 ff38 0262 0174 ffd4 fefa 000e fe78 fee2 fef5 0077 0002 ffa8 ff78 fedd feb3 fcf7 02d0 ff7b ff2d 00bb 00dd fe6e fcdc 02f7 002d 00d9 016f 006d ffdd fff1 0137 0280 feb3 ffc8 00b7 ff80 ff9a 0196 032f 003a ff74 fff4 fe09 ff5f fe9c fe4f 02dc ffc7 ffa8 0041 013d ff36 01e2 00d8 00e3 0075 ff7e ffa1 01bb 003a ffef 0017 0019 0017 ff71 0008 0265 ffa5 00c5 01a4 [END]
+  instr = R05 = R30 + R05;
+
+Preparing to jump from loop iter #4
+  instr = END_REPEAT;
+
+  instr = R27 = R24 << R05;
+
+  instr = R04 = R28 - R05;
+
+  instr = R26 = SHRA(R24, R04);
+
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 0800 0000 d800 3000 8800 a800 5000 d800 a800 4000 4000 9800 4800 7000 d000 e800 2000 7000 3000 f000 e000 f800 3800 3000 b000 8000 e800 d800 0800 1000 a800 a800 6800 c000 a800 3800 4800 9800 1000 4000 3800 a800 d000 1800 c800 9800 1000 1800 4800 0000 7800 4000 8000 2000 a800 3000 0800 f000 3800 8800 3000 6000 5000 c000 3000 6000 e800 4800 7000 e800 b800 e000 e800 8800 c800 1800 3800 1800 d000 1000 7800 9000 f000 d800 4800 6000 d000 b000 0000 b800 6000 a000 3800 0800 9000 e000 5800 8000 4800 b800 0000 8000 4800 5800 6800 0000 d000 3800 5800 d800 4800 e800 2000 f800 b000 c800 9000 5000 6800 1800 a000 7800 a800 5000 f000 d000 e800 [END]
+Print reg SRC1_ALIGNEDHIGH:
+ 
+  instr = PRINTREG(R26);
+
+R[26] (starting from index 0) = fc00 0000 fc00 0350 ff32 0297 00fa 00ed 0119 fd64 fd3a 0388 fdbc fcd3 020f fe40 00c1 039a fdc4 ffdc 033f fcbb 0386 fe99 027c febb 013e fc41 02a3 ff6d fd91 ffa6 fef5 fd42 fe2b fdb0 0392 01a6 fc15 ffba 003d 0248 fcb9 fc76 039f 0010 fd91 0383 fef8 fd41 01e4 028f 015e 008f 0075 0005 02bf fe2e fcd7 02d6 0288 fda7 fe9e 00a1 fdef feba fcd4 0149 017f ffa6 fe22 fea6 fdf9 fc5a 0379 ff48 fe18 021c 021a fe4c fca0 03dd 0250 03a6 0300 01c4 fef9 fe05 013f 03c5 fd91 febb 03fd fc60 ff95 0221 03b3 01a9 ff26 fdd4 fc9d ff4b fc03 fc8a 03b1 fdfc ff5d 00ec 018f fd72 03f9 0159 0192 01b2 fc52 fee0 031e 0087 ff7c 0065 0161 0070 ff19 0018 02aa fdcc 011e 0251 [END]
+  instr = R20 = R25 & R30;
+
+  instr = R19 = R20 == R30;
+
+  instr = NOP;
+
+  instr = WHERE_EQ;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 01fc 0000 d0e4 7e0e fdfb b657 c67c 28b6 4358 e140 5968 68ae 889b 74d2 15a4 ecea 419c a8d0 f31c c546 1024 78f7 dc4c 632c a544 de40 7a0d 4d76 1be1 1c1a 1c53 3bbd 0c6d 8e78 8173 6347 b48f b7d4 aeac 4cc0 2526 c870 2bbe c42d 5f34 4dc8 eb38 a64e 7dbb 1500 5d26 eb08 ada0 1270 5ba4 7410 ee21 bf0e f95d b729 49de 6844 195e 3288 ea00 4a0c 5d91 0f03 8960 2fcb 2cbb 5134 a308 928b dd3d a359 04e3 7da1 2c8e cee0 7e9c b71c 4cc8 e75c fa82 1ec0 6ade b9fe d200 4941 d6d0 130c b3af 4e7b 3dda 0afc fbb4 5870 dff1 7d3c f220 3860 8528 1666 9b60 5f20 3748 eeb9 9add 94c9 a4cd d0ae a56c 6ca6 71ec 12f0 72b6 4828 1f97 843c b3ac b810 10f6 ae74 8c0e 76b4 3345 [END]
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 0800 0000 d800 3000 8800 a800 5000 d800 a800 4000 4000 9800 4800 7000 d000 e800 2000 7000 3000 f000 e000 f800 3800 3000 b000 8000 e800 d800 0800 1000 a800 a800 6800 c000 a800 3800 4800 9800 1000 4000 3800 a800 d000 1800 c800 9800 1000 1800 4800 0000 7800 4000 8000 2000 a800 3000 0800 f000 3800 8800 3000 6000 5000 c000 3000 6000 e800 4800 7000 e800 b800 e000 e800 8800 c800 1800 3800 1800 d000 1000 7800 9000 f000 d800 4800 6000 d000 b000 0000 b800 6000 a000 3800 0800 9000 e000 5800 8000 4800 b800 0000 8000 4800 5800 6800 0000 d000 3800 5800 d800 4800 e800 2000 f800 b000 c800 9000 5000 6800 1800 a000 7800 a800 5000 f000 d000 e800 [END]
+  instr = R23 = R27 + R23;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 01fc 0000 a8e4 ae0e fdfb 5e57 c67c 28b6 4358 2140 5968 68ae 889b 74d2 15a4 d4ea 419c a8d0 231c b546 1024 70f7 144c 932c a544 5e40 7a0d 2576 1be1 2c1a 1c53 e3bd 0c6d 4e78 8173 9b47 fc8f 4fd4 aeac 4cc0 5d26 7070 2bbe dc2d 2734 e5c8 eb38 be4e c5bb 1500 5d26 eb08 2da0 1270 5ba4 a410 f621 af0e f95d 3f29 49de 6844 195e f288 1a00 aa0c 4591 0f03 f960 2fcb 2cbb 3134 8b08 1a8b a53d bb59 04e3 7da1 fc8e dee0 7e9c b71c 3cc8 bf5c fa82 1ec0 6ade b9fe d200 4941 d6d0 130c b3af 4e7b 3dda eafc fbb4 d870 dff1 7d3c f220 b860 8528 1666 0360 5f20 0748 26b9 9add 6cc9 eccd d0ae c56c 64a6 21ec daf0 72b6 9828 8797 843c 53ac 3010 b8f6 fe74 8c0e 76b4 3345 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 fc0e 0061 ff84 027b 00da 0025 0061 fd67 ff56 0191 fe7c ff0d 01f6 fe57 007d 0379 fec9 fff9 008d febd 0148 ffda 0175 ffe0 010a fd29 01d1 ff8d fe68 fffa ff3b fe6a ffcc ff04 0320 0088 fe99 ffbd 0020 01c2 fe14 fcea 021e 000f ff0f 01e9 fffc fee1 01a6 0108 00e1 008d 0012 0005 02b1 ffe9 ff38 0262 0174 ffd4 fefa 000e fe78 fee2 fef5 0077 0002 ffa8 ff78 fedd feb3 fcf7 02d0 ff7b ff2d 00bb 00dd fe6e fcdc 02f7 002d 00d9 016f 006d ffdd fff1 0137 0280 feb3 ffc8 00b7 ff80 ff9a 0196 032f 003a ff74 fff4 fe09 ff5f fe9c fe4f 02dc ffc7 ffa8 0041 013d ff36 01e2 00d8 00e3 0075 ff7e ffa1 01bb 003a ffef 0017 0019 0017 ff71 0008 0265 ffa5 00c5 01a4 [END]
+  instr = R22 = ADDC(R31, R22);
+
+After ADDC:
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 fc0e 0062 ff84 027b 00db 0025 0061 fd67 ff57 0191 fe7c ff0d 01f6 fe57 007e 0379 fec9 fffa 008e febd 0149 ffdb 0175 ffe0 010b fd29 01d2 ff8d fe68 fffa ff3b fe6a ffcd ff04 0320 0088 fe9a ffbd 0020 01c2 fe15 fcea 021e 0010 ff0f 01e9 fffc fee1 01a6 0108 00e1 008e 0012 0005 02b1 ffe9 ff39 0262 0175 ffd4 fefa 000e fe78 fee3 fef5 0078 0002 ffa8 ff78 fedd feb4 fcf8 02d1 ff7c ff2d 00bb 00dd fe6e fcdc 02f7 002d 00da 0170 006d ffdd fff1 0137 0280 feb3 ffc8 00b7 ff80 ff9a 0196 032f 003a ff74 fff4 fe09 ff5f fe9c fe4f 02dc ffc8 ffa8 0042 013e ff36 01e3 00d8 00e3 0075 ff7f ffa2 01bb 003a ffef 0017 0019 0018 ff72 0008 0265 ffa5 00c5 01a4 [END]
+  instr = R22 = R26 + R22;
+
+  instr = END_WHERE;
+
+  instr = R25 = R25 >> 1;
+
+Print reg IDX:
+
+  instr = PRINTREG(R05);
+
+R[ 5] (starting from index 0) = 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b 000b [END]
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 01fc 0000 a8e4 ae0e fdfb 5e57 c67c 28b6 4358 2140 5968 68ae 889b 74d2 15a4 d4ea 419c a8d0 231c b546 1024 70f7 144c 932c a544 5e40 7a0d 2576 1be1 2c1a 1c53 e3bd 0c6d 4e78 8173 9b47 fc8f 4fd4 aeac 4cc0 5d26 7070 2bbe dc2d 2734 e5c8 eb38 be4e c5bb 1500 5d26 eb08 2da0 1270 5ba4 a410 f621 af0e f95d 3f29 49de 6844 195e f288 1a00 aa0c 4591 0f03 f960 2fcb 2cbb 3134 8b08 1a8b a53d bb59 04e3 7da1 fc8e dee0 7e9c b71c 3cc8 bf5c fa82 1ec0 6ade b9fe d200 4941 d6d0 130c b3af 4e7b 3dda eafc fbb4 d870 dff1 7d3c f220 b860 8528 1666 0360 5f20 0748 26b9 9add 6cc9 eccd d0ae c56c 64a6 21ec daf0 72b6 9828 8797 843c 53ac 3010 b8f6 fe74 8c0e 76b4 3345 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 f80e 03b2 feb6 027b 01d5 0025 0061 fd67 fc91 0191 fe7c ff0d 01f6 fe57 013f 0379 fec9 ffd6 03cd febd 04cf fe74 03f1 ffe0 0249 fd29 0475 ff8d fbf9 fffa fe30 fe6a fdf8 ff04 06b2 022e faaf ffbd 0020 040a face fcea 05bd 0020 fca0 01e9 fef4 fc22 01a6 0108 00e1 011d 0012 0005 0570 fe17 fc10 0262 03fd ffd4 fefa 000e fc67 fd9d fbc9 01c1 0002 ff4e ff78 fedd fcad f952 064a fec4 fd45 00bb 00dd fcba f97c 02f7 002d 0480 0470 006d ffdd fff1 0137 0280 feb3 ffc8 00b7 ff80 ff9a 0196 06e2 003a fe9a fff4 fe09 ff5f fa9f fe4f 02dc fdc4 ff05 012e 02cd ff36 05dc 0231 00e3 0227 fbd1 fe82 04d9 003a ff6b 007c 0019 0088 fe8b 0020 050f ffa5 00c5 01a4 [END]
+  instr = R05 = R30 + R05;
+
+Preparing to jump from loop iter #3
+  instr = END_REPEAT;
+
+  instr = R27 = R24 << R05;
+
+  instr = R04 = R28 - R05;
+
+  instr = R26 = SHRA(R24, R04);
+
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 1000 0000 b000 6000 1000 5000 a000 b000 5000 8000 8000 3000 9000 e000 a000 d000 4000 e000 6000 e000 c000 f000 7000 6000 6000 0000 d000 b000 1000 2000 5000 5000 d000 8000 5000 7000 9000 3000 2000 8000 7000 5000 a000 3000 9000 3000 2000 3000 9000 0000 f000 8000 0000 4000 5000 6000 1000 e000 7000 1000 6000 c000 a000 8000 6000 c000 d000 9000 e000 d000 7000 c000 d000 1000 9000 3000 7000 3000 a000 2000 f000 2000 e000 b000 9000 c000 a000 6000 0000 7000 c000 4000 7000 1000 2000 c000 b000 0000 9000 7000 0000 0000 9000 b000 d000 0000 a000 7000 b000 b000 9000 d000 4000 f000 6000 9000 2000 a000 d000 3000 4000 f000 5000 a000 e000 a000 d000 [END]
+Print reg SRC1_ALIGNEDHIGH:
+ 
+  instr = PRINTREG(R26);
+
+R[26] (starting from index 0) = f800 0000 f800 06a1 fe64 052f 01f5 01da 0233 fac9 fa74 0710 fb79 f9a6 041e fc81 0183 0734 fb88 ffb8 067f f977 070d fd32 04f8 fd77 027d f883 0547 feda fb22 ff4d fdeb fa84 fc57 fb61 0724 034c f82b ff74 007a 0490 f973 f8ed 073e 0021 fb23 0706 fdf0 fa82 03c8 051e 02bc 011f 00ea 000b 057e fc5c f9af 05ac 0511 fb4e fd3c 0142 fbdf fd74 f9a8 0293 02fe ff4c fc45 fd4d fbf3 f8b5 06f3 fe91 fc30 0438 0434 fc99 f940 07ba 04a1 074d 0601 0388 fdf2 fc0b 027f 078a fb23 fd76 07fb f8c0 ff2a 0443 0767 0352 fe4d fba8 f93b fe96 f807 f914 0762 fbf8 feba 01d9 031e fae4 07f3 02b2 0325 0364 f8a5 fdc1 063d 010f fef8 00ca 02c2 00e1 fe32 0031 0554 fb99 023d 04a3 [END]
+  instr = R20 = R25 & R30;
+
+  instr = R19 = R20 == R30;
+
+  instr = NOP;
+
+  instr = WHERE_EQ;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 01fc 0000 a8e4 ae0e fdfb 5e57 c67c 28b6 4358 2140 5968 68ae 889b 74d2 15a4 d4ea 419c a8d0 231c b546 1024 70f7 144c 932c a544 5e40 7a0d 2576 1be1 2c1a 1c53 e3bd 0c6d 4e78 8173 9b47 fc8f 4fd4 aeac 4cc0 5d26 7070 2bbe dc2d 2734 e5c8 eb38 be4e c5bb 1500 5d26 eb08 2da0 1270 5ba4 a410 f621 af0e f95d 3f29 49de 6844 195e f288 1a00 aa0c 4591 0f03 f960 2fcb 2cbb 3134 8b08 1a8b a53d bb59 04e3 7da1 fc8e dee0 7e9c b71c 3cc8 bf5c fa82 1ec0 6ade b9fe d200 4941 d6d0 130c b3af 4e7b 3dda eafc fbb4 d870 dff1 7d3c f220 b860 8528 1666 0360 5f20 0748 26b9 9add 6cc9 eccd d0ae c56c 64a6 21ec daf0 72b6 9828 8797 843c 53ac 3010 b8f6 fe74 8c0e 76b4 3345 [END]
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 1000 0000 b000 6000 1000 5000 a000 b000 5000 8000 8000 3000 9000 e000 a000 d000 4000 e000 6000 e000 c000 f000 7000 6000 6000 0000 d000 b000 1000 2000 5000 5000 d000 8000 5000 7000 9000 3000 2000 8000 7000 5000 a000 3000 9000 3000 2000 3000 9000 0000 f000 8000 0000 4000 5000 6000 1000 e000 7000 1000 6000 c000 a000 8000 6000 c000 d000 9000 e000 d000 7000 c000 d000 1000 9000 3000 7000 3000 a000 2000 f000 2000 e000 b000 9000 c000 a000 6000 0000 7000 c000 4000 7000 1000 2000 c000 b000 0000 9000 7000 0000 0000 9000 b000 d000 0000 a000 7000 b000 b000 9000 d000 4000 f000 6000 9000 2000 a000 d000 3000 4000 f000 5000 a000 e000 a000 d000 [END]
+  instr = R23 = R27 + R23;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 01fc 0000 58e4 0e0e 0dfb ae57 c67c 28b6 4358 2140 5968 68ae 189b 54d2 15a4 a4ea 819c a8d0 831c b546 1024 60f7 144c 932c a544 5e40 7a0d d576 1be1 4c1a 6c53 33bd dc6d ce78 8173 0b47 fc8f 4fd4 ceac 4cc0 5d26 c070 2bbe dc2d 2734 15c8 eb38 be4e 55bb 1500 5d26 eb08 2da0 1270 5ba4 a410 f621 af0e f95d 4f29 49de 2844 b95e 7288 7a00 aa0c 4591 9f03 d960 2fcb 9cbb f134 5b08 1a8b 353d eb59 04e3 7da1 fc8e fee0 7e9c d71c 1cc8 6f5c 8a82 1ec0 0ade b9fe d200 b941 d6d0 130c b3af 5e7b 3dda aafc fbb4 d870 6ff1 ed3c f220 b860 1528 c666 0360 5f20 a748 26b9 9add 6cc9 7ccd a0ae 056c 54a6 21ec daf0 72b6 9828 8797 b43c 53ac 2010 b8f6 9e74 6c0e 16b4 0345 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 f80e 03b2 feb6 027b 01d5 0025 0061 fd67 fc91 0191 fe7c ff0d 01f6 fe57 013f 0379 fec9 ffd6 03cd febd 04cf fe74 03f1 ffe0 0249 fd29 0475 ff8d fbf9 fffa fe30 fe6a fdf8 ff04 06b2 022e faaf ffbd 0020 040a face fcea 05bd 0020 fca0 01e9 fef4 fc22 01a6 0108 00e1 011d 0012 0005 0570 fe17 fc10 0262 03fd ffd4 fefa 000e fc67 fd9d fbc9 01c1 0002 ff4e ff78 fedd fcad f952 064a fec4 fd45 00bb 00dd fcba f97c 02f7 002d 0480 0470 006d ffdd fff1 0137 0280 feb3 ffc8 00b7 ff80 ff9a 0196 06e2 003a fe9a fff4 fe09 ff5f fa9f fe4f 02dc fdc4 ff05 012e 02cd ff36 05dc 0231 00e3 0227 fbd1 fe82 04d9 003a ff6b 007c 0019 0088 fe8b 0020 050f ffa5 00c5 01a4 [END]
+  instr = R22 = ADDC(R31, R22);
+
+After ADDC:
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 f80e 03b3 feb7 027c 01d5 0025 0061 fd67 fc91 0191 fe7c ff0e 01f7 fe57 0140 0379 fec9 ffd6 03cd febd 04d0 fe74 03f1 ffe0 0249 fd29 0475 ff8d fbf9 fffa fe31 fe6a fdf8 ff04 06b3 022e faaf ffbd 0020 040a face fcea 05bd 0020 fca1 01e9 fef4 fc23 01a6 0108 00e1 011d 0012 0005 0570 fe17 fc10 0262 03fd ffd4 fefb 000e fc68 fd9d fbc9 01c1 0002 ff4f ff78 fedd fcad f953 064a fec5 fd45 00bb 00dd fcba f97c 02f7 002d 0481 0471 006e ffdd fff2 0137 0280 feb3 ffc8 00b7 ff80 ff9a 0196 06e3 003a fe9a fff5 fe09 ff5f fa9f fe50 02dc fdc4 ff05 012e 02cd ff36 05dc 0232 00e4 0228 fbd2 fe82 04d9 003a ff6b 007c 0019 0088 fe8c 0020 0510 ffa6 00c6 01a5 [END]
+  instr = R22 = R26 + R22;
+
+  instr = END_WHERE;
+
+  instr = R25 = R25 >> 1;
+
+Print reg IDX:
+
+  instr = PRINTREG(R05);
+
+R[ 5] (starting from index 0) = 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c 000c [END]
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 01fc 0000 58e4 0e0e 0dfb ae57 c67c 28b6 4358 2140 5968 68ae 189b 54d2 15a4 a4ea 819c a8d0 831c b546 1024 60f7 144c 932c a544 5e40 7a0d d576 1be1 4c1a 6c53 33bd dc6d ce78 8173 0b47 fc8f 4fd4 ceac 4cc0 5d26 c070 2bbe dc2d 2734 15c8 eb38 be4e 55bb 1500 5d26 eb08 2da0 1270 5ba4 a410 f621 af0e f95d 4f29 49de 2844 b95e 7288 7a00 aa0c 4591 9f03 d960 2fcb 9cbb f134 5b08 1a8b 353d eb59 04e3 7da1 fc8e fee0 7e9c d71c 1cc8 6f5c 8a82 1ec0 0ade b9fe d200 b941 d6d0 130c b3af 5e7b 3dda aafc fbb4 d870 6ff1 ed3c f220 b860 1528 c666 0360 5f20 a748 26b9 9add 6cc9 7ccd a0ae 056c 54a6 21ec daf0 72b6 9828 8797 b43c 53ac 2010 b8f6 9e74 6c0e 16b4 0345 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 f80e 0a54 fd1b 07ab 03ca 0025 0061 fd67 fc91 0191 fe7c f8b4 0615 fe57 02c3 0aad fec9 ff8e 03cd febd 0bdd fe74 03f1 ffe0 04c6 fd29 09bc ff8d f71b ff47 fc1c f8ee fa4f ff04 0dd7 022e faaf ff31 0020 040a f441 fcea 05bd 0020 f7c4 01e9 fef4 f6a5 01a6 0108 00e1 023c 0012 0005 0570 fe17 fc10 0262 090e ffd4 fc37 0150 f847 fb11 fbc9 01c1 0300 fe9b ff78 fc2a f8a0 f208 064a fd56 f975 00bb 00dd fcba f2bc 02f7 04ce 0bce 0a72 03f6 ffdd fbfd 0137 0280 f9d6 ffc8 00b7 ff80 fec4 0196 0e4a 003a fce7 fb9d f744 fdf5 fa9f f764 0a3e fdc4 fdbf 0307 02cd ff36 05dc 04e4 0409 058c f477 fe82 04d9 003a ff6b 007c 02db 0088 fcbe 0020 0a64 fb3f 0303 0648 [END]
+  instr = R05 = R30 + R05;
+
+Preparing to jump from loop iter #2
+  instr = END_REPEAT;
+
+  instr = R27 = R24 << R05;
+
+  instr = R04 = R28 - R05;
+
+  instr = R26 = SHRA(R24, R04);
+
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 2000 0000 6000 c000 2000 a000 4000 6000 a000 0000 0000 6000 2000 c000 4000 a000 8000 c000 c000 c000 8000 e000 e000 c000 c000 0000 a000 6000 2000 4000 a000 a000 a000 0000 a000 e000 2000 6000 4000 0000 e000 a000 4000 6000 2000 6000 4000 6000 2000 0000 e000 0000 0000 8000 a000 c000 2000 c000 e000 2000 c000 8000 4000 0000 c000 8000 a000 2000 c000 a000 e000 8000 a000 2000 2000 6000 e000 6000 4000 4000 e000 4000 c000 6000 2000 8000 4000 c000 0000 e000 8000 8000 e000 2000 4000 8000 6000 0000 2000 e000 0000 0000 2000 6000 a000 0000 4000 e000 6000 6000 2000 a000 8000 e000 c000 2000 4000 4000 a000 6000 8000 e000 a000 4000 c000 4000 a000 [END]
+Print reg SRC1_ALIGNEDHIGH:
+ 
+  instr = PRINTREG(R26);
+
+R[26] (starting from index 0) = f000 0000 f000 0d43 fcc8 0a5e 03ea 03b5 0467 f592 f4e9 0e21 f6f2 f34d 083d f903 0307 0e68 f711 ff70 0cff f2ef 0e1b fa64 09f0 faee 04fa f107 0a8f fdb4 f644 fe9a fbd6 f509 f8af f6c2 0e48 0699 f056 fee8 00f5 0920 f2e6 f1db 0e7c 0043 f646 0e0c fbe0 f505 0790 0a3d 0579 023e 01d4 0016 0afc f8b8 f35f 0b58 0a22 f69c fa79 0285 f7bf fae8 f351 0527 05fd fe99 f88b fa9a f7e7 f16b 0de6 fd23 f860 0870 0868 f933 f280 0f75 0942 0e9b 0c03 0711 fbe5 f817 04fe 0f14 f646 faed 0ff6 f180 fe54 0886 0ecf 06a5 fc9a f751 f276 fd2c f00e f229 0ec5 f7f1 fd74 03b3 063c f5c9 0fe7 0565 064b 06c8 f14b fb82 0c7b 021e fdf1 0195 0584 01c2 fc65 0062 0aa9 f733 047b 0947 [END]
+  instr = R20 = R25 & R30;
+
+  instr = R19 = R20 == R30;
+
+  instr = NOP;
+
+  instr = WHERE_EQ;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 01fc 0000 58e4 0e0e 0dfb ae57 c67c 28b6 4358 2140 5968 68ae 189b 54d2 15a4 a4ea 819c a8d0 831c b546 1024 60f7 144c 932c a544 5e40 7a0d d576 1be1 4c1a 6c53 33bd dc6d ce78 8173 0b47 fc8f 4fd4 ceac 4cc0 5d26 c070 2bbe dc2d 2734 15c8 eb38 be4e 55bb 1500 5d26 eb08 2da0 1270 5ba4 a410 f621 af0e f95d 4f29 49de 2844 b95e 7288 7a00 aa0c 4591 9f03 d960 2fcb 9cbb f134 5b08 1a8b 353d eb59 04e3 7da1 fc8e fee0 7e9c d71c 1cc8 6f5c 8a82 1ec0 0ade b9fe d200 b941 d6d0 130c b3af 5e7b 3dda aafc fbb4 d870 6ff1 ed3c f220 b860 1528 c666 0360 5f20 a748 26b9 9add 6cc9 7ccd a0ae 056c 54a6 21ec daf0 72b6 9828 8797 b43c 53ac 2010 b8f6 9e74 6c0e 16b4 0345 [END]
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 2000 0000 6000 c000 2000 a000 4000 6000 a000 0000 0000 6000 2000 c000 4000 a000 8000 c000 c000 c000 8000 e000 e000 c000 c000 0000 a000 6000 2000 4000 a000 a000 a000 0000 a000 e000 2000 6000 4000 0000 e000 a000 4000 6000 2000 6000 4000 6000 2000 0000 e000 0000 0000 8000 a000 c000 2000 c000 e000 2000 c000 8000 4000 0000 c000 8000 a000 2000 c000 a000 e000 8000 a000 2000 2000 6000 e000 6000 4000 4000 e000 4000 c000 6000 2000 8000 4000 c000 0000 e000 8000 8000 e000 2000 4000 8000 6000 0000 2000 e000 0000 0000 2000 6000 a000 0000 4000 e000 6000 6000 2000 a000 8000 e000 c000 2000 4000 4000 a000 6000 8000 e000 a000 4000 c000 4000 a000 [END]
+  instr = R23 = R27 + R23;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 01fc 0000 58e4 ce0e 0dfb ae57 067c 88b6 e358 2140 5968 c8ae 389b 54d2 15a4 a4ea 819c 68d0 831c b546 9024 60f7 f44c 932c 6544 5e40 7a0d d576 1be1 8c1a 0c53 33bd dc6d ce78 2173 0b47 1c8f 4fd4 0eac 4cc0 5d26 6070 2bbe dc2d 2734 15c8 2b38 be4e 75bb 1500 5d26 eb08 2da0 1270 5ba4 a410 1621 6f0e d95d 6f29 49de a844 b95e 7288 3a00 2a0c 4591 bf03 9960 2fcb 9cbb f134 5b08 3a8b 553d 4b59 04e3 dda1 3c8e fee0 7e9c 171c 1cc8 6f5c 8a82 9ec0 4ade 79fe d200 b941 d6d0 130c b3af 5e7b 7dda aafc fbb4 d870 8ff1 cd3c f220 b860 1528 2666 a360 5f20 a748 06b9 9add 6cc9 9ccd a0ae 856c 54a6 e1ec faf0 b2b6 9828 2797 b43c 53ac 0010 b8f6 de74 2c0e 56b4 a345 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 f80e 0a54 fd1b 07ab 03ca 0025 0061 fd67 fc91 0191 fe7c f8b4 0615 fe57 02c3 0aad fec9 ff8e 03cd febd 0bdd fe74 03f1 ffe0 04c6 fd29 09bc ff8d f71b ff47 fc1c f8ee fa4f ff04 0dd7 022e faaf ff31 0020 040a f441 fcea 05bd 0020 f7c4 01e9 fef4 f6a5 01a6 0108 00e1 023c 0012 0005 0570 fe17 fc10 0262 090e ffd4 fc37 0150 f847 fb11 fbc9 01c1 0300 fe9b ff78 fc2a f8a0 f208 064a fd56 f975 00bb 00dd fcba f2bc 02f7 04ce 0bce 0a72 03f6 ffdd fbfd 0137 0280 f9d6 ffc8 00b7 ff80 fec4 0196 0e4a 003a fce7 fb9d f744 fdf5 fa9f f764 0a3e fdc4 fdbf 0307 02cd ff36 05dc 04e4 0409 058c f477 fe82 04d9 003a ff6b 007c 02db 0088 fcbe 0020 0a64 fb3f 0303 0648 [END]
+  instr = R22 = ADDC(R31, R22);
+
+After ADDC:
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 f80e 0a54 fd1b 07ab 03ca 0026 0061 fd67 fc91 0191 fe7c f8b4 0615 fe57 02c3 0aad feca ff8e 03cd febd 0bdd fe74 03f1 ffe1 04c6 fd29 09bc ff8d f71b ff48 fc1c f8ee fa4f ff05 0dd7 022f faaf ff32 0020 040a f442 fcea 05bd 0020 f7c4 01ea fef4 f6a5 01a6 0108 00e1 023c 0012 0005 0570 fe18 fc11 0263 090e ffd4 fc37 0150 f847 fb12 fbca 01c1 0300 fe9c ff78 fc2a f8a0 f208 064a fd56 f976 00bb 00dd fcbb f2bc 02f7 04cf 0bce 0a72 03f6 ffdd fbfd 0138 0280 f9d6 ffc8 00b7 ff80 fec4 0196 0e4a 003a fce7 fb9d f745 fdf5 fa9f f764 0a3f fdc4 fdbf 0307 02ce ff36 05dc 04e4 0409 058c f477 fe82 04d9 003a ff6b 007d 02db 0088 fcbf 0020 0a64 fb40 0303 0648 [END]
+  instr = R22 = R26 + R22;
+
+  instr = END_WHERE;
+
+  instr = R25 = R25 >> 1;
+
+Print reg IDX:
+
+  instr = PRINTREG(R05);
+
+R[ 5] (starting from index 0) = 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d 000d [END]
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 01fc 0000 58e4 ce0e 0dfb ae57 067c 88b6 e358 2140 5968 c8ae 389b 54d2 15a4 a4ea 819c 68d0 831c b546 9024 60f7 f44c 932c 6544 5e40 7a0d d576 1be1 8c1a 0c53 33bd dc6d ce78 2173 0b47 1c8f 4fd4 0eac 4cc0 5d26 6070 2bbe dc2d 2734 15c8 2b38 be4e 75bb 1500 5d26 eb08 2da0 1270 5ba4 a410 1621 6f0e d95d 6f29 49de a844 b95e 7288 3a00 2a0c 4591 bf03 9960 2fcb 9cbb f134 5b08 3a8b 553d 4b59 04e3 dda1 3c8e fee0 7e9c 171c 1cc8 6f5c 8a82 9ec0 4ade 79fe d200 b941 d6d0 130c b3af 5e7b 7dda aafc fbb4 d870 8ff1 cd3c f220 b860 1528 2666 a360 5f20 a748 06b9 9add 6cc9 9ccd a0ae 856c 54a6 e1ec faf0 b2b6 9828 2797 b43c 53ac 0010 b8f6 de74 2c0e 56b4 a345 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 e80e 0a54 f9e3 07ab 03ca 03db 04c8 f2f9 f17a 0191 f56e ec01 0615 fe57 02c3 0aad f5db ff8e 03cd f1ac 0bdd f8d8 03f1 facf 04c6 fd29 09bc ff8d ed5f fde2 fc1c f8ee f2fe f5c7 0dd7 08c8 faaf fe1a 0115 040a e728 fcea 05bd 0020 f7c4 0ff6 fef4 ebaa 0936 0108 065a 047a 0012 0005 0570 f6d0 ef70 0dbb 1330 ffd4 f6b0 0150 f847 f5fa ef1b 01c1 08fd fd35 ff78 fc2a f8a0 f208 1430 fa79 f1d6 00bb 0945 f5ee f2bc 02f7 0e11 0bce 0a72 03f6 fbc2 f414 0636 0280 f9d6 ffc8 00b7 ff80 fec4 0a1c 0e4a 003a f981 f2ee e9bb fb21 eaad f764 1904 f5b5 fdbf 0307 090a ff36 05dc 0a49 0409 0c54 f477 fa04 1154 0258 ff6b 0212 02db 0088 f924 0020 150d f273 077e 0f8f [END]
+  instr = R05 = R30 + R05;
+
+Preparing to jump from loop iter #1
+  instr = END_REPEAT;
+
+  instr = R27 = R24 << R05;
+
+  instr = R04 = R28 - R05;
+
+  instr = R26 = SHRA(R24, R04);
+
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 4000 0000 c000 8000 4000 4000 8000 c000 4000 0000 0000 c000 4000 8000 8000 4000 0000 8000 8000 8000 0000 c000 c000 8000 8000 0000 4000 c000 4000 8000 4000 4000 4000 0000 4000 c000 4000 c000 8000 0000 c000 4000 8000 c000 4000 c000 8000 c000 4000 0000 c000 0000 0000 0000 4000 8000 4000 8000 c000 4000 8000 0000 8000 0000 8000 0000 4000 4000 8000 4000 c000 0000 4000 4000 4000 c000 c000 c000 8000 8000 c000 8000 8000 c000 4000 0000 8000 8000 0000 c000 0000 0000 c000 4000 8000 0000 c000 0000 4000 c000 0000 0000 4000 c000 4000 0000 8000 c000 c000 c000 4000 4000 0000 c000 8000 4000 8000 8000 4000 c000 0000 c000 4000 8000 8000 8000 4000 [END]
+Print reg SRC1_ALIGNEDHIGH:
+ 
+  instr = PRINTREG(R26);
+
+R[26] (starting from index 0) = e000 0000 e000 1a86 f991 14bc 07d5 076a 08ce eb25 e9d2 1c42 ede4 e69a 107b f206 060f 1cd1 ee23 fee1 19ff e5df 1c37 f4c9 13e1 f5dd 09f4 e20f 151e fb68 ec88 fd35 f7ad ea13 f15e ed85 1c91 0d32 e0ac fdd0 01ea 1241 e5cd e3b6 1cf8 0086 ec8c 1c18 f7c0 ea0a 0f20 147b 0af2 047c 03a9 002d 15f9 f170 e6bf 16b1 1444 ed39 f4f3 050a ef7e f5d1 e6a3 0a4f 0bfa fd33 f117 f535 efcf e2d7 1bcc fa46 f0c0 10e1 10d0 f266 e500 1eeb 1284 1d37 1806 0e22 f7cb f02e 09fd 1e28 ec8d f5db 1fed e301 fca8 110c 1d9f 0d4a f934 eea2 e4ed fa58 e01c e452 1d8a efe3 fae8 0766 0c79 eb92 1fce 0aca 0c97 0d91 e297 f705 18f6 043c fbe2 032b 0b08 0385 f8cb 00c5 1552 ee67 08f6 128f [END]
+  instr = R20 = R25 & R30;
+
+  instr = R19 = R20 == R30;
+
+  instr = NOP;
+
+  instr = WHERE_EQ;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 01fc 0000 58e4 ce0e 0dfb ae57 067c 88b6 e358 2140 5968 c8ae 389b 54d2 15a4 a4ea 819c 68d0 831c b546 9024 60f7 f44c 932c 6544 5e40 7a0d d576 1be1 8c1a 0c53 33bd dc6d ce78 2173 0b47 1c8f 4fd4 0eac 4cc0 5d26 6070 2bbe dc2d 2734 15c8 2b38 be4e 75bb 1500 5d26 eb08 2da0 1270 5ba4 a410 1621 6f0e d95d 6f29 49de a844 b95e 7288 3a00 2a0c 4591 bf03 9960 2fcb 9cbb f134 5b08 3a8b 553d 4b59 04e3 dda1 3c8e fee0 7e9c 171c 1cc8 6f5c 8a82 9ec0 4ade 79fe d200 b941 d6d0 130c b3af 5e7b 7dda aafc fbb4 d870 8ff1 cd3c f220 b860 1528 2666 a360 5f20 a748 06b9 9add 6cc9 9ccd a0ae 856c 54a6 e1ec faf0 b2b6 9828 2797 b43c 53ac 0010 b8f6 de74 2c0e 56b4 a345 [END]
+Print reg SRC1_ALIGNEDLOW:
+
+  instr = PRINTREG(R27);
+
+R[27] (starting from index 0) = 0000 4000 0000 c000 8000 4000 4000 8000 c000 4000 0000 0000 c000 4000 8000 8000 4000 0000 8000 8000 8000 0000 c000 c000 8000 8000 0000 4000 c000 4000 8000 4000 4000 4000 0000 4000 c000 4000 c000 8000 0000 c000 4000 8000 c000 4000 c000 8000 c000 4000 0000 c000 0000 0000 0000 4000 8000 4000 8000 c000 4000 8000 0000 8000 0000 8000 0000 4000 4000 8000 4000 c000 0000 4000 4000 4000 c000 c000 c000 8000 8000 c000 8000 8000 c000 4000 0000 8000 8000 0000 c000 0000 0000 c000 4000 8000 0000 c000 0000 4000 c000 0000 0000 4000 c000 4000 0000 8000 c000 c000 c000 4000 4000 0000 c000 8000 4000 8000 8000 4000 c000 0000 c000 4000 8000 8000 8000 4000 [END]
+  instr = R23 = R27 + R23;
+
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 01fc 0000 18e4 4e0e 4dfb ae57 867c 48b6 e358 2140 5968 c8ae 789b d4d2 15a4 e4ea 819c e8d0 031c b546 9024 20f7 f44c 932c e544 5e40 7a0d d576 1be1 8c1a 4c53 73bd 1c6d ce78 2173 cb47 1c8f 0fd4 8eac 4cc0 1d26 a070 2bbe 9c2d 2734 15c8 2b38 7e4e 75bb 1500 1d26 eb08 2da0 1270 9ba4 a410 1621 ef0e d95d 6f29 c9de a844 395e 7288 3a00 2a0c 4591 ff03 1960 2fcb 9cbb f134 5b08 7a8b 953d 0b59 04e3 dda1 3c8e 7ee0 7e9c 971c 9cc8 2f5c 8a82 9ec0 cade f9fe d200 7941 d6d0 130c b3af 9e7b 7dda aafc fbb4 d870 cff1 cd3c f220 b860 5528 e666 e360 5f20 a748 c6b9 9add 2cc9 dccd e0ae 856c 14a6 e1ec 3af0 32b6 9828 2797 743c 53ac c010 b8f6 5e74 2c0e 56b4 a345 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 e80e 0a54 f9e3 07ab 03ca 03db 04c8 f2f9 f17a 0191 f56e ec01 0615 fe57 02c3 0aad f5db ff8e 03cd f1ac 0bdd f8d8 03f1 facf 04c6 fd29 09bc ff8d ed5f fde2 fc1c f8ee f2fe f5c7 0dd7 08c8 faaf fe1a 0115 040a e728 fcea 05bd 0020 f7c4 0ff6 fef4 ebaa 0936 0108 065a 047a 0012 0005 0570 f6d0 ef70 0dbb 1330 ffd4 f6b0 0150 f847 f5fa ef1b 01c1 08fd fd35 ff78 fc2a f8a0 f208 1430 fa79 f1d6 00bb 0945 f5ee f2bc 02f7 0e11 0bce 0a72 03f6 fbc2 f414 0636 0280 f9d6 ffc8 00b7 ff80 fec4 0a1c 0e4a 003a f981 f2ee e9bb fb21 eaad f764 1904 f5b5 fdbf 0307 090a ff36 05dc 0a49 0409 0c54 f477 fa04 1154 0258 ff6b 0212 02db 0088 f924 0020 150d f273 077e 0f8f [END]
+  instr = R22 = ADDC(R31, R22);
+
+After ADDC:
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 e80e 0a55 f9e4 07ab 03ca 03db 04c9 f2f9 f17a 0191 f56e ec01 0615 fe57 02c3 0aad f5db ff8f 03cd f1ac 0bde f8d8 03f1 facf 04c6 fd29 09bc ff8d ed5f fde2 fc1c f8ef f2fe f5c7 0dd7 08c8 fab0 fe1a 0115 040b e728 fcea 05be 0020 f7c4 0ff6 fef5 ebaa 0936 0109 065a 047a 0012 0005 0570 f6d0 ef70 0dbb 1330 ffd4 f6b0 0151 f847 f5fa ef1b 01c1 08fd fd36 ff78 fc2a f8a0 f208 1430 fa79 f1d7 00bb 0945 f5ee f2bd 02f7 0e11 0bce 0a73 03f6 fbc2 f414 0636 0280 f9d7 ffc8 00b7 ff80 fec4 0a1c 0e4a 003a f981 f2ee e9bb fb21 eaad f764 1904 f5b5 fdbf 0307 090a ff36 05dd 0a49 0409 0c54 f478 fa04 1155 0259 ff6b 0212 02dc 0088 f924 0020 150e f273 077e 0f8f [END]
+  instr = R22 = R26 + R22;
+
+  instr = END_WHERE;
+
+  instr = R25 = R25 >> 1;
+
+Print reg IDX:
+
+  instr = PRINTREG(R05);
+
+R[ 5] (starting from index 0) = 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e 000e [END]
+Print reg RES_LOW:
+
+  instr = PRINTREG(R23);
+
+R[23] (starting from index 0) = 0000 01fc 0000 18e4 4e0e 4dfb ae57 867c 48b6 e358 2140 5968 c8ae 789b d4d2 15a4 e4ea 819c e8d0 031c b546 9024 20f7 f44c 932c e544 5e40 7a0d d576 1be1 8c1a 4c53 73bd 1c6d ce78 2173 cb47 1c8f 0fd4 8eac 4cc0 1d26 a070 2bbe 9c2d 2734 15c8 2b38 7e4e 75bb 1500 1d26 eb08 2da0 1270 9ba4 a410 1621 ef0e d95d 6f29 c9de a844 395e 7288 3a00 2a0c 4591 ff03 1960 2fcb 9cbb f134 5b08 7a8b 953d 0b59 04e3 dda1 3c8e 7ee0 7e9c 971c 9cc8 2f5c 8a82 9ec0 cade f9fe d200 7941 d6d0 130c b3af 9e7b 7dda aafc fbb4 d870 cff1 cd3c f220 b860 5528 e666 e360 5f20 a748 c6b9 9add 2cc9 dccd e0ae 856c 14a6 e1ec 3af0 32b6 9828 2797 743c 53ac c010 b8f6 5e74 2c0e 56b4 a345 [END]
+Print reg RES_HIGH:
+ 
+  instr = PRINTREG(R22);
+
+R[22] (starting from index 0) = 0000 0000 e80e 24db f375 1c67 03ca 0b45 0d97 f2f9 db4c 1dd3 f56e d29b 1690 fe57 08d2 277e e3fe fe70 03cd f1ac 2815 f8d8 03f1 f0ac 04c6 fd29 09bc ff8d ed5f fb17 f3c9 e302 e45c f5c7 2a68 08c8 db5c fbea 0115 164c ccf5 fcea 22b6 0020 f7c4 0ff6 f6b5 ebaa 0936 1584 065a 047a 03bb 0032 0570 f6d0 d62f 0dbb 1330 ed0d f6b0 065b e7c5 f5fa d5be 01c1 14f7 fa69 ff78 fc2a e86f f208 2ffc f4bf e297 00bb 0945 f5ee d7bd 02f7 2095 2905 2279 03f6 fbc2 e442 1033 20a8 e664 ffc8 00b7 ff80 fb6c 0a1c 0e4a 003a f981 e190 e9bb f579 eaad dbb6 368e e598 f8a7 0307 1583 ff36 25ab 1513 10a0 19e5 d70f fa04 2a4b 0695 ff6b 0212 0de4 040d f1ef 0020 2a60 f273 077e 0f8f [END]
+  instr = R05 = R30 + R05;
+
+Preparing to jump from loop iter #0
+  instr = END_REPEAT;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running and(0x000000000000016c), Right=30, Left=25, Dest=18
+ Finished running R18 = R25 & R30;
+
+ Running eq(0x0000000000000148), Right=30, Left=18, Dest=17
+ Finished running R17 = R18 == R30;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running whereeq(0x000000000000011d), Right=0, Left=0, Dest=0
+ Finished running WHERE_EQ;
+
+ Running ishl(0x0000000000000141), Right=15, Left=24, Dest=27
+ Finished running R27 = R24 << 15;
+
+ Running ishra(0x0000000000000161), Right=1, Left=24, Dest=26
+ Finished running R26 = ISHRA(R24, 1);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17201, Left=0, Dest=0
+C1 Running print_chars(0x0000000000000014), Value=24385, Left=0, Dest=0
+_A Running print_chars(0x0000000000000014), Value=19529, Left=0, Dest=0
+LI Running print_chars(0x0000000000000014), Value=18254, Left=0, Dest=0
+GN Running print_chars(0x0000000000000014), Value=17732, Left=0, Dest=0
+ED Running print_chars(0x0000000000000014), Value=19535, Left=0, Dest=0
+LO Running print_chars(0x0000000000000014), Value=22330, Left=0, Dest=0
+W: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=27, Dest=0
+R[27] (starting from index 0) = 0000 4000 0000 8000 0000 4000 8000 8000 8000 8000 0000 0000 8000 8000 8000 0000 8000 0000 8000 8000 8000 0000 8000 c000 8000 8000 0000 4000 8000 4000 8000 4000 4000 4000 0000 8000 8000 8000 8000 0000 0000 8000 8000 0000 c000 4000 8000 8000 8000 4000 0000 c000 0000 0000 0000 4000 0000 4000 8000 8000 8000 0000 0000 0000 0000 8000 0000 8000 8000 0000 8000 c000 0000 4000 4000 4000 8000 c000 8000 0000 8000 8000 0000 0000 8000 8000 0000 0000 8000 0000 c000 0000 0000 8000 8000 8000 0000 8000 0000 8000 8000 0000 0000 4000 c000 4000 0000 0000 8000 c000 8000 4000 4000 0000 8000 8000 4000 8000 0000 8000 8000 0000 c000 8000 8000 0000 8000 4000 [END]
+ Finished running PRINTREG(R27);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17201, Left=0, Dest=0
+C1 Running print_chars(0x0000000000000014), Value=24385, Left=0, Dest=0
+_A Running print_chars(0x0000000000000014), Value=19529, Left=0, Dest=0
+LI Running print_chars(0x0000000000000014), Value=18254, Left=0, Dest=0
+GN Running print_chars(0x0000000000000014), Value=17732, Left=0, Dest=0
+ED Running print_chars(0x0000000000000014), Value=18505, Left=0, Dest=0
+HI Running print_chars(0x0000000000000014), Value=18248, Left=0, Dest=0
+GH Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=26, Dest=0
+R[26] (starting from index 0) = c000 0000 c000 350d f323 14bc 0faa 076a 119d d64a e9d2 3884 dbc9 cd34 107b e40d 0c1e 1cd1 ee23 fee1 19ff e5df 386f f4c9 13e1 f5dd 09f4 e20f 2a3d fb68 ec88 fd35 f7ad ea13 f15e db0a 3923 1a64 c159 fba1 01ea 2483 cb9a c76d 1cf8 0086 d919 1c18 ef81 ea0a 1e40 147b 0af2 08f8 03a9 002d 2bf3 f170 e6bf 2d63 2888 da73 e9e6 0a15 defc f5d1 e6a3 149e 17f4 fa67 e22e f535 df9e e2d7 1bcc fa46 e181 10e1 21a1 e4cd e500 3dd7 2509 3a6f 300d 1c44 ef96 e05d 09fd 1e28 ec8d ebb6 3fda c603 f950 110c 3b3e 1a95 f934 dd44 c9db f4b0 c038 e452 1d8a efe3 f5d0 0ecd 18f3 eb92 3f9d 0aca 0c97 0d91 c52f f705 18f6 043c f7c5 0656 1611 0385 f8cb 018a 1552 dccf 08f6 128f [END]
+ Finished running PRINTREG(R26);
+
+ Running sub(0x0000000000000154), Right=27, Left=23, Dest=23
+ Finished running R23 = R23 - R27;
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=21343, Left=0, Dest=0
+S_ Running print_chars(0x0000000000000014), Value=19535, Left=0, Dest=0
+LO Running print_chars(0x0000000000000014), Value=22330, Left=0, Dest=0
+W: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=23, Dest=0
+R[23] (starting from index 0) = 0000 01fc 0000 98e4 4e0e 4dfb 2e57 867c c8b6 6358 2140 5968 48ae f89b d4d2 15a4 64ea 819c e8d0 031c b546 9024 a0f7 f44c 932c e544 5e40 7a0d 5576 1be1 8c1a 4c53 73bd 1c6d ce78 a173 4b47 9c8f 8fd4 8eac 4cc0 9d26 2070 2bbe 9c2d 2734 95c8 2b38 fe4e 75bb 1500 1d26 eb08 2da0 1270 9ba4 a410 1621 ef0e 595d ef29 c9de a844 395e 7288 3a00 2a0c c591 7f03 1960 afcb 9cbb f134 5b08 7a8b 953d 8b59 04e3 5da1 3c8e 7ee0 fe9c 971c 9cc8 af5c 0a82 9ec0 cade f9fe d200 7941 d6d0 130c 33af 1e7b 7dda aafc 7bb4 d870 4ff1 4d3c f220 b860 5528 e666 e360 5f20 a748 46b9 9add acc9 dccd e0ae 856c 94a6 e1ec 3af0 32b6 9828 a797 f43c 53ac c010 38f6 5e74 2c0e 56b4 a345 [END]
+ Finished running PRINTREG(R23);
+
+ Running subc(0x0000000000000174), Right=31, Left=22, Dest=22
+ Finished running R22 = SUBC(R22, R31);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=21343, Left=0, Dest=0
+S_ Running print_chars(0x0000000000000014), Value=18505, Left=0, Dest=0
+HI Running print_chars(0x0000000000000014), Value=18248, Left=0, Dest=0
+GH Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=22, Dest=0
+R[22] (starting from index 0) = 0000 0000 e80e 24da f375 1c67 03ca 0b45 0d96 f2f9 db4c 1dd3 f56e d29a 1690 fe57 08d2 277e e3fe fe70 03cd f1ac 2814 f8d8 03f1 f0ac 04c6 fd29 09bc ff8d ed5f fb17 f3c9 e302 e45c f5c6 2a68 08c7 db5b fbea 0115 164b ccf5 fcea 22b6 0020 f7c3 0ff6 f6b4 ebaa 0936 1584 065a 047a 03bb 0032 0570 f6d0 d62f 0dbb 132f ed0d f6b0 065b e7c5 f5fa d5be 01c0 14f7 fa69 ff77 fc2a e86f f208 2ffc f4bf e296 00bb 0945 f5ee d7bd 02f6 2095 2905 2278 03f6 fbc2 e442 1033 20a8 e664 ffc8 00b7 ff80 fb6c 0a1c 0e4a 003a f981 e190 e9bb f579 eaad dbb6 368e e598 f8a7 0307 1583 ff36 25aa 1513 10a0 19e5 d70e fa04 2a4b 0695 ff6b 0211 0de3 040d f1ef 0020 2a60 f273 077e 0f8f [END]
+ Finished running PRINTREG(R22);
+
+ Running sub(0x0000000000000154), Right=26, Left=22, Dest=22
+ Finished running R22 = R22 - R26;
+
+ Running print_chars(0x0000000000000014), Value=26980, Left=0, Dest=0
+id Running print_chars(0x0000000000000014), Value=30796, Left=0, Dest=0
+xL Running print_chars(0x0000000000000014), Value=28527, Left=0, Dest=0
+oo Running print_chars(0x0000000000000014), Value=28704, Left=0, Dest=0
+p  Running print_chars(0x0000000000000014), Value=15648, Left=0, Dest=0
+=  Running print_chars(0x0000000000000014), Value=12597, Left=0, Dest=0
+15 Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=21343, Left=0, Dest=0
+S_ Running print_chars(0x0000000000000014), Value=19535, Left=0, Dest=0
+LO Running print_chars(0x0000000000000014), Value=22330, Left=0, Dest=0
+W: Running print_chars(0x0000000000000014), Value=2570, Left=0, Dest=0
+
+
+ Running print_reg(0x0000000000000103), Right=0, Left=23, Dest=0
+R[23] (starting from index 0) = 0000 01fc 0000 98e4 4e0e 4dfb 2e57 867c c8b6 6358 2140 5968 48ae f89b d4d2 15a4 64ea 819c e8d0 031c b546 9024 a0f7 f44c 932c e544 5e40 7a0d 5576 1be1 8c1a 4c53 73bd 1c6d ce78 a173 4b47 9c8f 8fd4 8eac 4cc0 9d26 2070 2bbe 9c2d 2734 95c8 2b38 fe4e 75bb 1500 1d26 eb08 2da0 1270 9ba4 a410 1621 ef0e 595d ef29 c9de a844 395e 7288 3a00 2a0c c591 7f03 1960 afcb 9cbb f134 5b08 7a8b 953d 8b59 04e3 5da1 3c8e 7ee0 fe9c 971c 9cc8 af5c 0a82 9ec0 cade f9fe d200 7941 d6d0 130c 33af 1e7b 7dda aafc 7bb4 d870 4ff1 4d3c f220 b860 5528 e666 e360 5f20 a748 46b9 9add acc9 dccd e0ae 856c 94a6 e1ec 3af0 32b6 9828 a797 f43c 53ac c010 38f6 5e74 2c0e 56b4 a345 [END]
+ Finished running PRINTREG(R23);
+
+ Running print_chars(0x0000000000000014), Value=20594, Left=0, Dest=0
+Pr Running print_chars(0x0000000000000014), Value=26990, Left=0, Dest=0
+in Running print_chars(0x0000000000000014), Value=29728, Left=0, Dest=0
+t  Running print_chars(0x0000000000000014), Value=29285, Left=0, Dest=0
+re Running print_chars(0x0000000000000014), Value=26400, Left=0, Dest=0
+g  Running print_chars(0x0000000000000014), Value=21061, Left=0, Dest=0
+RE Running print_chars(0x0000000000000014), Value=21343, Left=0, Dest=0
+S_ Running print_chars(0x0000000000000014), Value=18505, Left=0, Dest=0
+HI Running print_chars(0x0000000000000014), Value=18248, Left=0, Dest=0
+GH Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=22, Dest=0
+R[22] (starting from index 0) = 4000 0000 280e efcd 0052 1c67 f420 0b45 fbf9 1caf db4c e54f 19a5 0566 1690 1a4a fcb4 277e e3fe fe70 03cd f1ac efa5 f8d8 03f1 f0ac 04c6 fd29 df7f ff8d ed5f fb17 f3c9 e302 e45c 1abc f145 ee63 1a02 0049 0115 f1c8 015b 357d 22b6 0020 1eaa 0ff6 0733 ebaa eaf6 1584 065a fb82 03bb 0032 d97d f6d0 d62f e058 eaa7 129a 0cca fc46 08c9 f5fa d5be ed22 fd03 0002 1d49 fc2a 08d1 f208 2ffc f4bf 0115 00bb e7a4 1121 d7bd c51f fb8c ee96 f26b e7b2 0c2c 03e5 1033 20a8 e664 1412 c0dd 397d 021c 0a1c d30c e5a5 f981 044c 1fe0 00c9 2a75 dbb6 368e e598 02d7 f43a fc90 ff36 e60d 1513 10a0 19e5 11df fa04 2a4b 0695 07a6 fbbb f7d2 040d f1ef fe96 2a60 15a4 077e 0f8f [END]
+ Finished running PRINTREG(R22);
+
+ Running endwhere(0x000000000000011f), Right=0, Left=0, Dest=0
+ Finished running END_WHERE;
+
+ Running print_reg(0x0000000000000103), Right=0, Left=1, Dest=0
+R[ 1] (starting from index 0) = 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 [END]
+ Finished running PRINTREG(R01);
+
+ Running print_reg(0x0000000000000103), Right=0, Left=2, Dest=0
+R[ 2] (starting from index 0) = 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 0001 [END]
+ Finished running PRINTREG(R02);
+
+ Running add(0x0000000000000144), Right=1, Left=3, Dest=1
+ Finished running R01 = R03 + R01;
+
+ Running add(0x0000000000000144), Right=6, Left=3, Dest=6
+ Finished running R06 = R03 + R06;
+
+ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17201, Left=0, Dest=0
+C1 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=24, Dest=0
+R[24] (starting from index 0) = 8000 0001 8000 6a1b e646 52f1 1f55 1daa 233b ac95 a748 7108 b793 9a69 41ee c81a 183d 7344 b88e fb86 67fe 977c 70df d327 4f86 d776 27d0 883d 547b eda1 b222 f4d5 deb5 a84d c578 b615 7247 34c9 82b3 f742 07a8 4907 9735 8eda 73e3 0219 b233 7062 df03 a829 3c80 51ef 2bc8 11f0 0ea4 00b5 57e6 c5c1 9afe 5ac7 5111 b4e6 d3cc 142a bdf8 d746 9a8c 293d 2fe9 f4ce c45d d4d7 bf3c 8b5d 6f31 e919 c303 4387 4343 c99a 9402 7baf 4a12 74de 601b 3889 df2c c0ba 27f6 78a0 b237 d76c 7fb4 8c07 f2a1 4432 767c 352b e4d0 ba89 93b7 e960 8070 9149 762b bf8d eba0 1d9a 31e7 ae4b 7f3b 2b29 325d 3644 8a5f dc16 63d9 10f2 ef8a 0cad 2c23 0e14 e32f 0315 554a b99e 23da 4a3d [END]
+ Finished running PRINTREG(R24);
+
+ Running print_chars(0x0000000000000014), Value=21330, Left=0, Dest=0
+SR Running print_chars(0x0000000000000014), Value=17202, Left=0, Dest=0
+C2 Running print_chars(0x0000000000000014), Value=14858, Left=0, Dest=0
+:
+ Running print_chars(0x0000000000000014), Value=8202, Left=0, Dest=0
+ 
+ Running print_reg(0x0000000000000103), Right=0, Left=25, Dest=0
+R[25] (starting from index 0) = 0001 0000 0001 0001 0001 0000 0001 0000 0001 0001 0000 0001 0001 0001 0000 0001 0001 0000 0000 0000 0000 0000 0001 0000 0000 0000 0000 0000 0001 0000 0000 0000 0000 0000 0000 0001 0001 0001 0001 0001 0000 0001 0001 0001 0000 0000 0001 0000 0001 0000 0001 0000 0000 0001 0000 0000 0001 0000 0000 0001 0001 0001 0001 0001 0001 0000 0000 0001 0001 0001 0001 0000 0001 0000 0000 0000 0001 0000 0001 0001 0000 0001 0001 0001 0001 0001 0001 0001 0000 0000 0000 0001 0001 0001 0001 0000 0001 0001 0000 0001 0001 0001 0001 0000 0000 0000 0001 0001 0001 0000 0001 0000 0000 0000 0001 0000 0000 0000 0001 0001 0001 0000 0000 0001 0000 0001 0000 0000 [END]
+ Finished running PRINTREG(R25);
+
+ Running write(0x0000000000000114), Right=3, Left=23, Dest=0
+ Finished running LS[R03] = R23;
+
+ Running add(0x0000000000000144), Right=3, Left=30, Dest=3
+ Finished running R03 = R30 + R03;
+
+ Running nop(0x0000000000000000), Right=0, Left=0, Dest=0
+ Finished running NOP;
+
+ Running write(0x0000000000000114), Right=3, Left=22, Dest=0
+ Finished running LS[R03] = R22;
+
+ Running add(0x0000000000000144), Right=1, Left=30, Dest=1
+ Finished running R01 = R30 + R01;
+
+ Running add(0x0000000000000144), Right=2, Left=30, Dest=2
+ Finished running R02 = R30 + R02;
+
+ Running add(0x0000000000000144), Right=3, Left=30, Dest=3
+ Finished running R03 = R30 + R03;
+
+ Running print_reg(0x0000000000000103), Right=0, Left=1, Dest=0
+R[ 1] (starting from index 0) = 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 0003 [END]
+ Finished running PRINTREG(R01);
+
+ Running print_reg(0x0000000000000103), Right=0, Left=2, Dest=0
+R[ 2] (starting from index 0) = 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 0002 [END]
+ Finished running PRINTREG(R02);
+
+ Running print_reg(0x0000000000000103), Right=0, Left=3, Dest=0
+R[ 3] (starting from index 0) = 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 0004 [END]
+ Finished running PRINTREG(R03);
+
+ Running red(0x0000000000000100), Right=0, Left=0, Dest=0
+ Finished running REDUCE(R00);
+
+ConnexMachine::readFromPipe(): totalBytesRead = 4
+Before (final?) REDUCE: number of cycles simulated = 2165 (add 1 more for the REDUCE), totalEnergyConsumed = 0.000030677456
+Returned from connexGlobal->readReduction()
+Entered readDataFromConnexPartial(): buffer = 0x7ffece851040, numElemCount = 128, startVectorIndex = 2 (vectorCount = 1).
+ioDescriptor:
+            type = 0
+            lsAddress = 2
+            vectorCount = 0
+Entered ConnexSimulator::performIO(): ioDescriptor.type = 0, ioDescriptor.lsAddress = 2, ioDescriptor.vectorCount = 0
+ConnexSimulator::force_all_io(): count = 256, total = 0
+Simu: Waiting for receive 
+readDataFromConnexPartial(): calling standard readDataFromConnex()
+ConnexMachine::readFromPipe(): totalBytesRead = 256
+Entered readDataFromConnexPartial(): buffer = 0x7ffece84c110, numElemCount = 128, startVectorIndex = 3 (vectorCount = 1).
+ioDescriptor:
+            type = 0
+            lsAddress = 3
+            vectorCount = 0
+Entered ConnexSimulator::performIO(): ioDescriptor.type = 0, ioDescriptor.lsAddress = 3, ioDescriptor.vectorCount = 0
+ConnexSimulator::force_all_io(): count = 256, total = 0
+Simu: Waiting for receive 
+readDataFromConnexPartial(): calling standard readDataFromConnex()
+ConnexMachine::readFromPipe(): totalBytesRead = 256
+Finished executing the Opincaa kernel.
+Testing the correctness of the computation of the Opincaa kernel.
+Diffs: i = 0
+Diffs: i = 2
+Diffs: i = 3
+Diffs: i = 4
+Diffs: i = 5
+Diffs: i = 6
+Diffs: i = 7
+Diffs: i = 8
+Diffs: i = 9
+Diffs: i = 10
+Diffs: i = 11
+Diffs: i = 12
+Diffs: i = 13
+Diffs: i = 14
+Diffs: i = 15
+Diffs: i = 16
+Diffs: i = 17
+Diffs: i = 18
+Diffs: i = 19
+Diffs: i = 20
+Diffs: i = 21
+Diffs: i = 22
+Diffs: i = 23
+Diffs: i = 24
+Diffs: i = 25
+Diffs: i = 26
+Diffs: i = 27
+Diffs: i = 28
+Diffs: i = 29
+Diffs: i = 30
+Diffs: i = 31
+Diffs: i = 32
+Diffs: i = 33
+Diffs: i = 34
+Diffs: i = 35
+Diffs: i = 36
+Diffs: i = 37
+Diffs: i = 38
+Diffs: i = 39
+Diffs: i = 40
+Diffs: i = 41
+Diffs: i = 42
+Diffs: i = 43
+Diffs: i = 44
+Diffs: i = 45
+Diffs: i = 46
+Diffs: i = 47
+Diffs: i = 48
+Diffs: i = 49
+Diffs: i = 50
+Diffs: i = 51
+Diffs: i = 52
+Diffs: i = 53
+Diffs: i = 54
+Diffs: i = 55
+Diffs: i = 56
+Diffs: i = 57
+Diffs: i = 58
+Diffs: i = 59
+Diffs: i = 60
+Diffs: i = 61
+Diffs: i = 62
+Diffs: i = 63
+Diffs: i = 64
+Diffs: i = 65
+Diffs: i = 66
+Diffs: i = 67
+Diffs: i = 68
+Diffs: i = 69
+Diffs: i = 70
+Diffs: i = 71
+Diffs: i = 72
+Diffs: i = 73
+Diffs: i = 74
+Diffs: i = 75
+Diffs: i = 76
+Diffs: i = 77
+Diffs: i = 78
+Diffs: i = 79
+Diffs: i = 80
+Diffs: i = 81
+Diffs: i = 82
+Diffs: i = 83
+Diffs: i = 84
+Diffs: i = 85
+Diffs: i = 86
+Diffs: i = 87
+Diffs: i = 88
+Diffs: i = 89
+Diffs: i = 90
+Diffs: i = 91
+Diffs: i = 92
+Diffs: i = 93
+Diffs: i = 94
+Diffs: i = 95
+Diffs: i = 96
+Diffs: i = 97
+Diffs: i = 98
+Diffs: i = 99
+Diffs: i = 100
+Diffs: i = 101
+Diffs: i = 102
+Diffs: i = 103
+Diffs: i = 104
+Diffs: i = 105
+Diffs: i = 106
+Diffs: i = 107
+Diffs: i = 108
+Diffs: i = 109
+Diffs: i = 110
+Diffs: i = 111
+Diffs: i = 112
+Diffs: i = 113
+Diffs: i = 114
+Diffs: i = 115
+Diffs: i = 116
+Diffs: i = 117
+Diffs: i = 118
+Diffs: i = 119
+Diffs: i = 120
+Diffs: i = 121
+Diffs: i = 122
+Diffs: i = 123
+Diffs: i = 124
+Diffs: i = 125
+Diffs: i = 126
+Diffs: i = 127
+  testResult = -1 (PASS = 0)
+  numDiffResults = 127
+NUM_ELEMS = 128
+A[0] = -32768 (0x8000), B[0] = -32768 (0x8000)
+
+A[1] = 1 (0x0001), B[1] = 508 (0x01fc)
+
+A[2] = -32768 (0x8000), B[2] = -20508 (0xafe4)
+
+A[3] = 27163 (0x6a1b), B[3] = -10004 (0xd8ec)
+
+A[4] = -6586 (0xe646), B[4] = -819 (0xfccd)
+
+A[5] = 21233 (0x52f1), B[5] = 22443 (0x57ab)
+
+A[6] = 8021 (0x1f55), B[6] = -24837 (0x9efb)
+
+A[7] = 7594 (0x1daa), B[7] = 24902 (0x6146)
+
+A[8] = 9019 (0x233b), B[8] = -7486 (0xe2c2)
+
+A[9] = -21355 (0xac95), B[9] = -22536 (0xa7f8)
+
+A[10] = -22712 (0xa748), B[10] = 27112 (0x69e8)
+
+A[11] = 28936 (0x7108), B[11] = -15475 (0xc38d)
+
+A[12] = -18541 (0xb793), B[12] = -23206 (0xa55a)
+
+A[13] = -26007 (0x9a69), B[13] = -3485 (0xf263)
+
+A[14] = 16878 (0x41ee), B[14] = 22431 (0x579f)
+
+A[15] = -14310 (0xc81a), B[15] = -30822 (0x879a)
+
+A[16] = 6205 (0x183d), B[16] = -8910 (0xdd32)
+
+A[17] = 29508 (0x7344), B[17] = 22455 (0x57b7)
+
+A[18] = -18290 (0xb88e), B[18] = 25688 (0x6458)
+
+A[19] = -1146 (0xfb86), B[19] = 22874 (0x595a)
+
+A[20] = 26622 (0x67fe), B[20] = 2397 (0x095d)
+
+A[21] = -26756 (0x977c), B[21] = 8983 (0x2317)
+
+A[22] = 28895 (0x70df), B[22] = -9495 (0xdae9)
+
+A[23] = -11481 (0xd327), B[23] = 10452 (0x28d4)
+
+A[24] = 20358 (0x4f86), B[24] = 3250 (0x0cb2)
+
+A[25] = -10378 (0xd776), B[25] = 24774 (0x60c6)
+
+A[26] = 10192 (0x27d0), B[26] = 7860 (0x1eb4)
+
+A[27] = -30659 (0x883d), B[27] = 1553 (0x0611)
+
+A[28] = 21627 (0x547b), B[28] = -25214 (0x9d82)
+
+A[29] = -4703 (0xeda1), B[29] = 1601 (0x0641)
+
+A[30] = -19934 (0xb222), B[30] = 15677 (0x3d3d)
+
+A[31] = -2859 (0xf4d5), B[31] = 28807 (0x7087)
+
+A[32] = -8523 (0xdeb5), B[32] = 24041 (0x5de9)
+
+A[33] = -22451 (0xa84d), B[33] = 21665 (0x54a1)
+
+A[34] = -14984 (0xc578), B[34] = 30945 (0x78e1)
+
+A[35] = -18923 (0xb615), B[35] = -23705 (0xa367)
+
+A[36] = 29255 (0x7247), B[36] = -8447 (0xdf01)
+
+A[37] = 13513 (0x34c9), B[37] = -21865 (0xaa97)
+
+A[38] = -32077 (0x82b3), B[38] = -13604 (0xcadc)
+
+A[39] = -2238 (0xf742), B[39] = -2154 (0xf796)
+
+A[40] = 1960 (0x07a8), B[40] = 9272 (0x2438)
+
+A[41] = 18695 (0x4907), B[41] = -12758 (0xce2a)
+
+A[42] = -26827 (0x9735), B[42] = -848 (0xfcb0)
+
+A[43] = -28966 (0x8eda), B[43] = -30981 (0x86fb)
+
+A[44] = 29667 (0x73e3), B[44] = 19631 (0x4caf)
+
+A[45] = 537 (0x0219), B[45] = 3924 (0x0f54)
+
+A[46] = -19917 (0xb233), B[46] = -25832 (0x9b18)
+
+A[47] = 28770 (0x7062), B[47] = 9308 (0x245c)
+
+A[48] = -8445 (0xdf03), B[48] = -14310 (0xc81a)
+
+A[49] = -22487 (0xa829), B[49] = 15171 (0x3b43)
+
+A[50] = 15488 (0x3c80), B[50] = -22790 (0xa6fa)
+
+A[51] = 20975 (0x51ef), B[51] = 17210 (0x433a)
+
+A[52] = 11208 (0x2bc8), B[52] = 9513 (0x2529)
+
+A[53] = 4592 (0x11f0), B[53] = -16410 (0xbfe6)
+
+A[54] = 3748 (0x0ea4), B[54] = 16700 (0x413c)
+
+A[55] = 181 (0x00b5), B[55] = 18324 (0x4794)
+
+A[56] = 22502 (0x57e6), B[56] = -28712 (0x8fd8)
+
+A[57] = -14911 (0xc5c1), B[57] = 10337 (0x2861)
+
+A[58] = -25858 (0x9afe), B[58] = 27129 (0x69f9)
+
+A[59] = 23239 (0x5ac7), B[59] = -22853 (0xa6bb)
+
+A[60] = 20753 (0x5111), B[60] = -17255 (0xbc99)
+
+A[61] = -19226 (0xb4e6), B[61] = -16235 (0xc095)
+
+A[62] = -11316 (0xd3cc), B[62] = -18965 (0xb5eb)
+
+A[63] = 5162 (0x142a), B[63] = -12109 (0xd0b3)
+
+A[64] = -16904 (0xbdf8), B[64] = -8721 (0xddef)
+
+A[65] = -10426 (0xd746), B[65] = 16128 (0x3f00)
+
+A[66] = -25972 (0x9a8c), B[66] = 27297 (0x6aa1)
+
+A[67] = 10557 (0x293d), B[67] = -29979 (0x8ae5)
+
+A[68] = 12265 (0x2fe9), B[68] = -4085 (0xf00b)
+
+A[69] = -2866 (0xf4ce), B[69] = -48 (0xffd0)
+
+A[70] = -15267 (0xc45d), B[70] = -32185 (0x8247)
+
+A[71] = -11049 (0xd4d7), B[71] = 5821 (0x16bd)
+
+A[72] = -16580 (0xbf3c), B[72] = -8925 (0xdd23)
+
+A[73] = -29859 (0x8b5d), B[73] = 7848 (0x1ea8)
+
+A[74] = 28465 (0x6f31), B[74] = 28283 (0x6e7b)
+
+A[75] = -5863 (0xe919), B[75] = 32197 (0x7dc5)
+
+A[76] = -15613 (0xc303), B[76] = -1165 (0xfb73)
+
+A[77] = 17287 (0x4387), B[77] = 709 (0x02c5)
+
+A[78] = 17219 (0x4343), B[78] = -23733 (0xa34b)
+
+A[79] = -13926 (0xc99a), B[79] = -20637 (0xaf63)
+
+A[80] = -27646 (0x9402), B[80] = 24432 (0x5f70)
+
+A[81] = 31663 (0x7baf), B[81] = -31196 (0x8624)
+
+A[82] = 18962 (0x4a12), B[82] = -3938 (0xf09e)
+
+A[83] = 29918 (0x74de), B[83] = -9764 (0xd9dc)
+
+A[84] = 24603 (0x601b), B[84] = -9260 (0xdbd4)
+
+A[85] = 14473 (0x3889), B[85] = -28174 (0x91f2)
+
+A[86] = -8404 (0xdf2c), B[86] = -24304 (0xa110)
+
+A[87] = -16198 (0xc0ba), B[87] = -4037 (0xf03b)
+
+A[88] = 10230 (0x27f6), B[88] = 26573 (0x67cd)
+
+A[89] = 30880 (0x78a0), B[89] = 17744 (0x4550)
+
+A[90] = -19913 (0xb237), B[90] = 21575 (0x5447)
+
+A[91] = -10388 (0xd76c), B[91] = -32420 (0x815c)
+
+A[92] = 32692 (0x7fb4), B[92] = -32401 (0x816f)
+
+A[93] = -29689 (0x8c07), B[93] = -32487 (0x8119)
+
+A[94] = -3423 (0xf2a1), B[94] = -10341 (0xd79b)
+
+A[95] = 17458 (0x4432), B[95] = 9717 (0x25f5)
+
+A[96] = 30332 (0x767c), B[96] = -24863 (0x9ee1)
+
+A[97] = 13611 (0x352b), B[97] = -32484 (0x811c)
+
+A[98] = -6960 (0xe4d0), B[98] = 15651 (0x3d23)
+
+A[99] = -17783 (0xba89), B[99] = -4055 (0xf029)
+
+A[100] = -27721 (0x93b7), B[100] = -19292 (0xb4a4)
+
+A[101] = -5792 (0xe960), B[101] = -2285 (0xf713)
+
+A[102] = -32656 (0x8070), B[102] = -21814 (0xaaca)
+
+A[103] = -28343 (0x9149), B[103] = 21480 (0x53e8)
+
+A[104] = 30251 (0x762b), B[104] = 30258 (0x7632)
+
+A[105] = -16499 (0xbf8d), B[105] = 26848 (0x68e0)
+
+A[106] = -5216 (0xeba0), B[106] = -9139 (0xdc4d)
+
+A[107] = 7578 (0x1d9a), B[107] = -26060 (0x9a34)
+
+A[108] = 12775 (0x31e7), B[108] = -4513 (0xee5f)
+
+A[109] = -20917 (0xae4b), B[109] = 631 (0x0277)
+
+A[110] = 32571 (0x7f3b), B[110] = -13365 (0xcbcb)
+
+A[111] = 11049 (0x2b29), B[111] = 32005 (0x7d05)
+
+A[112] = 12893 (0x325d), B[112] = 21638 (0x5486)
+
+A[113] = 13892 (0x3644), B[113] = 31275 (0x7a2b)
+
+A[114] = -30113 (0x8a5f), B[114] = -9958 (0xd91a)
+
+A[115] = -9194 (0xdc16), B[115] = 10914 (0x2aa2)
+
+A[116] = 25561 (0x63d9), B[116] = 27760 (0x6c70)
+
+A[117] = 4338 (0x10f2), B[117] = 25459 (0x6373)
+
+A[118] = -4214 (0xef8a), B[118] = -30460 (0x8904)
+
+A[119] = 3245 (0x0cad), B[119] = -22061 (0xa9d3)
+
+A[120] = 11299 (0x2c23), B[120] = -12140 (0xd094)
+
+A[121] = 3604 (0x0e14), B[121] = 18863 (0x49af)
+
+A[122] = -7377 (0xe32f), B[122] = 31984 (0x7cf0)
+
+A[123] = 789 (0x0315), B[123] = -30050 (0x8a9e)
+
+A[124] = 21834 (0x554a), B[124] = 32562 (0x7f32)
+
+A[125] = -18018 (0xb99e), B[125] = -20151 (0xb149)
+
+A[126] = 9178 (0x23da), B[126] = 13698 (0x3582)
+
+A[127] = 19005 (0x4a3d), B[127] = 13737 (0x35a9)
+
+Exiting Test()
+ConnexMachine::~ConnexMachine(): freeing kernel MulInt16 (with ptr value = 0x163d280)
+Entered Kernel::~Kernel(): name = MulInt16
+  Kernel::~Kernel(): sdNodeVarNameRegDef = 0x163d2e8
+ConnexMachine::~ConnexMachine(): freeing kernel QuitKernel (with ptr value = 0x163cc50)
+Entered Kernel::~Kernel(): name = QuitKernel
+  Kernel::~Kernel(): sdNodeVarNameRegDef = 0x163ccb8
+++ sleep 2

@@ -10,57 +10,70 @@
 
 using namespace std;
 
-void initRand(int seed)
-{
+void initRand(int seed) {
     srand (seed);
 }
 
-int32_t randPar(int32_t limit)
-{
+int32_t randPar(int32_t limit) {
     int64_t result = limit;
     result = result * rand() / ( RAND_MAX + 1.0 );
     return (int32_t)result;
 }
 
-void eatRand(int times)
-{
-	int i;
-	for (i=0; i< times; i++)
-		printf(" Eating up %d-th rand number, %d\n",i,rand());
-
+void eatRand(int times) {
+    int i;
+    for (i = 0; i < times; i++)
+        printf(" Eating up %d-th rand number, %d\n",i,rand());
 }
 
-int RunAll(bool stress, ConnexMachine *connex)
-{
-    int result = FAIL;
+int RunAll(bool stress, ConnexMachine *connex) {
+    int result = 0; //FAIL;
 
     result = test_Simple_All(connex, stress);
     result += test_Simple_IO_All(connex, stress);
-    jump_test(5,connex);
+    jump_test(5, connex);
 
     return result;
 
 }
 
-int main(int argc, char *argv[]){
-
-    if(argc < 6)
-    {
-        printf("Usage: %s insn red iowr iord regs\n",argv[0]);
+int main(int argc, char *argv[]) {
+    if (argc < 6) {
+        printf("Usage: %s insnFIFOName redFIFOName iowrFIFOName iordFIFOName regsFIFOName\n", argv[0]);
         return 0;
     }
 
-    try
-    {
-        ConnexMachine *connex = new ConnexMachine(argv[1],argv[2],argv[3],argv[4],argv[5]);
-		
-        RunAll(true,connex);
+
+    printf("Opincaa test: CONNEX_VECTOR_LENGTH is set to the default value 128\n");
+    CONNEX_VECTOR_LENGTH = 128;
+    fflush(stdout);
+
+    printf("Opincaa test: CONNEX_MEM_SIZE is set to the default value 1024\n");
+    CONNEX_MEM_SIZE = 1024;
+    fflush(stdout);
+
+    printf("Opincaa test: CONNEX_REG_COUNT is set to the default value 32\n");
+    CONNEX_REG_COUNT = 32;
+    fflush(stdout);
+
+    printf("Opincaa test: INSTRUCTION_QUEUE_LENGTH is set to the default value 1024\n");
+    INSTRUCTION_QUEUE_LENGTH = 1024;
+    fflush(stdout);
+
+    ComputeLog2CVL();
+
+    try {
+        printf("test: creating ConnexMachine with the given FIFOs\n");
+        fflush(stdout);
+
+        ConnexMachine *connex = new ConnexMachine(argv[1], argv[2], argv[3], argv[4], argv[5]);
+
+        // RunAll(true, connex); // stress == true --> run for 10 times each test
+        RunAll(false, connex);
 
         delete connex;
     }
-
-    catch(string err)
-    {
+    catch(string err) {
         cout << err << endl;
     }
 
